@@ -1,7 +1,7 @@
 <div style="padding:8px;">
     <div nz-row>
         <div nz-col>
-            <button class="botton success" (click)="showAddModal()"> <i nz-icon nzType="plus"></i> {{heading}}</button>
+            <button class="botton success" (click)="showAddModal()"> <i nz-icon nzType="plus"></i> {{addbtnTitle}}</button>
             <label *ngIf="userRole == 'ADMIN USER'" nz-checkbox id="IncludeDeleted"  [(ngModel)]="check" (change)="fetchAll($event)" style="padding-left: 30%;"> Include Deleted </label>
             <button nz-button nzType="primary" (click)="handleOkTop()" style="float: right;"> <i nz-icon nzType="file-pdf"></i> Print </button>
             <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">
@@ -19,10 +19,10 @@
                 </thead>
                 <tbody>
                     <tr *ngFor="let data of basicTable.data;let i = index;">
-                        <td class="left">{{ data.ltype  }} </td>
-                        <td class="left">{{ data.recipient  }} </td>
-                        <td class="left">{{ data.activity  }} </td>
-                        <td class="left">{{ data.location  }} </td>
+                        <td class="left">{{ data.type  }} </td>
+                        <td class="left">{{ data.name  }} </td>
+                        <td class="left">{{ data.branch  }} </td>
+                        <td class="left">{{ data.funding  }} </td>
                         <td class="left">{{ data.program  }} </td>
                         <td class="left">{{ data.staff  }} </td>
                         <td class="left">{{ data.end_date | date: 'dd/MM/y' }}</td>
@@ -113,7 +113,7 @@
         </div>
         <div *nzModalFooter>
             <ng-container>
-                <button nz-button nzType="primary" [nzLoading]="postLoading" [disabled]= "!inputForm.get('recepient').value " (click)="save()" *ngIf="current === 0">
+                <button nz-button nzType="primary" [nzLoading]="postLoading"  (click)="save()" *ngIf="current === 0">
                     <span>Save</span>
                 </button>
             </ng-container>

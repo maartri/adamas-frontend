@@ -55,10 +55,11 @@ export class FollowupComponent implements OnInit {
   funding_source: any;
   casemanagers: any;
   addbtnTitle : any;
+  menuType    : any;
   staffList: any;
   allStaff:boolean = false;
   allstaffIntermediate: boolean = false;
-  selectedStaff: any;
+  selectedStaff:any[];
   
   constructor(
     private router: Router,
@@ -80,12 +81,15 @@ export class FollowupComponent implements OnInit {
       this.activatedRoute.params.subscribe((params: Params) => {
         if (params.type == 'followups'){
           this.addbtnTitle = 'Followups';
+          this.menuType    = 'FOLLOWUP'
         }
         if (params.type == 'documents'){
           this.addbtnTitle = 'Documents';
+          this.menuType  = 'DOCUMENTS';
         }
         if (params.type == 'extradata'){
           this.addbtnTitle = "Extra Required Data";
+          this.menuType  = 'XTRADATA';
         }
       });
       this.buildForm();
@@ -104,12 +108,11 @@ export class FollowupComponent implements OnInit {
       }
     }
     loadData(){
-      let sql ="SELECT RecordNo, Recipient,Activity,Location,Program,Staff,Mandatory as mandatory,DefaultAssignee as assignee,ListName as ltype,Severity ,xDeletedRecord as is_deleted,xEndDate as end_date from IM_DistributionLists "+this.whereString+" order by Recipient";
-      this.loading = true;
-      this.listS.getlist(sql).subscribe(data => {
+      this.menuS.getconfigurationworkflows(this.menuType,false).subscribe(data => {
         this.tableData = data;
         this.loading = false;
       });
+
     }
     populateDropdowns(){
       let sql  = "SELECT TITLE FROM ITEMTYPES WHERE ProcessClassification IN ('OUTPUT', 'EVENT', 'ITEM') AND ENDDATE IS NULL";
@@ -147,27 +150,39 @@ export class FollowupComponent implements OnInit {
       this.current = 0;
       this.modalOpen = true;
       const { 
-        ltype,
-        end_date,
-        recordNo,
+        type,
+        name,
+        branch,
+        funding,
+        casemanager,
+        endDate,
+        recordNumber,
         
       } = this.tableData[index];
       this.inputForm.patchValue({
-        ltype:ltype,
-        end_date:end_date,
-        recordNo:recordNo,
+        ltype:type,
+        name:name,
+        branch:branch,
+        funding_source:funding,
+        endDate:endDate,
+        casemanager:casemanager,
+        recordNumber:recordNumber,
       });
     }
     updateAllCheckedFilters(filter: any): void {
+      this.selectedStaff = [];
       if (this.allStaff) {
         this.staffList.forEach(x => {
           x.checked = true;
+          this.selectedStaff.push(x.staffCode);
         });
       }else{
         this.staffList.forEach(x => {
           x.checked = false;
         });
+        this.selectedStaff = [];
       }
+      console.log(this.selectedStaff);
     }
     updateSingleCheckedFilters(index:number): void {
       if (this.staffList.every(item => !item.checked)) {
@@ -183,6 +198,7 @@ export class FollowupComponent implements OnInit {
     }
     log(event: any) {
       this.selectedStaff = event;
+      console.log(this.selectedStaff);
     }
     trueString(data: any): string{
       return data ? '1': '0';
@@ -279,6 +295,7 @@ export class FollowupComponent implements OnInit {
       });
     } 
     buildForm() {
+      
       this.inputForm = this.formBuilder.group({
         ltype:'',
         name:'',
@@ -286,18 +303,10 @@ export class FollowupComponent implements OnInit {
         funding_source:'',
         casemanager:'',
         staff:'',
-        service:'',
-        assignee:false,
-        prgm:'',
-        location:'',
-        recepient:'',
-        saverity:'',
         end_date:'',
-        mandatory:false,
-        recordNo:null,
-        event: null
+        recordNumber:null,
       });
-      
+
       this.inputForm.get('ltype').valueChanges
       .pipe(
         switchMap(x => {

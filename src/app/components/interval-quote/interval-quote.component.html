@@ -3,7 +3,6 @@
         <ng-container [formGroup]="quoteDetailsGroup">
             <div nz-col>
                 <div class="float" formArrayName="timeSlots" *ngFor="let slot of quoteDetailsGroup.get('timeSlots')['controls']; let i = index;">
-                    {{ i }}
                     <div class="id-table" [formGroupName]="i">
                         <div formGroupName="monday">
                             <div *ngIf="size != 'small' || (size == 'small' && i == 0)">Mo</div>

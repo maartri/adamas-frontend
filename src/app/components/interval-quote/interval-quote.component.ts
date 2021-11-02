@@ -158,7 +158,6 @@ export class IntervalQuoteComponent implements OnInit, AfterViewInit, OnChanges,
     this.quoteDetailsGroup.get('timeSlots').valueChanges.subscribe(data => {
       this.innerValue = this.calculateRosterString(data);
       this.onChangeCallback(this.innerValue);
-      console.log(this.innerValue)
       this.cd.markForCheck();
     });
 

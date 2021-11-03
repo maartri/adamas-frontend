@@ -94,7 +94,6 @@ export class DebtorComponent implements OnInit {
     this.loadCategories();
     this.populateDropdowns();
     this.loadBatchHistory();
-    this.GetPayPeriodLength();
     this.GetPayPeriodEndDate();
     this.loading = false;
     this.modalOpen = true;
@@ -117,6 +116,7 @@ export class DebtorComponent implements OnInit {
       // dtpEndDate: this.dtpEndDate,
       billingMode: 'CONSOLIDATED BILLING',
       AccPackage: 'TEST 1',
+      name: '',
     });
   }
 
@@ -265,23 +265,11 @@ export class DebtorComponent implements OnInit {
       this.cd.detectChanges();
     });
   }
-
-  GetPayPeriodLength() {
-    // let sql = "SELECT DefaultPayPeriod as DefaultPayPeriod FROM Registration";
-    // this.loading = true;
-    // this.listS.getlist(sql).subscribe(data => {
-    //   console.log("Result 0 is: ", data[0].defaultPayPeriod)
-    //   if (data[0].defaultPayPeriod != "") {
-    //     this.PayPeriodLength = data;
-    //   }
-    //   else { this.PayPeriodLength = 14; }
-    // })
-    // console.log("Result 1 is: " , this.PayPeriodLength);
-  }
   GetPayPeriodEndDate() {
-    
     this.dtpEndDate = "beforeAssignDate dtpEndDate";
     console.log("Test is: ", this.dtpEndDate)
+
+    console.log("adddeddd");
     let sql = "SELECT convert(varchar, PayPeriodEndDate, 103) AS PayPeriodEndDate FROM SysTable";
     this.loading = true;
     this.listS.getlist(sql).subscribe(data => {
@@ -294,26 +282,27 @@ export class DebtorComponent implements OnInit {
         });
         console.log("Test 1 is: ", this.dtpEndDate)
       }
-    else {
-        // this.inputForm.patchValue({
-        //   dtpEndDate: new Date()
-        // });
-        // console.log("Test 2 is: ", this.dtpEndDate)
+      else {
+        this.inputForm.patchValue({
+          dtpEndDate: new Date()
+        });
+        this.dtpEndDate = new Date;
+        console.log("else" + this.dtpEndDate);
       }
     });
-    console.log("Test 3 is: ", this.dtpEndDate)
+        console.log(this.dtpEndDate + "end" );
+        console.log("Test 3 is: ", this.dtpEndDate);
+        console.log("ifffffff" + this.dtpEndDate);
     // let fsql = "SELECT DefaultPayPeriod as DefaultPayPeriod FROM Registration";
     // this.listS.getlist(fsql).subscribe(fdata => {
-    //   setTimeout(()=>{        
-    //    }, 5000);
     //   if (fdata[0].defaultPayPeriod != "") {
     //     this.PayPeriodLength = fdata;
     //   }
     //   else { this.PayPeriodLength = 14; }
     // });
     // console.log("Test 4 is: ", this.dtpEndDate)
+    // var FirstDate = this.dtpEndDate;
     // FirstDate.setDate(FirstDate.getDate() - this.PayPeriodLength - 1);
   }
 }
-
 

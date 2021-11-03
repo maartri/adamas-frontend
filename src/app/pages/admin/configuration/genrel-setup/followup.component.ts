@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { ListService, MenuService , workflowClassification } from '@services/index';
+import { ListService, MenuService , TimeSheetService, workflowClassification } from '@services/index';
 import { GlobalService } from '@services/global.service';
 import { takeUntil, switchMap } from 'rxjs/operators';
 import { Subject, EMPTY, forkJoin } from 'rxjs';
@@ -68,6 +68,7 @@ export class FollowupComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private listS:ListService,
     private menuS:MenuService,
+    private timeS:TimeSheetService,
     private formBuilder: FormBuilder,
     private http: HttpClient,
     private fb: FormBuilder,
@@ -112,7 +113,7 @@ export class FollowupComponent implements OnInit {
         this.tableData = data;
         this.loading = false;
       });
-
+      
     }
     populateDropdowns(){
       let sql  = "SELECT TITLE FROM ITEMTYPES WHERE ProcessClassification IN ('OUTPUT', 'EVENT', 'ITEM') AND ENDDATE IS NULL";
@@ -160,10 +161,10 @@ export class FollowupComponent implements OnInit {
         
       } = this.tableData[index];
       this.inputForm.patchValue({
-        ltype:type,
+        activity:type,
         name:name,
         branch:branch,
-        funding_source:funding,
+        fundingSource:funding,
         endDate:endDate,
         casemanager:casemanager,
         recordNumber:recordNumber,
@@ -222,51 +223,26 @@ export class FollowupComponent implements OnInit {
       this.current += 1;
     }
     save() {
-      
-      if(!this.isUpdate){        
-        this.postLoading = true;   
-        const group    = this.inputForm;
-        let ltype      = this.globalS.isValueNull(group.get('ltype').value);
-        let end_date   = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
-        let values     = ltype+","+end_date;
-        let sql = "insert into IM_DistributionLists([Recipient],[Activity],[Location],[Program],[Staff],[Mandatory],[DefaultAssignee],[Severity],[ListName],[xEndDate]) Values ("+values+")"; 
-        
-        console.log(sql);
-        this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
-          
-          if (data) 
-          this.globalS.sToast('Success', 'Saved successful');     
-          else
-          this.globalS.sToast('Success', 'Saved successful');
-          this.loadData();
-          this.postLoading = false;          
-          this.handleCancel();
-          this.resetModal();
-        });
+      if(!this.isUpdate){
+        this.inputForm.patchValue({
+          group: this.menuType,
+        })
+        this.menuS.postconfigurationfollowups(this.inputForm.value).subscribe(data => {
+          if(data){
+              this.globalS.sToast('Success','Inserted SucessFully');
+              this.handleCancel();
+              this.loadData();
+          }
+        })
       }else{
-        const group       = this.inputForm;
-        let ltype      = this.globalS.isValueNull(group.get('ltype').value);
-        let staff      = this.globalS.isValueNull(group.get('staff').value);
-        let service    = this.globalS.isValueNull(group.get('service').value);
-        let prgm       = this.globalS.isValueNull(group.get('prgm').value);
-        let location   = this.globalS.isValueNull(group.get('location').value);
-        let recepient  = this.globalS.isValueNull(group.get('recepient').value);
-        let saverity   = this.globalS.isValueNull(group.get('saverity').value);
-        let mandatory  = this.trueString(group.get('mandatory').value);
-        let assignee   = this.trueString(group.get('assignee').value);
-        let end_date   = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
-        let recordNo   = group.get('recordNo').value;
-        let sql  = "Update IM_DistributionLists SET [Recipient]="+ recepient + ",[Activity] ="+ service + ",[Program] ="+ prgm +",[Staff] ="+ staff+",[Severity] ="+ saverity +",[Mandatory] ="+ mandatory +",[DefaultAssignee] ="+ assignee +",[ListName] ="+ltype+",[xEndDate] = "+end_date+ ",[Location] ="+ location+ " WHERE [recordNo] ='"+recordNo+"'";
-        this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
-          if (data) 
-          this.globalS.sToast('Success', 'Saved successful');     
-          else
-          this.globalS.sToast('Success', 'Saved successful');
-          this.loadData();
-          this.handleCancel();
-          this.resetModal();   
-          this.isUpdate = false; 
-        });
+        this.menuS.updateconfigurationfollowups(this.inputForm.value).subscribe(data => {
+          if(data){
+              this.globalS.sToast('Success','Updated SucessFully');
+              this.handleCancel();
+              this.loadData();
+          }
+        })
+        this.isUpdate = false;
       }
     }
     
@@ -295,30 +271,30 @@ export class FollowupComponent implements OnInit {
       });
     } 
     buildForm() {
-      
       this.inputForm = this.formBuilder.group({
-        ltype:'',
+        group:'',
+        activity:'',
         name:'',
         branch:'',
-        funding_source:'',
+        fundingSource:'',
         casemanager:'',
         staff:'',
-        end_date:'',
+        endDate:'',
         recordNumber:null,
       });
 
-      this.inputForm.get('ltype').valueChanges
-      .pipe(
-        switchMap(x => {
-          if(x != 'EVENT')
-          return EMPTY;
+      // this.inputForm.get('ltype').valueChanges
+      // .pipe(
+      //   switchMap(x => {
+      //     if(x != 'EVENT')
+      //     return EMPTY;
           
-          return this.listS.geteventlifecycle()
-        })
-        )
-        .subscribe(data => {
-          this.events = data;
-        })
+      //     return this.listS.geteventlifecycle()
+      //   })
+      //   )
+      //   .subscribe(data => {
+      //     this.events = data;
+      //   })
       }
       
       handleOkTop() {

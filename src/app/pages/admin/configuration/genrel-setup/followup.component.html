@@ -25,7 +25,7 @@
                         <td class="left">{{ data.funding  }} </td>
                         <td class="left">{{ data.program  }} </td>
                         <td class="left">{{ data.staff  }} </td>
-                        <td class="left">{{ data.end_date | date: 'dd/MM/y' }}</td>
+                        <td class="left">{{ data.endDate | date: 'dd/MM/y' }}</td>
                         <td *ngIf="data.is_deleted == 'False' || data.is_deleted == 'false' || data.is_deleted == '' ">
                             <a (click)="showEditModal(i)">Update</a>
                             <nz-divider nzType="vertical"></nz-divider>
@@ -55,7 +55,7 @@
                     <div nz-col class="gutter-row" [nzSpan]="12">
                         <div nz-row nzGutter="24" class="">
                             <label for="CDC Item" col nzSpan="6">Workflow Activity :</label>
-                            <nz-select col nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="ltype" nzShowSearch nzAllowClear style="width:100%;">
+                            <nz-select col nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="activity" nzShowSearch nzAllowClear style="width:100%;">
                                 <nz-option *ngFor="let ltype of listType" [nzValue]="ltype.title" [nzLabel]="ltype.title"></nz-option> 
                             </nz-select>
                         </div>
@@ -72,7 +72,7 @@
                         </div>
                         <div nz-row nzGutter="24" class="">
                             <label for="CDC Item" col nzSpan="6">Funding Source :</label>
-                            <nz-select col nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="funding_source" nzShowSearch nzAllowClear style="width:100%;">
+                            <nz-select col nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="fundingSource" nzShowSearch nzAllowClear style="width:100%;">
                                 <nz-option *ngFor="let f_source of funding_source" [nzValue]="f_source" [nzLabel]="f_source"></nz-option> 
                             </nz-select>
                         </div>
@@ -84,7 +84,7 @@
                         </div>
                         <div nz-row nzGutter="24" class="">
                             <label for="CDC Item" nzSpan="6" >Expiry Date:</label>
-                            <nz-date-picker nzSpan="14" [nzPlaceHolder]="'Expiry Date'" formControlName="end_date" [nzFormat]="dateFormat"></nz-date-picker>
+                            <nz-date-picker nzSpan="14" [nzPlaceHolder]="'Expiry Date'" formControlName="endDate" [nzFormat]="dateFormat"></nz-date-picker>
                         </div>
                     </div>
                     <div nz-col class="gutter-row" [nzSpan]="12">
@@ -113,7 +113,7 @@
         </div>
         <div *nzModalFooter>
             <ng-container>
-                <button nz-button nzType="primary" [nzLoading]="postLoading"  (click)="save()" *ngIf="current === 0">
+                <button nz-button nzType="primary" [nzLoading]="postLoading"  (click)="save()" [disabled]= "!inputForm.get('activity').value || !inputForm.get('name').value" *ngIf="current === 0">
                     <span>Save</span>
                 </button>
             </ng-container>

@@ -37,7 +37,6 @@ export class DebtorComponent implements OnInit {
   tableData: Array<any>;
   PayPeriodLength: number;
   PayPeriodEndDate: any;
-
   loading: boolean = false;
   allchecked: boolean = false;
   modalOpen: boolean = false;
@@ -280,29 +279,39 @@ export class DebtorComponent implements OnInit {
     // console.log("Result 1 is: " , this.PayPeriodLength);
   }
   GetPayPeriodEndDate() {
+    
+    this.dtpEndDate = "beforeAssignDate dtpEndDate";
+    console.log("Test is: ", this.dtpEndDate)
     let sql = "SELECT convert(varchar, PayPeriodEndDate, 103) AS PayPeriodEndDate FROM SysTable";
     this.loading = true;
     this.listS.getlist(sql).subscribe(data => {
+      setTimeout(()=>{        
+       }, 50000);
       if (data[0].payPeriodEndDate != "") {
         this.dtpEndDate = data[0].payPeriodEndDate;
         this.inputForm.patchValue({
           dtpEndDate: data[0].payPeriodEndDate,
         });
+        console.log("Test 1 is: ", this.dtpEndDate)
       }
     else {
-        this.inputForm.patchValue({
-          dtpEndDate: new Date()
-        });
+        // this.inputForm.patchValue({
+        //   dtpEndDate: new Date()
+        // });
+        // console.log("Test 2 is: ", this.dtpEndDate)
       }
     });
-    let fsql = "SELECT DefaultPayPeriod as DefaultPayPeriod FROM Registration";
-    this.listS.getlist(fsql).subscribe(fdata => {
-      if (fdata[0].defaultPayPeriod != "") {
-        this.PayPeriodLength = fdata;
-      }
-      else { this.PayPeriodLength = 14; }
-    });
-    var FirstDate = this.dtpEndDate;
+    console.log("Test 3 is: ", this.dtpEndDate)
+    // let fsql = "SELECT DefaultPayPeriod as DefaultPayPeriod FROM Registration";
+    // this.listS.getlist(fsql).subscribe(fdata => {
+    //   setTimeout(()=>{        
+    //    }, 5000);
+    //   if (fdata[0].defaultPayPeriod != "") {
+    //     this.PayPeriodLength = fdata;
+    //   }
+    //   else { this.PayPeriodLength = 14; }
+    // });
+    // console.log("Test 4 is: ", this.dtpEndDate)
     // FirstDate.setDate(FirstDate.getDate() - this.PayPeriodLength - 1);
   }
 }

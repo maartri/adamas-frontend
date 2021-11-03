@@ -664,7 +664,7 @@ const routes: Routes = [
         component:NotificationlistComponent,
       },
       {
-        path:"followup-list",
+        path:"workflow/:type", 
         component:FollowupComponent,
       },
       {

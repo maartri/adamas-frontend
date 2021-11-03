@@ -7,6 +7,7 @@ import { Subject, EMPTY, forkJoin } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NzModalService } from 'ng-zorro-antd';
+import { Router,ActivatedRoute, Params } from '@angular/router';
 
 @Component({
   selector: 'app-followup',
@@ -22,7 +23,7 @@ import { NzModalService } from 'ng-zorro-antd';
 })
 export class FollowupComponent implements OnInit {
   events: Array<any>;
-
+  
   tableData: Array<any>;
   staff:Array<any>;
   listType:Array<any>;
@@ -39,7 +40,7 @@ export class FollowupComponent implements OnInit {
   inputForm: FormGroup;
   postLoading: boolean = false;
   isUpdate: boolean = false;
-  heading:string = "Add Followup List";
+  heading:string = "";
   rpthttp = 'https://www.mark3nidad.com:5488/api/report'
   token:any;
   tocken: any;
@@ -53,8 +54,16 @@ export class FollowupComponent implements OnInit {
   branchesList: any;
   funding_source: any;
   casemanagers: any;
+  addbtnTitle : any;
+  menuType    : any;
+  staffList: any;
+  allStaff:boolean = false;
+  allstaffIntermediate: boolean = false;
+  selectedStaff:any[];
   
   constructor(
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
     private listS:ListService,
@@ -69,6 +78,20 @@ export class FollowupComponent implements OnInit {
     ngOnInit(): void {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
       this.userRole = this.tocken.role;
+      this.activatedRoute.params.subscribe((params: Params) => {
+        if (params.type == 'followups'){
+          this.addbtnTitle = 'Followups';
+          this.menuType    = 'FOLLOWUP'
+        }
+        if (params.type == 'documents'){
+          this.addbtnTitle = 'Documents';
+          this.menuType  = 'DOCUMENTS';
+        }
+        if (params.type == 'extradata'){
+          this.addbtnTitle = "Extra Required Data";
+          this.menuType  = 'XTRADATA';
+        }
+      });
       this.buildForm();
       this.populateDropdowns();
       this.loadData();
@@ -85,28 +108,32 @@ export class FollowupComponent implements OnInit {
       }
     }
     loadData(){
-      let sql ="SELECT RecordNo, Recipient,Activity,Location,Program,Staff,Mandatory as mandatory,DefaultAssignee as assignee,ListName as ltype,Severity ,xDeletedRecord as is_deleted,xEndDate as end_date from IM_DistributionLists "+this.whereString+" order by Recipient";
-      this.loading = true;
-      this.listS.getlist(sql).subscribe(data => {
+      this.menuS.getconfigurationworkflows(this.menuType,false).subscribe(data => {
         this.tableData = data;
         this.loading = false;
       });
+
     }
     populateDropdowns(){
-      this.listType = workflowClassification;
+      let sql  = "SELECT TITLE FROM ITEMTYPES WHERE ProcessClassification IN ('OUTPUT', 'EVENT', 'ITEM') AND ENDDATE IS NULL";
+      this.listS.getlist(sql).subscribe(data => {
+        this.listType = data;
+      });
       return forkJoin([
         this.listS.getlistbranchesObj(),
         this.listS.getfundingsource(),
         this.listS.casemanagerslist(),
+        this.listS.workflowstafflist(),
       ]).subscribe(x => {
         this.branchesList   = x[0];
         this.funding_source = x[1];
         this.casemanagers   = x[2];
+        this.staffList      = x[3];
       });
     }
-
+    
     showAddModal() {
-      this.heading = "Add Followup List"
+      this.heading = "Add "+this.addbtnTitle;
       this.resetModal();
       this.modalOpen = true;
     }
@@ -118,21 +145,60 @@ export class FollowupComponent implements OnInit {
     }
     
     showEditModal(index: any) {
-      this.heading  = "Edit Followup List"
+      this.heading  = "Edit "+this.addbtnTitle;
       this.isUpdate = true;
       this.current = 0;
       this.modalOpen = true;
       const { 
-        ltype,
-        end_date,
-        recordNo,
+        type,
+        name,
+        branch,
+        funding,
+        casemanager,
+        endDate,
+        recordNumber,
         
       } = this.tableData[index];
       this.inputForm.patchValue({
-        ltype:ltype,
-        end_date:end_date,
-        recordNo:recordNo,
+        ltype:type,
+        name:name,
+        branch:branch,
+        funding_source:funding,
+        endDate:endDate,
+        casemanager:casemanager,
+        recordNumber:recordNumber,
       });
+    }
+    updateAllCheckedFilters(filter: any): void {
+      this.selectedStaff = [];
+      if (this.allStaff) {
+        this.staffList.forEach(x => {
+          x.checked = true;
+          this.selectedStaff.push(x.staffCode);
+        });
+      }else{
+        this.staffList.forEach(x => {
+          x.checked = false;
+        });
+        this.selectedStaff = [];
+      }
+      console.log(this.selectedStaff);
+    }
+    updateSingleCheckedFilters(index:number): void {
+      if (this.staffList.every(item => !item.checked)) {
+        this.allStaff = false;
+        this.allstaffIntermediate = false;
+      } else if (this.staffList.every(item => item.checked)) {
+        this.allStaff = true;
+        this.allstaffIntermediate = false;
+      } else {
+        this.allstaffIntermediate = true;
+        this.allStaff = false;
+      }
+    }
+    log(event: any) {
+      this.selectedStaff = event;
+      console.log(this.selectedStaff);
     }
     trueString(data: any): string{
       return data ? '1': '0';
@@ -229,6 +295,7 @@ export class FollowupComponent implements OnInit {
       });
     } 
     buildForm() {
+      
       this.inputForm = this.formBuilder.group({
         ltype:'',
         name:'',
@@ -236,97 +303,89 @@ export class FollowupComponent implements OnInit {
         funding_source:'',
         casemanager:'',
         staff:'',
-        service:'',
-        assignee:false,
-        prgm:'',
-        location:'',
-        recepient:'',
-        saverity:'',
         end_date:'',
-        mandatory:false,
-        recordNo:null,
-        event: null
+        recordNumber:null,
       });
 
       this.inputForm.get('ltype').valueChanges
       .pipe(
         switchMap(x => {
-            if(x != 'EVENT')
-              return EMPTY;
-
-            return this.listS.geteventlifecycle()
+          if(x != 'EVENT')
+          return EMPTY;
+          
+          return this.listS.geteventlifecycle()
         })
-      )
-      .subscribe(data => {
-        this.events = data;
-      })
+        )
+        .subscribe(data => {
+          this.events = data;
+        })
+      }
+      
+      handleOkTop() {
+        this.generatePdf();
+        this.tryDoctype = ""
+        this.pdfTitle = ""
+      }
+      handleCancelTop(): void {
+        this.drawerVisible = false;
+        this.pdfTitle = ""
+      }
+      generatePdf(){
+        this.drawerVisible = true;
+        
+        this.loading = true;
+        
+        var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recipient) AS Field1," +
+        "Recipient as Field2,Activity as Field3,Location as Field4,Program as Field5,Staff as Field6," + 
+        "ListName as  Field7,Severity as Field8,CONVERT(varchar, [xEndDate],105) as Field9 from IM_DistributionLists "+this.whereString+" Order by recipient";
+        
+        const headerDict = {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        }
+        
+        const requestOptions = {
+          headers: new HttpHeaders(headerDict)
+        };
+        
+        const data = {
+          "template": { "_id": "0RYYxAkMCftBE9jc" },
+          "options": {
+            "reports": { "save": false },
+            "txtTitle": "Distribution List",
+            "sql": fQuery,
+            "userid":this.tocken.user,
+            "head1" : "Sr#",
+            "head2": "Recipient",
+            "head3": "Activity",
+            "head4": "Location",
+            "head5": "Program",
+            "head6": "Staff",
+            "head7": "ItemType",
+            "head8": "Severity",
+            "head9": "End Date",
+          }
+        }
+        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
+        .subscribe((blob: any) => {
+          let _blob: Blob = blob;
+          let fileURL = URL.createObjectURL(_blob);
+          this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+          this.loading = false;
+        }, err => {
+          console.log(err);
+          this.loading = false;
+          this.ModalS.error({
+            nzTitle: 'TRACCS',
+            nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+            nzOnOk: () => {
+              this.drawerVisible = false;
+            },
+          });
+        });
+        this.loading = true;
+        this.tryDoctype = "";
+        this.pdfTitle = "";
+      }    
     }
     
-    handleOkTop() {
-      this.generatePdf();
-      this.tryDoctype = ""
-      this.pdfTitle = ""
-    }
-    handleCancelTop(): void {
-      this.drawerVisible = false;
-      this.pdfTitle = ""
-    }
-    generatePdf(){
-      this.drawerVisible = true;
-      
-      this.loading = true;
-      
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recipient) AS Field1," +
-      "Recipient as Field2,Activity as Field3,Location as Field4,Program as Field5,Staff as Field6," + 
-      "ListName as  Field7,Severity as Field8,CONVERT(varchar, [xEndDate],105) as Field9 from IM_DistributionLists "+this.whereString+" Order by recipient";
-      
-      const headerDict = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      }
-      
-      const requestOptions = {
-        headers: new HttpHeaders(headerDict)
-      };
-      
-      const data = {
-        "template": { "_id": "0RYYxAkMCftBE9jc" },
-        "options": {
-          "reports": { "save": false },
-          "txtTitle": "Distribution List",
-          "sql": fQuery,
-          "userid":this.tocken.user,
-          "head1" : "Sr#",
-          "head2": "Recipient",
-          "head3": "Activity",
-          "head4": "Location",
-          "head5": "Program",
-          "head6": "Staff",
-          "head7": "ItemType",
-          "head8": "Severity",
-          "head9": "End Date",
-        }
-      }
-      this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-      .subscribe((blob: any) => {
-        let _blob: Blob = blob;
-        let fileURL = URL.createObjectURL(_blob);
-        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-        this.loading = false;
-      }, err => {
-        console.log(err);
-        this.loading = false;
-        this.ModalS.error({
-          nzTitle: 'TRACCS',
-          nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-          nzOnOk: () => {
-            this.drawerVisible = false;
-          },
-        });
-      });
-      this.loading = true;
-      this.tryDoctype = "";
-      this.pdfTitle = "";
-    }    
-  }
-  

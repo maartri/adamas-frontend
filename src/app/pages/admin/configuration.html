@@ -42,9 +42,21 @@
                                                 </button>
                                             </div>
                                             <div>
-                                                <button nz-button nzType="default" (click)="view(92)" id="btn-distribution-list"   >
+                                                <button nz-button nzType="default" [routerLink]="['/admin/workflow', 'followups']" id="btn-distribution-list"   >
                                                     <i nz-icon nzType="read"></i>
-                                                    WorkFlow Classification 
+                                                    Followups 
+                                                </button>
+                                            </div>
+                                            <div>
+                                                <button nz-button nzType="default" [routerLink]="['/admin/workflow', 'documents']" id="btn-distribution-list"   >
+                                                    <i nz-icon nzType="read"></i>
+                                                    Documents 
+                                                </button>
+                                            </div>
+                                            <div>
+                                                <button nz-button nzType="default" [routerLink]="['/admin/workflow', 'extradata']" id="btn-distribution-list"   >
+                                                    <i nz-icon nzType="read"></i>
+                                                    Other required Info 
                                                 </button>
                                             </div>
                                             <div>

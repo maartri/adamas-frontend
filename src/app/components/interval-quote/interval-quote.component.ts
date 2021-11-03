@@ -155,15 +155,14 @@ export class IntervalQuoteComponent implements OnInit, AfterViewInit, OnChanges,
     this.period = format;
     this.loopRoster(this.noOfLoops(format));
 
-    // this.quoteDetailsGroup.get('timeSlots').valueChanges.subscribe(data => {
-    //   console.log('asd')
-    //   this.innerValue = this.calculateRosterString(data);
-    //   this.onChangeCallback(this.innerValue);      
-    //   this.cd.markForCheck();
-    // });
+    this.quoteDetailsGroup.get('timeSlots').valueChanges.subscribe(data => {
+      this.innerValue = this.calculateRosterString(data);
+      this.onChangeCallback(this.innerValue);
+      this.cd.markForCheck();
+    });
 
-    var sss = this.quoteDetailsGroup.getRawValue();
-    this.quoteDetailsGroup.patchValue(sss)
+    // var sss = this.quoteDetailsGroup.getRawValue();
+    // this.quoteDetailsGroup.patchValue(sss)
     
   }
 
@@ -198,10 +197,12 @@ export class IntervalQuoteComponent implements OnInit, AfterViewInit, OnChanges,
   addTimeSlot(counter: number, data: any = null) {
     const slot = this.quoteDetailsGroup.get('timeSlots') as FormArray;
     slot.push(this.createTimeSlot(data, counter));
+
+    console.log(slot);
   }
 
   createTimeSlot(data: any = null, counter: number): FormGroup {
-
+    console.log(counter);
     var dayCounter: number = 0;
 
     if(counter == 0){
@@ -222,6 +223,7 @@ export class IntervalQuoteComponent implements OnInit, AfterViewInit, OnChanges,
 
     if(data == null) {
       this.detectChanges()
+      console.log('hays')
       return this.formBuilder.group({
         monday: new FormGroup({
           time: new FormControl(data ? data['monday'].time: new Date(1900, 0, dayCounter, 9, 0, 0)),
@@ -265,7 +267,7 @@ export class IntervalQuoteComponent implements OnInit, AfterViewInit, OnChanges,
           quantity: new FormControl(data ? data['sunday'].quantity  : 0),
           week: new FormControl(counter + 1)
         })
-      });  
+      });
     } else {
       this.detectChanges()
       return this.formBuilder.group({

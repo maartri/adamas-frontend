@@ -1323,7 +1323,7 @@ export class AddQuoteComponent implements OnInit {
                             mainGroup: quote.mainGroup,
                             recordNumber: quote.recordNumber
                         }
-
+ 
                         this.listS.createQuoteLine(_quote).subscribe(data => {
 
                             this.quoteLines = [...this.quoteLines, {

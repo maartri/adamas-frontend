@@ -134,7 +134,7 @@ export class MenuService {
         /**
          *  Recipient Absenses
         */
-         getconfigurationworkflows(domain: string,is_where:boolean):Observable<any>{
+        getconfigurationworkflows(domain: string,is_where:boolean):Observable<any>{
             return this.auth.get(`${menu}/configurationworkflows/${domain}/${is_where}`)
         }
 
@@ -145,7 +145,13 @@ export class MenuService {
         updateconfigurationfollowups(data: any): Observable<any> {
             return this.auth.put(`${menu}/configurationfollowups`, data);
         }
+        deleteconfigurationfollowups(recordNo: number,group:string): Observable<any> {
+            return this.auth.delete(`${menu}/configurationfollowups/${group}/${recordNo}`)
+        }
 
+        activateconfigurationfollowups(recordNo: number,group:string): Observable<any> {
+            return this.auth.delete(`${menu}/configurationfollowups/${group}/${recordNo}`)
+        }
 
         /***************************************************************************/
         

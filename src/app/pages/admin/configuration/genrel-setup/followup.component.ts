@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { ListService, MenuService , TimeSheetService, workflowClassification } from '@services/index';
+import { ListService, MenuService , PrintService, TimeSheetService, workflowClassification } from '@services/index';
 import { GlobalService } from '@services/global.service';
 import { takeUntil, switchMap } from 'rxjs/operators';
 import { Subject, EMPTY, forkJoin } from 'rxjs';
@@ -50,7 +50,7 @@ export class FollowupComponent implements OnInit {
   dateFormat: string = 'dd/MM/yyyy';
   check : boolean = false;
   userRole:string="userrole";
-  whereString :string="Where ISNULL(xDeletedRecord,0) = 0 AND (xEndDate Is Null OR xEndDate >= GETDATE()) ";
+  whereString :string=" WHERE ISNULL(DeletedRecord,0) = 0 AND (xEndDate Is Null OR xEndDate >= GETDATE()) AND ";
   branchesList: any;
   funding_source: any;
   casemanagers: any;
@@ -69,6 +69,7 @@ export class FollowupComponent implements OnInit {
     private listS:ListService,
     private menuS:MenuService,
     private timeS:TimeSheetService,
+    private printS:PrintService,
     private formBuilder: FormBuilder,
     private http: HttpClient,
     private fb: FormBuilder,
@@ -101,10 +102,10 @@ export class FollowupComponent implements OnInit {
     }
     fetchAll(e){
       if(e.target.checked){
-        this.whereString = "";
+        this.whereString = " WHERE ";
         this.loadData();
       }else{
-        this.whereString = "Where ISNULL(xDeletedRecord,0) = 0 AND (xEndDate Is Null OR xEndDate >= GETDATE()) ";
+        this.whereString = " WHERE ISNULL(xDeletedRecord,0) = 0 AND (xEndDate Is Null OR xEndDate >= GETDATE()) AND ";
         this.loadData();
       }
     }
@@ -247,9 +248,10 @@ export class FollowupComponent implements OnInit {
     }
     
     delete(data: any) {
-      this.postLoading = true;     
+    
+    this.postLoading = true;     
       const group = this.inputForm;
-      this.menuS.deleteDistributionlist(data.recordNo)
+      this.menuS.deleteconfigurationfollowups(this.menuType,data.recordNo)
       .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
         if (data) {
           this.globalS.sToast('Success', 'Data Deleted!');
@@ -257,11 +259,12 @@ export class FollowupComponent implements OnInit {
           return;
         }
       });
-    }    
+    }
+    
     activateDomain(data: any) {
       this.postLoading = true;     
       const group = this.inputForm;
-      this.menuS.activateDistributionlist(data.recordNo)
+      this.menuS.activateconfigurationfollowups(this.menuType,data.recordNo)
       .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
         if (data) {
           this.globalS.sToast('Success', 'Data Activated!');
@@ -269,7 +272,8 @@ export class FollowupComponent implements OnInit {
           return;
         }
       });
-    } 
+    }
+
     buildForm() {
       this.inputForm = this.formBuilder.group({
         group:'',
@@ -279,22 +283,9 @@ export class FollowupComponent implements OnInit {
         fundingSource:'',
         casemanager:'',
         staff:'',
-        endDate:'',
+        endDate:'', 
         recordNumber:null,
       });
-
-      // this.inputForm.get('ltype').valueChanges
-      // .pipe(
-      //   switchMap(x => {
-      //     if(x != 'EVENT')
-      //     return EMPTY;
-          
-      //     return this.listS.geteventlifecycle()
-      //   })
-      //   )
-      //   .subscribe(data => {
-      //     this.events = data;
-      //   })
       }
       
       handleOkTop() {
@@ -311,45 +302,31 @@ export class FollowupComponent implements OnInit {
         
         this.loading = true;
         
-        var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recipient) AS Field1," +
-        "Recipient as Field2,Activity as Field3,Location as Field4,Program as Field5,Staff as Field6," + 
-        "ListName as  Field7,Severity as Field8,CONVERT(varchar, [xEndDate],105) as Field9 from IM_DistributionLists "+this.whereString+" Order by recipient";
-        
-        const headerDict = {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        }
-        
-        const requestOptions = {
-          headers: new HttpHeaders(headerDict)
-        };
-        
+        var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY [Name],[RecordNumber]) AS Field1,[Type] AS Field2,[Name] AS Field3,[User2] AS Field4,[User3] AS Field5,[User4] as Field6,[User5] as Field7,CONVERT(varchar, [xEndDate],105) as Field8 FROM   humanresources "+this.whereString+" personid = 'W1' AND [Group] = '"+this.menuType+"'";
+
         const data = {
           "template": { "_id": "0RYYxAkMCftBE9jc" },
           "options": {
             "reports": { "save": false },
-            "txtTitle": "Distribution List",
+            "txtTitle": this.addbtnTitle+" List",
             "sql": fQuery,
             "userid":this.tocken.user,
-            "head1" : "Sr#",
-            "head2": "Recipient",
-            "head3": "Activity",
-            "head4": "Location",
-            "head5": "Program",
-            "head6": "Staff",
-            "head7": "ItemType",
-            "head8": "Severity",
-            "head9": "End Date",
+            "head1" :"Sr#",
+            "head2": "Activity",
+            "head3": "Name",
+            "head4": "Branch",
+            "head5": "Funding Source",
+            "head6": "Casemanager",
+            "head7": "Staff",
+            "head8": "End Date",
           }
         }
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-        .subscribe((blob: any) => {
+        this.printS.print(data).subscribe(blob => { 
           let _blob: Blob = blob;
           let fileURL = URL.createObjectURL(_blob);
           this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
           this.loading = false;
-        }, err => {
-          console.log(err);
+          }, err => {
           this.loading = false;
           this.ModalS.error({
             nzTitle: 'TRACCS',

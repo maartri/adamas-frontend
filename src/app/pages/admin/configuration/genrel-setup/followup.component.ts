@@ -114,7 +114,7 @@ export class FollowupComponent implements OnInit {
       }
     }
     loadData(){
-      this.menuS.getconfigurationworkflows(this.menuType).subscribe(data => {
+      this.menuS.getconfigurationworkflows(this.menuType,(this.listAllWithDeleted == true) ? 1 : 0).subscribe(data => {
         this.tableData = data;
         this.loading = false;
       });

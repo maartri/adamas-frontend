@@ -137,8 +137,8 @@ export class MenuService {
         workflowstafflist(): Observable<any>{
             return this.auth.get(`${menu}/workflowstafflist`)
         }
-        getconfigurationworkflows(group:string):Observable<any>{
-            return this.auth.get(`${menu}/configurationworkflows/${group}`)
+        getconfigurationworkflows(group:string,is_where:number):Observable<any>{
+            return this.auth.get(`${menu}/configurationworkflows/${group}/${is_where}`)
         }
 
         postconfigurationfollowups(data: any): Observable<any> {

@@ -150,7 +150,7 @@ export class MenuService {
         }
 
         activateconfigurationfollowups(recordNo: number,group:string): Observable<any> {
-            return this.auth.delete(`${menu}/configurationfollowups/${group}/${recordNo}`)
+            return this.auth.delete(`${menu}/activeconfigurationfollowups/${group}/${recordNo}`)
         }
 
         /***************************************************************************/

@@ -33,6 +33,7 @@ export class FollowupComponent implements OnInit {
   services:Array<any>;
   severity:Array<any>;
   checked = true;
+  listAllWithDeleted = false;
   checked2=true;
   loading: boolean = false;
   modalOpen: boolean = false;
@@ -101,19 +102,22 @@ export class FollowupComponent implements OnInit {
       this.cd.detectChanges();
     }
     fetchAll(e){
+      this.loading = true;
       if(e.target.checked){
+        this.listAllWithDeleted = true;
         this.whereString = " WHERE ";
         this.loadData();
       }else{
-        this.whereString = " WHERE ISNULL(xDeletedRecord,0) = 0 AND (xEndDate Is Null OR xEndDate >= GETDATE()) AND ";
+        this.listAllWithDeleted = false;
+        this.whereString = " WHERE ISNULL(DeletedRecord,0) = 0 AND (xEndDate Is Null OR xEndDate >= GETDATE()) AND ";
         this.loadData();
       }
     }
     loadData(){
-      this.menuS.getconfigurationworkflows(this.menuType,false).subscribe(data => {
+      this.menuS.getconfigurationworkflows(this.menuType,this.listAllWithDeleted).subscribe(data => {
         this.tableData = data;
         this.loading = false;
-      });
+    });
       
     }
     populateDropdowns(){
@@ -251,7 +255,7 @@ export class FollowupComponent implements OnInit {
     
     this.postLoading = true;     
       const group = this.inputForm;
-      this.menuS.deleteconfigurationfollowups(this.menuType,data.recordNo)
+      this.menuS.deleteconfigurationfollowups(data.recordNumber,this.menuType)
       .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
         if (data) {
           this.globalS.sToast('Success', 'Data Deleted!');
@@ -261,10 +265,10 @@ export class FollowupComponent implements OnInit {
       });
     }
     
-    activateDomain(data: any) {
+    activate(data: any) {
       this.postLoading = true;     
       const group = this.inputForm;
-      this.menuS.activateconfigurationfollowups(this.menuType,data.recordNo)
+      this.menuS.activateconfigurationfollowups(data.recordNumber,this.menuType)
       .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
         if (data) {
           this.globalS.sToast('Success', 'Data Activated!');

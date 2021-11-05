@@ -180,7 +180,8 @@ HighlightRow5!: number;
 HighlightRow6!: number;
 recurrentStartTime:string;
 recurrentEndTime:string;
-
+recipientexternal:boolean=false;
+staffexternal:boolean=false;
 testComp:boolean=false;
 
 recurrentStartDate: Date | null = null;
@@ -447,6 +448,12 @@ Save_Transport(){
 close(){
     this.showRecurentModal=false;
     //this.recurrenceView=false;
+    
+}
+
+showRecurrentView(){
+    this.showRecurentModal=true;
+    this.recurrenceView=true;
     
 }
 cancelRecurrent(){
@@ -2543,8 +2550,8 @@ ClearMultishift(){
         //this.next_tab();
         
        
-        if (this.showDone2 && this.rosterGroup!=""){
-            this.doneBooking();
+        if (this.showDone2 && this.rosterGroup!="" ){
+          //  this.doneBooking();
             return;
         }
         if (this.current==1 && (this.activity_value==12 || this.booking_case==8)){
@@ -2555,6 +2562,15 @@ ClearMultishift(){
  
        
    
+  }
+
+  showRecipientStaffDetail(){
+      //this.router.navigate(['/roster/recipient-external']);
+      //this.router.navigate(['/admin/recipient/intake'])
+      if (this.viewType=='Staff')
+        this.staffexternal=true;
+      else
+        this.recipientexternal=true;
   }
 
   onAllChecked(e:any){
@@ -3229,7 +3245,7 @@ reload(reload: boolean){
             .subscribe(data => {
                 console.log(data);
                 this.loading = false;
-              
+              //  this.selected=data;
                 this.rosters = data.map(x => {
                     return {
                         shiftbookNo: x.shiftbookNo,
@@ -4665,6 +4681,13 @@ this.bookingForm.get('program').valueChanges.pipe(
         return this.listS.getlist(sql);
 }      
 
+cancelRecipientExternal(value:any){
+    this.recipientexternal=value.recipientexternal;
+ }
+ cancelStaffExternal(value:any){
+    this.staffexternal=value.staffexternal;
+ }
+ 
 
 shiftChanged(value:any){
    if (this.viewType=='Staff' && value.show_alert){

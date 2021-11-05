@@ -114,7 +114,7 @@ export class FollowupComponent implements OnInit {
       }
     }
     loadData(){
-      this.menuS.getconfigurationworkflows(this.menuType,this.listAllWithDeleted).subscribe(data => {
+      this.menuS.getconfigurationworkflows(this.menuType,false).subscribe(data => {
         this.tableData = data;
         this.loading = false;
     });
@@ -125,17 +125,21 @@ export class FollowupComponent implements OnInit {
       this.listS.getlist(sql).subscribe(data => {
         this.listType = data;
       });
-      return forkJoin([
-        this.listS.getlistbranchesObj(),
-        this.listS.getfundingsource(),
-        this.listS.casemanagerslist(),
-        this.listS.workflowstafflist(),
-      ]).subscribe(x => {
-        this.branchesList   = x[0];
-        this.funding_source = x[1];
-        this.casemanagers   = x[2];
-        this.staffList      = x[3];
-      });
+      this.listS.getlistbranchesObj().subscribe(data => {this.branchesList = data});
+      this.listS.getfundingsource().subscribe(data   =>   {this.funding_source = data});
+      this.listS.casemanagerslist().subscribe(data   =>   {this.casemanagers = data});
+      this.menuS.workflowstafflist().subscribe(data  =>  {this.staffList   = data});
+      // return forkJoin([
+      //   this.listS.getlistbranchesObj(),
+      //   this.listS.getfundingsource(),
+      //   this.listS.casemanagerslist(),
+      //   this.listS.workflowstafflist(),
+      // ]).subscribe(x => {
+      //   this.branchesList   = x[0];
+      //   this.funding_source = x[1];
+      //   this.casemanagers   = x[2];
+      //   this.staffList      = x[3];
+      // });
     }
     
     showAddModal() {

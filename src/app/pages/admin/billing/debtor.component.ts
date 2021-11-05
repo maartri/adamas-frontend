@@ -86,9 +86,11 @@ export class DebtorComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.buildForm();
+
     this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA) : this.globalS.decode();
     this.userRole = this.tocken.role;
-    this.buildForm();
+    
     this.loadBranches();
     this.loadPrograms();
     this.loadCategories();
@@ -112,11 +114,13 @@ export class DebtorComponent implements OnInit {
   }
   buildForm() {
     this.inputForm = this.formBuilder.group({
-      // dtpStartDate: '',
-      // dtpEndDate: this.dtpEndDate,
       billingMode: 'CONSOLIDATED BILLING',
       AccPackage: 'TEST 1',
-      name: '',
+      name: null,
+      invoiceDate: null,
+      invType: null,
+      startDate: null,
+      endDate: null
     });
   }
 

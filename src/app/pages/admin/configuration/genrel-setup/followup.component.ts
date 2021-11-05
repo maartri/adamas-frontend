@@ -114,11 +114,10 @@ export class FollowupComponent implements OnInit {
       }
     }
     loadData(){
-      this.menuS.getconfigurationworkflows(this.menuType,false).subscribe(data => {
+      this.menuS.getconfigurationworkflows(this.menuType).subscribe(data => {
         this.tableData = data;
         this.loading = false;
-    });
-      
+      });
     }
     populateDropdowns(){
       let sql  = "SELECT TITLE FROM ITEMTYPES WHERE ProcessClassification IN ('OUTPUT', 'EVENT', 'ITEM') AND ENDDATE IS NULL";

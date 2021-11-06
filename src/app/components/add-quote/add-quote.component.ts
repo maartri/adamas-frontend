@@ -34,6 +34,23 @@ import { DecimalPipe } from '@angular/common';
 
 const noop = () => {};
 
+const goalsDefault: any = {
+    recordnumber:null,
+    goal: null,
+    PersonID: null,
+    title : "Goal Of Care : ",
+    ant   : null,
+    lastReview : null,
+    completed:null,
+    percent : null,
+    achievementIndex:'',
+    notes:'',
+    dateAchieved:null,
+    lastReviewed:null,
+    achievementDate:null,
+    achievement:'',
+}
+
 @Component({
   selector: 'app-add-quote',
   templateUrl: './add-quote.component.html',
@@ -58,6 +75,8 @@ export class AddQuoteComponent implements OnInit {
 
     centreLinkListDropdown: string = 'Daily';
 
+    documentId: number;
+    
     _tempGovtContribution: any;
 
     incomeTestedFee: number = 0;
@@ -75,6 +94,7 @@ export class AddQuoteComponent implements OnInit {
     confirmModal?: NzModalRef;
 
     disableAddTabs: boolean = true;
+    templateLoading: boolean = false;
     
     private unsubscribe: Subject<void> = new Subject();
     
@@ -99,7 +119,7 @@ export class AddQuoteComponent implements OnInit {
     date: Date = new Date();
     nzSize: string = "small"
     
-    tabFindIndex: number = 0;
+    tabFindIndex: number = 1;
 
     inputForm: FormGroup;
     activeForm: FormGroup;
@@ -244,9 +264,9 @@ export class AddQuoteComponent implements OnInit {
   }
 
   showQuoteModal(){
-
+      this.tableDocumentId = null;
       this.quotesOpen = true;
-      this.tabFindIndex = 2; 
+      this.tabFindIndex = 1; 
 
       let id = this.user.id.substr(this.user.id - 5)
 
@@ -404,22 +424,7 @@ export class AddQuoteComponent implements OnInit {
           itemId: null
       });
 
-      this.goalsAndStratergiesForm = this.formBuilder.group({
-          recordnumber:null,
-          goal:'',
-          PersonID: null,
-          title : "Goal Of Care : ",
-          ant   : null,
-          lastReview : null,
-          completed:null,
-          percent : null,
-          achievementIndex:'',
-          notes:'',
-          dateAchieved:null,
-          lastReviewed:null,
-          achievementDate:null,
-          achievement:'',
-      });
+      this.goalsAndStratergiesForm = this.formBuilder.group(goalsDefault);
 
       this.stratergiesForm = this.formBuilder.group({
           detail:'',
@@ -650,26 +655,42 @@ export class AddQuoteComponent implements OnInit {
 
   tableDocumentId: number;
 
+  get hideQuoteDetails(){
+      return (this.quoteForm.get('program').value != null 
+                && this.quoteForm.get('template').value != null
+                && this.option && this.option == 'add' 
+                && this.tableDocumentId) 
+                    || this.option == 'update'
+  }
+
+  get hideQuoteDetailsAnd(){
+    return (this.quoteForm.get('program').value  
+                && this.quoteForm.get('template').value 
+                    && this.option && this.option == 'add' 
+                        && this.tableDocumentId) 
+                        || this.option == 'update';
+  }
+
   showConfirm(): void {
         this.confirmModal = this.modal.confirm({
         nzTitle: 'Do you want to select this template?',
         nzContent: 'Clicking OK will record the quote against the selected program and service agreement template',
         nzOnOk: () =>{
-                // new Promise((resolve, reject) => {
-                //     setTimeout(Math.random() > 0.5 ? resolve : reject, 1000);                
-                // }).catch(() => console.log('Oops errors!'))
 
                 let qteHeader: QuoteHeaderDTO;
+
                 qteHeader = {
                     personId: this.user.id
                 };
 
+                this.templateLoading = true;
+
                 this.listS.createtempdoc(qteHeader).subscribe(data => {
                     this.tempIds = data;
-                    
+                    this.templateLoading = false;
 
                     this.tableDocumentId = data.docId;
-                    this.listCarePlanAndGolas(data);
+                    this.listCarePlanAndGolas(this.tableDocumentId);
                     this.disableAddTabs = false
                 });
             }
@@ -955,9 +976,10 @@ export class AddQuoteComponent implements OnInit {
       this.cd.markForCheck();
   }
 
-  listCarePlanAndGolas(docid: any = '45976'){
+  listCarePlanAndGolas(docid: any = null){
+      if(this.globalS.isEmpty(docid))   return;
+
       this.loading = true;
-      
       this.listS.getCareplangoals(docid).subscribe(data => {
           this.goalsAndStratergies = data;
           this.loading = false;
@@ -1029,6 +1051,8 @@ export class AddQuoteComponent implements OnInit {
 
   showCarePlanStrategiesModal(){
       this.goalAndStrategiesmodal = true;
+      this.goalsAndStratergiesForm.reset(goalsDefault);
+
       this.personIdForStrategy = '';
       this.listS.getgoalofcare().subscribe(data => this.goalOfCarelist = data);
   }

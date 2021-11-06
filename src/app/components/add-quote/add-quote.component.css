@@ -121,3 +121,8 @@ nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-
 nz-input-number{
     width:100%;
 }
+.templateLoading{
+    display: inline-block;
+    position: absolute;
+    right: -10px;
+}

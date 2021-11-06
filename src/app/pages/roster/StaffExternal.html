@@ -1,0 +1,63 @@
+<nz-modal
+[(nzVisible)]="isVisible"
+[nzTitle]="modalTitle"
+[nzContent]="modalContent"
+[nzFooter]="modalFooter"
+(nzOnCancel)="handleCancel()"
+[nzWidth]="900"
+>
+<ng-template #modalTitle>Staff Contact Details</ng-template>
+
+<ng-template #modalContent >
+<div class="flexy" style="min-height:21rem;" >
+
+    <div nz-col nzGutter="3" nzSpan="24">
+        <nz-tabset  [nzTabPosition]="'top'" [nzType]="'card'">
+            <nz-tab nzTitle="General" (nzClick)="view(0)"> </nz-tab>           
+            <nz-tab nzTitle="Operational Notes & History" (nzClick)="view(1)"> </nz-tab>
+            <nz-tab nzTitle="Competencies" (nzClick)="view(2)"> </nz-tab>
+         
+            
+        </nz-tabset>
+   
+        <div nz-row *ngIf="nzSelectedIndex==0" nzGutter="6">
+            <!-- <p>This tab for Staff General {{AccountNo.data}}</p> -->
+            <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading"
+            [nzData]="lstAddress" >
+            
+            <thead style="margin-left: 20px;width:100%">
+                <tr>
+                    <th style="background-color: #d6d3d3; " class="left">Address Details</th> 
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of lstAddress;let i = index;"  
+                 [style.background-color]="i == HighlightRow ? '#bbd7fa' : 'white'">
+                    <td class="left" >                                         
+                            {{data.type}}                                                                           
+                    </td>
+                    <td class="left" >                                         
+                        {{data.address}}                                                                           
+                </td>
+                </tr>
+            </tbody>
+            
+        </nz-table> 
+        </div>
+        <div nz-row *ngIf="nzSelectedIndex==1" nzGutter="6">
+            <p>Operational Notes & History</p>
+
+        </div>
+    </div>
+</div>
+</ng-template>
+
+<ng-template #modalFooter>
+    
+    <button nz-button nzType="primary" >
+        <span>Done</span>
+    </button>
+     <button nz-button nzType="default" (click)="handleCancel()">Cancel</button> 
+    
+</ng-template>
+</nz-modal>

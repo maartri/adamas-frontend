@@ -130,7 +130,6 @@ export class CloseRosterComponent implements OnInit {
     lastMonthEndDate.setMonth(lastMonthEndDate.getMonth() - 1);
     
     console.log('Last Month Date:', endOfMonth(lastMonthEndDate));
-
     console.log('New Month Date:', new Date());
     this.inputForm.patchValue({
       dtpEndDate: endOfMonth(lastMonthEndDate),

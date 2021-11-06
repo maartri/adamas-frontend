@@ -124,5 +124,5 @@ nz-input-number{
 .templateLoading{
     display: inline-block;
     position: absolute;
-    right: -10px;
+    right: -20px;
 }

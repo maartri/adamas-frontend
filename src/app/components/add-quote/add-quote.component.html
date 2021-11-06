@@ -212,7 +212,24 @@
             <div *ngIf="tabFindIndex == 1" >
 
                 <div *ngIf="!tableDocumentId">
-                    <nz-alert nzType="warning" nzMessage="Select a Template first on Quote tab" nzShowIcon></nz-alert>
+                    <div nz-row>
+                        <div nz-col nzSpan="8">
+                            <div class="form-group" *ngIf="option != 'update'" [formGroup]="quoteForm">
+                                <nz-select formControlName="template" [nzDropdownMatchSelectWidth]="false" nzAllowClear nzPlaceHolder="Templates">
+                                    <nz-option *ngFor="let list of quoteTemplateList" [nzValue]="list" [nzLabel]="list"></nz-option>
+                                </nz-select>                   
+                                <ng-template #indicatorTemplate><i nz-icon nzType="loading"></i></ng-template>
+                                <nz-spin nzSimple *ngIf="templateLoading" class="templateLoading" [nzIndicator]="indicatorTemplate"></nz-spin>     
+                            </div>
+                        </div>
+                    </div>
+                    <div nz-row>
+                        <div nz-col nzSpan="8">
+                            <nz-alert nzType="warning" nzMessage="Select a Template first" nzShowIcon></nz-alert>
+                        </div>
+                    </div>
+                  
+
                 </div>
                 
                 <div *ngIf="tableDocumentId">
@@ -298,7 +315,7 @@
                         <nz-option *ngFor="let list of typeList" [nzValue]="list" [nzLabel]="list"></nz-option>
                     </nz-select>
                 </div>
-                <div nz-col nzSpan="6" [formGroup]="quoteForm" [hidden]="quoteForm.get('program').value == null">
+                <div nz-col nzSpan="6" *ngIf="IS_HCP" [formGroup]="quoteForm" [hidden]="quoteForm.get('program').value == null">
                     <label nz-checkbox formControlName="charges" (change)="checkValue($event)"><span class="accept-admin">Accept fee and Admin Charges</span></label>
                 </div>
                 <div nz-col nzSpan="8" >

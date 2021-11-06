@@ -156,6 +156,7 @@ export class AddQuoteComponent implements OnInit {
     quoteProgramList: Array<string>;
 
     IS_CDC: boolean = false;
+    IS_HCP: boolean = false;
     programLevel:any;
 
     newFileName: string;
@@ -572,6 +573,7 @@ export class AddQuoteComponent implements OnInit {
           }),
           switchMap(x => {                
                 this.IS_CDC = x.isCDC;
+                this.IS_HCP = x.type == 'DOHA';
         
                 if(x.isCDC){
 
@@ -673,9 +675,9 @@ export class AddQuoteComponent implements OnInit {
 
   showConfirm(): void {
         this.confirmModal = this.modal.confirm({
-        nzTitle: 'Do you want to select this template?',
-        nzContent: 'Clicking OK will record the quote against the selected program and service agreement template',
-        nzOnOk: () =>{
+            nzTitle: 'Do you want to select this template?',
+            nzContent: 'Clicking OK will record the quote against the selected program and service agreement template',
+            nzOnOk: () =>{
 
                 let qteHeader: QuoteHeaderDTO;
 
@@ -693,8 +695,11 @@ export class AddQuoteComponent implements OnInit {
                     this.listCarePlanAndGolas(this.tableDocumentId);
                     this.disableAddTabs = false
                 });
+            },
+            nzOnCancel:() => {
+                this.quoteForm.get('template').patchValue(null)
             }
-        });
+    }   );
     }
 
 

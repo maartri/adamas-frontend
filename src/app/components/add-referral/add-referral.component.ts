@@ -217,6 +217,7 @@ export class AddReferralComponent implements OnInit, OnDestroy {
       this._lastname.nativeElement.focus();
     });
 
+    this.accountTaken = null;
     this.firstOpenChange = false;
     this.showEdit = null;
     

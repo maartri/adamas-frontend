@@ -158,7 +158,7 @@ import {
 
 
 import {  
-  RostersAdmin,ShiftDetail,AddRoster
+  RostersAdmin,ShiftDetail,AddRoster,RecipientExternal,StaffExternal
 } from './pages/roster/index';
 
 import { ExtraComponent } from './pages/extra/extra';
@@ -957,7 +957,15 @@ const routes: Routes = [
         path: 'addroster',
         component: AddRoster
       },
-      
+      {
+        path: 'recipient-external',
+        component: RecipientExternal
+      },
+      {
+        path: 'staff-external',
+        component:StaffExternal
+      },
+     
       {
         path: 'staff',
         component: StaffAdmin,
@@ -1230,6 +1238,8 @@ export const PAGE_COMPONENTS = [
   RostersAdmin,
   ShiftDetail,
   AddRoster,
+  RecipientExternal,
+  StaffExternal,
   //Configuration
   CompaniesComponent,
   BranchesComponent,

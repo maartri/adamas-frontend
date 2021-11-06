@@ -155,7 +155,7 @@
                                                 <div *ngIf="frm_CustomRptbtn" > 
                                                     
                                                     <div *ngFor="let item of UserRptButtonlist;let indexofelement= index;">
-                                                        <button  nz-button nzType="default"  (click)="FetchRuntimeReport(item)"    >
+                                                        <button  nz-button nzType="default"  (click)="FetchRuntimeReport('1'+item )"    >
                                                                 <i nz-icon nzType="printer"></i>
                                                                 {{item}}
                                                         </button>
@@ -195,7 +195,7 @@
                                                 <div *ngIf="frm_CustomRptbtn" > 
                                                     
                                                     <div *ngFor="let item of RecpUserRptButtonlist;let indexofelement= index;">
-                                                        <button  nz-button nzType="default"  (click)="FetchRuntimeReport(item)"    >
+                                                        <button  nz-button nzType="default"  (click)="FetchRuntimeReport('2' +item)"    >
                                                                 <i nz-icon nzType="printer"></i>
                                                                 {{item}}
                                                         </button>
@@ -426,7 +426,7 @@
                                         <div *ngIf="frm_CustomRptbtn" > 
                                                     
                                             <div *ngFor="let item of AGENCYSTFButtonlist;let indexofelement= index;">
-                                                <button  nz-button nzType="default"  (click)="FetchRuntimeReport(item)"    >
+                                                <button  nz-button nzType="default"  (click)="FetchRuntimeReport('3'+item)"    >
                                                         <i nz-icon nzType="printer"></i>
                                                         {{item}}
                                                 </button>
@@ -450,7 +450,7 @@
                                         </div> 
                                         <div *ngIf="frm_CustomRptbtn" >                                                     
                                             <div *ngFor="let item of UserSTFButtonlist;let indexofelement= index;">
-                                                <button  nz-button nzType="default"  (click)="FetchRuntimeReport(item)"    >
+                                                <button  nz-button nzType="default"  (click)="FetchRuntimeReport('4' +item)"    >
                                                         <i nz-icon nzType="printer"></i>
                                                         {{item}}
                                                 </button>
@@ -1630,9 +1630,7 @@
                         </div>
                     </div>
                 </div>
-            </ng-template>
-              
-              
+            </ng-template>                            
                <ng-template #modalFooter> 
                    <div class="modalFooter">
                         <button nz-button nzType="primary" class="btn" (click)="toggle()"><span>Extra Options</span></button>
@@ -1710,11 +1708,11 @@
     
     
         
-    <nz-drawer [nzHeight]= "768" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="top" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
+    <nz-drawer [nzHeight]= "650" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="top" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
         <div class="col-md-12 spinner" *ngIf="loading">
             <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
         </div>
         <div nz-row>   
-            <iframe *ngIf="tryDoctype" [src]="tryDoctype" width="1224" height="768" ></iframe> 
+            <iframe *ngIf="tryDoctype" [src]="tryDoctype" width="1224" height="650" ></iframe> 
         </div>
     </nz-drawer>

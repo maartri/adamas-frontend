@@ -1,0 +1,50 @@
+<nz-modal
+[(nzVisible)]="isVisible"
+[nzTitle]="modalTitle"
+[nzContent]="modalContent"
+[nzFooter]="modalFooter"
+(nzOnCancel)="handleCancel()"
+[nzWidth]="1050"
+>
+<ng-template #modalTitle>Recipient Details</ng-template>
+
+<ng-template #modalContent >
+<div class="flexy" style="min-height:25rem;" >
+
+    <div nz-col nzSpan="24">
+        <nz-tabset  [nzTabPosition]="'top'" [nzType]="'card'">
+            <nz-tab nzTitle="General" (nzClick)="view(0)"> </nz-tab>
+            <nz-tab nzTitle="Funding Agreed Services & Careplan" (nzClick)="view(1)"> </nz-tab>
+            <nz-tab nzTitle="Case/Progress Notes" (nzClick)="view(2)"></nz-tab>
+            <nz-tab nzTitle="Operational Notes" (nzClick)="view(3)"> </nz-tab>
+            <nz-tab nzTitle="OP Notes" (nzClick)="view(4)"> </nz-tab>
+            <nz-tab nzTitle="Support Workers" (nzClick)="view(5)"> </nz-tab>
+            <nz-tab nzTitle="Staff" (nzClick)="view(6)"> </nz-tab>
+            
+        </nz-tabset>
+
+            
+
+        <div nz-row *ngIf="nzSelectedIndex==0" nzGutter="6">
+
+            <p>This tab for Recipient General {{AccountNo.data}}</p>
+
+        </div>
+        <div nz-row *ngIf="nzSelectedIndex==1" nzGutter="6">
+
+            <p>Funding Agreed Services & Careplan</p>
+
+        </div>
+        </div>
+</div>
+</ng-template>
+
+<ng-template #modalFooter>
+    
+    <button nz-button nzType="primary" >
+        <span>Done</span>
+    </button>
+     <button nz-button nzType="default" (click)="handleCancel()">Cancel</button> 
+    
+</ng-template>
+</nz-modal>

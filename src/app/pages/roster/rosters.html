@@ -96,8 +96,9 @@
                     <button nz-button nzType="default" style=" padding: 4px" [disabled]="!enable_buttons" (click)="RecordStaffAdmin()" *ngIf="viewType=='Staff'" nz-tooltip nzTooltipTitle="Record Staff  Administration time" ><i nz-icon nzType="form"></i></button>
                     <button nz-button nzType="default" style=" padding: 4px" [disabled]="!enable_buttons" (click)="setUnavailablity()" *ngIf="viewType=='Staff'"  nz-tooltip nzTooltipTitle="Record Staff Unavailability" ><i nz-icon nzType="stop" nzTheme="outline"></i></button>
                     <button nz-button nzType="default" style=" padding: 4px" [disabled]="!enable_buttons" (click)="recordCancellation()" *ngIf="viewType=='Recipient'" nz-tooltip nzTooltipTitle="Record Client Cancellation"><i nz-icon nzType="close-square" nzTheme="outline"></i></button>
-                    <button nz-button nzType="default" style=" padding: 4px" [disabled]="!enable_buttons" (click)="showRecurentModal=true"  nz-tooltip nzTooltipTitle="Recurring Service Wizard"><i nz-icon nzType="setting" nzTheme="outline"></i></button>
-                    <!-- <button nz-button nzType="default" style=" padding: 4px" [disabled]="!enable_buttons"  nz-tooltip nzTooltipTitle="Load/Unload Staff Compare Roster"><i nz-icon nzType="retweet" nzTheme="outline"></i></button> -->
+                    <button nz-button nzType="default" style=" padding: 4px" [disabled]="!enable_buttons" (click)="showRecurrentView()"  nz-tooltip nzTooltipTitle="Recurring Service Wizard"><i nz-icon nzType="setting" nzTheme="outline"></i></button>
+                    <button nz-button nzType="default" style=" padding: 4px" [disabled]="!enable_buttons" (click)="showRecipientStaffDetail()" nz-tooltip nzTooltipTitle="Extra information about this {{viewType}}"><i nz-icon nzType="info-circle" nzTheme="outline"></i></button>
+          
                     <!-- <button nz-button nzType="default" style=" padding: 4px" [disabled]="!enable_buttons"  (click)="show_alert=true" nz-tooltip nzTooltipTitle="Compress Rosters on Screen"><i nz-icon nzType="fullscreen-exit" nzTheme="outline"></i></button> -->
                     <button nz-button nzType="default" style=" padding: 4px" [disabled]="!master"  (click)="SaveMasterRosters()" nz-tooltip nzTooltipTitle="Save Master Rosters" ><i nz-icon nzType="save" nzTheme="outline"></i></button>
                    
@@ -948,7 +949,10 @@
         
     </nz-modal>
     
-     <div>
+    <recipientexternal [isVisible]="recipientexternal" [AccountNo]="selected" (recipientexternalDone)="cancelRecipientExternal($event)" *ngIf="recipientexternal"></recipientexternal>
+     
+    <staffexternal [isVisible]="staffexternal" [AccountNo]="selected" (staffexternalDone)="cancelStaffExternal($event)" *ngIf="staffexternal"></staffexternal>
+    <div>
         <img id="icon-1" style="display: none; background-color: transparent;"  src="/media/r1.png"/>
         <img id="icon-2" style="display: none; background-color: transparent;"  src="/media/r2.png"/>
         <img id="icon-3" style="display: none; background-color: transparent;"  src="/media/r3.png"/>

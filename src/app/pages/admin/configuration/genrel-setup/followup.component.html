@@ -96,7 +96,7 @@
                                 [nzIndeterminate]="allstaffIntermediate" [ngModelOptions]="{standalone: true}"><b>ALL Staff Included In List</b></label>
                             </div>
                             <div nz-col>
-                                <div class="staff-wrapper" style="height: 30rem; width: 100%; overflow: auto; padding: .5rem 1rem;">
+                                <div class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem;">
                                     <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
                                         <div nz-row>
                                             <div nz-col nzSpan="24" *ngFor="let staff of staffList">
@@ -119,7 +119,7 @@
         </div>
         <div *nzModalFooter>
             <ng-container>
-                <button nz-button nzType="primary" [nzLoading]="postLoading"  (click)="save()" [disabled]= "!inputForm.get('activity').value || !inputForm.get('name').value" *ngIf="current === 0">
+                <button nz-button nzType="primary" [nzLoading]="postLoading"  (click)="save()" [disabled]= "!inputForm.get('activity').value || !inputForm.get('name').value " *ngIf="current === 0">
                     <span>Save</span>
                 </button>
             </ng-container>

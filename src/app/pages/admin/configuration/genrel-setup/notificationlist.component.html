@@ -52,6 +52,8 @@
         <nz-divider class="full-height" nzType="vertical"></nz-divider>
             <div class="steps-content" *ngIf="inputForm" [formGroup]="inputForm">
                 <div *ngIf="current == 0">
+                    <div nz-row nzGutter="24">
+                    <div nz-col class="gutter-row" [nzSpan]="12">
                     <div nz-row nzGutter="24" class="">
                         <label for="CDC Item" col nzSpan="6">List Type:</label>
                         <nz-select col nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="ltype" nzShowSearch nzAllowClear style="width:100%;">
@@ -78,7 +80,6 @@
                         <nz-option *ngFor="let service of services;let i = index;" [nzValue]="service.title" [nzLabel]="service.title"></nz-option> 
                         </nz-select>
                     </div>
-    
                     <div nz-row nzGutter="24" class="">
                         <label for="CDC Item" nzSpan="6" >Program:</label>
                         <nz-select nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="prgm" nzShowSearch nzAllowClear style="width:100%;">
@@ -115,6 +116,35 @@
                         <label for="CDC Item" nzSpan="6" >Expiry Date:</label>
                         <nz-date-picker nzSpan="14" [nzPlaceHolder]="'Expiry Date'" formControlName="end_date" [nzFormat]="dateFormat"></nz-date-picker>
                     </div>
+                </div>
+                <div *ngIf="isUpdate == false" nz-col class="gutter-row" [nzSpan]="12" >
+                    <div nz-row  style="border: 1px solid #e8e8e8;">
+                        <div nz-row style="background-color:#fafafa;color: white;padding:4px;">
+                            <label nz-checkbox
+                            [(ngModel)]="allStaff"
+                            (ngModelChange)="updateAllCheckedFilters(1)"
+                            [nzIndeterminate]="allstaffIntermediate" [ngModelOptions]="{standalone: true}"><b>ALL Staff Included In List</b></label>
+                        </div>
+                        <div nz-col>
+                            <div class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem;">
+                                <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
+                                    <div nz-row>
+                                        <div nz-col nzSpan="24" *ngFor="let staff of staffList">
+                                            <label nz-checkbox  [nzValue]="staff.staffCode" [(ngModel)]="staff.checked" (ngModelChange)="updateSingleCheckedFilters(1)" [ngModelOptions]="{standalone: true}">{{ staff.staffCode }}</label>
+                                        </div>
+                                    </div>
+                                </nz-checkbox-wrapper>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="isUpdate == true" nz-col class="gutter-row" [nzSpan]="12" >
+                    <label for="CDC Item" col nzSpan="6">Select Staff :</label>
+                        <nz-select col nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="staff" nzShowSearch nzAllowClear style="width:100%;">
+                            <nz-option *ngFor="let staff of staffList" [nzValue]="staff.staffCode" [nzLabel]="staff.staffCode"></nz-option> 
+                        </nz-select>
+                </div>
+                </div>
                 </div>
             </div>
             <div *nzModalFooter>

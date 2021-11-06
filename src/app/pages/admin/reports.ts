@@ -19379,6 +19379,8 @@ CustomReportSetting(){
 
 FetchRuntimeReport(strtitle){
 //    console.log("TITLE:  " +strtitle)
+    this.drawerVisible = true; 
+    this.loading = true;
     var strFilter = strtitle.toString().substring(0,1)
   //  console.log(strFilter)
     var title = strtitle.toString().substring(1,strtitle.length)
@@ -19400,16 +19402,17 @@ FetchRuntimeReport(strtitle){
             break;
     }
   const temp =  forkJoin([
-        this.ReportS.GetReportFormat(title),
-     //   this.ReportS.GetReportSql(strtitle)
+    //    this.ReportS.GetReportFormat(title),
+    
+        this.ReportS.GetReportSql(title)
     ]);    
     temp.subscribe(data => {
         //this.UserRptFormatlist = data[0];
         this.UserRptSQLlist = data[0];   
         var re = /~/gi;    
-        //console.log((this.UserRptSQLlist.toString()).replace(re,"'"))
+        console.log((this.UserRptSQLlist.toString()).replace(re,"'"))
     
-    //    this.RenderRunTimeReport((this.UserRptSQLlist.toString()).replace(re,"'"))
+        this.RenderRunTimeReport((this.UserRptSQLlist.toString()).replace(re,"'"))
 
     });
 
@@ -19422,7 +19425,8 @@ RenderRunTimeReport(strSQL){
     console.log(strSQL)
     const data = {
         
-        "template": { "_id": "qTQEyEz8zqNhNgbU" },
+        //"template": { "_id": "qTQEyEz8zqNhNgbU" },
+        "template": { "_id": "x8QVE8KhcjiJvD6c" },
                     
         "options": {
             "reports": { "save": false },

@@ -17,6 +17,26 @@ export class ListService {
         public auth: AuthService
     ) { }
 
+    deletecasestaff(id: any):Observable<any>{
+        return this.auth.delete(`${list}/case-staff/${id}`);
+    }
+
+    postcasestaff(data: any): Observable<any> {
+        return this.auth.post(`${list}/case-staff`, data);
+    }
+
+    getcasestaffpopulate(id: string):Observable<any>{
+        return this.auth.get(`${list}/case-staff-populate-field/${id}`);
+    }
+
+    getcasestaffprograms():Observable<any>{
+        return this.auth.get(`${list}/case-staff-programs`);
+    }
+
+    getcasestafflist(id: string):Observable<any>{
+        return this.auth.get(`${list}/case-staff-list/${id}`);
+    }
+
     getreferraltypes(source: any):Observable<any>{
         return this.auth.get(`${list}/referral-source-v2`, source);
     }

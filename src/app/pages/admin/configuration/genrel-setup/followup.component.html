@@ -87,7 +87,7 @@
                             <nz-date-picker nzSpan="14" [nzPlaceHolder]="'Expiry Date'" formControlName="endDate" [nzFormat]="dateFormat"></nz-date-picker>
                         </div>
                     </div>
-                    <div nz-col class="gutter-row" [nzSpan]="12">
+                    <div nz-col class="gutter-row" [nzSpan]="12" >
                         <div nz-row  style="border: 1px solid #e8e8e8;">
                             <div nz-row style="background-color:#fafafa;color: white;padding:4px;">
                                 <label nz-checkbox
@@ -108,6 +108,12 @@
                             </div>
                         </div>
                     </div>
+                    <!-- <div *ngIf="isUpdate == true" nz-col class="gutter-row" [nzSpan]="12" >
+                        <label for="CDC Item" col nzSpan="6">Select Staff :</label>
+                            <nz-select col nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="staff" nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-option *ngFor="let staff of staffList" [nzValue]="staff.staffCode" [nzLabel]="staff.staffCode"></nz-option> 
+                            </nz-select>
+                    </div> -->
                 </div>
             </div>
         </div>

@@ -231,10 +231,13 @@ export class FollowupComponent implements OnInit {
       this.current += 1;
     }
     save() {
+      console.log(this.inputForm.value + " form before submission ");
       if(!this.isUpdate){
         this.inputForm.patchValue({
           group: this.menuType,
+          selectedStaff: this.selectedStaff,
         })
+        console.log(this.inputForm.value + " form before submission ");
         this.menuS.postconfigurationfollowups(this.inputForm.value).subscribe(data => {
           if(data){
               this.globalS.sToast('Success','Inserted SucessFully');
@@ -287,10 +290,11 @@ export class FollowupComponent implements OnInit {
         activity:'',
         name:'',
         branch:'',
+        staff:'',
         fundingSource:'',
         casemanager:'',
-        staff:'',
-        endDate:'', 
+        endDate:'',
+        selectedStaff : this.selectedStaff,
         recordNumber:null,
       });
       }

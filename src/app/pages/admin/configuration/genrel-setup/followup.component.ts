@@ -222,6 +222,7 @@ export class FollowupComponent implements OnInit {
     
     handleCancel() {
       this.modalOpen = false;
+      this.isUpdate  = false;
     }
     pre(): void {
       this.current -= 1;

@@ -761,9 +761,7 @@ export class ListService {
     casemanagerslist(): Observable<any>{
         return this.auth.get(`${list}/casemanagerslist`)
     }
-    workflowstafflist(): Observable<any>{
-        return this.auth.get(`${list}/workflowstafflist`)
-    }
+    
     getlistreminders(): Observable<any>{
         return this.auth.get(`${list}/reminders`)
     }    

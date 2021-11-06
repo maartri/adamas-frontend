@@ -15,6 +15,8 @@ import { GlobalService, ReportService,ListService,MenuService,PrintService } fro
 import { concat, flatMapDeep, indexOf, size } from "lodash";
 import eachDayOfInterval from "date-fns/esm/eachDayOfInterval/index";
 
+
+
 const inputFormDefault = {
   
   
@@ -26,10 +28,14 @@ const inputFormDefault = {
   condition:[[]],
   value:[[]],
   Endvalue:[[]],
+  frm_SecondValue : false,
+  frm_SecondVal : false,
   // = ['title','ASAD','key']
   //  data : Array<any> = [{'title':'ASAD','key':'00'},{'title':'ASAD','key':'01'},{'title':'ASAD','key':'02'}]
   exportitemsArr:[[]],
   functionsArr:  [["EQUALS", "BETWEEN", "LESS THAN", "GREATER THAN", "NOT EQUAL TO", "IS NOTHING", "IS ANYTHING", "IS TRUE", "IS FALSE"]],
+  titleArr : [[]],
+  Filterheck : true,
   //Arr: [[]],
   Arr: [''],
   valArr:[''],
@@ -125,6 +131,8 @@ const inputFormDefault = {
 
 export class UserReports implements OnInit, OnDestroy, AfterViewInit {
   frm_nodelist: boolean = true;
+  frm_SecondValue :  boolean;
+  frm_SecondVal :  boolean;
   frm_delete : boolean = false;
   inputForm: FormGroup;
   btnid: string;
@@ -135,6 +143,8 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
   datarow:Array<any>;
   condition:Array<any>;
   value:Array<any>;
+  titleArr :Array<any>;
+  Filterheck : boolean;
   Endvalue :Array<any>; // = ['title','ASAD','key']
   //data : Array<any> ;= [{'title':'ASAD','key':'00'},{'title':'ASAD','key':'01'},{'title':'ASAD','key':'02'}]
   exportitemsArr: Array<any>;
@@ -273,7 +283,7 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
     this.tocken = this.GlobalS.pickedMember ? this.GlobalS.GETPICKEDMEMBERDATA(this.GlobalS.GETPICKEDMEMBERDATA):this.GlobalS.decode();
     this.RptFormat = this.GlobalS.var2.toString();
 
-    //console.log(this.tocken)
+  //  console.log(this.tocken)
     
     
   }
@@ -1369,15 +1379,23 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
   FinalizeArray(node) { 
     this.frm_nodelist = true;  
     this.list = node;
+    
+    
+    
     this.exportitemsArr = [...this.list,"Service Date", "Service Start Time", "Service Hours", "Service Code", "Service Location/Activity Group", "Service Program", "Service Group", "Service HACCType", "Service Category", "Service Pay Rate", "Service Bill Rate", "Service Bill Qty", "Service Status", "Service Pay Type", "Service Pay Qty", "Service Bill Unit", "Service Funding Source"]
-
+    //this.inputForm.functionsArr
+    //.addEventListener('change', SetValueFrame());
 
   }
+  
   SetValueFrame() {
-   
     if(this.inputForm.value.functionsArr == "BETWEEN")  {
-    
+      this.frm_SecondValue = true;
+      this.frm_SecondVal = true;
+    }else{this.frm_SecondValue = false;
+      this.frm_SecondVal  = false;
     }
+    
   }
   
   apply(){
@@ -1390,11 +1408,19 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
         this.entity  = [this.inputForm.value.exportitemsArr];
         this.condition  = [this.inputForm.value.functionsArr];
         this.value  = [this.inputForm.value.Arr];
-        this.Endvalue  = [this.inputForm.value.valArr];
+        
+        if(this.inputForm.value.functionsArr == "BETWEEN"){
+          this.Endvalue  = [this.inputForm.value.valArr]; 
+                   
+        }
     }else{
       this.entity =[...this.entity, this.inputForm.value.exportitemsArr];
       this.value = [...this.value, this.inputForm.value.Arr];
       this.condition = [...this.condition, this.inputForm.value.functionsArr];
+      if(this.inputForm.value.functionsArr == "BETWEEN"){
+        this.Endvalue  = [...this.Endvalue, this.inputForm.value.valArr];    
+          
+      }
     }
       
         
@@ -3755,7 +3781,10 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
       this.value.splice(index, 1);
       this.entity.splice(index, 1);
       this.condition.splice(index, 1); 
-//      this.frm_delete = false;  
+    if(this.Endvalue != null){
+      this.Endvalue.splice(index, 1);
+    }
+//      this.frm_delete = false;   
     }
   }
   //  console.log(index) 
@@ -3778,15 +3807,15 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
         this.sqlcondition =this.sqlcondition + " AND " + this.ConditionEntity +" like ('"  + this.value + "')"
         this.Savesqlcondition = this.Savesqlcondition + " AND " +this.ConditionEntity +" like (' + '''"  + this.value + "'''+')"
         }
-        console.log(this.Savesqlcondition);
+        
         break;
         case 'BETWEEN':
           if(this.sqlcondition == null){
             this.sqlcondition = this.ConditionEntity +"  Between ('"  + this.value + "') and ('"  + this.Endvalue + "')"
-            this.Savesqlcondition = this.ConditionEntity +" Between ('+'"  + this.value + "'+')"
+            this.Savesqlcondition = this.ConditionEntity +" Between ('+'"  + this.value + "'+') and ('+'" + this.Endvalue + "'+')"
           }else{ 
           this.sqlcondition =this.sqlcondition + " AND " + this.ConditionEntity +" Between ('"  + this.value + "') and ('"  + this.Endvalue + "')"
-          this.Savesqlcondition = this.Savesqlcondition + " AND " +this.ConditionEntity +" Between (' + '"  + this.value + "'+')"
+          this.Savesqlcondition = this.Savesqlcondition + " AND " +this.ConditionEntity +" Between (' + '"  + this.value + "'+') and (' + '" + this.Endvalue + "'+')"
           }
           break;
         case 'LESS THAN':
@@ -3855,30 +3884,32 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
         break;
     }
 //  console.log(this.list)
-  this.sqlselect = "Select " + this.ColumnNameAdjuster(this.list)//.join(" as Field"+ this.feildname() +", ")
+this.sqlselect = "Select " + this.ColumnNameAdjuster(this.list)//.join(" as Field"+ this.feildname() +", ")
 
   this.sql = this.sqlselect + this.TablesSetting(this.list);
   this.Saverptsql = this.sqlselect + this.TablesSetting(this.list) ;
+  
   if ((this.inputForm.value.radiofiletr).toString() == 'donotmeet') {
     this.sql =  this.sql + " where Not " +  this.sqlcondition  ;
     this.Saverptsql = this.Saverptsql +  "  where Not  " + this.Savesqlcondition ;
     
   }else{
-    this.sql =  this.sql + ' where ' +  this.sqlcondition  ;
+    this.sql =  this.sql + ' where ' +  this.sqlcondition ;
     this.Saverptsql = this.Saverptsql +  " where " + this.Savesqlcondition ;
   }
-     
-  
-
-    console.log(this.sql)
+       
+  //  console.log(this.sql)
+  //  console.log(this.Saverptsql)
     
 
   }
   ShowReport(){
     this.QueryFormation();
     this.tryDoctype = "";
+  //  console.log(this.sqlcondition)
+    if(this.sqlcondition != null || this.sqlcondition != undefined){
     this.ReportRender(this.sql);
-      
+    }
     
   }
   showprompt(){
@@ -3886,13 +3917,36 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
     this.isVisibleprompt = true;
   }
   SaveReport(){
+    this.QueryFormation();
      
       this.isVisibleprompt = false;
       var RptSQL  =  this.Saverptsql;
       this.RptTitle = (this.inputForm.value.RptTitle).toString();
+
       
+      let filtertitle = forkJoin([
+        this.ReportS.GetReportNames(this.RptFormat.toString()),                                              
+        ]);   
+      filtertitle.subscribe(data => {           
+        this.titleArr = data[0];  
+        if(data[0].includes(this.RptTitle)){
+
+          this.Filterheck = false;
+
+          this.ModalS.warning({
+            nzTitle: 'TRACCS',
+            nzContent: 'The Report Title Alredy Exists.',
+              nzOnOk: () => {
+                this.isVisibleprompt = true;
+                this.Filterheck = true;
+              },
+          });
+        }
+      });
         
-      if(this.RptTitle != null && RptSQL != null){
+     
+
+      if(this.RptTitle != null && RptSQL != null &&  this.Filterheck == true){
     //var Title  = this.RptTitle;
     var Format  = this.RptFormat;
     //console.log(Format)
@@ -3904,7 +3958,7 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
    var insertsql = " INSERT INTO ReportNames(Title, Format,SQLText,UserID, DateType, CriteriaDisplay) " +
    " VALUES( '" + this.RptTitle +"' , '"+Format+"' , '"+RptSQL+"' , '"+UserID+"' , '"+DateType+"' , '"+CriteriaDisplay + "') "   
 
-   console.log(insertsql)
+   //console.log(insertsql)
    
    
    this.ReportS.InsertReport(insertsql).subscribe(x=>{
@@ -3913,19 +3967,20 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
      this. GlobalS.sToast('Success', 'Saved successful'); 
      this.router.navigate(['/admin/reports']);    
     }    
-   }); 
-   
-  }
+   });    
+      }
+     
 
+  }
+  back2adminRpt(){
+    this.router.navigate(['/admin/reports']); 
   }
   ReportRender(sql:string){
 
-    console.log(sql);
+   // console.log(sql);
     this.drawerVisible = true;
     this.loading = true;
-
     
-
     if(this.includeConatctWhere != undefined && this.includeConatctWhere != ""){ sql = sql + " AND " + this.includeConatctWhere}
     if(this.includeGoalcareWhere != undefined && this.includeGoalcareWhere != ""){sql = sql + " AND " + this.includeGoalcareWhere}
     if(this.includeReminderWhere != undefined && this.includeReminderWhere != ""){sql = sql + " AND " + this.includeReminderWhere}
@@ -3949,7 +4004,7 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
       //  console.log(this.inputForm.value.printaslabel)
       
       
-      var Title = "Run Time Report"
+      var Title = "User Defined Report"
   //    console.log(this.tocken.user)
       const data = {
         "template": { "_id": "x8QVE8KhcjiJvD6c" },

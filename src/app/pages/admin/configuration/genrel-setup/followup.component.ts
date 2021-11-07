@@ -177,6 +177,7 @@ export class FollowupComponent implements OnInit {
         funding,
         casemanager,
         endDate,
+        staff,
         recordNumber,
         
       } = this.tableData[index];
@@ -187,6 +188,7 @@ export class FollowupComponent implements OnInit {
         fundingSource:funding,
         endDate:endDate,
         casemanager:casemanager,
+        staff:staff,
         recordNumber:recordNumber,
       });
     }

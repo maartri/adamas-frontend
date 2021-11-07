@@ -270,16 +270,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
             this.router.navigate(['/admin/notification-list']);
         }
         if(index == 92){
-            // this.navigationExtras ={type:'followusp'};
-            // this.router.navigate(["/admin/followup-list"],{ queryParams: {type: 'followusp'}})
-        }
-        if(index == 93){
-            // this.router.navigate([`${'/admin/workflow'.split('?')[0]}`], { queryParams: {type: 'documents'}});
-            
-        }
-        if(index == 94){
-            // this.router.navigate([`${'/admin/workflow'.split('?')[0]}`], { queryParams: {type: 'extraInfo'}});
-            
+            this.router.navigate(['/admin/customdataset']);
         }
         if(index == 21){
             this.router.navigate(['/admin/initial-actions']);

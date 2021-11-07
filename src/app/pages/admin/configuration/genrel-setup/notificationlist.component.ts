@@ -241,7 +241,6 @@ export class NotificationlistComponent implements OnInit {
       this.current += 1;
     }
     save() {
-      
       if(!this.isUpdate){        
         this.postLoading = true;   
         const group    = this.inputForm;

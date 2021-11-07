@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { ListService, MenuService , PrintService, TimeSheetService, workflowClassification } from '@services/index';
+import { ListService, MenuService , PrintService, TimeSheetService, UploadService, workflowClassification } from '@services/index';
 import { GlobalService } from '@services/global.service';
 import { takeUntil, switchMap } from 'rxjs/operators';
 import { Subject, EMPTY, forkJoin } from 'rxjs';
@@ -61,7 +61,10 @@ export class FollowupComponent implements OnInit {
   allStaff:boolean = false;
   allstaffIntermediate: boolean = false;
   selectedStaff:any[];
-  
+  reminders: Array<any> = []
+  templates: any;
+  documents: any;
+  customdatasets: any;
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -69,6 +72,7 @@ export class FollowupComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private listS:ListService,
     private menuS:MenuService,
+    private uploadS:UploadService,
     private timeS:TimeSheetService,
     private printS:PrintService,
     private formBuilder: FormBuilder,
@@ -120,25 +124,33 @@ export class FollowupComponent implements OnInit {
       });
     }
     populateDropdowns(){
+      
       let sql  = "SELECT TITLE FROM ITEMTYPES WHERE ProcessClassification IN ('OUTPUT', 'EVENT', 'ITEM') AND ENDDATE IS NULL";
+      
       this.listS.getlist(sql).subscribe(data => {
         this.listType = data;
       });
-      this.listS.getlistbranchesObj().subscribe(data => {this.branchesList = data});
-      this.listS.getfundingsource().subscribe(data   =>   {this.funding_source = data});
-      this.listS.casemanagerslist().subscribe(data   =>   {this.casemanagers = data});
-      this.menuS.workflowstafflist().subscribe(data  =>  {this.staffList   = data});
-      // return forkJoin([
-      //   this.listS.getlistbranchesObj(),
-      //   this.listS.getfundingsource(),
-      //   this.listS.casemanagerslist(),
-      //   this.listS.workflowstafflist(),
-      // ]).subscribe(x => {
-      //   this.branchesList   = x[0];
-      //   this.funding_source = x[1];
-      //   this.casemanagers   = x[2];
-      //   this.staffList      = x[3];
-      // });
+      
+      if(this.menuType == 'FOLLOWUP'){
+        this.listS.getlistrecipientremindersObj().subscribe(data => this.staffList = data);
+      }
+      if(this.menuType == 'DOCUMENTS'){
+        this.uploadS.getdocumenttemplate().subscribe(data => this.staffList = data);;
+      }
+      if(this.menuType == 'XTRADATA'){
+        this.listS.customdatasetObj().subscribe(data => this.staffList = data)
+      }
+      
+      return forkJoin([
+        this.listS.getlistbranchesObj(),
+        this.listS.getfundingsource(),
+        this.listS.casemanagerslist(),
+      ]).subscribe(x => {
+        this.branchesList   = x[0];
+        this.funding_source = x[1];
+        this.casemanagers   = x[2];
+      });
+    
     }
     
     showAddModal() {
@@ -183,7 +195,7 @@ export class FollowupComponent implements OnInit {
       if (this.allStaff) {
         this.staffList.forEach(x => {
           x.checked = true;
-          this.selectedStaff.push(x.staffCode);
+          this.selectedStaff.push(x.description);
         });
       }else{
         this.staffList.forEach(x => {

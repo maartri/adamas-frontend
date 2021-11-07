@@ -679,7 +679,12 @@ export class ListService {
     getlistrecipientreminders(): Observable<any>{
         return this.auth.get(`${list}/recipient/reminders`)
     }   
-
+    getlistrecipientremindersObj(): Observable<any>{
+        return this.auth.get(`${list}/recipient/remindersObj`)
+    }
+    customdatasetObj(): Observable<any>{
+        return this.auth.get(`${list}/customdatasetObj`)
+    }
     getcompetenciesall(): Observable<any>{
         return this.auth.get(`${list}/competencies/all`)
     }

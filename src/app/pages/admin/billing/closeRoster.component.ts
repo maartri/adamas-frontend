@@ -115,25 +115,20 @@ export class CloseRosterComponent implements OnInit {
   buildForm() {
     this.inputForm = this.formBuilder.group({
     dtpEndDate: null,
-    billingMode: 'CONSOLIDATED BILLING',
-    AccPackage: 'TEST 1',
+    chkBlockFunded: null,
+    chkIndividualPackages: null,
+    chkNonCDCPackages: null,
+    chkCDCPackages: null,
     });
-
-    // this.inputForm.patchValue({
-    //     dtpEndDate: this.lastMonthEndDate,
-    // })
-
   }
 
   EndofMOnth(){
     const lastMonthEndDate = new Date();
     lastMonthEndDate.setMonth(lastMonthEndDate.getMonth() - 1);
-    
-    console.log('Last Month Date:', endOfMonth(lastMonthEndDate));
-    console.log('New Month Date:', new Date());
+    this.dtpEndDate = endOfMonth(lastMonthEndDate);
     this.inputForm.patchValue({
-      dtpEndDate: endOfMonth(lastMonthEndDate),
-    }) 
+      dtpEndDate: this.dtpEndDate,
+    });
   }
 
   log(event: any,index:number) {
@@ -190,6 +185,27 @@ export class CloseRosterComponent implements OnInit {
   loadPrograms(){
     this.loading = true;
     this.menuS.getlistProgramPackages(this.check).subscribe(data => {
+      this.programList = data;
+      this.tableData = data;
+      this.loading = false;
+      this.allProgramsChecked = true;
+      this.checkAll(2);
+    });
+  }
+
+  fetchAll(e){
+    if(e.target.checked){
+      this.whereString = "WHERE";
+      this.loadPrograms();
+    }else{
+      this.whereString = "Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+      this.loadPrograms();
+    }
+  }
+
+  loadProgramsNew(index: any){
+    this.loading = true;
+    this.billingS.getlistProgramPackagesFilter(this.check).subscribe(data => {
       this.programList = data;
       this.tableData = data;
       this.loading = false;

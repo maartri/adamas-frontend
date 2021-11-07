@@ -31,6 +31,8 @@ export class TravelComponent implements OnInit {
 
   branchList: Array<any>;
   programList: Array<any>;
+  activityList: Array<any>;
+  paytypeList: Array<any>;
   categoriesList: Array<any>;
   batchHistoryList: Array<any>;
   tableData: Array<any>;
@@ -49,7 +51,7 @@ export class TravelComponent implements OnInit {
   inputVariables: any;
   postLoading: boolean = false;
   isUpdate: boolean = false;
-  title: string = "Debtor Updates and Exports";
+  title: string = "Travel Audit And Update";
   rpthttp = 'https://www.mark3nidad.com:5488/api/report'
   token: any;
   tocken: any;
@@ -104,9 +106,13 @@ export class TravelComponent implements OnInit {
       name: '',
       dtpStartDate: '',
       dtpEndDate: '',
+      TimesheetDate: '',
       billingMode: 'CONSOLIDATED BILLING',
       AccPackage: 'TEST 1',
       invType: 'General',
+      programList: '',
+      activityList: '',
+      paytypeList: '',
     });
   }
   populateDropdowns() {
@@ -168,7 +174,7 @@ export class TravelComponent implements OnInit {
     this.listS.getlist(sql).subscribe(data => {
       if (data[0].PayPeriodEndDate != "") {
         this.inputForm.patchValue({
-              dtpEndDate: this.globalS.convertDbDate(data[0].payPeriodEndDate),
+              // dtpEndDate: this.globalS.convertDbDate(data[0].payPeriodEndDate),
           });
       }
       else { 
@@ -182,7 +188,7 @@ export class TravelComponent implements OnInit {
 
     let fsql = "SELECT DefaultPayPeriod as DefaultPayPeriod FROM Registration";
     this.listS.getlist(fsql).subscribe(fdata => {
-      console.log("Result 1 is: ", fdata[0].defaultPayPeriod)
+      // console.log("Result 1 is: ", fdata[0].defaultPayPeriod)
       if (fdata[0].defaultPayPeriod != "") {
         this.PayPeriodLength = fdata;
       }
@@ -194,9 +200,9 @@ export class TravelComponent implements OnInit {
     EndDate = new Date(this.dtpEndDate);
     let d = EndDate.getDate()-1;
     EndDate.setDate(EndDate.getDate()-d) 
-    console.log("Result test is: ", (EndDate));
+    // console.log("Result test is: ", (EndDate));
 
-    console.log("Result 2 is: ", (this.PayPeriodLength));
+    // console.log("Result 2 is: ", (this.PayPeriodLength));
     // console.log("Result 3 is: ", (this.dtpEndDate.setDate(this.dtpEndDate.getDate()-10)));
     // console.log("Result 3 is: ", (this.dtpEndDate - (this.PayPeriodLength)));
   }

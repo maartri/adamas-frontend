@@ -91,7 +91,7 @@ export class TimesheetProcessingAdmin implements OnInit, OnDestroy, AfterViewIni
                 this.router.navigate(['/admin/pay-update']);
             }
             if(index == 6){
-                // this.router.navigate(['/admin/travel-update']);
+                this.router.navigate(['/admin/travel-update']);
             }
         }
         ngOnDestroy(): void {

@@ -8,6 +8,9 @@ import { setDate } from 'date-fns';
 import { FormsModule } from '@angular/forms';
 import * as moment from 'moment';
 import { DatePipe } from '@angular/common'
+import addYears from 'date-fns/addYears';
+import startOfMonth from 'date-fns/startOfMonth';
+import endOfMonth from 'date-fns/endOfMonth';
 
 @Component({
   selector: 'app-billing',
@@ -111,22 +114,26 @@ export class CloseRosterComponent implements OnInit {
   }
   buildForm() {
     this.inputForm = this.formBuilder.group({
-    dtpEndDate: new Date(),
+    dtpEndDate: null,
     billingMode: 'CONSOLIDATED BILLING',
     AccPackage: 'TEST 1',
     });
 
-    this.inputForm.patchValue({
-        dtpEndDate: this.lastMonthEndDate,
-    })
+    // this.inputForm.patchValue({
+    //     dtpEndDate: this.lastMonthEndDate,
+    // })
 
   }
 
   EndofMOnth(){
     const lastMonthEndDate = new Date();
     lastMonthEndDate.setMonth(lastMonthEndDate.getMonth() - 1);
-    console.log('Last Month Date:', lastMonthEndDate);
+    
+    console.log('Last Month Date:', endOfMonth(lastMonthEndDate));
     console.log('New Month Date:', new Date());
+    this.inputForm.patchValue({
+      dtpEndDate: endOfMonth(lastMonthEndDate),
+    }) 
   }
 
   log(event: any,index:number) {

@@ -35,7 +35,7 @@ export class UploadService {
    postdocumenttemplate(data: any): Observable<any> {
       return this.http.post(`${upload}/document/template`, data);
    }
-
+   
    getdocumenttemplate(): Observable<any> {
       return this.http.get(`${upload}/document/template`);
    }

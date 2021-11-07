@@ -50,6 +50,10 @@ export class DistributionlistComponent implements OnInit {
   check : boolean = false;
   userRole:string="userrole";
   whereString :string="where ListName IN ('INCIDENT','DOCUSIGN','EVENT') AND ISNULL(xDeletedRecord,0) = 0 AND (xEndDate Is Null OR xEndDate >= GETDATE()) ";
+  selectedStaff: any[];
+  allStaff: any;
+  staffList: any;
+  allstaffIntermediate: boolean;
   
   constructor(
     private globalS: GlobalService,
@@ -92,6 +96,7 @@ export class DistributionlistComponent implements OnInit {
     }
     populateDropdowns(){
       this.listType = ['INCIDENT','DOCUSIGN','EVENT'];
+      this.menuS.workflowstafflist().subscribe(data  =>  {this.staffList   = data});
       let sql  = "SELECT TITLE FROM ITEMTYPES WHERE ProcessClassification IN ('OUTPUT', 'EVENT', 'ITEM') AND ENDDATE IS NULL";
       this.listS.getlist(sql).subscribe(data => {
         this.services = data;
@@ -312,7 +317,37 @@ export class DistributionlistComponent implements OnInit {
         this.events = data;
       })
     }
-    
+    updateAllCheckedFilters(filter: any): void {
+      this.selectedStaff = [];
+      if (this.allStaff) {
+        this.staffList.forEach(x => {
+          x.checked = true;
+          this.selectedStaff.push(x.staffCode);
+        });
+      }else{
+        this.staffList.forEach(x => {
+          x.checked = false;
+        });
+        this.selectedStaff = [];
+      }
+      console.log(this.selectedStaff);
+    }
+    updateSingleCheckedFilters(index:number): void {
+      if (this.staffList.every(item => !item.checked)) {
+        this.allStaff = false;
+        this.allstaffIntermediate = false;
+      } else if (this.staffList.every(item => item.checked)) {
+        this.allStaff = true;
+        this.allstaffIntermediate = false;
+      } else {
+        this.allstaffIntermediate = true;
+        this.allStaff = false;
+      }
+    }
+    log(event: any) {
+      this.selectedStaff = event;
+      console.log(this.selectedStaff);
+    }
     handleOkTop() {
       this.generatePdf();
       this.tryDoctype = ""

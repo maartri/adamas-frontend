@@ -50,7 +50,11 @@ export class NotificationlistComponent implements OnInit {
   check : boolean = false;
   userRole:string="userrole";
   whereString :string="WHERE ListName IN ('Referral Notification','Assessment Notification','Admission Notification','Refer On Notification','Not Proceed Notification','Discharge Notification','Suspend Notification','Reinstate Notification','Admin Notification','Lifecycle Event Notification') AND ISNULL(xDeletedRecord,0) = 0 AND (xEndDate Is Null OR xEndDate >= GETDATE()) ";
-  
+  staffList: any;
+  allStaff:boolean = false;
+  allstaffIntermediate: boolean = false;
+  selectedStaff:any[];
+
   constructor(
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
@@ -92,6 +96,9 @@ export class NotificationlistComponent implements OnInit {
     }
     populateDropdowns(){
       this.listType = notificationTypes;
+
+      this.menuS.workflowstafflist().subscribe(data  =>  {this.staffList   = data});
+      
       let sql  = "SELECT TITLE FROM ITEMTYPES WHERE ProcessClassification IN ('OUTPUT', 'EVENT', 'ITEM') AND ENDDATE IS NULL";
       this.listS.getlist(sql).subscribe(data => {
         this.services = data;
@@ -195,6 +202,37 @@ export class NotificationlistComponent implements OnInit {
     handleCancel() {
       this.modalOpen = false;
     }
+    updateAllCheckedFilters(filter: any): void {
+      this.selectedStaff = [];
+      if (this.allStaff) {
+        this.staffList.forEach(x => {
+          x.checked = true;
+          this.selectedStaff.push(x.staffCode);
+        });
+      }else{
+        this.staffList.forEach(x => {
+          x.checked = false;
+        });
+        this.selectedStaff = [];
+      }
+      console.log(this.selectedStaff);
+    }
+    updateSingleCheckedFilters(index:number): void {
+      if (this.staffList.every(item => !item.checked)) {
+        this.allStaff = false;
+        this.allstaffIntermediate = false;
+      } else if (this.staffList.every(item => item.checked)) {
+        this.allStaff = true;
+        this.allstaffIntermediate = false;
+      } else {
+        this.allstaffIntermediate = true;
+        this.allStaff = false;
+      }
+    }
+    log(event: any) {
+      this.selectedStaff = event;
+      console.log(this.selectedStaff);
+    }
     pre(): void {
       this.current -= 1;
     }
@@ -203,7 +241,6 @@ export class NotificationlistComponent implements OnInit {
       this.current += 1;
     }
     save() {
-      
       if(!this.isUpdate){        
         this.postLoading = true;   
         const group    = this.inputForm;

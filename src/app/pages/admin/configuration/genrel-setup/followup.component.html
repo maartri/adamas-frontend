@@ -93,14 +93,14 @@
                                 <label nz-checkbox
                                 [(ngModel)]="allStaff"
                                 (ngModelChange)="updateAllCheckedFilters(1)"
-                                [nzIndeterminate]="allstaffIntermediate" [ngModelOptions]="{standalone: true}"><b>ALL Staff Included In List</b></label>
+                                [nzIndeterminate]="allstaffIntermediate" [ngModelOptions]="{standalone: true}"><b>ALL {{addbtnTitle}} Included In List</b></label>
                             </div>
                             <div nz-col>
-                                <div class="staff-wrapper" style="height: 30rem; width: 100%; overflow: auto; padding: .5rem 1rem;">
+                                <div class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem;">
                                     <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
                                         <div nz-row>
                                             <div nz-col nzSpan="24" *ngFor="let staff of staffList">
-                                                <label nz-checkbox  [nzValue]="staff.staffCode" [(ngModel)]="staff.checked" (ngModelChange)="updateSingleCheckedFilters(1)" [ngModelOptions]="{standalone: true}">{{ staff.staffCode }}</label>
+                                                <label nz-checkbox  [nzValue]="staff.description" [(ngModel)]="staff.checked" (ngModelChange)="updateSingleCheckedFilters(1)" [ngModelOptions]="{standalone: true}">{{ staff.description }}</label>
                                             </div>
                                         </div>
                                     </nz-checkbox-wrapper>
@@ -109,17 +109,17 @@
                         </div>
                     </div>
                     <div *ngIf="isUpdate == true" nz-col class="gutter-row" [nzSpan]="12" >
-                        <label for="CDC Item" col nzSpan="6">Select Staff :</label>
+                        <label for="CDC Item" col nzSpan="6">Select {{ addbtnTitle }} :</label>
                             <nz-select col nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="staff" nzShowSearch nzAllowClear style="width:100%;">
-                                <nz-option *ngFor="let staff of staffList" [nzValue]="staff.staffCode" [nzLabel]="staff.staffCode"></nz-option> 
-                            </nz-select>
+                            <nz-option *ngFor="let staff of staffList" [nzValue]="staff.description" [nzLabel]="staff.description"></nz-option> 
+                        </nz-select>
                     </div>
                 </div>
             </div>
         </div>
         <div *nzModalFooter>
             <ng-container>
-                <button nz-button nzType="primary" [nzLoading]="postLoading"  (click)="save()" [disabled]= "!inputForm.get('activity').value || !inputForm.get('name').value" *ngIf="current === 0">
+                <button nz-button nzType="primary" [nzLoading]="postLoading"  (click)="save()" [disabled]= "!inputForm.get('activity').value || !inputForm.get('name').value " *ngIf="current === 0">
                     <span>Save</span>
                 </button>
             </ng-container>

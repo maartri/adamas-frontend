@@ -131,12 +131,6 @@ export class StaffLeaveAdmin implements OnInit, OnDestroy {
             defaultUnallocateLeavePayType:'',
         });
     }
-    patchdefaultValues(){
-        this.defaultLeaveForm.patchValue({
-            defaultUnallocateLeaveActivity:this.defaultLeave.defaultLeaveActivity,
-            defaultUnallocateLeavePayType:this.defaultLeave.defaultLeavePayType,
-        });
-    }
     search(user: any = this.user) {
         this.cd.reattach();
         this.loading = true;

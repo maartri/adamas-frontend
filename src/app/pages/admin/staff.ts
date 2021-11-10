@@ -3,8 +3,8 @@ import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { filter, switchMap } from 'rxjs/operators';
 import format from 'date-fns/format';
 
-import { GlobalService, StaffService,sbFieldsSkill, ShareService,timeSteps,nodes,conflictpointList,checkOptionsOne,sampleList,genderList,statusList,leaveTypes, ListService,PrintService, TimeSheetService, SettingsService, LoginService } from '@services/index';
-
+import { GlobalService,nodes,StaffService,sbFieldsSkill, ShareService,timeSteps,conflictpointList,checkOptionsOne,sampleList,genderList,statusList,leaveTypes, ListService,PrintService, TimeSheetService, SettingsService, LoginService } from '@services/index';
+import { NzFormatEmitEvent } from 'ng-zorro-antd/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 import { EMPTY, forkJoin } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -74,6 +74,55 @@ interface UserView{
         .spinner{
             margin:1rem auto;
             width:1px;
+            }
+            .status{
+              font-size: 11px;
+              padding: 3px 5px;
+              border-radius: 11px;
+              color: #fff;
+              
+              margin-right: 10px;
+            }
+            .status.active{            
+              background: #42ca46;
+            }
+            .status.inactive{            
+              background: #c70000;
+            }
+            .status.type{
+              background:#c8f2ff;
+              color: black;
+            }
+            .status-program{
+              display: inline-block;
+              float: left;
+              margin-right:1rem;
+            }
+            .status-program i{
+              font-size: 1.4rem;
+              color: #bfbfbf;
+              margin-right:10px;
+              cursor:pointer;
+            }
+            .status-program i:hover{
+              color: #000;
+            }
+            
+            .tree-overflow{
+              max-height: 24rem;
+              overflow: auto;
+            }
+            label.columns{
+              display:block;
+              margin:0;
+            }
+            .ant-card-small>.ant-card-head>.ant-card-head-wrapper>.ant-card-extra {
+              margin-left:unset !important;
+              float:none !important;
+              color:green !important;
+            }
+            .ant-table-thead>tr>th{
+              background:green;
             }
     `],
     templateUrl: './staff.html',
@@ -173,6 +222,18 @@ export class StaffAdmin implements OnInit, OnDestroy {
     conflictpointList:any = conflictpointList;
     timeSteps:Array<string>;
     sbFieldsSkill:any;
+    nzEvent(event: NzFormatEmitEvent): void {
+      if (event.eventName === 'click') {
+        var title = event.node.origin.title;
+  
+        this.extendedSearch.patchValue({
+          title : title,
+        });
+        var keys       = event.keys;
+      
+      }
+  
+    }
     columns: Array<any> = [
         {
           name: 'ID',
@@ -301,6 +362,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
         this.sbFieldsSkill = sbFieldsSkill;
+        this.nodelist = nodes;
         this.buildForm();
         this.buildForms();
         this.timeSteps = timeSteps;

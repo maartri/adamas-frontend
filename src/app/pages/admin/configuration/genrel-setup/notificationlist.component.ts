@@ -22,7 +22,7 @@ import { NzModalService } from 'ng-zorro-antd';
 })
 export class NotificationlistComponent implements OnInit {
   events: Array<any>;
-
+  
   tableData: Array<any>;
   staff:Array<any>;
   listType:Array<any>;
@@ -54,7 +54,7 @@ export class NotificationlistComponent implements OnInit {
   allStaff:boolean = false;
   allstaffIntermediate: boolean = false;
   selectedStaff:any[];
-
+  
   constructor(
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
@@ -96,7 +96,7 @@ export class NotificationlistComponent implements OnInit {
     }
     populateDropdowns(){
       this.listType = notificationTypes;
-
+      
       this.menuS.workflowstafflist().subscribe(data  =>  {this.staffList   = data});
       
       let sql  = "SELECT TITLE FROM ITEMTYPES WHERE ProcessClassification IN ('OUTPUT', 'EVENT', 'ITEM') AND ENDDATE IS NULL";
@@ -244,31 +244,41 @@ export class NotificationlistComponent implements OnInit {
       if(!this.isUpdate){        
         this.postLoading = true;   
         const group    = this.inputForm;
-        let ltype      = this.globalS.isValueNull(group.get('ltype').value);
-        let staff      = this.globalS.isValueNull(group.get('staff').value);
-        let service    = this.globalS.isValueNull(group.get('service').value);
-        let prgm       = this.globalS.isValueNull(group.get('prgm').value);
-        let location   = this.globalS.isValueNull(group.get('location').value);
-        let recepient  = this.globalS.isValueNull(group.get('recepient').value);
-        let saverity   = this.globalS.isValueNull(group.get('saverity').value);
-        let mandatory  = this.trueString(group.get('mandatory').value);
-        let assignee   = this.trueString(group.get('assignee').value);
-        let end_date   = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
-        let values = recepient+","+service+","+location+","+prgm+","+staff+","+mandatory+","+assignee+","+saverity+","+ltype+","+end_date;
-        let sql = "insert into IM_DistributionLists([Recipient],[Activity],[Location],[Program],[Staff],[Mandatory],[DefaultAssignee],[Severity],[ListName],[xEndDate]) Values ("+values+")"; 
-        
-        console.log(sql);
-        this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
-          
-          if (data) 
-          this.globalS.sToast('Success', 'Saved successful');     
-          else
-          this.globalS.sToast('Success', 'Saved successful');
-          this.loadData();
-          this.postLoading = false;          
-          this.handleCancel();
-          this.resetModal();
-        });
+
+        let flag       = false;
+        if(this.selectedStaff.length > 0){
+          this.selectedStaff.forEach(staf => {
+            let ltype      = this.globalS.isValueNull(group.get('ltype').value);
+            let staff      = staf;
+            let service    = this.globalS.isValueNull(group.get('service').value);
+            let prgm       = this.globalS.isValueNull(group.get('prgm').value);
+            let location   = this.globalS.isValueNull(group.get('location').value);
+            let recepient  = this.globalS.isValueNull(group.get('recepient').value);
+            let saverity   = this.globalS.isValueNull(group.get('saverity').value);
+            let mandatory  = this.trueString(group.get('mandatory').value);
+            let assignee   = this.trueString(group.get('assignee').value);
+            let end_date   = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
+            let values = recepient+","+service+","+location+","+prgm+",'"+staff+"',"+mandatory+","+assignee+","+saverity+","+ltype+","+end_date;
+            let sql = "insert into IM_DistributionLists([Recipient],[Activity],[Location],[Program],[Staff],[Mandatory],[DefaultAssignee],[Severity],[ListName],[xEndDate]) Values ("+values+")"; 
+            console.log(sql);
+            this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
+              flag = true;
+            });
+          });
+        }
+        else{
+          this.globalS.sToast('Success', 'Select Atleast One Staff');
+          return false;
+        }
+        if (flag)
+        this.globalS.sToast('Success', 'Saved successful');     
+        else
+        this.globalS.sToast('Success', 'Something Went Wrong Try Again');
+
+        this.loadData();
+        this.postLoading = false;          
+        this.handleCancel();
+        this.resetModal();
       }else{
         const group       = this.inputForm;
         let ltype      = this.globalS.isValueNull(group.get('ltype').value);
@@ -335,77 +345,77 @@ export class NotificationlistComponent implements OnInit {
         recordNo:null,
         event: null
       });
-
+      
       this.inputForm.get('ltype').valueChanges
       .pipe(
         switchMap(x => {
-            if(x != 'EVENT')
-              return EMPTY;
-
-            return this.listS.geteventlifecycle()
+          if(x != 'EVENT')
+          return EMPTY;
+          
+          return this.listS.geteventlifecycle()
         })
-      )
-      .subscribe(data => {
-        this.events = data;
-      })
+        )
+        .subscribe(data => {
+          this.events = data;
+        })
+      }
+      
+      handleOkTop() {
+        this.generatePdf();
+        this.tryDoctype = ""
+        this.pdfTitle = ""
+      }
+      handleCancelTop(): void {
+        this.drawerVisible = false;
+        this.pdfTitle = ""
+      }
+      generatePdf(){
+        this.drawerVisible = true;
+        
+        this.loading = true;
+        
+        var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recipient) AS Field1," +
+        "Recipient as Field2,Activity as Field3,Location as Field4,Program as Field5,Staff as Field6," + 
+        "ListName as  Field7,Severity as Field8,CONVERT(varchar, [xEndDate],105) as Field9 from IM_DistributionLists "+this.whereString+" Order by recipient";
+        
+        const data = {
+          "template": { "_id": "0RYYxAkMCftBE9jc" },
+          "options": {
+            "reports": { "save": false },
+            "txtTitle": "Notification List",
+            "sql": fQuery,
+            "userid":this.tocken.user,
+            "head1" : "Sr#",
+            "head2": "Recipient",
+            "head3": "Activity",
+            "head4": "Location",
+            "head5": "Program",
+            "head6": "Staff",
+            "head7": "ItemType",
+            "head8": "Severity",
+            "head9": "End Date",
+          }
+        }
+        this.printS.print(data).subscribe(blob => { 
+          let _blob: Blob = blob;
+          let fileURL = URL.createObjectURL(_blob);
+          this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+          this.loading = false;
+        }, err => {
+          this.loading = false;
+          this.ModalS.error({
+            nzTitle: 'TRACCS',
+            nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+            nzOnOk: () => {
+              this.drawerVisible = false;
+            },
+          });
+        });
+        
+        
+        this.loading = true;
+        this.tryDoctype = "";
+        this.pdfTitle = "";
+      }    
     }
     
-    handleOkTop() {
-      this.generatePdf();
-      this.tryDoctype = ""
-      this.pdfTitle = ""
-    }
-    handleCancelTop(): void {
-      this.drawerVisible = false;
-      this.pdfTitle = ""
-    }
-    generatePdf(){
-      this.drawerVisible = true;
-      
-      this.loading = true;
-      
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recipient) AS Field1," +
-      "Recipient as Field2,Activity as Field3,Location as Field4,Program as Field5,Staff as Field6," + 
-      "ListName as  Field7,Severity as Field8,CONVERT(varchar, [xEndDate],105) as Field9 from IM_DistributionLists "+this.whereString+" Order by recipient";
-      
-      const data = {
-        "template": { "_id": "0RYYxAkMCftBE9jc" },
-        "options": {
-          "reports": { "save": false },
-          "txtTitle": "Notification List",
-          "sql": fQuery,
-          "userid":this.tocken.user,
-          "head1" : "Sr#",
-          "head2": "Recipient",
-          "head3": "Activity",
-          "head4": "Location",
-          "head5": "Program",
-          "head6": "Staff",
-          "head7": "ItemType",
-          "head8": "Severity",
-          "head9": "End Date",
-        }
-      }
-      this.printS.print(data).subscribe(blob => { 
-        let _blob: Blob = blob;
-        let fileURL = URL.createObjectURL(_blob);
-        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-        this.loading = false;
-        }, err => {
-        this.loading = false;
-        this.ModalS.error({
-          nzTitle: 'TRACCS',
-          nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-          nzOnOk: () => {
-            this.drawerVisible = false;
-          },
-        });
-      });
-
-
-      this.loading = true;
-      this.tryDoctype = "";
-      this.pdfTitle = "";
-    }    
-  }
-  

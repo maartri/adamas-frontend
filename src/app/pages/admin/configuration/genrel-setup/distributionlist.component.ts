@@ -212,31 +212,39 @@ export class DistributionlistComponent implements OnInit {
       if(!this.isUpdate){        
         this.postLoading = true;   
         const group    = this.inputForm;
-        let ltype      = this.globalS.isValueNull(group.get('ltype').value);
-        let staff      = this.globalS.isValueNull(group.get('staff').value);
-        let service    = this.globalS.isValueNull(group.get('service').value);
-        let prgm       = this.globalS.isValueNull(group.get('prgm').value);
-        let location   = this.globalS.isValueNull(group.get('location').value);
-        let recepient  = this.globalS.isValueNull(group.get('recepient').value);
-        let saverity   = this.globalS.isValueNull(group.get('saverity').value);
-        let mandatory  = this.trueString(group.get('mandatory').value);
-        let assignee   = this.trueString(group.get('assignee').value);
-        let end_date   = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
-        let values = recepient+","+service+","+location+","+prgm+","+staff+","+mandatory+","+assignee+","+saverity+","+ltype+","+end_date;
-        let sql = "insert into IM_DistributionLists([Recipient],[Activity],[Location],[Program],[Staff],[Mandatory],[DefaultAssignee],[Severity],[ListName],[xEndDate]) Values ("+values+")"; 
-        
-        console.log(sql);
-        this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
-          
-          if (data) 
+          let flag       = false;
+          if(this.selectedStaff.length > 0){
+            this.selectedStaff.forEach(staf => {
+            let ltype      = this.globalS.isValueNull(group.get('ltype').value);
+            let staff      = staf;
+            let service    = this.globalS.isValueNull(group.get('service').value);
+            let prgm       = this.globalS.isValueNull(group.get('prgm').value);
+            let location   = this.globalS.isValueNull(group.get('location').value);
+            let recepient  = this.globalS.isValueNull(group.get('recepient').value);
+            let saverity   = this.globalS.isValueNull(group.get('saverity').value);
+            let mandatory  = this.trueString(group.get('mandatory').value);
+            let assignee   = this.trueString(group.get('assignee').value);
+            let end_date   = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
+            let values = recepient+","+service+","+location+","+prgm+",'"+staff+"',"+mandatory+","+assignee+","+saverity+","+ltype+","+end_date;
+            let sql = "insert into IM_DistributionLists([Recipient],[Activity],[Location],[Program],[Staff],[Mandatory],[DefaultAssignee],[Severity],[ListName],[xEndDate]) Values ("+values+")"; 
+            this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
+              flag = true;
+            });
+        });
+      }else{
+        this.globalS.sToast('Success', 'Select Atleast One Staff');
+        return false;
+      }
+        if (flag)
           this.globalS.sToast('Success', 'Saved successful');     
-          else
-          this.globalS.sToast('Success', 'Saved successful');
+        else
+          this.globalS.sToast('Success', 'Something Went Wrong Try Again');
+
           this.loadData();
           this.postLoading = false;          
           this.handleCancel();
           this.resetModal();
-        });
+
       }else{
         const group       = this.inputForm;
         let ltype      = this.globalS.isValueNull(group.get('ltype').value);

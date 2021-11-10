@@ -1,8 +1,8 @@
 <nz-modal [nzWidth]="1000" [(nzVisible)]="modalOpen" [nzTitle]="loadTitle()" (nzOnCancel)="handleCancel()">
     <div class="flexy">
-        <nz-tabset *ngIf="inputForm" [formGroup]="inputForm" style="width: 100%;">
+        <nz-tabset style="width: 100%;">
             <nz-tab nzTitle="General">
-                <div>
+                <div *ngIf="inputForm" [formGroup]="inputForm">
                     <div nz-row style="height: 30px;">
                         <div nz-col nzSpan="8">
                             <h3 style="color:#1890FF; line-height: 30px;">Transaction Date:</h3>
@@ -12,9 +12,7 @@
                                 or Recipient Date:</p>
                         </div>
                         <div nz-col nzSpan="4">
-                            <nz-date-picker [nzPlaceHolder]="'Invoice Date'" formControlName="Invoice_date"
-                                [nzFormat]="dateFormat">
-                            </nz-date-picker>
+                            <nz-date-picker [nzPlaceHolder]="'Invoice Date'" formControlName="invoiceDate" [nzFormat]="dateFormat"></nz-date-picker>
                         </div>
                     </div>
 
@@ -111,12 +109,12 @@
             </nz-tab>
             <nz-tab nzTitle="Selection Option">
 
-                <div>
+                <div *ngIf="inputForm">
                     <div nz-row nzJustify class="mrg-btm">
                         <div nz-col nzSpan="6">
                             <h3 style="color:#1890FF;">Invoice Types</h3>
                         </div>
-                        <div nz-col nzSpan="8">
+                        <div nz-col nzSpan="8" [formGroup]="inputForm">
                             <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="invType" nzPlaceHolder=""
                                 nzShowSearch nzAllowClear style="width:100%;">
                                 <nz-option *ngFor="let etype of invType" [nzLabel]="etype" [nzValue]="etype">
@@ -138,23 +136,16 @@
                         <div nz-col nzSpan="1" style="text-align: center;">
                             <label nz-checkbox style="margin-top: 5px;"></label>
                         </div>
-                        <div nz-col nzSpan="1"></div>
-                        <div nz-col nzSpan="5">
-                            <!-- <nz-date-picker [nzPlaceHolder]="'Invoice Date'" formControlName="Invoice_date"
-                                [nzFormat]="dateFormat">
-                            </nz-date-picker> -->
-                            <nz-date-picker nzPlaceHolder="Start Date" formControlName="dtpStartDate"
-                                [nzFormat]="dateFormat"></nz-date-picker>
+                        <div nz-col nzSpan="5" [formGroup]="inputForm">
+                            <nz-date-picker formControlName="startDate"></nz-date-picker>
+                            <!-- <nz-date-picker nzPlaceHolder="Start Date" formControlName="dtpStartDate" [nzFormat]="dateFormat"></nz-date-picker> -->
                         </div>
                         <div nz-col nzSpan="2">
                             <p style="text-align: center; margin-top: 5px;"> TO </p>
                         </div>
-                        <div nz-col nzSpan="5">
-                            <!-- <nz-date-picker [nzPlaceHolder]="'Invoice Date'" formControlName="Invoice_date"
-                                [nzFormat]="dateFormat">
-                            </nz-date-picker> -->
-                            <nz-date-picker nzPlaceHolder="End Date" formControlName="dtpEndDate"
-                                [nzFormat]="dateFormat"></nz-date-picker>
+                        <div nz-col nzSpan="5" [formGroup]="inputForm">
+                            <nz-date-picker formControlName="endDate"></nz-date-picker>
+                            <!-- <nz-date-picker nzPlaceHolder="End Date" formControlName="dtpEndDate" [nzFormat]="dateFormat"></nz-date-picker> -->
                         </div>
                     </div>
 
@@ -533,7 +524,7 @@
                     <div nz-col nzSpan="6" class="text-right pad-r-5">
                         <label style="margin-top: 4px;">3rd Party Accounting Package : </label>
                     </div>
-                    <div nz-col nzSpan="6">
+                    <div nz-col nzSpan="6" [formGroup]="inputForm">
                         <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="AccPackage" nzPlaceHolder=""
                             nzShowSearch nzAllowClear style="width:100%;">
                             <nz-option *ngFor="let etype of AccountPackage" [nzLabel]="etype" [nzValue]="etype">

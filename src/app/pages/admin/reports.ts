@@ -19387,6 +19387,7 @@ CustomReportSetting(){
 
 FetchRuntimeReport(strtitle){
 //    console.log("TITLE:  " +strtitle)
+    this.tryDoctype = ""; 
     this.drawerVisible = true; 
     this.loading = true;
     var strFilter = strtitle.toString().substring(0,1)

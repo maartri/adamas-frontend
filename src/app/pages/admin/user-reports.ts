@@ -154,6 +154,8 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
   Arr: string;
   valArr:string;
   RptTitle : string;
+
+  ReportPreview :boolean;
   
   data: Array<any>;
   activeonly: boolean;
@@ -196,6 +198,7 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
      includeClinicHistoryWhere :string;
      includeRecipientCompetencyWhere :string;
      includeCareplanWhere :string;
+     includeHRCaseStaffWhere :string;
 
      //bodystyle:object;
      RptFormat :string ;
@@ -1392,7 +1395,8 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
     if(this.inputForm.value.functionsArr == "BETWEEN")  {
       this.frm_SecondValue = true;
       this.frm_SecondVal = true;
-    }else{this.frm_SecondValue = false;
+    }else{
+      this.frm_SecondValue = false;
       this.frm_SecondVal  = false;
     }
     
@@ -1413,7 +1417,8 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
           this.Endvalue  = [this.inputForm.value.valArr]; 
                    
         }
-    }else{
+    } 
+    else{
       this.entity =[...this.entity, this.inputForm.value.exportitemsArr];
       this.value = [...this.value, this.inputForm.value.Arr];
       this.condition = [...this.condition, this.inputForm.value.functionsArr];
@@ -1421,6 +1426,7 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
         this.Endvalue  = [...this.Endvalue, this.inputForm.value.valArr];    
           
       }
+      
     }
       
         
@@ -1556,7 +1562,7 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
                 break; 
                 //Staff       
           case 'Staff Name':
-          //  this.ConditionEntity =  
+          //  this.ConditionEntity =  S.FIRSTNAME + ' ' + S.LASTNAME
                 break;
           case 'Program Name':
           //  this.ConditionEntity =  
@@ -3804,7 +3810,7 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
           this.sqlcondition = this.ConditionEntity +" like ('"  + this.value + "')"
           this.Savesqlcondition = this.ConditionEntity +" like ('+'''"  + this.value + "'''+')" //'''NSW'''
         }else{ 
-        this.sqlcondition =this.sqlcondition + " AND " + this.ConditionEntity +" like ('"  + this.value + "')"
+        this.sqlcondition =this.sqlcondition + " AND " + this.ConditionEntity +" like ('"  + this.value + "')"      
         this.Savesqlcondition = this.Savesqlcondition + " AND " +this.ConditionEntity +" like (' + '''"  + this.value + "'''+')"
         }
         
@@ -3888,6 +3894,8 @@ this.sqlselect = "Select " + this.ColumnNameAdjuster(this.list)//.join(" as Fiel
 
   this.sql = this.sqlselect + this.TablesSetting(this.list);
   this.Saverptsql = this.sqlselect + this.TablesSetting(this.list) ;
+
+  
   
   if ((this.inputForm.value.radiofiletr).toString() == 'donotmeet') {
     this.sql =  this.sql + " where Not " +  this.sqlcondition  ;
@@ -3900,15 +3908,19 @@ this.sqlselect = "Select " + this.ColumnNameAdjuster(this.list)//.join(" as Fiel
        
   //  console.log(this.sql)
   //  console.log(this.Saverptsql)
+  
+  
     
 
   }
   ShowReport(){
+    this.ReportPreview = true;
     this.QueryFormation();
     this.tryDoctype = "";
   //  console.log(this.sqlcondition)
     if(this.sqlcondition != null || this.sqlcondition != undefined){
     this.ReportRender(this.sql);
+    
     }
     
   }
@@ -3917,9 +3929,10 @@ this.sqlselect = "Select " + this.ColumnNameAdjuster(this.list)//.join(" as Fiel
     this.isVisibleprompt = true;
   }
   SaveReport(){
-    this.QueryFormation();
-     
+    this.ReportPreview = false;
+    this.QueryFormation();     
       this.isVisibleprompt = false;
+//      var RptSQL  =  this.QueryFinlization(this.Saverptsql);
       var RptSQL  =  this.Saverptsql;
       this.RptTitle = (this.inputForm.value.RptTitle).toString();
 
@@ -3975,11 +3988,8 @@ this.sqlselect = "Select " + this.ColumnNameAdjuster(this.list)//.join(" as Fiel
   back2adminRpt(){
     this.router.navigate(['/admin/reports']); 
   }
-  ReportRender(sql:string){
-
-   // console.log(sql);
-    this.drawerVisible = true;
-    this.loading = true;
+  QueryFinlization(sql:string){
+  //  console.log(sql)
     
     if(this.includeConatctWhere != undefined && this.includeConatctWhere != ""){ sql = sql + " AND " + this.includeConatctWhere}
     if(this.includeGoalcareWhere != undefined && this.includeGoalcareWhere != ""){sql = sql + " AND " + this.includeGoalcareWhere}
@@ -3996,11 +4006,48 @@ this.sqlselect = "Select " + this.ColumnNameAdjuster(this.list)//.join(" as Fiel
     if(this.includeClinicHistoryWhere != undefined && this.includeClinicHistoryWhere != ""){sql = sql + " AND " + this.includeClinicHistoryWhere}
     if(this.includeRecipientCompetencyWhere != undefined && this.includeRecipientCompetencyWhere != ""){sql = sql + " AND " + this.includeRecipientCompetencyWhere}
     if(this.includeCareplanWhere != undefined && this.includeCareplanWhere != ""){sql = sql + " AND " + this.includeCareplanWhere}
+    if(this.includeHRCaseStaffWhere != undefined && this.includeHRCaseStaffWhere != ""){sql = sql + " AND " + this.includeHRCaseStaffWhere}
+
+   
+    if(this.ReportPreview == true){
+      return this.sql = sql;
+    }else{
+      return this.Saverptsql = sql;
+      
+    }
+  }
+  ReportRender(sql:string){
+
+  //  console.log(sql);
+    this.drawerVisible = true;
+    this.loading = true;
+    /*
+    if(this.includeConatctWhere != undefined && this.includeConatctWhere != ""){ sql = sql + " AND " + this.includeConatctWhere}
+    if(this.includeGoalcareWhere != undefined && this.includeGoalcareWhere != ""){sql = sql + " AND " + this.includeGoalcareWhere}
+    if(this.includeReminderWhere != undefined && this.includeReminderWhere != ""){sql = sql + " AND " + this.includeReminderWhere}
+    if(this.includeUserGroupWhere != undefined && this.includeUserGroupWhere != ""){sql = sql + " AND " + this.includeUserGroupWhere}
+    if(this.includePrefrencesWhere != undefined && this.includePrefrencesWhere != ""){sql = sql + " AND " + this.includePrefrencesWhere}
+    if(this.includeIncludSWhere != undefined && this.includeIncludSWhere != ""){sql = sql + " AND " + this.includeIncludSWhere}
+    if(this.includeExcludeSWhere != undefined && this.includeExcludeSWhere != ""){sql = sql + " AND " + this.includeExcludeSWhere}
+    if(this.includeRecipientPensionWhere != undefined && this.includeRecipientPensionWhere != ""){sql = sql + " AND " + this.includeRecipientPensionWhere}
+    if(this.includeLoanitemWhere != undefined && this.includeLoanitemWhere != ""){sql = sql + " AND " + this.includeLoanitemWhere}
+    if(this.includeSvnDetailNotesWhere != undefined && this.includeSvnDetailNotesWhere != ""){sql = sql + " AND " + this.includeSvnDetailNotesWhere}
+    if(this.includeSvcSpecCompetencyWhere != undefined && this.includeSvcSpecCompetencyWhere != ""){sql = sql + " AND " + this.includeSvcSpecCompetencyWhere}
+    if(this.includeOPHistoryWhere != undefined && this.includeOPHistoryWhere != ""){sql = sql + " AND " + this.includeOPHistoryWhere}
+    if(this.includeClinicHistoryWhere != undefined && this.includeClinicHistoryWhere != ""){sql = sql + " AND " + this.includeClinicHistoryWhere}
+    if(this.includeRecipientCompetencyWhere != undefined && this.includeRecipientCompetencyWhere != ""){sql = sql + " AND " + this.includeRecipientCompetencyWhere}
+    if(this.includeCareplanWhere != undefined && this.includeCareplanWhere != ""){sql = sql + " AND " + this.includeCareplanWhere}
+    if(this.includeHRCaseStaffWhere != undefined && this.includeHRCaseStaffWhere != ""){sql = sql + " AND " + this.includeHRCaseStaffWhere}
+
+    
+    */
     
       
-    var fQuery = sql 
       
-      //    console.log(fQuery)
+    
+    var fQuery = this.QueryFinlization(this.sql) 
+      
+          //console.log(fQuery)
       //  console.log(this.inputForm.value.printaslabel)
       
       
@@ -4124,13 +4171,13 @@ ColumnNameAdjuster(fld){
 //General Demographics          
       case 'Full Name-Surname First':
                   if(columnNames != []){
-          columnNames = columnNames.concat(['(R.[Surname/Organisation]' + ' + ' +'FirstName) as  [Full Name]'])
-        }else{columnNames = (['(R.[Surname/Organisation]' + ' + ' +'FirstName) as  [Full Name]'])}        
+          columnNames = columnNames.concat(['(R.[Surname/Organisation]' + ' + ' +'R.FirstName) as  [Full Name]'])
+        }else{columnNames = (['(R.[Surname/Organisation]' + ' + ' +'R.FirstName) as  [Full Name]'])}        
           break;
       case 'Full Name-Mailing':
                   if(columnNames != []){
-              columnNames = columnNames.concat(['(R.[Surname/Organisation]' + ' + ' +'FirstName) as  [Full Name-Mailing]'])
-            }else{columnNames = (['(R.[Surname/Organisation]' + ' + ' +'FirstName) as  [Full Name-Mailing]'])}        
+              columnNames = columnNames.concat(['(R.[Surname/Organisation]' + ' + ' +'R.FirstName) as  [Full Name-Mailing]'])
+            }else{columnNames = (['(R.[Surname/Organisation]' + ' + ' +'R.FirstName) as  [Full Name-Mailing]'])}        
               break;
       case 'Gender':
                   if(columnNames != []){
@@ -4347,18 +4394,18 @@ ColumnNameAdjuster(fld){
               //Staff                
             case 'Staff Name':
                     if(columnNames != []){
-                columnNames = columnNames.concat(['  '])
-              }else{columnNames = (['  '])}  
+                columnNames = columnNames.concat([' S.FIRSTNAME + S.LASTNAME AS [Staff Name] '])
+              }else{columnNames = ([' S.FIRSTNAME + S.LASTNAME AS [Staff Name] '])}  
                   break;
             case 'Program Name':
                     if(columnNames != []){
-                columnNames = columnNames.concat(['  '])
-              }else{columnNames = (['  '])} 
+                columnNames = columnNames.concat([' HRCaseStaff.[Address1] AS [Program Name] '])
+              }else{columnNames = ([' HRCaseStaff.[Address1] AS [Program Name] '])} 
                   break;
             case 'Notes':
                     if(columnNames != []){
-                columnNames = columnNames.concat(['R.Notes '])
-              }else{columnNames = (['R.Notes '])}
+                columnNames = columnNames.concat(['HRCaseStaff.[Notes] AS [Notes] '])
+              }else{columnNames = (['HRCaseStaff.[Notes] AS [Notes] '])}
                   break;
                   //Other Genral info
             case 'OH&S Profile':
@@ -8313,28 +8360,28 @@ TablesSetting(arr){
     FromSql = FromSql + " left join HumanResources HRLoan on HRLoan.PersonID = R.UniqueID "    
     this.includeLoanitemWhere = " HRLoan.[Group] = 'LOANITEMS'  "
     }
-    if(arr.includes("Staff Code") || arr.includes("Service Date")  || arr.includes("Service Start Time") || arr.includes("Service Code") || arr.includes("Service Hours") || arr.includes("Service Pay Rate")  || arr.includes("Service Bill Rate") || arr.includes("Service Bill Qty") || arr.includes("Service Location/Activity Group") 
+  if(arr.includes("Staff Code") || arr.includes("Service Date")  || arr.includes("Service Start Time") || arr.includes("Service Code") || arr.includes("Service Hours") || arr.includes("Service Pay Rate")  || arr.includes("Service Bill Rate") || arr.includes("Service Bill Qty") || arr.includes("Service Location/Activity Group") 
     || arr.includes("Service Program")  || arr.includes("Service Group") || arr.includes("Service HACCType") || arr.includes("Service End Time/ Shift End Time")  || arr.includes("Service Pay Type") || arr.includes("Service Category") || arr.includes("Service Status") || arr.includes("Service Pay Qty") ){
       FromSql = FromSql + " INNER JOIN Roster SvcDetail ON R.accountno = SvcDetail.[client code]   "          
     }
-    if(arr.includes("Service Funding Source")    ){
+  if(arr.includes("Service Funding Source")    ){
       FromSql = FromSql + " LEFT JOIN Humanresourcetypes ON SvcDetail.Program = HumanResourceTypes.Name  "
       }
-    if(arr.includes("Service Notes")    ){
+  if(arr.includes("Service Notes")    ){
       FromSql = FromSql + " LEFT JOIN History ON CONVERT(varchar,SvcDetail.RecordNo,100) = History.PersonID  "
       this.includeSvnDetailNotesWhere = "   History.ExtraDetail1 = 'SVCNOTE'  "
       }
-    if(arr.includes("Activity")  || arr.includes("Competency")    ){
+  if(arr.includes("Activity")  || arr.includes("Competency")    ){
         FromSql = FromSql + " LEFT JOIN HumanResources SvcSpecCompetency  ON R.UniqueID = SvcSpecCompetency.PersonID "
         this.includeSvcSpecCompetencyWhere = " SvcSpecCompetency.[Type] = 'STAFFATTRIBUTE  "
         }         
-    if(arr.includes("SS Status")    ){
+  if(arr.includes("SS Status")    ){
         FromSql = FromSql + " LEFT JOIN  ServiceOverview ServiceCompetencyStatus ON ServiceCompetencyStatus.[PersonID]  = R.[UniqueID]  "        
-        if(arr.includes("Activity")  || arr.includes("Competency")    ){
+      if(arr.includes("Activity")  || arr.includes("Competency")    ){
           FromSql = FromSql +  " AND ServiceCompetencyStatus.[SERVICE TYPE] = SvcSpecCompetency.[Service] "
-        } else { FromSql = FromSql +  " LEFT JOIN  HumanResources SvcSpecCompetency on ServiceCompetencyStatus.[SERVICE TYPE] = SvcSpecCompetency.[Service] " }
+      } else { FromSql = FromSql +  " LEFT JOIN  HumanResources SvcSpecCompetency on ServiceCompetencyStatus.[SERVICE TYPE] = SvcSpecCompetency.[Service] " }
         }
-    if(arr.includes("OP Notes Date")   || arr.includes("OP Notes Detail") ||  arr.includes("OP Notes Creator") || arr.includes("OP Notes Alarm") || arr.includes("OP Notes Program") || arr.includes("OP Notes Category")  ){
+  if(arr.includes("OP Notes Date")   || arr.includes("OP Notes Detail") ||  arr.includes("OP Notes Creator") || arr.includes("OP Notes Alarm") || arr.includes("OP Notes Program") || arr.includes("OP Notes Category")  ){
           FromSql = FromSql + " LEFT JOIN History OPHistory ON R.UniqueID = OPHistory.PersonID   "        
           this.includeOPHistoryWhere = " OPHistory.ExtraDetail1 = 'OPNOTE'  "
         } 
@@ -8403,19 +8450,19 @@ TablesSetting(arr){
             FromSql = FromSql + "  Right JOIN Documents D   on R.UniqueID = D.PersonID LEFT JOIN HumanResources GOALS on GOALS.PersonID = CONVERT(varchar, D.Doc_ID) "    
           }
           
-        if( arr.includes("Quote Strategy") || arr.includes("Strategy Expected Outcome") || arr.includes("Strategy Contracted ID") || arr.includes("Strategy DS Services") 
-        ){
-            if( arr.includes("Goal  Achieved") || arr.includes("Goal Completed Date") || arr.includes("Goal Last Review Date") || arr.includes("Goal Expected Completion Date") || arr.includes("Quote Goal")
-            ){
+        if( arr.includes("Quote Strategy") || arr.includes("Strategy Expected Outcome") || arr.includes("Strategy Contracted ID") || arr.includes("Strategy DS Services") ){
+            if( arr.includes("Goal  Achieved") || arr.includes("Goal Completed Date") || arr.includes("Goal Last Review Date") || arr.includes("Goal Expected Completion Date") || arr.includes("Quote Goal")){
               FromSql = FromSql + "  LEFT JOIN HumanResources STRATEGIES on STRATEGIES.PersonID = GOALS.RecordNumber "    
             }else{
               FromSql = FromSql + "  Right JOIN Documents D   on R.UniqueID = D.PersonID LEFT JOIN HumanResources GOALS on GOALS.PersonID = CONVERT(varchar, D.Doc_ID) "    
               FromSql = FromSql + "  LEFT JOIN HumanResources STRATEGIES on STRATEGIES.PersonID = GOALS.RecordNumber "      
-            }
-          
-        }
-      
-        
+            }          
+        }                    
+    }
+  if( arr.includes("Staff Name") || arr.includes("Program Name") || arr.includes("Notes") ){ 
+    FromSql = FromSql + " LEFT JOIN HumanResources HRCaseStaff ON R.UniqueID = HRCaseStaff.PersonID "      
+    FromSql = FromSql + " INNER JOIN STAFF S ON HRCaseStaff.NAME = S.UNIQUEID "
+    this.includeHRCaseStaffWhere = "  HRCaseStaff.[Group] = 'COORDINATOR'"
   }
 
 

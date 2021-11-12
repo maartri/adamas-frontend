@@ -275,7 +275,7 @@ searchAvaibleModal:boolean=false;
     RecurrentServiceForm:FormGroup;
     AlertForm:FormGroup;
     
-    viewType: any;
+    viewType: any ;
     start_date:string="";
     end_date:string=""
     ForceAll:Boolean=true;

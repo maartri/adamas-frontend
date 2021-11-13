@@ -118,10 +118,10 @@
             </div>
         </div>
          <div nz-row *ngIf="nzSelectedIndex==1" nzGutter="6">
-            
-            <nz-table #columnTable [nzScroll]="{ y: '300px' }" [nzPageSize]="5" [nzShowPagination]="false"  [nzLoading]="loading" 
+            <gnotes [user]="Person"></gnotes>
+            <!-- <nz-table #columnTable [nzScroll]="{ y: '300px' }" [nzPageSize]="5" [nzShowPagination]="false"  [nzLoading]="loading" 
                 [nzData]="lstNotes"  >
-            <!-- [nzFrontPagination]="true" [nzShowSizeChanger]="true" [nzPaginationPosition]="'top'" [nzPageSizeOptions]="[5, 10, 20,25, 30]" -->
+           
             <thead >
                 <tr>                        
                     <th style="background-color: #002060; " class="left"></th> 
@@ -145,14 +145,14 @@
                           </tr>
                 </td>
                  <td class="left" >                                         
-                    <!-- {{data.detail}}      -->
+           
                         <textarea rows="4" disabled  nz-input>{{data.detail}}</textarea>                    
                 </td>
                 </tr>
             </tbody>
             
             </nz-table> 
-           
+            -->
         </div>
         <div nz-row *ngIf="nzSelectedIndex==2" nzGutter="6">
             <!-- ,  y:'500px' -->

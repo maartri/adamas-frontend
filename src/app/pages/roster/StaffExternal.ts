@@ -39,6 +39,8 @@ export class StaffExternal implements OnInit, OnDestroy {
     private unsubscribe: Subject<void> = new Subject();
     @Input() isVisible:boolean=false;
     @Input() AccountNo:any;
+    Person:any={id:'0',code:'', type:''};
+
     @Output() staffexternalDone:EventEmitter<any>= new EventEmitter();
     nzSelectedIndex:number=0;
     StaffInfo:any=null;
@@ -115,6 +117,8 @@ export class StaffExternal implements OnInit, OnDestroy {
         console.log(this.AccountNo);
         if (index == 0) {
           //this.router.navigate(['/admin/recipient/personal'])
+        }else if (index==1){
+            this.Person.noteType="OPNOTE"
         }
     }
     handleCancel(){
@@ -133,21 +137,26 @@ export class StaffExternal implements OnInit, OnDestroy {
             .pipe(
                 tap(output => {
                     console.log(output);
-                    this.StaffInfo = output[0];            
+                    this.StaffInfo = output[0];     
+                    
+                    this.Person.id=output[0].uniqueID;
+                    this.Person.code=output[0].accountNo; 
+                    this.Person.personType="Staff";
+                    this.Person.noteType="CASENOTE";      
                 }),
                 switchMap(output => 
                      forkJoin( 
                         this.getAddresses(output[0].uniqueID),
                         this.getPhoneContacts(output[0].uniqueID),
-                        this.getNotes(output[0].uniqueID),
+                   //     this.getNotes(output[0].uniqueID),
                         this.getCompetencies(output[0].uniqueID)
                     )) ,
                 tap(output2 => {
                     console.log(output2);
                     this.lstAddress = output2[0];
                     this.lstphones = output2[1];
-                    this.lstNotes = output2[2];
-                    this.lstCompetencies = output2[3];
+                    //this.lstNotes = output2[2];
+                    this.lstCompetencies = output2[2];
                 })
         
         ).subscribe(output2 => console.log( output2))

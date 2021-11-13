@@ -44,7 +44,7 @@ export class RecipientExternal implements OnInit, OnDestroy {
     @Input() AccountNo:any;    
     @Output() recipientexternalDone:EventEmitter<any>= new EventEmitter();
    
-    Person:any={id:'0',code:'', type:''};
+    Person:any={id:'0',code:'',personType:'', noteType:''};
 
     nzSelectedIndex:number=0;
     Info:any=null;

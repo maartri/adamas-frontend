@@ -316,14 +316,14 @@ export class CloseRosterComponent implements OnInit {
 
       this.selectedFunding = this.fundingList
       .filter(opt => opt.checked)
-      .map(opt => opt.description).join("','")
+      .map(opt => opt.description).join(",")
 
       this.selectedPrograms = this.programList
       .filter(opt => opt.checked)
-      .map(opt => opt.title).join("','")
+      .map(opt => opt.title).join(",")
 
       this.dtpEndDate = this.inputForm.get('dtpEndDate').value;
-      this.dtpEndDate = formatDate(this.dtpEndDate, 'MM-dd-yyyy','en_US');
+      // this.dtpEndDate = formatDate(this.dtpEndDate, 'MM-dd-yyyy','en_US');
 
       // let sql = "UPDATE HumanResourceTypes set CloseDate = '"+this.dtpEndDate+"' WHERE [NAME] IN ('"+this.selectedPrograms+"') AND [TYPE] IN ('"+this.selectedFunding+"') AND CloseDate <= '"+this.dtpEndDate+"'"; 
       // // console.log(sql);

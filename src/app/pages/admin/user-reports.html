@@ -47,7 +47,7 @@
                 <div nz-row class="margin">
                     <div nz-col nzSpan="10"  >
                         <div class="form-group"  [formGroup]="inputForm">                                 
-                            <nz-select formControlName="functionsArr"   >
+                            <nz-select formControlName="functionsArr" (ngModelChange)= "SetValueFrame()"  >
                                 <nz-option *ngFor="let option of functionsArr" [nzLabel]="option" [nzValue]="option"></nz-option> 
                             </nz-select>                                                               
                         </div>
@@ -62,12 +62,12 @@
                             </nz-select>    -->                                                           
                         </div>
                     </div>  
-                    <!--
-                    <div nz-col nzSpan="10"   class="margin" >
+                    
+                    <div nz-col nzSpan="10"   class="margin" *ngIf="frm_SecondValue">
                         <div class="form-group"  [formGroup]="inputForm">  
-                            <input nz-input placeholder=" Values"formControlName="valArr"  />                                                                                                               
+                            <input nz-input placeholder=" Values"formControlName="valArr"   />                                                                                                               
                         </div>
-                    </div> -->
+                    </div> 
                 </div>
                 <div>
                     <button nzType="default" class="btn" (click)="apply()">Apply</button>
@@ -83,6 +83,9 @@
                                             <span>Condition </span>
                                         </td>
                                         <td class="colwidth" >
+                                            <span> Value </span>
+                                        </td>
+                                        <td class="colwidth" *ngIf="frm_SecondVal">
                                             <span> Value </span>
                                         </td>
                                         <td class="colwidth"  >
@@ -108,6 +111,13 @@
                                         <td>
                                             <nz-list [nzGrid] >
                                                 <nz-list-item *ngFor="let item of value;let indexofelement= index;"> 
+                                                    <span>{{item}}</span>                                                                                                                                           
+                                                </nz-list-item>
+                                            </nz-list>
+                                        </td>
+                                        <td  *ngIf="frm_SecondVal">
+                                            <nz-list [nzGrid] >
+                                                <nz-list-item *ngFor="let item of Endvalue;let indexofelement= index;"> 
                                                     <span>{{item}}</span>                                                                                                                                           
                                                 </nz-list-item>
                                             </nz-list>
@@ -146,6 +156,7 @@
                         </nz-radio-group>
                     </div>
                     <div class="item-right">
+                        <button nzType="primary" class="btn" (click)="back2adminRpt()">Back</button> 
                         <button nzType="primary" class="btn" (click)="showprompt()">Save</button> 
                         <button nzType="primary" class="btn"  (click)="ShowReport()">Preview</button>                                               
                     </div>

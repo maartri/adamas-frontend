@@ -551,6 +551,8 @@
           <nz-tab nzTitle="Competencies" (nzClick)="tabFindChange(2)"> </nz-tab>
           <!-- <nz-tab nzTitle="Approved/Excludeed Staff" (nzClick)="tabFindChange(3)"> </nz-tab> -->
           <nz-tab nzTitle="Filters" (nzClick)="tabFindChange(4)"> </nz-tab>
+          <nz-tab nzTitle="Extended Search" (nzClick)="tabFindChange(9)"></nz-tab>
+          
         </nz-tabset>
         <div *ngIf="tabFindIndex == 0">
           <div nz-row>
@@ -689,6 +691,73 @@
               </div>
             </div>
           </div>
+        </div>  
+
+        <div nz-row *ngIf="tabFindIndex == 9" nzGutter="16" [formGroup]="extendedSearch">
+                
+                <div nz-col nzSpan="8" class="tree-overflow">
+                    <nz-tree [nzData]="nodelist" nzShowLine (nzClick)="nzEvent($event)"> </nz-tree>
+                </div>
+                
+                <div nz-col nzSpan="16">
+                    <div nz-row>
+                        <div class="form-group">
+                            <input nz-input placeholder="" formControlName="title" />
+                        </div>
+                    </div>
+                    <div nz-row>
+                        <div class="form-group">
+                            <ng-select 
+                            formControlName="rule"
+                            [items]="sampleList" 
+                            [virtualScroll]="true"
+                            [dropdownPosition]="'bottom'"
+                            [clearable]="false"
+                            [closeOnSelect]="true"
+                            >
+                            </ng-select>
+                    </div>
+                </div>
+                <div nz-row [nzGutter]="16">
+                    <div *ngIf="this.extendedSearch.get('rule').value == 'EQUALS' || this.extendedSearch.get('rule').value == 'LESS THEN' || this.extendedSearch.get('rule').value == 'GREATER THAN' ||  this.extendedSearch.get('rule').value == 'NOT EQUAL TO' || this.extendedSearch.get('rule').value == 'BETWEEN' " nz-col class="gutter-row" nzSpan="10" class="form-group">
+                        <input nz-input formControlName="from" />
+                    </div>
+                    <div *ngIf="this.extendedSearch.get('rule').value == 'BETWEEN'" nz-col class="gutter-row text-center" nzSpan="2" class="form-group" style="text-align:center;">
+                        <label>AND</label>
+                    </div>
+                    <div *ngIf="this.extendedSearch.get('rule').value == 'BETWEEN'" nz-col class="gutter-row" nzSpan="10" class="form-group">
+                        <input nz-input formControlName="to"/>
+                    </div>
+                </div>
+                <div nz-row>
+                    <div class="form-group">
+                        <label class="columns" nz-checkbox formControlName="activeonly">Active</label>
+                    </div>
+                    <div class="form-group">
+                        <button nz-button nzType="primary" (click)="setCriteria()">Set Criteria</button>
+                    </div>
+                </div>
+                <div nz-row>
+                    <nz-table #smallTable nzSize="small" nzBordered class="custum-header">
+                        <thead>
+                            <tr>
+                                <th class="coulmn-color">Field/Item</th>
+                                <th class="coulmn-color">Search Type</th>
+                                <th class="coulmn-color">Text To Locate Search</th>
+                                <th class="coulmn-color">End Text For Between Search</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let criteria of cariteriaList">
+                                <td>{{criteria.fieldName}}</td>
+                                <td>{{criteria.searchType}}</td>
+                                <td>{{criteria.textToLoc}}</td>
+                                <td>{{criteria.endText}}</td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </div>
+            </div>
         </div>
         
         <div *ngIf="tabFindIndex == 3">
@@ -748,7 +817,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
         <div *ngIf="tabFindIndex == 4">
           <div nz-row [nzGutter]="8">
             <div nz-col class="gutter-row" [nzSpan]="5">

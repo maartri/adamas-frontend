@@ -62,6 +62,9 @@ export class RecipientOthersAdmin implements OnInit, OnDestroy {
 
     dateFormat: string = dateFormat;
 
+    occupationDefault: string;
+    financialClassDefault: string;
+
     constructor(
         private timeS: TimeSheetService,
         private sharedS: ShareService,
@@ -103,8 +106,8 @@ export class RecipientOthersAdmin implements OnInit, OnDestroy {
     search(data: any){
         this.timeS.getothers(data.id)
             .subscribe(data => {
-                console.log(data);
                 this.othersForm.patchValue(data)
+                this.occupationDefault = data.occupation;
                 this.detectChanges();
             });
     }
@@ -124,8 +127,7 @@ export class RecipientOthersAdmin implements OnInit, OnDestroy {
             financialClass: null,
             admittedBy: null,
             dischargeDate: null,
-            dischargedBy: null,
-            
+            dischargedBy: null,            
 
         });
     }
@@ -145,9 +147,10 @@ export class RecipientOthersAdmin implements OnInit, OnDestroy {
                 }
             });
         }
-
         return true;
     }
+
+  
 
     populate(){
         forkJoin([

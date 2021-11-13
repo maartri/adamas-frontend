@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { ListService, MenuService , PrintService, TimeSheetService, workflowClassification } from '@services/index';
+import { ListService, MenuService , PrintService, TimeSheetService, UploadService, workflowClassification } from '@services/index';
 import { GlobalService } from '@services/global.service';
 import { takeUntil, switchMap } from 'rxjs/operators';
 import { Subject, EMPTY, forkJoin } from 'rxjs';
@@ -61,7 +61,10 @@ export class FollowupComponent implements OnInit {
   allStaff:boolean = false;
   allstaffIntermediate: boolean = false;
   selectedStaff:any[];
-  
+  reminders: Array<any> = []
+  templates: any;
+  documents: any;
+  customdatasets: any;
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -69,6 +72,7 @@ export class FollowupComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private listS:ListService,
     private menuS:MenuService,
+    private uploadS:UploadService,
     private timeS:TimeSheetService,
     private printS:PrintService,
     private formBuilder: FormBuilder,
@@ -114,28 +118,39 @@ export class FollowupComponent implements OnInit {
       }
     }
     loadData(){
-      this.menuS.getconfigurationworkflows(this.menuType,this.listAllWithDeleted).subscribe(data => {
+      this.menuS.getconfigurationworkflows(this.menuType,(this.listAllWithDeleted == true) ? 1 : 0).subscribe(data => {
         this.tableData = data;
         this.loading = false;
-    });
-      
+      });
     }
     populateDropdowns(){
+      
       let sql  = "SELECT TITLE FROM ITEMTYPES WHERE ProcessClassification IN ('OUTPUT', 'EVENT', 'ITEM') AND ENDDATE IS NULL";
+      
       this.listS.getlist(sql).subscribe(data => {
         this.listType = data;
       });
+      
+      if(this.menuType == 'FOLLOWUP'){
+        this.listS.getlistrecipientremindersObj().subscribe(data => this.staffList = data);
+      }
+      if(this.menuType == 'DOCUMENTS'){
+        this.uploadS.getdocumenttemplate().subscribe(data => this.staffList = data);;
+      }
+      if(this.menuType == 'XTRADATA'){
+        this.listS.customdatasetObj().subscribe(data => this.staffList = data)
+      }
+      
       return forkJoin([
         this.listS.getlistbranchesObj(),
         this.listS.getfundingsource(),
         this.listS.casemanagerslist(),
-        this.listS.workflowstafflist(),
       ]).subscribe(x => {
         this.branchesList   = x[0];
         this.funding_source = x[1];
         this.casemanagers   = x[2];
-        this.staffList      = x[3];
       });
+    
     }
     
     showAddModal() {
@@ -162,6 +177,7 @@ export class FollowupComponent implements OnInit {
         funding,
         casemanager,
         endDate,
+        staff,
         recordNumber,
         
       } = this.tableData[index];
@@ -172,6 +188,7 @@ export class FollowupComponent implements OnInit {
         fundingSource:funding,
         endDate:endDate,
         casemanager:casemanager,
+        staff:staff,
         recordNumber:recordNumber,
       });
     }
@@ -180,7 +197,7 @@ export class FollowupComponent implements OnInit {
       if (this.allStaff) {
         this.staffList.forEach(x => {
           x.checked = true;
-          this.selectedStaff.push(x.staffCode);
+          this.selectedStaff.push(x.description);
         });
       }else{
         this.staffList.forEach(x => {
@@ -219,6 +236,7 @@ export class FollowupComponent implements OnInit {
     
     handleCancel() {
       this.modalOpen = false;
+      this.isUpdate  = false;
     }
     pre(): void {
       this.current -= 1;
@@ -228,10 +246,13 @@ export class FollowupComponent implements OnInit {
       this.current += 1;
     }
     save() {
+      console.log(this.inputForm.value + " form before submission ");
       if(!this.isUpdate){
         this.inputForm.patchValue({
           group: this.menuType,
+          selectedStaff: this.selectedStaff,
         })
+        console.log(this.inputForm.value + " form before submission ");
         this.menuS.postconfigurationfollowups(this.inputForm.value).subscribe(data => {
           if(data){
               this.globalS.sToast('Success','Inserted SucessFully');
@@ -284,10 +305,11 @@ export class FollowupComponent implements OnInit {
         activity:'',
         name:'',
         branch:'',
+        staff:'',
         fundingSource:'',
         casemanager:'',
-        staff:'',
-        endDate:'', 
+        endDate:'',
+        selectedStaff : this.selectedStaff,
         recordNumber:null,
       });
       }

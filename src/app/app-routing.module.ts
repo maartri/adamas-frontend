@@ -158,7 +158,7 @@ import {
 
 
 import {  
-  RostersAdmin,ShiftDetail,AddRoster
+  RostersAdmin,ShiftDetail,AddRoster,RecipientExternal,StaffExternal
 } from './pages/roster/index';
 
 import { ExtraComponent } from './pages/extra/extra';
@@ -180,6 +180,7 @@ import { OccupationComponent } from '@admin/configuration/genrel-setup/occupatio
 import { ReligionComponent } from '@admin/configuration/genrel-setup/religion.component';
 import { PhoneemailtypesComponent } from '@admin/configuration/genrel-setup/phoneemailtypes.component';
 import { FinancialclassComponent } from '@admin/configuration/genrel-setup/financialclass.component';
+import { CustomDatasets } from '@admin/configuration/genrel-setup/customdatasets.component';
 import { PostcodesComponent } from '@admin/configuration/genrel-setup/postcodes.component';
 import { HolidaysComponent } from '@admin/configuration/genrel-setup/holidays.component';
 import { MedicalcontactComponent } from '@admin/configuration/genrel-setup/medicalcontact.component';
@@ -636,6 +637,10 @@ const routes: Routes = [
         component:FinancialclassComponent,
       },
       {
+        path:"customdataset",
+        component:CustomDatasets,
+      },
+      {
         path:"postcodes",
         component:PostcodesComponent,
       },
@@ -957,7 +962,15 @@ const routes: Routes = [
         path: 'addroster',
         component: AddRoster
       },
-      
+      {
+        path: 'recipient-external',
+        component: RecipientExternal
+      },
+      {
+        path: 'staff-external',
+        component:StaffExternal
+      },
+     
       {
         path: 'staff',
         component: StaffAdmin,
@@ -1230,6 +1243,8 @@ export const PAGE_COMPONENTS = [
   RostersAdmin,
   ShiftDetail,
   AddRoster,
+  RecipientExternal,
+  StaffExternal,
   //Configuration
   CompaniesComponent,
   BranchesComponent,
@@ -1251,7 +1266,8 @@ export const PAGE_COMPONENTS = [
   ReligionComponent,
   OccupationComponent,
   PhoneemailtypesComponent,
-  FinancialclassComponent, 
+  FinancialclassComponent,
+  CustomDatasets, 
   PostcodesComponent,
   HolidaysComponent,
   MedicalcontactComponent,

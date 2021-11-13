@@ -1,0 +1,220 @@
+<nz-modal
+[(nzVisible)]="isVisible"
+[nzTitle]="modalTitle"
+[nzContent]="modalContent"
+[nzFooter]="modalFooter"
+(nzOnCancel)="handleCancel()"
+[nzWidth]="900"
+>
+<ng-template #modalTitle>Staff Contact Details : {{AccountNo.data}}</ng-template>
+
+<ng-template #modalContent >
+<div class="flexy" style="min-height:21rem;" >
+    <div nz-col nzSpan="24">
+      
+        <nz-tabset  [nzTabPosition]="'top'" [nzType]="'card'">
+            <nz-tab nzTitle="General" (nzClick)="view(0)"> </nz-tab>           
+            <nz-tab nzTitle="Operational Notes & History" (nzClick)="view(1)"> </nz-tab>
+            <nz-tab nzTitle="Competencies" (nzClick)="view(2)"> </nz-tab>        
+            
+        </nz-tabset>
+       
+        <div nz-row *ngIf="nzSelectedIndex==0"  >
+            <div nz-col nzGutter="1" nzSpan="12" >
+                <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading"
+                [nzData]="lstAddress" [nzLoadingDelay]="3000">
+                
+                <thead style="margin-left: 20px;width:100%">
+                    <tr>
+                        <th style="background-color: #002060;" class="left"></th> 
+                        <th style="background-color: #002060; color: white;" class="left">Address Details</th> 
+                        <th style="background-color: #002060;" class="left"></th> 
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of lstAddress;let i = index;"  
+                    [style.background-color]="i == HighlightRow ? '#bbd7fa' : 'white'">
+
+                    <td [nzShowCheckbox]="true" [nzChecked]="data.primaryAddress=='1'"></td>    
+                    <!-- <td><input type="checkbox" [checked]="data.primaryAddress=='1'"/></td> -->
+                    <td class="left" >                                         
+                                {{data.type}}                                                                           
+                        </td>
+                        <td class="left" >                                         
+                            {{data.address}}                                                                           
+                    </td>
+                    </tr>
+                </tbody>
+                
+                </nz-table> 
+                <nz-table ##basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading"
+                [nzData]="lstphones" [nzLoadingDelay]="3000">
+                
+                <thead >
+                    <tr>                        
+                        <th style="background-color: #002060; " class="left"></th> 
+                        <th style="background-color: #002060; color: white" class="left" >Contacts Details</th> 
+                        <th style="background-color: #002060; " class="left"></th> 
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of lstphones;let i = index;"  
+                    [style.background-color]="i == HighlightRow ? '#bbd7fa' : 'white'">
+                    
+                    
+                <td [nzShowCheckbox]="true" [nzChecked]="data.primaryPhone=='True'"></td>    
+                    <!-- <td><input type="checkbox" [checked]="data.primaryPhone=='True'"/></td> -->
+                    <td class="left" >                                         
+                                {{data.type}}                                                                         
+                    </td>
+                     <td class="left" >                                         
+                            {{data.detail}}                                                                           
+                    </td>
+                    </tr>
+                </tbody>
+                
+                </nz-table> 
+               
+            </div>
+     
+             <div nz-col nzGutter="1" nzSpan="12">
+               
+                <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading"
+                [nzData]="StaffInfo.stF_Notes" >
+                    <thead style="margin-left: 20px;width:100%">
+                        <tr>
+                            <th style="background-color: #002060; color: white " class="left">General Notes</th> 
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="left" >
+                            <textarea *ngIf="StaffInfo.stF_Notes" rows="4" nz-input>{{StaffInfo.stF_Notes}}</textarea>                      
+                               
+                        </td>                     
+                        
+                        </tr>                
+                </nz-table> 
+           
+                 <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading"
+                 [nzData]="StaffInfo.contactIssues" >
+                     <thead style="margin-left: 20px;width:100%">
+                         <tr>
+                             <th style="background-color: #002060; color: white; " class="left">Contact Issues</th> 
+                            
+                         </tr>
+                     </thead>
+                     <tbody>
+                         <tr>                     
+                         <td class="left" >
+                            
+                            <textarea *ngIf="StaffInfo.contactIssues" rows="4" nz-input>{{StaffInfo.contactIssues}}</textarea>
+                         </td>                     
+                        
+                         </tr>                
+                 </nz-table> 
+            
+            </div>
+        </div>
+         <div nz-row *ngIf="nzSelectedIndex==1" nzGutter="6">
+            
+            <nz-table #columnTable [nzScroll]="{ y: '300px' }" [nzPageSize]="5" [nzShowPagination]="false"  [nzLoading]="loading" 
+                [nzData]="lstNotes"  >
+            <!-- [nzFrontPagination]="true" [nzShowSizeChanger]="true" [nzPaginationPosition]="'top'" [nzPageSizeOptions]="[5, 10, 20,25, 30]" -->
+            <thead >
+                <tr>                        
+                    <th style="background-color: #002060; " class="left"></th> 
+                    <th style="background-color: #002060; color: white " class="left">Operational Notes & History</th> 
+                    <th style="background-color: #002060; " class="left"></th> 
+                </tr>
+            </thead>
+            <tbody>
+                <tr  *ngFor="let data of lstNotes;let i = index;"  
+                [style.background-color]="i == HighlightRow ? '#bbd7fa' : 'white'">
+                                
+                <td class="left"   style="width:20%; ">  
+                        <tr>
+                          <td style="border: thin; border-style: solid;">  {{data.detailDate}} </td>
+                        </tr>
+                        <tr>
+                          <td>Created By: </td>
+                        </tr>
+                        <tr style="background: linear-gradient(to bottom,  #ff9999 0%, #ff6666 100%); color:white; text-align: center;">
+                            <td> {{data.creator}} </td>
+                          </tr>
+                </td>
+                 <td class="left" >                                         
+                    <!-- {{data.detail}}      -->
+                        <textarea rows="4" disabled  nz-input>{{data.detail}}</textarea>                    
+                </td>
+                </tr>
+            </tbody>
+            
+            </nz-table> 
+           
+        </div>
+        <div nz-row *ngIf="nzSelectedIndex==2" nzGutter="6">
+            <!-- ,  y:'500px' -->
+            <label style="padding:10px;  background-color: #002060; color: #ffffff; margin-right: 10px; font-size: 16px;" class="left">Staff Competencies & Skills</label> 
+            <nz-table #basicTable   [nzScroll]="{x:'1200px'}" [nzBordered]="true" [nzPageSize]="5" [nzShowPagination]="false"  [nzLoading]="loading" 
+                [nzData]="lstCompetencies" [nzTableLayout]="false">
+            <!-- [nzFrontPagination]="true" [nzShowSizeChanger]="true" [nzPaginationPosition]="'top'" [nzPageSizeOptions]="[5, 10, 20,25, 30]" -->
+            <thead>
+                <tr>                        
+                    <th [nzLeft]="false" style="background-color: #d6d3d3;" >Competency</th> 
+                    <th [nzLeft]="false" style="background-color: #d6d3d3;" >Expiry Date</th> 
+                    <th [nzLeft]="false" style="background-color: #d6d3d3;" >Reminder Date</th> 
+                    <th [nzLeft]="false" style="background-color: #d6d3d3;" >Mandatory</th> 
+                    <th [nzLeft]="false" style="background-color: #d6d3d3;" >Cert./Reg. No.</th> 
+                    <th [nzLeft]="false" style="background-color: #d6d3d3;" >Compeletion Date</th> 
+                    <th [nzLeft]="false" style="background-color: #d6d3d3;" >Notes</th> 
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of lstCompetencies;let i = index;"  
+                [style.background-color]="i == HighlightRow ? '#bbd7fa' : 'white'">
+                                
+                <td [nzLeft]="false" >  
+                       {{data.competency}}                    
+                </td>
+                 <td [nzLeft]="false"  >                                         
+                    {{data.expiry_Date}}                   
+                </td>
+                <td [nzLeft]="false"  >                                         
+                    {{data.reminder_Date}}                   
+                </td>
+
+                <td [nzLeft]="false"   [nzShowCheckbox]="true" [nzChecked]="data.mandatory=='True'" >                                         
+                              
+                </td>
+                <td [nzLeft]="false"  >                                         
+                    {{data.address1}}                   
+                </td>
+                <td [nzLeft]="false"  >                                         
+                    {{data.completion_Date}}                   
+                </td>
+                <td [nzLeft]="false"  >                                         
+                    {{data.notes}}                   
+                </td>
+                                
+                </tr>
+            </tbody>
+            
+            </nz-table> 
+           
+
+        </div>
+    </div>
+</div>
+</ng-template>
+
+<ng-template #modalFooter>
+    
+    <button nz-button nzType="primary" >
+        <span>Done</span>
+    </button>
+     <button nz-button nzType="default" (click)="handleCancel()">Cancel</button> 
+    
+</ng-template>
+</nz-modal>

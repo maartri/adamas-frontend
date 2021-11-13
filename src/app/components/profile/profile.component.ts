@@ -58,12 +58,19 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   private onTouchedCallback: () => void = noop;
   private onChangeCallback: (_: any) => void = noop;
 
+
+  coordinator$: Observable<any>;
+  programs$: Observable<any>;
+
   showUpload: boolean = false;
   innerValue: ProfileInterface;
+
+  current: number = 0;
 
   profileStaffModal: boolean = false;
   profileStaffOptionsModal: boolean = false;
   profileStaffPreferredModal: boolean = false;
+  addCaseStaffModal: boolean = false;
 
   tabIndex: number = 0;
 
@@ -79,6 +86,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
   contactsArray: Array<any> = [];
   addressArray: Array<any> = [];
+  caseStaffArray: Array<any> = [];
 
   years: Array<string> = [];
   months: Array<string> = [];
@@ -92,6 +100,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   userForm: FormGroup;
   emailCoordinatorGroup: FormGroup;
   contactIssueGroup: FormGroup;
+  caseStaffGroup: FormGroup;
 
   loading: boolean = false;
   editProfileDrawer: boolean = false;
@@ -118,7 +127,10 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
   showAvatar: boolean;
   staffrecordview: string; 
-  token: any
+  token: any;
+
+  topBelow = { top: '20px' }
+
 
   constructor(
     private globalS: GlobalService,
@@ -172,6 +184,12 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
       contactIssues: '',
       rosterAlerts: '',
       runsheetAlerts: ''
+    });
+
+    this.caseStaffGroup = this.formBuilder.group({
+      coordinator: null,
+      program: null,
+      notes: null
     });
 
     this.contactForm = this.formBuilder.group({
@@ -238,7 +256,6 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   }
 
   patchTheseValuesInForm(user = this.user) {
-    console.log(user);
 
     if (this.innerValue.view === view.recipient) {
       this.userForm.patchValue({
@@ -317,6 +334,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
         isRosterable: user.isRosterable,
         isCaseLoad: user.caseManager
       });
+
       this.globalS.var1 = this.userForm.value.recordId;      
       this.cd.markForCheck();
       this.cd.detectChanges();
@@ -353,7 +371,16 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     this.cd.detectChanges();
   }
 
+  populateCaseStaff(id: any = this.innerValue.id): void{
+    this.listS.getcasestaffpopulate(id).subscribe(data =>{
+        this.caseStaffArray = data;
+        this.detectChanges();
+    });
+  }
+
   pathForm(token: ProfileInterface) {
+
+    this.populateCaseStaff(token.id);
 
     if (this.globalS.isEmpty(token))
       return;
@@ -551,6 +578,33 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     }
   }
 
+  
+
+  next(){
+    this.current++;
+  }
+
+  pre(){
+    this.current--;
+  }
+
+  addCaseStaff(){
+    const { coordinator, notes, program } = this.caseStaffGroup.value;
+
+    this.listS.postcasestaff({
+      personId: this.innerValue.id,
+      notes: notes,
+      caseManagerId: coordinator,
+      program: program
+    }).subscribe(data => {
+      this.globalS.sToast('Success', 'Case Staff is added');
+      this.populateCaseStaff();
+      this.addCaseStaffModal = false;
+
+      this.detectChanges();
+    });
+  }
+
   handleCancel(): void {
     
     this.addressForm.reset();
@@ -561,6 +615,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     this.profileRecipientOptionsModal = false;
     this.changeProfilePictureModal = false;
     this.loadPhoto = false;
+    this.addCaseStaffModal = false;
     this.src = '';
   }
 
@@ -905,7 +960,6 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     this.editModalOpen = true;
     this.window = 1;
     this.addressForm.reset();
-    console.log(address);
     this.addressForm.patchValue({
       id: address.recordNumber,
       description: address.description,
@@ -996,6 +1050,13 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
   }
 
+  POPULATE_CASE_STAFF(){
+    this.current = 0;
+    this.caseStaffGroup.reset();
+    this.coordinator$ = this.listS.getcasestafflist(this.innerValue.id);
+    this.programs$ = this.listS.getcasestaffprograms();
+  }
+
   POPULATE_DATE_DROPDOWNS() {
     this.months = months;
     this.years = this.globalS.year();
@@ -1067,8 +1128,6 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   saveTab() {
     const { sqlId, uniqueID } = this.user;
     const { contactIssues,  rosterAlerts, runsheetAlerts  } = this.contactIssueGroup.value;
-
-    console.log(this.user);
 
     this.timeS.updatecontactrosterrunsheet({
       contactIssues,
@@ -1146,8 +1205,8 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   }
 
   private imgBlobData: any;
+  
   imgBLOB(file: any) {
-    console.log(file);
     this.imgBlobData = file;
   }
 
@@ -1178,6 +1237,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   isPhoneFax(data: any){
     return data == 'FAX' || data == 'HOME' || data == 'WORK';
   }
+
   toMap(address: any){
              var adds = [];
              var addr = new Address(address.postCode, address.address1, address.suburb, address.stat);
@@ -1185,5 +1245,14 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
               console.log(addres);
              window.open(`https://www.google.com/maps/dir${addres.join('')}`,'_blank');
              return false;
-}
+  }
+
+
+  deleteStaff(data){
+    console.log(data);
+    this.listS.deletecasestaff(data.recordNumber).subscribe(data => {
+      this.populateCaseStaff();
+      this.globalS.sToast('Success','Case Staff deleted');
+    })
+  }
 }

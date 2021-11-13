@@ -316,7 +316,15 @@ const inputFormDefault = {
 and (min-width : 1224px) {
     iframe {
         width= 1200px;
-        height=860px;
+        height=768px;
+    }
+}
+@media only screen 
+and (min-device-width : 768px) 
+and (max-device-width : 1024px) {
+    iframe {
+        width= 1024px;
+        height=668px;
     }
 }
 
@@ -19379,6 +19387,9 @@ CustomReportSetting(){
 
 FetchRuntimeReport(strtitle){
 //    console.log("TITLE:  " +strtitle)
+    this.tryDoctype = ""; 
+    this.drawerVisible = true; 
+    this.loading = true;
     var strFilter = strtitle.toString().substring(0,1)
   //  console.log(strFilter)
     var title = strtitle.toString().substring(1,strtitle.length)
@@ -19400,16 +19411,17 @@ FetchRuntimeReport(strtitle){
             break;
     }
   const temp =  forkJoin([
-        this.ReportS.GetReportFormat(title),
-     //   this.ReportS.GetReportSql(strtitle)
+    //    this.ReportS.GetReportFormat(title),
+    
+        this.ReportS.GetReportSql(title)
     ]);    
     temp.subscribe(data => {
         //this.UserRptFormatlist = data[0];
         this.UserRptSQLlist = data[0];   
         var re = /~/gi;    
-        //console.log((this.UserRptSQLlist.toString()).replace(re,"'"))
+     //   console.log((this.UserRptSQLlist.toString()).replace(re,"'"))
     
-    //    this.RenderRunTimeReport((this.UserRptSQLlist.toString()).replace(re,"'"))
+        this.RenderRunTimeReport((this.UserRptSQLlist.toString()).replace(re,"'"))
 
     });
 
@@ -19419,10 +19431,11 @@ FetchRuntimeReport(strtitle){
 
 }
 RenderRunTimeReport(strSQL){
-    console.log(strSQL)
+  //  console.log(strSQL)
     const data = {
         
-        "template": { "_id": "qTQEyEz8zqNhNgbU" },
+        //"template": { "_id": "qTQEyEz8zqNhNgbU" },
+        "template": { "_id": "x8QVE8KhcjiJvD6c" },
                     
         "options": {
             "reports": { "save": false },
@@ -19437,7 +19450,7 @@ RenderRunTimeReport(strSQL){
     
 
     this.printS.print(data).subscribe((blob: any) => {
-        this.pdfTitle = "RunTimeReport.pdf"
+        this.pdfTitle = "User Custom Report.pdf"
         this.drawerVisible = true;                   
         let _blob: Blob = blob;
         let fileURL = URL.createObjectURL(_blob);

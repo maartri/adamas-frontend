@@ -111,7 +111,7 @@ export class ProfileAccounting implements OnInit, OnDestroy {
         this.cd.reattach();
 
         this.loading = true;
-        this.timeS.getaccountingprofile(user.id).subscribe(data => {
+        this.listS.getaccountingprofile(user.id).subscribe(data => {
             this.profileForm.patchValue(data);
             this.cd.markForCheck();
         });

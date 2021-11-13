@@ -39,7 +39,7 @@ export class StaffExternal implements OnInit, OnDestroy {
     private unsubscribe: Subject<void> = new Subject();
     @Input() isVisible:boolean=false;
     @Input() AccountNo:any;
-    Person:any={id:'0',code:'', type:''};
+    // Person:any={id:'0',code:'', type:''};
 
     @Output() staffexternalDone:EventEmitter<any>= new EventEmitter();
     nzSelectedIndex:number=0;

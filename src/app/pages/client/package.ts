@@ -13,6 +13,9 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 import { NzModalService } from 'ng-zorro-antd/modal';
 
+const PRINT: string = 'PRINT';
+const GENERATING: string = 'GENERATING';
+
 @Component({
     selector: 'package-client',
     styles: [`
@@ -41,7 +44,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
         nz-descriptions >>> table > tbody > tr:nth-child(4) > td:first-child {
             background: #adffb7;
         }
-        a.print{
+        button.print{
             float:right;
         }
         .title-col{
@@ -62,6 +65,9 @@ export class PackageClient implements OnInit, OnDestroy {
     rpthttp = 'https://www.mark3nidad.com:5488/api/report';
     
     drawerVisible: boolean = false;
+    generateReportBool: boolean = false;
+    printGenStr: string = PRINT;
+
     tryDoctype: any;
 
     @Input() id: any;
@@ -330,6 +336,8 @@ export class PackageClient implements OnInit, OnDestroy {
                 "balances": balances
             }
         }
+        this.generateReportBool = true;
+        this.printGenStr = GENERATING;
 
         this.printS.print(data).subscribe((blob: any) => {
             this.drawerVisible = true;
@@ -338,8 +346,7 @@ export class PackageClient implements OnInit, OnDestroy {
             this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
             this.loading = false;
             this.cd.detectChanges();
-        }, err => {
-            console.log(err);
+        }, err => {            
             this.loading = false;
             this.ModalS.error({
                 nzTitle: 'TRACCS',
@@ -348,6 +355,9 @@ export class PackageClient implements OnInit, OnDestroy {
                     this.drawerVisible = false;
                 },
             });
+        }, () =>{
+            this.generateReportBool = false;
+            this.printGenStr = PRINT;
         });
 
         return;

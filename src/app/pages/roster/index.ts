@@ -3,4 +3,5 @@ export * from './shiftdetail'
 export * from './addroster'
 export * from './RecipientExternal'
 export * from './StaffExternal'
+export * from './gnotes'
 

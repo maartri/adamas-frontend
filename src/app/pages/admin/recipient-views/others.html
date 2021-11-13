@@ -1,12 +1,23 @@
-<div nz-row style="margin-top:2rem" [formGroup]="othersForm">   
-    <h4>General Activation Information</h4>
+<div nz-row>
+    <div nz-col nzOffset="1">
+        <button class="botton success" (click)="save()" [disabled]="!othersForm?.dirty">Save Changes</button>           
+    </div>
+</div>
+<div nz-row [formGroup]="othersForm">   
+
+    <nz-divider nzText="General Activation Information" nzOrientation="left"></nz-divider>
 
     <div nz-row>
         <div nz-col nzSpan="12" class="layer2">
             <span>Type: </span>
-            <nz-select formControlName="type" nzSize="small" >
+            <nz-select formControlName="type" >
                 <nz-option *ngFor="let type of types" [nzValue]="type" [nzLabel]="type"></nz-option>
             </nz-select>
+        </div>
+        <div nz-col nzSpan="12" class="layer2">
+            <span>Company/Organisation </span>
+            <label nz-checkbox formControlName="companyFlag"></label>
+
         </div>
     </div>
 
@@ -16,12 +27,16 @@
             <span>Last Activation Date: </span>
             <nz-date-picker formControlName="admissionDate" [nzFormat]="dateFormat"></nz-date-picker>
         </div>
+        <div nz-col nzSpan="12" class="layer2">
+            <span>Enable Autocreation Rosters </span>
+            <label nz-checkbox formControlName="excludeFromRosterCopy"></label>
+        </div>
     </div>
 
     <div nz-row>
         <div nz-col nzSpan="12" class="layer2">
             <span>Activated By: </span>
-            <nz-select formControlName="admissionDate" nzSize="small" nzDisabled>
+            <nz-select formControlName="admissionDate" nzDisabled>
                 <nz-option *ngFor="let type of types" [nzValue]="type" [nzLabel]="type"></nz-option>
             </nz-select>
         </div>
@@ -30,7 +45,7 @@
     <div nz-row>
         <div nz-col nzSpan="12" class="layer2">
             <span>Admitting Branch: </span>
-            <nz-select formControlName="branch" nzSize="small">
+            <nz-select formControlName="branch">
                 <nz-option *ngFor="let branch of branches" [nzValue]="branch" [nzLabel]="branch"></nz-option>
             </nz-select>
         </div>
@@ -39,7 +54,7 @@
     <div nz-row>
         <div nz-col nzSpan="12" class="layer2">
             <span>Coordinator: </span>
-            <nz-select formControlName="recipient_Coordinator" nzSize="small" >
+            <nz-select formControlName="recipient_Coordinator" >
                 <nz-option *ngFor="let case of casemanagers" [nzValue]="case" [nzLabel]="case"></nz-option>
             </nz-select>
         </div>
@@ -56,7 +71,7 @@
 </div>
 
 <div nz-row style="margin-top:2rem">   
-    <h4>General De-Activation Information</h4>
+    <nz-divider nzText="General De-Activation Information" nzOrientation="left"></nz-divider>
 
     <div nz-row>
         <div nz-col nzSpan="12" class="layer2">
@@ -68,22 +83,21 @@
 </div>
 
 <div nz-row style="margin-top:2rem">   
-    <h4>MISC Demographic Information</h4>
-
-    <div nz-row>
+    <nz-divider nzText="MISC Demographic Information" nzOrientation="left"></nz-divider>
+    <div nz-row [formGroup]="othersForm">
         <div nz-col nzSpan="12" class="layer2">
             <span>Occupation: </span>
-            <nz-select ngModel="lucy" nzSize="small" nzPlaceHolder="Pick Alert Recipient From Drop Down List or Type in a valid alternate address">
-              
+            <nz-select formControlName="occupation">
+                <nz-option [nzLabel]="occupationDefault" [nzValue]="occupationDefault"></nz-option>
             </nz-select>
         </div>
     </div>
 
-    <div nz-row>
+    <div nz-row [formGroup]="othersForm">
         <div nz-col nzSpan="12" class="layer2">
             <span>Financial Classification: </span>
-            <nz-select ngModel="lucy" nzSize="small" nzPlaceHolder="Pick Alert Recipient From Drop Down List or Type in a valid alternate address">
-               
+            <nz-select formControlName="financialClass">
+                <nz-option [nzLabel]="occupationDefault" [nzValue]="occupationDefault" nzHide></nz-option>
             </nz-select>
         </div>
     </div>

@@ -72,9 +72,13 @@ export class AccountingHistory implements OnInit, OnDestroy {
     search(user: any = this.user) {
         this.cd.reattach();
 
+        console.log(user);
+
         this.loading = true;
-        this.timeS.getplans(user.id).subscribe(plans => {
+
+        this.listS.getaccountinghistory(user.code).subscribe(plans => {
             this.tableData = plans;
+            console.log(plans);
             this.loading = false;
             this.cd.markForCheck();
         });

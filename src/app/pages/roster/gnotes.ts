@@ -283,8 +283,8 @@ export class GNotes implements OnInit, OnDestroy {
         this.caseFormGroup.controls["restrictions"].setValue(restricts ? '' : this.listStringify());
 
         this.loading = true;
-        if (this.addOrEdit == 1) {      
-            if (this.user.noteType=='OPNOTE')      
+        if (this.addOrEdit == 1) {    
+            if (this.user.noteType=='OPNOTE')       
                 this.clientS.postopnotes(this.caseFormGroup.value, this.user.id)
                     .subscribe(data => {
                         this.globalS.sToast('Success', 'Note inserted');
@@ -300,7 +300,9 @@ export class GNotes implements OnInit, OnDestroy {
                 });
         }
         if (this.addOrEdit == 2) {
+
             if (this.user.noteType=='OPNOTE')      
+
                 this.clientS.updateopnotes(this.caseFormGroup.value, this.caseFormGroup.value.recordNumber)
                     .subscribe(data => {
                         this.globalS.sToast('Success', 'Note updated');
@@ -308,7 +310,7 @@ export class GNotes implements OnInit, OnDestroy {
                         this.getNotes(this.user);                    
                     });
             else
-                this.clientS.updateopnotes(this.caseFormGroup.value, this.caseFormGroup.value.recordNumber)
+                this.clientS.updatecasenotes(this.caseFormGroup.value, this.caseFormGroup.value.recordNumber)
                     .subscribe(data => {
                         this.globalS.sToast('Success', 'Note updated');
                         this.handleCancel();

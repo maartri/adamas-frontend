@@ -119,40 +119,7 @@
         </div>
          <div nz-row *ngIf="nzSelectedIndex==1" nzGutter="6">
             <gnotes [user]="Person"></gnotes>
-            <!-- <nz-table #columnTable [nzScroll]="{ y: '300px' }" [nzPageSize]="5" [nzShowPagination]="false"  [nzLoading]="loading" 
-                [nzData]="lstNotes"  >
-           
-            <thead >
-                <tr>                        
-                    <th style="background-color: #002060; " class="left"></th> 
-                    <th style="background-color: #002060; color: white " class="left">Operational Notes & History</th> 
-                    <th style="background-color: #002060; " class="left"></th> 
-                </tr>
-            </thead>
-            <tbody>
-                <tr  *ngFor="let data of lstNotes;let i = index;"  
-                [style.background-color]="i == HighlightRow ? '#bbd7fa' : 'white'">
-                                
-                <td class="left"   style="width:20%; ">  
-                        <tr>
-                          <td style="border: thin; border-style: solid;">  {{data.detailDate}} </td>
-                        </tr>
-                        <tr>
-                          <td>Created By: </td>
-                        </tr>
-                        <tr style="background: linear-gradient(to bottom,  #ff9999 0%, #ff6666 100%); color:white; text-align: center;">
-                            <td> {{data.creator}} </td>
-                          </tr>
-                </td>
-                 <td class="left" >                                         
-           
-                        <textarea rows="4" disabled  nz-input>{{data.detail}}</textarea>                    
-                </td>
-                </tr>
-            </tbody>
-            
-            </nz-table> 
-            -->
+
         </div>
         <div nz-row *ngIf="nzSelectedIndex==2" nzGutter="6">
             <!-- ,  y:'500px' -->

@@ -27,6 +27,7 @@ export class AddReferralComponent implements OnInit, OnDestroy {
 
   private verifyAccount = new Subject<any>();
   private verifyAccountCustom = new Subject<any>();
+  doctors: Array<any> = []
 
   loadingGenerateAccount: boolean = false;
 
@@ -212,7 +213,43 @@ export class AddReferralComponent implements OnInit, OnDestroy {
     });
   }
 
+
+  doctorChange(group: FormGroup, index: number, data: any){
+
+    var specificGroup = (group[index] as FormGroup);
+
+
+    if(!data) {
+      specificGroup.patchValue({
+        address1: '',
+        address2: '',
+        email: '',
+        phone1: '',
+        phone2: '',
+        fax: '',
+        mobile: ''
+      });
+      return;
+    };
+
+   
+    specificGroup.patchValue({
+      address1: data.address1,
+      address2: data.address2,
+      email: data.email,
+      phone1: data.phone1,
+      phone2: data.phone2,
+      fax: data.fax,
+      mobile: data.mobile
+    });    
+  }
+
   resetGroup() {
+
+    this.listS.getdoctorinformation().subscribe(data => {
+      this.doctors = data;
+    })
+
     setTimeout(() => {
       this._lastname.nativeElement.focus();
     });

@@ -307,7 +307,7 @@
                                         <div class="form-group">
                                             <label for="">Type</label>
 
-                                            <nz-select formControlName="type"  nzShowSearch nzAllowClear>
+                                            <nz-select formControlName="type" nzShowSearch nzAllowClear>
                                                 <nz-option *ngFor="let d of referralGroup.get('otherContacts')?.controls[i]?.get('contactList')?.value" [nzLabel]="d" [nzValue]="d"></nz-option>
                                             </nz-select>
                                         </div>
@@ -316,7 +316,14 @@
                                     <div nz-col nzSpan="15">
                                         <div class="form-group">
                                             <label for="">Name</label>
-                                            <input nz-input formControlName="name" autocomplete="nofill" oninput="this.value = this.value.toUpperCase()" />
+                                            <ng-container *ngIf="referralGroup.get('otherContacts')?.controls[i]?.get('type')?.value != 'DOCTORS'">
+                                                <input nz-input formControlName="name" autocomplete="nofill" oninput="this.value = this.value.toUpperCase()" />
+                                            </ng-container>
+                                            <ng-container *ngIf="referralGroup.get('otherContacts')?.controls[i]?.get('type')?.value == 'DOCTORS'">
+                                                <nz-select [nzDropdownMatchSelectWidth]="false" style="width:100%" formControlName="name" (ngModelChange)="doctorChange(referralGroup.get('otherContacts')['controls'],i, $event)" nzShowSearch nzAllowClear nzPlaceHolder="Select a Doctor">
+                                                    <nz-option *ngFor="let d of doctors" [nzLabel]="d.name" [nzValue]="d"></nz-option>
+                                                </nz-select>
+                                            </ng-container>
                                         </div>
                                     </div>
                                 </div>

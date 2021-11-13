@@ -17,6 +17,10 @@ export class ListService {
         public auth: AuthService
     ) { }
 
+    getdoctorinformation():Observable<any>{
+        return this.auth.get(`${list}/doctors-information`);
+    }
+
     getaccountinghistory(id: string):Observable<any>{
         return this.auth.get(`${list}/accounting-history/${id}`);
     }

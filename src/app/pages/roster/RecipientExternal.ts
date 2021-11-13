@@ -9,6 +9,7 @@ import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, Con
 
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { nextDay } from 'date-fns';
+import format from 'date-fns/format';
 
 @Component({
     styles: [`
@@ -40,8 +41,11 @@ import { nextDay } from 'date-fns';
 export class RecipientExternal implements OnInit, OnDestroy {
     private unsubscribe: Subject<void> = new Subject();
     @Input() isVisible:boolean=false;
-    @Input() AccountNo:any;
+    @Input() AccountNo:any;    
     @Output() recipientexternalDone:EventEmitter<any>= new EventEmitter();
+   
+    Person:any={id:'0',code:'', type:''};
+
     nzSelectedIndex:number=0;
     Info:any=null;
     lstAddress:Array<any>=[];
@@ -52,15 +56,25 @@ export class RecipientExternal implements OnInit, OnDestroy {
     lstApprovedProgram:Array<any>=[];
     lstApprovedServices:Array<any>=[];
     lstCarerPlans:Array<any>=[];
+    lstCaseNotes:Array<any>=[];
+    lstOpNotes:Array<any>=[];
+    lstCurrentRosters:Array<any>=[];
+    lstPermanentRosters:Array<any>=[];
     HighlightRow:number;
     loading:boolean=true;
     fixedColumn :boolean=false;
+    date1:Date;
+    date2:Date
+    dateFormat: string = 'dd/MM/yyyy';
+   
 
     private values$: Subscription;   
     private values2$: Subscription;
     private observerable:Observable<any>;
     private observerable2:Observable<any>;
-
+    private observerable3:Observable<any>;
+    private observerable4:Observable<any>;
+    
     constructor(
         private timeS: TimeSheetService,
         private sharedS: ShareService,
@@ -70,7 +84,16 @@ export class RecipientExternal implements OnInit, OnDestroy {
         private formBuilder: FormBuilder,
         private modalService: NzModalService
     ) {
+        
+
+    }
+
+    showEditModal(i:number){
+
+    }
     
+    delete(i:number){
+
     }
     getAddresses(PersonId: string): Observable<any> {
         let sql;
@@ -150,12 +173,54 @@ export class RecipientExternal implements OnInit, OnDestroy {
         return this.listS.getlist(sql);
     }
 
+    getCaseNotes(PersonId: string): Observable<any> {
+        let sql;
+        
+            sql = `Select '" 18225"' AS NoteWidth, RecordNumber, PersonID, WhoCode, DetailDate, Detail, ' ' As Blank, AlarmDate, Creator  FROM History WHERE PersonID = '${PersonId}' AND ExtraDetail1 = 'CASENOTE'  AND (([PrivateFlag] = 0) OR ([PrivateFlag] = 1 AND [Creator] = 'sysmgr')) AND DeletedRecord <> 1  ORDER BY DetailDate DESC, RecordNumber DESC`;
+        
+        return this.listS.getlist(sql);
+    }
+    getOperationalNotes(PersonId: string): Observable<any> {
+        let sql;
+        
+            sql = `Select '" 18225"' AS NoteWidth, RecordNumber, PersonID, WhoCode, DetailDate, Detail, ' ' As Blank, AlarmDate, Creator  FROM History WHERE PersonID = '${PersonId}' AND ExtraDetail1 = 'OPNOTE'  AND (([PrivateFlag] = 0) OR ([PrivateFlag] = 1 AND [Creator] = 'sysmgr')) AND DeletedRecord <> 1  ORDER BY DetailDate DESC, RecordNumber DESC`;
+        
+        return this.listS.getlist(sql);
+    }
+
+    getCurrentRosteredStaff(ClientCode: string, d1:string, d2:string): Observable<any> {
+        let sql;
+        
+            sql = `SELECT  [Recordno] As [RecordNumber],  [Client Code] As [Recipient], CONVERT(nVarChar, CAST([date]  + ' ' + [Start Time] AS DATETIME), 103) AS  [Date],[Start Time] As [Start_Time], [Carer Code] As [Staff], (([Duration] * 5)/60) As [Duration], [Service Type] As [Activity], [Anal] As [Analysis], [Program] As [Program], [HACCType] As [Dataset_Type], ([CostQty] * [Unit Pay Rate]) As [Service_Cost] FROM Roster WHERE [Client Code] = '${ClientCode}'  AND [Date] BETWEEN '${d1}' AND '${d2}' ORDER BY YEAR(Date) DESC, MONTH(Date) DESC, DAY(DATE) DESC, [Start Time]`;
+        
+        return this.listS.getlist(sql);
+    }
+
+    getPermenentRosteredStaff(ClientCode: string): Observable<any> {
+        let sql;
+        
+            sql = `SELECT  [Recordno] As [RecordNumber], [Client Code] As [Recipient],  [Date] As [Date],[Start Time] As [Start_Time],  (([Duration] * 5)/60) As [Duration],  [Service Type] As [Activity],  [Carer Code] As [Staff],  [Anal] As [Analysis], [Program] As [Program], [HACCType] As [Dataset_Type],  ([CostQty] * [Unit Pay Rate]) As [Service_Cost] FROM Roster WHERE [Client Code] = '${ClientCode}'  AND [Date] BETWEEN '1900/01/01' AND '1920/12/31' ORDER BY Date, [Start Time]`;
+        
+        return this.listS.getlist(sql);
+    }
+ 
+    
+    load_roster(){               
+        
+            this.getCurrentRosteredStaff( this.Info.accountNo,  format(this.date1,"yyyy/MM/dd"), format(this.date2,"yyyy/MM/dd")            
+            ).subscribe(data =>{
+                this.lstCurrentRosters=data
+            });
+    
+    }
+
     view(index: number) {
         this.nzSelectedIndex = index;
         
         if (index == 0) {
           //this.router.navigate(['/admin/recipient/personal'])
         }else  if (index == 1 ) {
+            this.loading=true;
             this.observerable2 =  new Observable(observer => {
             
                     forkJoin( 
@@ -179,16 +244,75 @@ export class RecipientExternal implements OnInit, OnDestroy {
                 () => console.log('Observer got a complete notification')
               );
 
-            //  this.observerable2.subscribe(data=>{
-            //         console.log(data);
-            //         this.lstApprovedProgram=data[0];
-            //         this.lstApprovedServices=data[1];
-            //         this.lstCarerPlans=data[2];
-            //       });
-               
             this.loading=false;       
         }
+        else  if (index == 2  ) {
+            this.Person.noteType="CASENOTE"
+            if(1==1) return;
+            this.loading=true;
+            this.observerable3 =  new Observable(observer => {
+            
+                    forkJoin( 
+                        this.getCaseNotes(this.Info.uniqueID),
+                        this.getOperationalNotes(this.Info.uniqueID)
+                                 
+                    ).subscribe(data=>{
+                        this.lstOpNotes=data[0];
+                        this.lstCaseNotes=data[1];
+                        this.loading=false;       
+                        
+                    })
+               
+            });
+
+            this.observerable3.subscribe(
+                d => {
+                    console.log(d);
+                   
+                },
+                err => console.error('Observer got an error: ' + err),
+                () => console.log('Observer got a complete notification')
+              );
+
+         
+        }
+        else  if (index == 3  ) {
+            this.Person.noteType="OPNOTE"
+            if(1==1) return;
         
+        }else  if (index==4) {
+            
+            this.loading=true;
+            this.date1 = new Date();
+            this.date2 = new Date();
+            this.date2.setDate(this.date2.getDate() + 14);
+            this.observerable4 =  new Observable(observer => {
+                 
+                    forkJoin( 
+                        this.getPermenentRosteredStaff(this.Info.accountNo),
+                        this.getCurrentRosteredStaff( this.Info.accountNo,  format(this.date1,"yyyy/MM/dd"), format(this.date2,"yyyy/MM/dd"))
+                                 
+                    ).subscribe(data=>{
+                        this.lstPermanentRosters=data[0];
+                        this.lstCurrentRosters=data[1];
+                        this.loading=false;       
+                        
+                    })
+               
+               
+            });
+
+            this.observerable4.subscribe(
+                d => {
+                    console.log(d);
+                   
+                },
+                err => console.error('Observer got an error: ' + err),
+                () => console.log('Observer got a complete notification')
+              );
+
+         
+        }
     }
 
     handleCancel(){
@@ -205,7 +329,12 @@ export class RecipientExternal implements OnInit, OnDestroy {
         .pipe(
             tap(output => {
                 console.log(output);
-                this.Info = output[0];            
+                this.Info = output[0];   
+                
+                this.Person.id=output[0].uniqueID;
+                this.Person.code=output[0].accountNo;
+                this.Person.personType="Recipient";
+                this.Person.noteType="CASENOTE";
             }),
             switchMap(output => 
                  forkJoin( 

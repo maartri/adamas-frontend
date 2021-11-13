@@ -185,6 +185,11 @@ export class ClientService {
         return this.auth.post(`${client}/opnotes-with-filters/${id}`, data);
     }
 
+    
+    getgnoteswithfilters(id: string, data: any): Observable<any> {
+        return this.auth.post(`${client}/gnotes-with-filters/${id}`, data);
+    }
+    
     getopnoteswithdate(data: any): Observable<any> {
         return this.auth.get(`${client}/opnotes-dates`, data);
     }

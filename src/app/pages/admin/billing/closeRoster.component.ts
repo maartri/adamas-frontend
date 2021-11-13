@@ -3,11 +3,13 @@ import { Router } from '@angular/router';
 import format from 'date-fns/format';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { BillingService, TimeSheetService, GlobalService, ListService, MenuService } from '@services/index';
-import { timeout } from 'rxjs/operators';
+import { takeUntil, timeout } from 'rxjs/operators';
 import { setDate } from 'date-fns';
 import { FormsModule } from '@angular/forms';
+import { Subject } from 'rxjs';
 import * as moment from 'moment';
 import { DatePipe } from '@angular/common'
+import { formatDate } from '@angular/common';
 import addYears from 'date-fns/addYears';
 import startOfMonth from 'date-fns/startOfMonth';
 import endOfMonth from 'date-fns/endOfMonth';
@@ -50,6 +52,7 @@ export class CloseRosterComponent implements OnInit {
   invType: Array<any>;
   current: number = 0;
   inputForm: FormGroup;
+  chkId: string;
   modalVariables: any;
   dateFormat: string = 'dd/MM/yyyy';
   inputVariables: any;
@@ -65,18 +68,24 @@ export class CloseRosterComponent implements OnInit {
   check: boolean = false;
   temp_title: any;
   settingForm: FormGroup;
-  userRole:string="userrole";
+  userRole: string = "userrole";
   whereString: string = "Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
-  dtpEndDate: Date;
+  dtpEndDate: any;
   lastMonthEndDate: any;
   id: string;
   btnid: any;
   btnid1: any;
-    allFundingChecked: boolean;
-    allProgramsChecked: boolean;
-    selectedPrograms: any[];
-    selectedFunding: any[];
-    date: moment.MomentInput;
+  private unsubscribe: Subject<void> = new Subject();
+  BlockFunded: any;
+  IndividualPackages: any;
+  NonCDCPackages: any;
+  CDCPackages: any;
+  allFundingChecked: boolean;
+  allProgramsChecked: boolean;
+  selectedPrograms: any;
+  selectedFunding: any;
+  date: moment.MomentInput;
+  checkedIDs: any[];
 
   constructor(
     private cd: ChangeDetectorRef,
@@ -91,7 +100,7 @@ export class CloseRosterComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
+    this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA) : this.globalS.decode();
     this.userRole = this.tocken.role;
     this.buildForm();
     this.EndofMOnth();
@@ -114,44 +123,52 @@ export class CloseRosterComponent implements OnInit {
   }
   buildForm() {
     this.inputForm = this.formBuilder.group({
-    dtpEndDate: null,
-    billingMode: 'CONSOLIDATED BILLING',
-    AccPackage: 'TEST 1',
+      dtpEndDate: null,
+      chkBlockFunded: null,
+      chkIndividualPackages: null,
+      chkNonCDCPackages: null,
+      chkCDCPackages: null,
     });
-
-    // this.inputForm.patchValue({
-    //     dtpEndDate: this.lastMonthEndDate,
-    // })
-
   }
 
-  EndofMOnth(){
+  EndofMOnth() {
     const lastMonthEndDate = new Date();
     lastMonthEndDate.setMonth(lastMonthEndDate.getMonth() - 1);
-    
-    console.log('Last Month Date:', endOfMonth(lastMonthEndDate));
-    console.log('New Month Date:', new Date());
+    this.dtpEndDate = endOfMonth(lastMonthEndDate);
     this.inputForm.patchValue({
-      dtpEndDate: endOfMonth(lastMonthEndDate),
-    }) 
+      dtpEndDate: this.dtpEndDate,
+    });
   }
 
-  log(event: any,index:number) {
-    if(index == 1)
-    this.selectedFunding = event;
-    if(index == 2)
-    this.selectedPrograms = event;
- }
+  log(event: any, index: number) {
+    if (index == 1)
+      this.selectedFunding = event;
+    if (index == 2)
+      this.selectedPrograms = event;
+      
+    if (index == 11 && event.target.checked) {
+      console.log("11")
+    }
+    if (index == 12 && event.target.checked) {
+      console.log("12")
+    }
+    if (index == 13 && event.target.checked) {
+      console.log("13")
+    }
+    if (index == 14 && event.target.checked) {
+      console.log("14")
+    }
+  }
 
-  checkAll(index:number): void {
-    if(index == 1){
+  checkAll(index: number): void {
+    if (index == 1) {
       this.fundingList.forEach(x => {
         x.checked = true;
         this.allFundingChecked = x.description;
         this.allFundingChecked = true;
       });
     }
-    if(index == 2){
+    if (index == 2) {
       this.programList.forEach(x => {
         x.checked = true;
         this.allProgramsChecked = x.description;
@@ -160,23 +177,23 @@ export class CloseRosterComponent implements OnInit {
     }
   }
 
-  uncheckAll(index:number): void {
-    if(index == 1){
-        this.fundingList.forEach(x => {
-          x.checked = false;
+  uncheckAll(index: number): void {
+    if (index == 1) {
+      this.fundingList.forEach(x => {
+        x.checked = false;
         this.allFundingChecked = false;
         this.selectedFunding = [];
-        });
+      });
     }
-    if(index == 2){
-        this.programList.forEach(x => {
-          x.checked = false;
+    if (index == 2) {
+      this.programList.forEach(x => {
+        x.checked = false;
         this.allProgramsChecked = false;
         this.selectedPrograms = [];
-        });
+      });
     }
   }
-  loadFunding(){
+  loadFunding() {
     this.loading = true;
     this.menuS.getlistFundingSource(this.check).subscribe(data => {
       this.fundingList = data;
@@ -187,7 +204,7 @@ export class CloseRosterComponent implements OnInit {
     });
   }
 
-  loadPrograms(){
+  loadPrograms() {
     this.loading = true;
     this.menuS.getlistProgramPackages(this.check).subscribe(data => {
       this.programList = data;
@@ -196,6 +213,143 @@ export class CloseRosterComponent implements OnInit {
       this.allProgramsChecked = true;
       this.checkAll(2);
     });
+  }
+
+
+  fetchID(index: number): void {
+    if (index == 1) {
+      this.BlockFunded = true;
+      console.log("1", this.BlockFunded)
+    }
+    if (index == 2) {
+      console.log("2")
+    }
+    if (index == 3) {
+      console.log("3")
+    }
+    if (index == 4) {
+      console.log("4")
+    }
+  }
+
+
+  // fetchID(e) {
+  //   debugger;
+  //   e = e || window.event;
+  //   e = e.target || e.srcElement;
+  //   this.chkId = e.id
+
+  //   switch (this.chkId) {
+  //     case 'chkBlockFunded':
+  //       this.whereString = "WHERE [GROUP] = 'PROGRAMS' AND ISNULL(UserYesNo2, 0) = 0 ";
+  //       break;
+  //     case 'chkIndividualPackages' && 'chkCDCPackages':
+  //       this.whereString = "WHERE [GROUP] = 'PROGRAMS' AND ISNULL(UserYesNo2, 0) = 1 AND ISNULL(UserYesNo1, 0) = 1 ";
+  //       break;
+  //     case 'chkIndividualPackages' && 'chkNonCDCPackages':
+  //       this.whereString = "WHERE [GROUP] = 'PROGRAMS' AND ISNULL(UserYesNo2, 0) = 1 AND ISNULL(UserYesNo1, 0) = 0 ";
+  //       break;
+  //     case 'chkIndividualPackages' && 'chkCDCPackages' && 'chkNonCDCPackages':
+  //       this.whereString = "WHERE [GROUP] = 'PROGRAMS' AND ISNULL(UserYesNo2, 0) = 1 ";
+  //       break;
+  //     case 'chkBlockFunded' && 'chkIndividualPackages' && 'chkNonCDCPackages':
+  //       this.whereString = "WHERE [GROUP] = 'PROGRAMS' AND (ISNULL(UserYesNo2, 0) = 0) OR (ISNULL(UserYesNo2, 0) = 1 AND ISNULL(UserYesNo1, 0) = 0) ";
+  //       break;
+  //     case 'chkBlockFunded' && 'chkIndividualPackages' && 'chkCDCPackages':
+  //       this.whereString = "WHERE [GROUP] = 'PROGRAMS' AND (ISNULL(UserYesNo2, 0) = 0) OR (ISNULL(UserYesNo2, 0) = 1 AND ISNULL(UserYesNo1, 0) = 1) ";
+  //       break;
+  //     case 'chkBlockFunded' && 'chkIndividualPackages' && 'chkCDCPackages' && 'chkNonCDCPackages':
+  //       this.whereString = "WHERE [GROUP] = 'PROGRAMS' AND (ISNULL(UserYesNo2, 0) = 0) OR (ISNULL(UserYesNo2, 0) = 1) ";
+  //       break;
+
+  //   }
+
+  // }
+
+  fetchAll(e) {
+    if (e.target.checked) {
+      this.whereString = "WHERE";
+      this.loadPrograms();
+    } else {
+      this.whereString = "Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+      this.loadPrograms();
+    }
+  }
+
+  loadProgramsNew(index: any) {
+    this.loading = true;
+    this.billingS.getlistProgramPackagesFilter(this.check).subscribe(data => {
+      this.programList = data;
+      this.tableData = data;
+      this.loading = false;
+      this.allProgramsChecked = true;
+      this.checkAll(2);
+    });
+  }
+
+  searchData(): void {
+    this.loading = true;
+
+    this.selectedPrograms = this.programList
+      .filter(opt => opt.checked)
+      .map(opt => opt.name).join("','")
+
+    this.selectedFunding = this.fundingList
+      .filter(opt => opt.checked)
+      .map(opt => opt.uniqueID).join("','")
+
+    var postdata = {
+      blockFunded: this.inputForm.value.chkBlockFunded,
+      individualPackages: this.inputForm.value.chkIndividualPackages,
+      nonCDCPackages: this.inputForm.value.chkNonCDCPackages,
+      cdcPackages: this.inputForm.value.chkCDCPackages,
+      allFunding: this.allFundingChecked,
+      selectedFunding: (this.allFundingChecked == false) ? this.selectedFunding : '',
+      allProgarms: this.allProgramsChecked,
+      selectedPrograms: (this.allProgramsChecked == false) ? this.selectedPrograms : ''
+    }
+  }
+
+  closeRosterPeriod() {
+
+    this.postLoading = true;   
+
+      this.selectedFunding = this.fundingList
+      .filter(opt => opt.checked)
+      .map(opt => opt.description).join(",")
+
+      this.selectedPrograms = this.programList
+      .filter(opt => opt.checked)
+      .map(opt => opt.title).join(",")
+
+      this.dtpEndDate = this.inputForm.get('dtpEndDate').value;
+      // this.dtpEndDate = formatDate(this.dtpEndDate, 'MM-dd-yyyy','en_US');
+
+      //this code is to close roster using direct query
+      // let sql = "UPDATE HumanResourceTypes set CloseDate = '"+this.dtpEndDate+"' WHERE [NAME] IN ('"+this.selectedPrograms+"') AND [TYPE] IN ('"+this.selectedFunding+"') AND CloseDate <= '"+this.dtpEndDate+"'"; 
+      // // console.log(sql);
+      // this.menuS.updatUDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{        
+      //   if (data) 
+      //   this.globalS.sToast('Success', 'Saved successful');     
+      //   else
+      //   this.globalS.sToast('Success', 'Saved successful');
+      //   this.ngOnInit();
+      //   this.postLoading = false;          
+      // });
+
+    this.billingS.updateCloseRosterPeriod({
+      Closedate: this.dtpEndDate,
+      Programs: this.selectedPrograms,
+      Fundings: this.selectedFunding,
+    }).pipe(
+      takeUntil(this.unsubscribe)).subscribe(data => {
+        if (data) {
+          this.globalS.sToast('Success', 'Date Updated')
+          this.postLoading = false;
+          this.ngOnInit();
+          return false;
+        }
+      });
   }
 }
 

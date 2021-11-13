@@ -137,15 +137,15 @@
                             <label nz-checkbox style="margin-top: 5px;"></label>
                         </div>
                         <div nz-col nzSpan="5" [formGroup]="inputForm">
-                            <nz-date-picker formControlName="startDate"></nz-date-picker>
-                            <!-- <nz-date-picker nzPlaceHolder="Start Date" formControlName="dtpStartDate" [nzFormat]="dateFormat"></nz-date-picker> -->
+                            <!-- <nz-date-picker formControlName="dtpStartDate" [nzFormat]="dateFormat"></nz-date-picker> -->
+                            <nz-date-picker nzPlaceHolder="Start Date" formControlName="dtpStartDate" [nzFormat]="dateFormat"></nz-date-picker>
                         </div>
                         <div nz-col nzSpan="2">
                             <p style="text-align: center; margin-top: 5px;"> TO </p>
                         </div>
                         <div nz-col nzSpan="5" [formGroup]="inputForm">
-                            <nz-date-picker formControlName="endDate"></nz-date-picker>
-                            <!-- <nz-date-picker nzPlaceHolder="End Date" formControlName="dtpEndDate" [nzFormat]="dateFormat"></nz-date-picker> -->
+                            <!-- <nz-date-picker formControlName="dtpEndDate" [nzFormat]="dateFormat"></nz-date-picker> -->
+                            <nz-date-picker nzPlaceHolder="End Date" formControlName="dtpEndDate" [nzFormat]="dateFormat"></nz-date-picker>
                         </div>
                     </div>
 

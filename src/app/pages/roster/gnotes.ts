@@ -284,7 +284,7 @@ export class GNotes implements OnInit, OnDestroy {
 
         this.loading = true;
         if (this.addOrEdit == 1) {    
-            if (this.user.noteType=='OPNOTE')        
+            if (this.user.noteType=='OPNOTE')       
                 this.clientS.postopnotes(this.caseFormGroup.value, this.user.id)
                     .subscribe(data => {
                         this.globalS.sToast('Success', 'Note inserted');
@@ -300,7 +300,8 @@ export class GNotes implements OnInit, OnDestroy {
                 });
         }
         if (this.addOrEdit == 2) {
-            if (this.user.noteType=='CASENOTE')        
+
+            if (this.user.noteType=='OPNOTE')      
 
                 this.clientS.updateopnotes(this.caseFormGroup.value, this.caseFormGroup.value.recordNumber)
                     .subscribe(data => {

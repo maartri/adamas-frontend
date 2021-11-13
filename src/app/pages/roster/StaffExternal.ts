@@ -41,6 +41,7 @@ export class StaffExternal implements OnInit, OnDestroy {
     @Input() AccountNo:any;
     @Output() staffexternalDone:EventEmitter<any>= new EventEmitter();
     nzSelectedIndex:number=0;
+    Person:any={id:'0',code:'', type:''};
     StaffInfo:any=null;
     lstAddress:Array<any>=[];
     lstphones:Array<any>=[];
@@ -133,7 +134,11 @@ export class StaffExternal implements OnInit, OnDestroy {
             .pipe(
                 tap(output => {
                     console.log(output);
-                    this.StaffInfo = output[0];            
+                    this.StaffInfo = output[0]; 
+                    this.Person.id=output[0].uniqueID;
+                    this.Person.code=output[0].accountNo;
+                    this.Person.personType="Staff";
+                    this.Person.noteType="CASENOTE";           
                 }),
                 switchMap(output => 
                      forkJoin( 

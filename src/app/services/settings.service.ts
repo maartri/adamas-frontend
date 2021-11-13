@@ -17,7 +17,6 @@ export class SettingsService {
     getSettings(name: any) {
         this.timeS.getusersettings(name).subscribe(data => {
             this.globalS.settings = data;
-            console.log(data);
         });
     }
 

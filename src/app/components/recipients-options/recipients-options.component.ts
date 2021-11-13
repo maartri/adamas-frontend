@@ -17,8 +17,9 @@ import format from 'date-fns/format';
 import { setDate } from 'date-fns';
 import { filter } from 'rxjs/operators';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import addDays from 'date-fns/addDays'
 
-// import * as RECIPIENT_OPTION from '../../modules/modules';
+import { ReferralSourceDto } from '@modules/modules';
 
 // enum RECIPIENT_OPTION {
 //   REFER_IN = "REFER_IN",
@@ -203,6 +204,9 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
   file: File;
   originalPackageName: string;
   admissionActiviType: any;
+
+  activityCodes: Array<any> = [];
+  loadActivityCodes: boolean = false;
   
   constructor(
     private listS: ListService,
@@ -428,6 +432,38 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
         timePeriod: [],
       
       });
+
+      this.adminGroup.get('programChecked').valueChanges
+        .pipe(
+            switchMap(x => {
+                if(!x) return EMPTY;
+                this.globalProgramSelection = {
+                  program: x,
+                  option: 'ADMIN'
+                }
+                return this.listS.getreferraltype(this.globalProgramSelection)
+            }),
+            switchMap(data => {
+              this.admissionActiviType = data;
+              if(data.length == 1){
+                this.admitGroup.patchValue({
+                  adminGroup: this.admissionActiviType[0]
+                });
+              }
+              return this.listS.gethumanresourcetypes({ program: this.globalProgramSelection.program})
+            }),
+            switchMap(data => {
+              this.GET_PRIMARY_ADDRESS()
+              this.FUNDING_TYPE = data;
+              this.loadActivityCodes = true;
+              return this.listS.getreferraltypes({ 
+                ProgramName: this.globalProgramSelection.program, 
+                ProgramType: RECIPIENT_OPTION.ADMIN })
+            }),
+          ).subscribe(data => {
+              this.activityCodes = data;
+              this.loadActivityCodes = false;
+          });
       
       
       this.admitGroup.get('programChecked').valueChanges
@@ -893,7 +929,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                       reasonType: '',
                       
                       tabType: 'REFERRAL-IN',
-                      program: packageName,
+                      program: this.IsNDIAorHCP() ?  packageName : this.selectedProgram,
                       packageStatus: 'REFERRAL'
                     }
                     
@@ -914,21 +950,25 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                       publishToApp: publishToApp ? 1 : 0,
                       creator: this.token.user,
                       note: notes || "" ,
-                      alarmDate: format(new Date,'yyyy/MM/dd'),
+                      alarmDate: '',
                       reminderTo: ''
                     }
                   }
-                
-                // console.log(data);
-                // this.emailnotify();
-                // return;
+
+                  // this.emailnotify(); 
+                  // return;
+                  // this.writereminder(this.user.id, notes, this.notifFollowUpGroup);
+                  // return;
+                  // console.log(data);
+                  // this.emailnotify();
+                  // return;
 
                 this.listS.postreferralin(data).subscribe(x => {
                       this.globalS.sToast('Success', 'Package is saved'); 
                       this.handleCancel();
                     
                       if (this.globalS.followups != null){
-                        this.writereminder(); 
+                        this.writereminder(this.user.id, notes, this.notifFollowUpGroup);
                       }
                       
                       if (this.globalS.emailaddress != null){
@@ -1005,8 +1045,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     }
                   }
 
-                  console.log(data);
-                  return;
+                  // console.log(data);
+                  // return;
                   
                   this.listS.postreferralout(data).subscribe(data => {
                     this.globalS.sToast('Success', 'Package is saved');
@@ -1155,9 +1195,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     }
                   }
 
-                  console.log(data);
-                  return;
-                  
+                             
                   this.listS.postassessment(data).subscribe(data =>{
                     this.globalS.sToast('Success', 'Package is saved');
                   });
@@ -1632,23 +1670,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 });
                 
               }           
-            }
-
-            emailnotify(){              
-              
-              const {notes} = this.referInGroup.value;
-              
-              var emailTo = this.globalS.emailaddress; 
-              
-              var emailSubject = "ADAMAS NOTIFICATION";
-              var emailBody = notes;  
-              location.href = "mailto:" + this.EMAIL_OF_COORDINATOR + "?" +     
-              (emailSubject ? "subject=" + emailSubject : "") + 
-              (emailBody ? "&body=" + emailBody : "");
-              
-              this.globalS.emailaddress = null;              
-            }
-            
+            }        
             
             populate(){
               
@@ -1861,6 +1883,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 })
                 break;
                 case RECIPIENT_OPTION.ADMIN:
+
                 this.listS.getlist(`SELECT DISTINCT UPPER([Program]) AS Program FROM RecipientPrograms WHERE PersonID = '${ this.user.id }'AND ProgramStatus <> 'INACTIVE' AND isnull([Program], '') <> '' `)
                 .subscribe(data => {
                   this.whatOptionVar = {
@@ -1879,43 +1902,51 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   this.changeDetection();
                 })
                 
-                this.listS.getfollowups({
-                  branch: this.BRANCH_NAME,
-                  fundingType: this.FUNDING_TYPE
-                }).pipe(takeUntil(this.destroy$)).subscribe(data => {
-                  this.notifFollowUpGroup = data.map(x => {
-                    return {
-                      label: x,
-                      value: x,
-                      disabled: false,
-                      checked: false
-                    }
-                  })
-                })
+                // this.listS.getfollowups({
+                //   branch: this.BRANCH_NAME,
+                //   fundingType: this.FUNDING_TYPE
+                // }).pipe(takeUntil(this.destroy$)).subscribe(data => {
+                  
+                //   this.notifFollowUpGroup = data.map(x => {
+                //     return {
+                //       label: x.reminders,
+                //       value: x.reminders,
+                //       dateCounter: x.user1,
+                //       disabled: false,
+                //       checked: false
+                //     }
+                //   });
+                // })
                 
                 
-                this.listS.getdocumentslist(
-                  {
-                    branch: this.BRANCH_NAME,
-                    fundingType: this.FUNDING_TYPE
-                  }
-                ).pipe(takeUntil(this.destroy$)).subscribe(data => {
-                  this.notifDocumentsGroup = data.map(x => {
-                    return {
-                      label: x,
-                      value: x,
-                      disabled: false,
-                      checked: false
-                    }
-                  })
-                })
+                // this.listS.getdocumentslist(
+                //   {
+                //     branch: this.BRANCH_NAME,
+                //     fundingType: this.FUNDING_TYPE
+                //   }
+                // ).pipe(takeUntil(this.destroy$)).subscribe(data => {
+                //   this.notifDocumentsGroup = data.map(x => {
+                //     return {
+                //       label: x,
+                //       value: x,
+                //       disabled: false,
+                //       checked: false
+                //     }
+                //   })
+                // })
                 
-                this.listS.getdatalist({
-                  branch: this.BRANCH_NAME,
-                  fundingType: this.FUNDING_TYPE
-                }).pipe(takeUntil(this.destroy$)).subscribe(data =>  {
-                  this.datalist = data
-                });          
+                // this.listS.getdatalist({
+                //   branch: this.BRANCH_NAME,
+                //   fundingType: this.FUNDING_TYPE
+                // }).pipe(takeUntil(this.destroy$)).subscribe(data =>  {
+                //   this.datalist = data.map(x =>{
+                //     return {
+                //       form: x.form,
+                //       link: (x.link).toLowerCase()
+                //     }
+                //   })
+                // });
+
                 break;
                 case RECIPIENT_OPTION.ITEM:
                 this.listS.getlist(`SELECT DISTINCT UPPER([Program]) AS Program FROM RecipientPrograms WHERE PersonID = '${ this.user.id }'AND ProgramStatus <> 'INACTIVE' AND isnull([Program], '') <> '' `)
@@ -1983,6 +2014,14 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 var prog = this.adminGroup.get('programs') as FormArray;      
                 data.programsArr.map(x => prog.push(this.createProgramForm(x)));
                 this.globalFormGroup = this.adminGroup;
+
+                if((this.adminGroup.get('programs').value as Array<any>).length == 1){
+                  let programs = (<FormArray>this.adminGroup.controls['programs']).at(0);
+                  this.adminGroup.patchValue({
+                    programChecked: programs.value.program
+                  });
+                }
+
                 this.GET_FUNDINGTYPE()
               }
               if(type == RECIPIENT_OPTION.ADMIT){
@@ -2223,20 +2262,123 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 // Other Details Tab Populate 
                 if(this.current == 1){
                   this.populateOtherDetails();      
-                }
+                }           
                 
+                if(this.current == 2){
+                  this.populateNotificationDetails();
+                }
                 // this.checkedPrograms = this.GET_CHECKEDPROGRAMS();
               }
 
-              populateNotificationDetails(){
+              GETLISTNAME(data: any) : string{
+                if(data == RECIPIENT_OPTION.REFER_IN)
+                { 
+                  return "Referral Notification"
+                }
+
+                if(data == RECIPIENT_OPTION.REFER_ON)
+                { 
+                  return "Refer On Notification"
+                }
+
+                if(data == RECIPIENT_OPTION.ASSESS)
+                { 
+                  return "Assessment Notification"
+                }
+
+                if(data == RECIPIENT_OPTION.ADMIT)
+                { 
+                  return "Admission Notification"
+                }
+
+                if(data == RECIPIENT_OPTION.NOT_PROCEED)
+                { 
+                  return "Not Proceed Notification"
+                }
+
+                if(data == RECIPIENT_OPTION.DISCHARGE)
+                { 
+                  return "Discharge Notification"
+                }
+
+                if(data == RECIPIENT_OPTION.SUSPEND)
+                { 
+                  return "Suspend Notification"
+                }
+
+                if(data == RECIPIENT_OPTION.REINSTATE)
+                { 
+                  return "Reinstate Notification"
+                }                
+              }
+
+              GET_SERVICE_TYPE(): string{
+                if(this.option == RECIPIENT_OPTION.REFER_IN)
+                { 
+                  return this.referInGroup.get('referralType').value;
+                }
+
+                if(this.option == RECIPIENT_OPTION.REFER_ON)
+                { 
+                  return this.referOnGroup.get('referralType').value;
+                }
+
+                if(this.option == RECIPIENT_OPTION.ASSESS)
+                { 
+                  return this.assessGroup.get('serviceType').value;
+                }
+
+                if(this.option == RECIPIENT_OPTION.ADMIT)
+                { 
+                  return this.admitGroup.get('admissionType').value;
+                }
+
+                if(this.option == RECIPIENT_OPTION.NOT_PROCEED)
+                { 
+                  return this.notProceedGroup.get('referralType').value;
+                }
+
+                if(this.option == RECIPIENT_OPTION.DISCHARGE)
+                { 
+                  return this.dischargeGroup.get('dischargeType').value;
+                }
+
+                if(this.option == RECIPIENT_OPTION.ADMIN)
+                {
+                  console.log(this.adminGroup.value);
+                }
+
+                if(this.option == RECIPIENT_OPTION.WAIT_LIST)
+                {
+                  return this.waitListGroup.get('activityCode').value;
+                }
+
+                // if(this.option == RECIPIENT_OPTION.SUSPEND)
+                // { 
+                //   return this.suspendGroup.get('').value;
+                // }
+
+                // if(this.option == RECIPIENT_OPTION.REINSTATE)
+                // { 
+                //   return this.reinstateGroup.get('').value;
+                // }    
+              }
+
+              populateNotificationDetails(): void{
+
+                var type = this.GET_SERVICE_TYPE();
+                console.log(type);
+
                 this.listS.getnotifications({
                   branch: this.BRANCH_NAME,
-                  coordinator: this.COORDINATOR
+                  coordinator: this.COORDINATOR,
+                  listname: this.GETLISTNAME(this.option)
                 }).subscribe(data => {
                   this.notifCheckBoxes = data.map(x => {
                     return {
                       label: x.staffToNotify,
                       value: x.staffToNotify,
+                      email: x.email,
                       disabled: x.mandatory ? true : false,
                       checked: x.mandatory ? true : false
                     }
@@ -2247,12 +2389,14 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 this.listS.getfollowups({
                   branch: this.BRANCH_NAME,
                   fundingType: this.FUNDING_TYPE,
-                  type: 'REF_DEFAULT_REMINDERS'
+                  type: type,
+                  group: 'FOLLOWUP'
                 }).pipe(takeUntil(this.destroy$)).subscribe(data => {
                   this.notifFollowUpGroup = data.map(x => {
                     return {
-                      label: x,
-                      value: x,
+                      label: x.reminders,
+                      value: x.reminders,
+                      dateCounter: x.user1,
                       disabled: false,
                       checked: false
                     }
@@ -2264,7 +2408,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 this.listS.getdocumentslist({
                   branch: this.BRANCH_NAME,
                   fundingType: this.FUNDING_TYPE,
-                  type: 'REF_DEFAULT_DOCS',
+                  type: type,
+                  group: 'DOCUMENTS'
                 }).pipe(takeUntil(this.destroy$)).subscribe(data => {
                   this.notifDocumentsGroup = data.map(x => {
                     return {
@@ -2280,9 +2425,15 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 this.listS.getdatalist({
                   branch: this.BRANCH_NAME,
                   fundingType: this.FUNDING_TYPE,
-                  type: 'REF_DEFAULT_XTRADATA'
+                  type: type,
+                  group: 'XTRADATA'
                 }).pipe(takeUntil(this.destroy$)).subscribe(data =>  {
-                  this.datalist = data;
+                  this.datalist = data.map(x =>{
+                    return {
+                      form: x.form,
+                      link: (x.link).toLowerCase()
+                    }
+                  })
                   this.changeDetection();
                 }); 
 
@@ -2309,7 +2460,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                           this.EMAIL_OF_COORDINATOR = data;
                         });
 
-                    this.populateNotificationDetails();
+                    // this.populateNotificationDetails();
                     this.referralCode$ = this.listS.getwizardreferralcode();
                     
                     if(this.referInGroup.get('type').value == 1){
@@ -2349,7 +2500,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   
                   if(this.option == RECIPIENT_OPTION.REFER_ON)
                   {
-                    this.populateNotificationDetails();
+                    // this.populateNotificationDetails();
                     this.referralSource$ = this.listS.getwizardreferralsource('default');
                     
                     this.checkedPrograms = this.GET_CHECKEDPROGRAMS();
@@ -2366,11 +2517,11 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   }
 
                   if(this.option == RECIPIENT_OPTION.ASSESS){
-                    this.populateNotificationDetails();
+                    // this.populateNotificationDetails();
                   }
 
                   if(this.option == RECIPIENT_OPTION.ADMIN){
-                    this.populateNotificationDetails();
+                    // this.populateNotificationDetails();
                   }    
 
                   if(this.option == RECIPIENT_OPTION.WAIT_LIST)
@@ -2380,25 +2531,25 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   
                   if(this.option == RECIPIENT_OPTION.DECEASE)
                   {
-                    this.populateNotificationDetails();
+                    // this.populateNotificationDetails();
                     this.reasons$ = this.listS.getreasons();
                   }
                   
                   if(this.option == RECIPIENT_OPTION.SUSPEND)
                   {
-                    this.populateNotificationDetails();
+                    // this.populateNotificationDetails();
                     this.cancellationCode$ = this.listS.getlist(`SELECT title FROM itemtypes WHERE ( enddate IS NULL OR enddate >= '${ this.CURRENT_DATE.toISOString() }' ) AND rostergroup = 'RECPTABSENCE' AND status = 'ATTRIBUTABLE' AND processclassification = 'EVENT' ORDER BY title`)
                   }
                   
                   if(this.option == RECIPIENT_OPTION.DISCHARGE)
                   {
-                    this.populateNotificationDetails();
+                    // this.populateNotificationDetails();
                     this.dischargeReason$ = this.listS.getlist(`SELECT DISTINCT Description, HACCCode, RecordNumber FROM DataDomains WHERE Domain = 'REASONCESSSERVICE'`);
                   }
                   
                   if(this.option == RECIPIENT_OPTION.ITEM)
                   {
-                    this.populateNotificationDetails();
+                    // this.populateNotificationDetails();
                     let _input = {
                       program: '',
                       option: this.option
@@ -2407,70 +2558,11 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   }
 
                   if(this.option == RECIPIENT_OPTION.ADMIT){
-
-                    this.populateNotificationDetails();
-                    this.listS.getnotifications({
-                      branch: this.BRANCH_NAME,
-                      coordinator: this.COORDINATOR
-                    }).subscribe(data => {
-                      
-                      this.notifCheckBoxes = data.map(x => {
-                        return {
-                          label: x.staffToNotify,
-                          value: x.staffToNotify,
-                          disabled: x.mandatory ? true : false,
-                          checked: x.mandatory ? true : false
-                        }
-                      });
-
-                      this.changeDetection();
-                    });
-                    
-                    this.listS.getfollowups({
-                      branch: this.BRANCH_NAME,
-                      fundingType: this.FUNDING_TYPE,
-                      type: 'ADMIT_DEFAULT_REMINDERS'
-                    }).pipe(takeUntil(this.destroy$)).subscribe(data => {
-                      this.notifFollowUpGroup = data.map(x => {
-                        return {
-                          label: x,
-                          value: x,
-                          disabled: false,
-                          checked: false
-                        }
-                      });
-                      this.changeDetection();
-                    })
-  
-  
-                    this.listS.getdocumentslist({
-                      branch: this.BRANCH_NAME,
-                      fundingType: this.FUNDING_TYPE,
-                      type: 'ADMIT_DEFAULT_DOCS',
-                    }).pipe(takeUntil(this.destroy$)).subscribe(data => {
-                      this.notifDocumentsGroup = data.map(x => {
-                        return {
-                          label: x,
-                          value: x,
-                          disabled: false,
-                          checked: false
-                        }
-                      });
-                      this.changeDetection();
-                    });
-  
-                    this.listS.getdatalist({
-                      branch: this.BRANCH_NAME,
-                      fundingType: this.FUNDING_TYPE,
-                      type: 'ADMIT_DEFAULT_XTRADATA'
-                    }).pipe(takeUntil(this.destroy$)).subscribe(data =>  {
-                      this.datalist = data;
-                      this.changeDetection();
-                    }); 
+                    // this.populateNotificationDetails();
                   }
 
                   if(this.option == RECIPIENT_OPTION.NOT_PROCEED){
-                    this.populateNotificationDetails();
+                    // this.populateNotificationDetails();
                   }
                   
                   this.checkedPrograms = this.GET_CHECKEDPROGRAMS();
@@ -2500,7 +2592,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                         return true;
                     }
 
-                    if(this.FUNDING_TYPE == null && this.selectedProgram){
+                    if(this.selectedProgram){
                         return true;
                     }
                   }
@@ -2510,8 +2602,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   }
 
                   if(this.option == RECIPIENT_OPTION.DECEASE){
-                    return true;
-                }
+                      return true;
+                  }
 
                   if(this.option == RECIPIENT_OPTION.WAIT_LIST && this.waitListGroup.get('programChecked').value){
                       return true;
@@ -2549,6 +2641,12 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   if(this.option == RECIPIENT_OPTION.ITEM && this.itemGroup.get('programChecked').value){
                     return true;
                   }
+
+                  if(this.option == RECIPIENT_OPTION.ADMIN && this.adminGroup.get('programChecked').value){
+                    return true;
+                  }
+
+
 
 
                   return false;
@@ -2626,34 +2724,63 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     
                   }
                 }
-                writereminder(){
-                  var sql,temp;
-                  //let Date1,Date2;
+
+                emailnotify(){              
+              
+                  const { notes } = this.referInGroup.value;
+
+                  let notifications =  this.notifCheckBoxes.filter((x:any) => x.checked == true);
+                  let emails = notifications.map((x: any) => x.email).join(';')
+   
+                  // var emailTo = this.globalS.emailaddress; 
                   
-                  let Date1 : Date   = new Date();
-                  let Date2 : Date   = new Date(Date1);
+                  var emailSubject = "ADAMAS NOTIFICATION";
+                  var emailBody = notes;  
+
+                  location.href = "mailto:" + emails + "?" +     
+                  (emailSubject ? "subject=" + emailSubject : "") + 
+                  (emailBody ? "&body=" + emailBody : "");
                   
-                  
-                  
-                  temp = (this.globalS.followups.label).toString().substring(0,2)
-                  
-                  switch (temp) {
-                    case '10':
-                    Date2.setDate(Date2.getDate() + 10)
-                    
-                    break;
-                    case '30':
-                    Date2.setDate(Date2.getDate() + 30)
-                    break;
-                    
-                    default:
-                    break;
+                  this.globalS.emailaddress = null;              
+                }
+
+                writereminder(personid: string, notes: string, followups: Array<any>){
+                  var sql = '', temp = '';
+                
+                  // console.log(this.notifFollowUpGroup);
+
+                  for(var followup of followups)
+                  {
+                    var dateCounter = parseInt(followup.dateCounter);
+                    var reminderDatePlusDateCounter = format(addDays(new Date(), dateCounter),'dd/MM/yyyy');
+
+                    if(followup.checked){
+                      sql = sql +"INSERT INTO HumanResources([PersonID], [Notes], [Group],[Type],[Name],[Date1],[Date2]) VALUES ('"+personid+"','"+ notes+"',"+"'RECIPIENTALERT','RECIPIENTALERT','" + followup.label + "','" + reminderDatePlusDateCounter +"','"+ reminderDatePlusDateCounter +"');";
+                    }
                   }
-                  sql = "INSERT INTO HumanResources([PersonID], [Notes], [Group],[Type],[Name],[Date1],[Date2]) VALUES ('"+this.globalS.id.toString()+"','"+ this.globalS.followups.label.toString()+"',"+"'RECIPIENTALERT','RECIPIENTALERT','FOLLOWUP REMINDER','" +format(Date1,'yyyy/MM/dd') +"','"+format(Date2,'yyyy/MM/dd') +"') ";
+
+                  // let Date1 : Date   = new Date();
+                  // let Date2 : Date   = new Date(Date1);
                   
-                  this.clientS.addRefreminder(sql).subscribe(x => console.log(x) )
+                  // temp = (this.globalS.followups.label).toString().substring(0,2);
                   
-                  this.globalS.followups = null;
+                  // switch (temp) {
+                  //   case '10':
+                  //   Date2.setDate(Date2.getDate() + 10)
+                    
+                  //   break;
+                  //   case '30':
+                  //   Date2.setDate(Date2.getDate() + 30)
+                  //   break;
+                    
+                  //   default:
+                  //   break;
+                  // }
+
+                  // sql = "INSERT INTO HumanResources([PersonID], [Notes], [Group],[Type],[Name],[Date1],[Date2]) VALUES ('"+this.globalS.id.toString()+"','"+ this.globalS.followups.label.toString()+"',"+"'RECIPIENTALERT','RECIPIENTALERT','FOLLOWUP REMINDER','" +format(Date1,'yyyy/MM/dd') +"','"+format(Date2,'yyyy/MM/dd') +"') ";
+                  
+                  this.clientS.addRefreminder(sql).subscribe(x => console.log(x) );                  
+                  // this.globalS.followups = null;
                 }
 
                 addRefdoc(){

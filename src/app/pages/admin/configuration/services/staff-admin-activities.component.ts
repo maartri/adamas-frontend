@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
-import { GlobalService, ListService, MenuService,TimeSheetService,timeSteps } from '@services/index';
+import { GlobalService, ListService, MenuService,PrintService,TimeSheetService,timeSteps } from '@services/index';
 import { SwitchService } from '@services/switch.service';
 import { NzModalService } from 'ng-zorro-antd';
 import { Subject } from 'rxjs';
@@ -107,6 +107,7 @@ export class StaffAdminActivitiesComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private switchS:SwitchService,
     private timeS:TimeSheetService,
+    private printS:PrintService,
     private listS:ListService,
     private menuS:MenuService,
     private formBuilder: FormBuilder,
@@ -556,16 +557,7 @@ export class StaffAdminActivitiesComponent implements OnInit {
           this.drawerVisible = true;
           this.loading = true;
           var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY [Title]) AS Field1,[Title] As [Field2], CASE WHEN RosterGroup = 'ONEONONE' THEN 'ONE ON ONE' WHEN RosterGroup = 'CENTREBASED' THEN 'CENTER BASED ACTIVITY' WHEN RosterGroup = 'GROUPACTIVITY' THEN 'GROUP ACTIVITY' WHEN RosterGroup = 'TRANSPORT' THEN 'TRANSPORT' WHEN RosterGroup = 'SLEEPOVER' THEN 'SLEEPOVER' WHEN RosterGroup = 'TRAVELTIME' THEN 'TRAVEL TIME' WHEN RosterGroup = 'ADMISSION' THEN 'RECIPIENT ADMINISTRATION' WHEN RosterGroup = 'RECPTABSENCE' THEN 'RECIPIENT ABSENCE' WHEN RosterGroup = 'ADMINISTRATION' THEN 'STAFF ADMINISTRATION' ELSE RosterGroup END As [Field3],[MinorGroup] As [Field4],[HACCType] As [Field5],[DatasetGroup] As [Field6],  [NDIA_ID] As [Field7],[Amount] As [Field8],[Unit] As [Field9] FROM ItemTypes "+this.whereString+" (RosterGroup IN ('ADMINISTRATION', 'TRAVELTIME')) ORDER BY Title";
-          
-          const headerDict = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          }
-          
-          const requestOptions = {
-            headers: new HttpHeaders(headerDict)
-          };
-          
+         
           const data = {
             "template": { "_id": "0RYYxAkMCftBE9jc" },
             "options": {
@@ -584,14 +576,12 @@ export class StaffAdminActivitiesComponent implements OnInit {
               "head9" : "Bill Unit",
             }
           }
-          this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-          .subscribe((blob: any) => {
+          this.printS.print(data).subscribe(blob => {  
             let _blob: Blob = blob;
             let fileURL = URL.createObjectURL(_blob);
             this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
             this.loading = false;
-          }, err => {
-            console.log(err);
+            }, err => {
             this.loading = false;
             this.ModalS.error({
               nzTitle: 'TRACCS',
@@ -601,6 +591,7 @@ export class StaffAdminActivitiesComponent implements OnInit {
               },
             });
           });
+          
           this.loading = true;
           this.tryDoctype = "";
           this.pdfTitle = "";

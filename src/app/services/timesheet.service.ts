@@ -257,6 +257,10 @@ export class TimeSheetService {
         return this.auth.get(`${timesheet}/get-username/${accountNo}`)
     }
 
+    updatecontactrosterrunsheet(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/update/contact-roster-runsheet`, data)
+    }
+
     /**
      * Update Alerts and Issues - Profile Page
      */
@@ -330,6 +334,11 @@ export class TimeSheetService {
     updateprogramdetails(data: any) {
         return this.auth.put(`${timesheet}/intake/funding/program-details/update`, data);
     }
+
+    deleteprogramdetails(recordNo: number) {
+        return this.auth.delete(`${timesheet}/intake/funding/program-details/delete/${recordNo}`);
+    }
+
 
     /**
      * Nudge Time
@@ -579,7 +588,7 @@ export class TimeSheetService {
      *  Service Competency
      */
 
-     postintakeServicecompetency(data: any): Observable<any> {
+    postintakeServicecompetency(data: any): Observable<any> {
         return this.auth.post(`${timesheet}/intake/Servicecompetency`, data)
     }
    
@@ -992,9 +1001,14 @@ export class TimeSheetService {
     getstaffbyphone(phoneno: string): Observable<any> {
         return this.auth.get(`${timesheet}/phone-search-staff/${phoneno}`);
     }
-    getrecipientquicksearch(data :any):Observable<any>{
-        return this.auth.get(`${timesheet}/Search-recipient`,data);
+    
+    postrecipientquicksearch(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/search-recipient`, data)
     }
+    poststaffquicksearch(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/search-staff`, data)
+    }
+    
     getstaff(staff: GetStaff): Observable<any> {
         return this.auth.get(`${timesheet}/staffs`, staff)
     }
@@ -1045,6 +1059,13 @@ export class TimeSheetService {
     
     updateStaffCompetenciesHeader(type: string,id:string):Observable<any>{
         return this.auth.get(`${timesheet}/competenciesheader/${type}/${id}`)
+    }
+    
+    updateStaffCompetenciesSkill(type: string,id:string):Observable<any>{
+        return this.auth.get(`${timesheet}/competenciesheaderskill/${type}/${id}`)
+    }
+    updateLeaveStatus(leavetype:string,id:string):Observable<any>{
+        return this.auth.get(`${timesheet}/udpateleavestatus/${leavetype}/${id}`)
     }
 
     deletecompetency(id: number): Observable<any> {

@@ -128,6 +128,24 @@ export interface QuoteHeaderDTO {
     newFileName?: string
 }
 
+export interface AcceptCharges{
+    isPercent: boolean,
+    p_Def_Admin_AdminFrequency: string,
+    p_Def_Admin_AdminType: boolean,
+    p_Def_Admin_Admin_PercAmt: string,
+    p_Def_Admin_CMFrequency: string,
+    p_Def_Admin_CMType: string,
+    p_Def_Admin_CM_PercAmt: string,
+    p_Def_Fee_BasicCare: string,
+    p_Def_IncludeBasicCareFeeInAdmin: boolean,
+    p_Def_IncludeIncomeTestedFeeInAdmin: boolean
+}
+
+export interface ReferralSourceDto{
+    ProgramName: string,
+    ProgramType: string
+} 
+
 export interface Recipients {
     sqlID?: number,
     uniqueID?: string,
@@ -931,3 +949,7 @@ export interface NewRelationShip
     checked: boolean
 }
 
+export interface JsConfig{
+    username: string,
+    password: string
+}

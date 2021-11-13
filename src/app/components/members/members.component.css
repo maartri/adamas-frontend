@@ -23,3 +23,6 @@ li:not(:last-child){
 li.selected{
     background:#e0f2ff;
 }
+.switch-container{
+    margin:7px;
+}

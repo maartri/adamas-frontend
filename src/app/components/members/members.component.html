@@ -5,6 +5,10 @@
                 <div nz-col>
                     <input nz-input placeholder="Recipient Search.." [ngModel]="search" (ngModelChange)="textChanges.next($event)" />
                 </div>
+
+                <div class="switch-container">
+                    <nz-switch nzSize="small" [(ngModel)]="switchValue" (ngModelChange)="switchChange($event)"></nz-switch> Show All Recipients
+                </div>
             </div>  
             <div nz-row>
                 <ul *ngIf="!loading">

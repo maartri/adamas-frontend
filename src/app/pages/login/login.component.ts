@@ -3,7 +3,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 
-import { LoginService, GlobalService, TYPE_MESSAGE, TimeSheetService } from '@services/index';
+import { LoginService, GlobalService, TYPE_MESSAGE, TimeSheetService, JsreportService } from '@services/index';
 import { SettingsService } from '@services/settings.service';
 import { ApplicationUser } from '@modules/modules';
 
@@ -40,6 +40,7 @@ export class LoginComponent implements OnInit {
     private settingS: SettingsService,
     private timeS: TimeSheetService,
     private sanitizer: DomSanitizer,
+    private jsreportS: JsreportService,
     private router: Router
   ) { }
 
@@ -61,6 +62,7 @@ export class LoginComponent implements OnInit {
   login() {
     if (!this.loginForm.valid) return;
     this.loading = true;
+
     let user: ApplicationUser = {
       Username: this.loginForm.get('userName').value,
       Password: this.loginForm.get('password').value
@@ -70,7 +72,11 @@ export class LoginComponent implements OnInit {
       switchMap(x => {
         this.globalS.settings = x;
         this.globalS.originalSettings = x;
-        
+
+        return this.jsreportS.getconfiguration()
+      }),
+      switchMap(x => {
+        this.globalS.jsreportSettings = x;
         return this.loginS.login(user);
       }) 
     ).subscribe(data => {

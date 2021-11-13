@@ -195,13 +195,18 @@
                 <div nz-row *ngIf="current == 0" [formGroup]="adminGroup">
                     <div nz-row nzJustify class="mrg-btm-half">
                         <nz-card [nzBodyStyle]="{'padding':'5px'}">
-                            <ul style="height: 10rem; width: 100%; overflow: auto; padding: .5rem 1rem;">
+                            <!-- <ul style="height: 10rem; width: 100%; overflow: auto; padding: .5rem 1rem;">
                                 <li formArrayName="programs" *ngFor="let program of adminGroup.get('programs')['controls'];let i = index">
                                     <div [formGroupName]="i">
                                         <label nz-checkbox formControlName="checked"> {{ adminGroup.get('programs')['controls'][i].value.program }}</label>
                                     </div>
                                 </li>
-                            </ul>
+                            </ul> -->
+                            <div class="scroll-overflow">
+                                <nz-radio-group formControlName="programChecked">
+                                    <label nz-radio *ngFor="let program of adminGroup.get('programs').value;let i = index" [nzValue]="adminGroup.get('programs')['controls'][i].value.program">{{ adminGroup.get('programs')['controls'][i].value.program }}</label>
+                                </nz-radio-group>
+                           </div>
                             <nz-spin nzSimple *ngIf="loadPrograms" [nzSize]="'small'"></nz-spin>
                         </nz-card>
                     </div>
@@ -209,12 +214,13 @@
                         <nz-card [nzBodyStyle]="{'padding':'5px'}">
                             <div nz-col nzSpan="24">
                                 <div nz-col nzSpan="8">
-                                    <label>Admission Type</label>
+                                    <label>Activity Code</label>
                                 </div>
                                 <div nz-col nzSpan="16">
-                                    <nz-select formControlName="caseCategory" nzAllowClear nzPlaceHolder="Case Note Category" style="width:8rem">
-                                        <nz-option *ngFor="let note of noteArray" [nzValue]="note" [nzLabel]="note"></nz-option>
+                                    <nz-select *ngIf="!loadActivityCodes" formControlName="caseCategory" nzAllowClear nzPlaceHolder="Case Note Category" style="width:8rem">
+                                        <nz-option *ngFor="let code of activityCodes" [nzValue]="code" [nzLabel]="code"></nz-option>
                                     </nz-select>
+                                    <nz-spin nzSimple *ngIf="loadActivityCodes" [nzSize]="'small'"></nz-spin>
                                 </div>
                             </div>    
                         </nz-card>
@@ -241,7 +247,7 @@
                         <nz-card [nzBodyStyle]="{'padding':'5px'}">
                             <div nz-col nzSpan="24">
                                 <div nz-col nzSpan="6">
-                                    <label class="space-top-3">Note Type</label>
+                                    <label>NOTE TYPE</label>
                                     <nz-radio-group formControlName="radioGroup" class="space-top">
                                         <label nz-radio [nzValue]="'CASENOTE'">CASE NOTE</label>
                                         <label nz-radio [nzValue]="'OPNOTE'">OP NOTE</label>
@@ -316,6 +322,7 @@
                         <div class="form-group">  
                             <label for="">Notifications</label>
                             <nz-checkbox-group [(ngModel)]="notifCheckBoxes" (ngModelChange)="notif(notifCheckBoxes)"  [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
+                            <nz-alert nzType="warning" *ngIf="notifCheckBoxes?.length == 0" nzMessage="No Notifications"></nz-alert>
                         </div>
                         
                     </div>
@@ -326,6 +333,7 @@
                         <div class="form-group">
                             <label for="">Followup</label>
                             <nz-checkbox-group [(ngModel)]="notifFollowUpGroup" (ngModelChange)="followup(notifFollowUpGroup)" [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
+                            <nz-alert nzType="warning" *ngIf="notifFollowUpGroup?.length == 0" nzMessage="No Followups"></nz-alert>
                         </div>
                     </div>
                 </div>
@@ -335,6 +343,7 @@
                         <div class="form-group">
                             <label for="">Documents</label>
                             <nz-checkbox-group [(ngModel)]="notifDocumentsGroup" (ngModelChange)="doc(notifDocumentsGroup)" [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
+                            <nz-alert nzType="warning" *ngIf="notifDocumentsGroup?.length == 0" nzMessage="No Documents"></nz-alert>
                         </div>
                     </div>
                 </div>
@@ -346,6 +355,7 @@
                             <div *ngFor="let l of datalist"> 
                                 <a [href]="l.link" target="_blank">{{l.form}}</a>
                             </div>
+                            <nz-alert nzType="warning" *ngIf="datalist?.length == 0" nzMessage="No Data List"></nz-alert>
                         </div>
                     </div>
                 </div>
@@ -1171,6 +1181,7 @@
                             <div *ngFor="let l of datalist"> 
                                 <a [href]="l.link" target="_blank">{{l.form}}</a>
                             </div>
+                            <nz-alert nzType="warning" *ngIf="datalist?.length == 0" nzMessage="No Data List"></nz-alert>
                         </div>
                     </div>
                 </div>
@@ -1785,7 +1796,7 @@
                 </div>
 
         </div>
-    </div>    
+    </div>
 </div>
 
 <div *nzModalFooter>

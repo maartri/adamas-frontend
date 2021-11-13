@@ -11,7 +11,7 @@
                 <div nz-col nzOffset="2" [formGroup]="inputForm">
                     <div nz-col nzSpan="6" class="form-group">
                         <label for="">Medicare Number</label>
-                        <input nz-input formControlName ="medicareNumber" />
+                        <input nz-input formControlName ="medicareNumber" maxlength="15" />
                     </div>
                     <div nz-col nzSpan="6" class="form-group">
                         <label for="">Expiry Date</label>
@@ -19,7 +19,7 @@
                     </div>
                     <div nz-col nzSpan="6" v>
                         <label for="">Medical Recipient ID</label>
-                        <input nz-input formControlName ="medicareRecipientID" />
+                        <input nz-input formControlName ="medicareRecipientID" maxlength="15" />
                     </div>
                 </div>
             </div>
@@ -43,15 +43,15 @@
                 <div nz-col nzOffset="2" [formGroup]="inputForm">
                     <div nz-col nzSpan="6" class="form-group">
                         <label for="">Concession Number</label>
-                        <input nz-input formControlName ="concessionNumber" />
+                        <input nz-input formControlName ="concessionNumber" maxlength="20" />
                     </div>
                     <div nz-col nzSpan="6" class="form-group">
                         <label for="">DVA Number</label>
-                        <input nz-input formControlName ="dvaNumber" />
+                        <input nz-input formControlName ="dvaNumber" maxlength="20" />
                     </div>
                     <div nz-col nzSpan="6" v>
                         <label for="">Type</label>
-                        <input nz-input formControlName ="ambulanceType" />
+                        <input nz-input formControlName ="ambulanceType"  maxlength="20" />
                     </div>
                 </div>
             </div>
@@ -153,7 +153,7 @@
     <div [formGroup]="pensionForm">
         <div nz-row>
             <nz-form-item *ngIf="addOREdit == 1">
-                <nz-form-label [nzNoColon]="true">Pension</nz-form-label>
+                <nz-form-label nzRequired nzFor="Name" [nzNoColon]="true">Name</nz-form-label>
                 <nz-form-control nzErrorTip="This is required!">
                     <nz-select formControlName="name"  nzAllowClear nzPlaceHolder=""
                         [nzDropdownMatchSelectWidth]="false">
@@ -171,7 +171,7 @@
         <div nz-row [nzGutter]="12">
             <div nz-col nzSpan="12" class="form-group">
                 <div nz-row class="form-group" nzOffset="2">
-                    <label for="">Number</label>
+                    <nz-form-label nzRequired nzFor="Number" [nzNoColon]="true">Number</nz-form-label>
                     <input nz-input formControlName="address1" />
                 </div>
             </div>

@@ -4,7 +4,7 @@
       <div nz-col nzSpan="3">
         <button class="botton success" (click)="newStaffModal = !newStaffModal" ><i nz-icon nzType="plus" nzTheme="outline"></i> New Staff</button>
       </div>
-      <button class="botton find"><i nz-icon nzType="search" nzTheme="outline"></i> Find</button>
+      <button class="botton find" (click)="openFindModal()"><i nz-icon nzType="search" nzTheme="outline"></i> Find</button>
     </div>
     <ng-container *ngIf="userview?.staff >= 951">
       <div nz-col nzSpan="6" style="margin-top: 10px;">
@@ -113,6 +113,77 @@
     <button nz-button nzType="primary" (click)="terminate()"  [nzLoading]="isConfirmLoading">Terminate</button>
   </div>
 </nz-modal>
+<!-- <nz-modal [nzZIndex]="1001" [nzWidth]="600" [(nzVisible)]="searchAvaibleModal" nzTitle="Change Day or Times" (nzOnCancel)="searchAvaibleModal = false">
+  <nz-card nzTitle="Set Search Detail For Availability">
+    <p class="text-center">Enter The Date, Start and End Time for Searching for Availble Staff</p>
+  </nz-card>
+  <form nz-form [nzLayout]="'vertical'">
+    <div nz-row [nzGutter]="16" [formGroup]="avilibilityForm">
+      <div nz-col class="gutter-row" [nzSpan]="6">
+        <nz-form-item>
+          <nz-form-label [nzSpan]="24" nzFor="Title">Date</nz-form-label>
+          <nz-form-control [nzSpan]="24">
+            <nz-date-picker   formControlName="date" [nzFormat]="dateFormat"></nz-date-picker>
+          </nz-form-control>
+        </nz-form-item >
+      </div>
+      <div nz-col class="gutter-row" [nzSpan]="6">
+        <nz-form-item>
+          <nz-form-label [nzSpan]="24" nzFor="Title">Start</nz-form-label>
+          <nz-form-control [nzSpan]="24">
+            <nz-select [nzDropdownMatchSelectWidth]="false"  formControlName="start"  nzShowSearch nzAllowClear style="width:100%;">
+              <nz-option *ngFor="let main of timeSteps" [nzLabel]="main"  [nzValue]="main"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col class="gutter-row" [nzSpan]="6">
+        <nz-form-item>
+          <nz-form-label [nzSpan]="24" nzFor="Title">End</nz-form-label>
+          <nz-form-control [nzSpan]="24">
+            <nz-select [nzDropdownMatchSelectWidth]="false"  formControlName="end"  nzShowSearch nzAllowClear style="width:100%;">
+              <nz-option *ngFor="let main of timeSteps" [nzLabel]="main"  [nzValue]="main"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item >
+      </div>
+      <div nz-col class="gutter-row" [nzSpan]="6">
+        <nz-form-item>
+          <nz-form-label [nzSpan]="24" nzFor="Title">Durat'n</nz-form-label>
+          <nz-form-control [nzSpan]="24">
+            <input type="text" formControlName="drtn" nz-input>
+          </nz-form-control>
+        </nz-form-item >
+      </div>
+    </div>
+  </form>
+<div *nzModalFooter>
+  <button nz-button nzType="default" (click)="searchAvaibleModal = false">Cancel</button>
+  <button nz-button nzType="primary" (click)="updateStaffCode()"  [nzLoading]="isConfirmLoading">Update Staff Code</button>
+</div>
+</nz-modal> -->
+
+<nz-modal
+ [(nzVisible)]="searchAvaibleModal"
+ [nzTitle]="modalTitle"
+ [nzContent]="modalContent"
+ [nzFooter]="modalFooter"
+ (nzOnCancel)="searchAvaibleModal = false"
+>
+ <ng-template #modalTitle>Custom Modal Title</ng-template>
+ <ng-template #modalContent>
+   <p>Modal Content</p>
+   <p>Modal Content</p>
+   <p>Modal Content</p>
+   <p>Modal Content</p>
+   <p>Modal Content</p>
+ </ng-template>
+ <ng-template #modalFooter>
+   <span>Modal Footer:</span>
+   <button nz-button nzType="default" (click)="searchAvaibleModal = false">Custom Callback</button>
+ </ng-template>
+</nz-modal>
+
 <nz-modal [nzWidth]="400" [(nzVisible)]="changeCodeModal" nzTitle="Agency Defined Code" (nzOnCancel)="changeCodeModal = false">
   <div nz-row [formGroup]="updateStaff">
     <form nz-form [nzLayout]="'vertical'" [formGroup]="updateStaff" >
@@ -164,18 +235,18 @@
           <label nz-checkbox nzDisabled  formControlName="trainingchk">Training</label> 
         </div>
         <div *ngIf="this.printSummaryGroup.get('training').value">
-        <div nz-col nzSpan="2">
-          <label>From</label> 
-        </div>
-        <div nz-col nzSpan="4">
-          <nz-date-picker formControlName="trainingFrom"></nz-date-picker>
-        </div>
-        <div nz-col nzSpan="2" class="text-center">
-          <label>To</label>
-        </div>
-        <div nz-col nzSpan="4">
-          <nz-date-picker formControlName="trainingTo"></nz-date-picker>
-        </div>
+          <div nz-col nzSpan="2">
+            <label>From</label> 
+          </div>
+          <div nz-col nzSpan="4">
+            <nz-date-picker formControlName="trainingFrom"></nz-date-picker>
+          </div>
+          <div nz-col nzSpan="2" class="text-center">
+            <label>To</label>
+          </div>
+          <div nz-col nzSpan="4">
+            <nz-date-picker formControlName="trainingTo"></nz-date-picker>
+          </div>
         </div>
       </div>
       <div nz-row nzJustify class="mrg-btm">
@@ -183,18 +254,18 @@
           <label nz-checkbox nzDisabled  formControlName="opchk">OP Notes</label> 
         </div>
         <div *ngIf="this.printSummaryGroup.get('operationalNotes').value">
-        <div nz-col nzSpan="2">
-          <label>From</label> 
-        </div>
-        <div nz-col nzSpan="4">
-          <nz-date-picker formControlName="opnotesFrom" [nzFormat]="dateFormat"></nz-date-picker>
-        </div>
-        <div nz-col nzSpan="2" class="text-center">
-          <label>To</label>
-        </div>
-        <div nz-col nzSpan="4">
-          <nz-date-picker formControlName="opnotesTo" [nzFormat]="dateFormat"></nz-date-picker>
-        </div>
+          <div nz-col nzSpan="2">
+            <label>From</label> 
+          </div>
+          <div nz-col nzSpan="4">
+            <nz-date-picker formControlName="opnotesFrom" [nzFormat]="dateFormat"></nz-date-picker>
+          </div>
+          <div nz-col nzSpan="2" class="text-center">
+            <label>To</label>
+          </div>
+          <div nz-col nzSpan="4">
+            <nz-date-picker formControlName="opnotesTo" [nzFormat]="dateFormat"></nz-date-picker>
+          </div>
         </div>
       </div>         
       <div nz-row nzJustify class="mrg-btm">
@@ -248,20 +319,20 @@
         </div>
         <div *ngIf="this.printSummaryGroup.get('permanentRoster').value">
           <nz-select formControlName="Cycles" nzMode="default" >
-              <nz-option *ngFor="let option of Cycles" [nzLabel]="option" [nzValue]="option"></nz-option> 
+            <nz-option *ngFor="let option of Cycles" [nzLabel]="option" [nzValue]="option"></nz-option> 
           </nz-select>
           <span> Starting  </span>
           <nz-select formControlName="DayNames" nzMode="default" >
-              <nz-option *ngFor="let option of DayNames" [nzLabel]="option" [nzValue]="option"></nz-option> 
+            <nz-option *ngFor="let option of DayNames" [nzLabel]="option" [nzValue]="option"></nz-option> 
           </nz-select>
           <span> for </span>
           <nz-select formControlName="fDays" nzMode="default" >
-              <nz-option *ngFor="let option of fDays" [nzLabel]="option" [nzValue]="option"></nz-option> 
+            <nz-option *ngFor="let option of fDays" [nzLabel]="option" [nzValue]="option"></nz-option> 
           </nz-select>
           <nz-select style="margin-left: 10px;" [nzDropdownMatchSelectWidth]="false" formControlName="recepientSearc1" nzShowSearch nzAllowClear>
-              <nz-option nzValue="Show RECIPIENT CODE" nzLabel="Show RECIPIENT CODE"></nz-option>
-              <nz-option nzValue="Show RECIPIENT First Name" nzLabel="Show RECIPIENT First Name"></nz-option> 
-              <nz-option nzValue="Show RECIPIENT File#" nzLabel="Show RECIPIENT File#"></nz-option>
+            <nz-option nzValue="Show RECIPIENT CODE" nzLabel="Show RECIPIENT CODE"></nz-option>
+            <nz-option nzValue="Show RECIPIENT First Name" nzLabel="Show RECIPIENT First Name"></nz-option> 
+            <nz-option nzValue="Show RECIPIENT File#" nzLabel="Show RECIPIENT File#"></nz-option>
           </nz-select>
           
         </div>
@@ -280,21 +351,14 @@
     <button nz-button nzType="primary" (click)="handleOk()">Print</button>
   </div>
 </nz-modal>
-
-
-
 <nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="SummarydrawerVisible" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
-  - <div class="col-md-12 spinner" *ngIf="spinloading">
-      <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
+   <div class="col-md-12 spinner" *ngIf="spinloading">
+    <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
   </div>  
   <div nz-row>
-      <iframe *ngIf="tryDoctype" [src]="tryDoctype" width="950" height="600"></iframe> 
+    <iframe *ngIf="tryDoctype" [src]="tryDoctype" width="950" height="600"></iframe> 
   </div>
 </nz-drawer>
-
-
-
-
 <nz-modal [nzWidth]="800" [nzStyle]="{ top: '20px' }" [(nzVisible)]="terminateModal" nzTitle="Termination" (nzOnCancel)="terminateModal = false">
   <div nz-row [formGroup]="terminateGroup">
     <form nz-form [nzLayout]="'vertical'" [formGroup]="terminateGroup" >
@@ -344,3 +408,506 @@
 <app-leave-application *ngIf="user" [open]="putonLeaveModal" [user]="user"></app-leave-application>
 <app-add-staff [open]="newStaffModal" (reload)="reload($event)"></app-add-staff>
 
+<nz-modal [(nzVisible)]="findModalOpen" [nzStyle]="{ top: '20px' }" nzWidth="1340" [nzZIndex]="1000" nzTitle="" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+  <div *ngIf="findModalOpen"> <!-- start of model -->
+    <div nz-row [nzGutter]="8">
+      <div nz-col class="gutter-row" nzSpan="6" style="background: #002060;padding: 4px;">
+        <h3 class="text-center" style="color:white">Search Worker</h3>
+      </div>
+      <div nz-col class="gutter-row" nzSpan="17" [formGroup]="quicksearch">
+        <nz-input-group nzSearch nzSize="large" [nzAddOnAfter]="suffixButton">
+            <input type="text" nz-input formControlName="searchText" placeholder="" />
+        </nz-input-group>
+        <ng-template #suffixButton>
+            <button nz-button nzType="primary" nzSize="large" nzSearch (click)="searchData()">Search</button>
+        </ng-template>
+      </div>
+    </div>
+    <div nz-row>
+      <div nz-col nzSpan="4" [formGroup]="quicksearch" style="margin-right: 5px;">
+        <div nz-row style="background-color:#fafafa;color: white;padding:4px;">
+          <div nz-col [nzSpan]="12">
+            <label nz-checkbox formControlName="availble" (change)="log($event,5)">
+              <span><b>Availble</b></span>
+            </label>
+          </div>
+          <div nz-col [nzSpan]="12" *ngIf="this.quicksearch.get('availble').value">
+            <label nz-checkbox formControlName="option">
+              <span><b>Option</b></span>
+            </label>
+          </div>
+        </div>
+        <div nz-row *ngIf="this.quicksearch.get('option').value" class="mrg-btm-half">
+          <nz-card [nzBodyStyle]="{'padding':'8px'}" nzTitle="Availability Options" [nzSize]="'small'" [formGroup]="avilibilityForm">
+          <div nz-row>
+              <label nz-checkbox formControlName="conflict">
+                <span><b>Conflict Tolerance</b></span>
+              </label>
+            </div>
+            <div nz-row class="mrg-btm-half">
+              <div nz-col [nzSpan]="12">
+                <ng-select 
+                formControlName="conflictminutes"
+                [nzSize]="'small'"
+                [items]="conflictpointList" 
+                [virtualScroll]="true"
+                [dropdownPosition]="'bottom'"
+                [clearable]="false"
+                [closeOnSelect]="true">
+              </ng-select>
+              </div>
+              <div nz-col [nzSpan]="12" class="text-center">
+                <label for="minutes">Minutes</label>
+              </div>
+             </div>
+             <button nz-button nzType="primary" nzBlock>Reset Search Day/Time</button>
+          </nz-card>
+        </div>
+        <div nz-row>
+          <div class="form-group">
+            <ng-select 
+            formControlName="status"
+            [nzSize]="'small'"
+            [items]="statusList" 
+            [virtualScroll]="true"
+            [dropdownPosition]="'bottom'"
+            [clearable]="false"
+            [closeOnSelect]="true">
+          </ng-select>
+        </div>
+      </div>
+      <div nz-row>
+        <div class="form-group">
+          <ng-select 
+          formControlName="gender"
+          [nzSize]="'small'"
+          [items]="genderList" 
+          [virtualScroll]="true"
+          [dropdownPosition]="'bottom'"
+          [clearable]="false"
+          [closeOnSelect]="true">
+        </ng-select>
+      </div>
+    </div>
+    <div nz-row>
+      <div class="form-group">
+        <label nz-checkbox  formControlName="staff">Staff</label>
+        <br />
+        <label nz-checkbox  formControlName="brokers">Brokers</label>
+        <br />
+        <label nz-checkbox  formControlName="volunteers">Volunteers</label>
+        <br />
+        <label nz-checkbox  formControlName="onleaveStaff">Include Staff On Leave</label>
+        <br />
+        <label nz-checkbox  formControlName="previousWork" *ngIf="this.quicksearch.get('availble').value">Previous Work</label>
+      </div>
+    </div>
+    <div nz-row>      
+      <div nz-row  style="border: 1px solid #e8e8e8;">
+        <div nz-row style="background-color:#fafafa;color: white;padding:4px;">
+          <label nz-checkbox
+          [(ngModel)]="allProgarms"
+          (ngModelChange)="updateAllCheckedFilters(2)"
+          [nzIndeterminate]="allprogramIntermediate" [ngModelOptions]="{standalone: true}"><b>ALL Teams/Areas</b></label>
+        </div>
+        <div nz-col>
+          <div class="staff-wrapper" style="height: 10rem; width: 100%; overflow: auto; padding:.2rem;">
+            <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event,2)">
+              <div nz-row>
+                <div nz-col nzSpan="24" *ngFor="let prog of diciplineList">
+                  <label nz-checkbox  [nzValue]="prog.description" [(ngModel)]="prog.checked" (ngModelChange)="updateSingleCheckedFilters(2)" [ngModelOptions]="{standalone: true}">{{ prog.description }}</label>
+                </div>
+              </div>
+            </nz-checkbox-wrapper>
+           </div>
+        </div>
+      </div>
+      <br>
+      <div nz-row  style="border: 1px solid #e8e8e8;">
+        <div nz-row style="background-color:#fafafa;color: white;padding:4px;">
+          <label nz-checkbox
+          [(ngModel)]="allcat"
+          (ngModelChange)="updateAllCheckedFilters(4)"
+          [nzIndeterminate]="allCatIntermediate" [ngModelOptions]="{standalone: true}"><b>ALL Job Categories</b></label>
+        </div>
+        <div nz-col>
+          <div class="staff-wrapper" style="height: 10rem; width: 100%; overflow: auto;padding:.2rem;">
+            <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event,4)">
+              <div nz-row>
+                <div nz-col nzSpan="24" *ngFor="let manager of categoriesList">
+                  <label nz-checkbox  [nzValue]="manager.description" [(ngModel)]="manager.checked" (ngModelChange)="updateSingleCheckedFilters(4)" [ngModelOptions]="{standalone: true}">{{ manager.description }}</label>
+                </div>
+              </div>
+            </nz-checkbox-wrapper>
+          </div>
+        </div>
+      </div>
+    </div>
+      </div>
+      <div nz-col nzSpan="19">
+        <nz-tabset [nzTabPosition]="'top'" [nzType]="'card'">
+          <nz-tab nzTitle="Staff List" (nzClick)="tabFindChange(0)"> </nz-tab>
+          <!-- <nz-tab nzTitle="Gap Analyser" (nzClick)="tabFindChange(1)"> </nz-tab> -->
+          <nz-tab nzTitle="Competencies" (nzClick)="tabFindChange(2)"> </nz-tab>
+          <!-- <nz-tab nzTitle="Approved/Excludeed Staff" (nzClick)="tabFindChange(3)"> </nz-tab> -->
+          <nz-tab nzTitle="Filters" (nzClick)="tabFindChange(4)"> </nz-tab>
+          <nz-tab nzTitle="Extended Search" (nzClick)="tabFindChange(9)"></nz-tab>
+          
+        </nz-tabset>
+        <div *ngIf="tabFindIndex == 0">
+          <div nz-row>
+            <nz-table style="margin-top:0px;" #fixedTable [nzData]="filteredResult" [nzLoading]="loading" [nzScroll]="{ x: '2600px', y: '540px' }"  nzSize="small" nzBordered class="custum-header">
+              <thead>
+                <tr>
+                  <th nzWidth="100px" nzLeft="0PX">ID</th>
+                  <th nzWidth="50px"  nzLeft="100PX">MIN</th>
+                  <th nzWidth="50px"  nzLeft="150PX">MAX</th>
+                  <th nzWidth="200px">Type</th>
+                  <th nzWidth="200px">Staff Name</th>
+                  <th nzWidth="200px">Suburb</th>
+                  <th nzWidth="200px">Category</th>
+                  <th nzWidth="200px">Primary Phone</th>
+                  <th nzWidth="200px">Address</th>
+                  <th nzWidth="200px">Branch</th>
+                  <th nzWidth="200px">Team</th>
+                  <th nzWidth="200px">CoOrdinator</th>
+                  <th nzWidth="200px">Alerts</th>
+                  <th nzWidth="200px">Last Address</th>
+                  <th nzWidth="100px">Rating</th>
+                  <th nzRight="0px">CW</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let result of fixedTable.data">
+                  <td  nzLeft="0PX">{{result.id}}</td>
+                  <td  nzLeft="100PX">{{result.hfmin}}</td>
+                  <td  nzLeft="150PX">{{result.hfmax}}</td>
+                  <td>{{result.type}}</td>
+                  <td>{{result.name}}</td>
+                  <td>{{result.suburb}}</td>
+                  <td>{{result.category}}</td>
+                  <td>{{result.contact}}</td>
+                  <td>{{result.address}}</td>
+                  <td>{{result.branch}}</td>
+                  <td>{{result.team}}</td>
+                  <td>{{result.coOrdinator}}</td>
+                  <td>{{result.alerts}}</td>
+                  <td>{{result.lastKnownLocation}}</td>
+                  <td>{{result.rating}}</td>
+                  <td nzRight="0px">{{result.jobWeighting}}</td>
+                </tr>
+              </tbody>
+            </nz-table>
+          </div>  
+        </div>
+        <div *ngIf="tabFindIndex == 2">
+          <div nz-row [nzGutter]="8">
+            <div nz-col class="gutter-row" [nzSpan]="6">
+              <div nz-row  style="border: 1px solid #e8e8e8;">
+                <div nz-row style="background-color:#fafafa;padding:4px;">
+                  <label class="text-center"><b>Mandatory Competencies</b></label>
+                </div>
+                <div nz-row class="text-center">
+                  <button nz-button nzType="primary" style="margin-right:8px;">Select All</button>
+                  <button nz-button nzType="primary">Unselect All</button>
+                </div>
+                <div nz-col>
+                  <div class="staff-wrapper" style="height: 30rem; width: 100%; overflow: auto; padding: .5rem 1rem;">
+                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event,1)"> 
+                      <div nz-row>
+                        <!-- <div nz-col nzSpan="24" *ngFor="let branch of branchesList">
+                          <label nz-checkbox [nzValue]="branch.description" [(ngModel)]="branch.checked" (ngModelChange)="updateSingleCheckedFilters(1)" [ngModelOptions]="{standalone: true}">{{ branch.description }}</label>
+                        </div> -->
+                      </div>
+                    </nz-checkbox-wrapper>   
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div nz-col class="gutter-row" [nzSpan]="6">
+              <div nz-row  style="border: 1px solid #e8e8e8;">
+                <div nz-row style="background-color:#fafafa;padding:4px;">
+                  <label class="text-center"><b>Desirable Competencies</b></label>
+                </div>
+                <div nz-row class="text-center">
+                  <button nz-button nzType="primary" style="margin-right:8px;">Select All</button>
+                  <button nz-button nzType="primary">Unselect All</button>
+                </div>
+                <div nz-col>
+                  <div class="staff-wrapper" style="height: 30rem; width: 100%; overflow: auto; padding: .5rem 1rem;">
+                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event,2)">
+                      <div nz-row>
+                        <!-- <div nz-col nzSpan="24" *ngFor="let prog of diciplineList">
+                          <label nz-checkbox  [nzValue]="prog.description" [(ngModel)]="prog.checked" (ngModelChange)="updateSingleCheckedFilters(2)" [ngModelOptions]="{standalone: true}">{{ prog.description }}</label>
+                        </div> -->
+                      </div>
+                    </nz-checkbox-wrapper>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div nz-col class="gutter-row" [nzSpan]="6">
+              <div nz-row  style="border: 1px solid #e8e8e8;">
+                <div nz-row style="background-color:#fafafa;padding:4px;">
+                  <label class="text-center"><b>Optional Competencies</b></label>
+                </div>
+                <div nz-row class="text-center">
+                  <button nz-button nzType="primary" style="margin-right:8px;">Select All</button>
+                  <button nz-button nzType="primary">Unselect All</button>
+                </div>
+                <div nz-col>
+                  <div class="staff-wrapper" style="height: 30rem; width: 100%; overflow: auto; padding: .5rem 1rem;">
+                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event,2)">
+                      <div nz-row>
+                        <!-- <div nz-col nzSpan="24" *ngFor="let prog of diciplineList">
+                          <label nz-checkbox  [nzValue]="prog.description" [(ngModel)]="prog.checked" (ngModelChange)="updateSingleCheckedFilters(2)" [ngModelOptions]="{standalone: true}">{{ prog.description }}</label>
+                        </div> -->
+                      </div>
+                    </nz-checkbox-wrapper>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div nz-col class="gutter-row" [nzSpan]="6">
+              <div nz-row  style="border: 1px solid #e8e8e8;">
+                <div nz-row style="background-color:#fafafa;padding:4px;">
+                  <label class="text-center"><b>Other Skills</b></label>
+                </div>
+                <div nz-row class="text-center">
+                  <button nz-button nzType="primary" style="margin-right:8px;" (click)="allcompetencieschecked()">Select All</button>
+                  <button nz-button nzType="primary" (click)="allcompetenciesunchecked()">Unselect All</button>
+                </div>
+                <div nz-col>
+                  <div class="staff-wrapper" style="height: 30rem; width: 100%; overflow: auto; padding: .5rem 1rem;">
+                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event,7)">
+                      <div nz-row>
+                        <div nz-col nzSpan="24" *ngFor="let skill of skillsList">
+                          <label nz-checkbox  [nzValue]="skill.identifier" [(ngModel)]="skill.checked"  [ngModelOptions]="{standalone: true}">{{ skill.text }}</label>
+                        </div>
+                      </div>
+                    </nz-checkbox-wrapper>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>  
+
+        <div nz-row *ngIf="tabFindIndex == 9" nzGutter="16" [formGroup]="extendedSearch">
+                
+                <div nz-col nzSpan="8" class="tree-overflow">
+                    <nz-tree [nzData]="nodelist" nzShowLine (nzClick)="nzEvent($event)"> </nz-tree>
+                </div>
+                
+                <div nz-col nzSpan="16">
+                    <div nz-row>
+                        <div class="form-group">
+                            <input nz-input placeholder="" formControlName="title" />
+                        </div>
+                    </div>
+                    <div nz-row>
+                        <div class="form-group">
+                            <ng-select 
+                            formControlName="rule"
+                            [items]="sampleList" 
+                            [virtualScroll]="true"
+                            [dropdownPosition]="'bottom'"
+                            [clearable]="false"
+                            [closeOnSelect]="true"
+                            >
+                            </ng-select>
+                    </div>
+                </div>
+                <div nz-row [nzGutter]="16">
+                    <div *ngIf="this.extendedSearch.get('rule').value == 'EQUALS' || this.extendedSearch.get('rule').value == 'LESS THEN' || this.extendedSearch.get('rule').value == 'GREATER THAN' ||  this.extendedSearch.get('rule').value == 'NOT EQUAL TO' || this.extendedSearch.get('rule').value == 'BETWEEN' " nz-col class="gutter-row" nzSpan="10" class="form-group">
+                        <input nz-input formControlName="from" />
+                    </div>
+                    <div *ngIf="this.extendedSearch.get('rule').value == 'BETWEEN'" nz-col class="gutter-row text-center" nzSpan="2" class="form-group" style="text-align:center;">
+                        <label>AND</label>
+                    </div>
+                    <div *ngIf="this.extendedSearch.get('rule').value == 'BETWEEN'" nz-col class="gutter-row" nzSpan="10" class="form-group">
+                        <input nz-input formControlName="to"/>
+                    </div>
+                </div>
+                <div nz-row>
+                    <div class="form-group">
+                        <label class="columns" nz-checkbox formControlName="activeonly">Active</label>
+                    </div>
+                    <div class="form-group">
+                        <button nz-button nzType="primary" (click)="setCriteria()">Set Criteria</button>
+                    </div>
+                </div>
+                <div nz-row>
+                    <nz-table #smallTable nzSize="small" nzBordered class="custum-header">
+                        <thead>
+                            <tr>
+                                <th class="coulmn-color">Field/Item</th>
+                                <th class="coulmn-color">Search Type</th>
+                                <th class="coulmn-color">Text To Locate Search</th>
+                                <th class="coulmn-color">End Text For Between Search</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let criteria of cariteriaList">
+                                <td>{{criteria.fieldName}}</td>
+                                <td>{{criteria.searchType}}</td>
+                                <td>{{criteria.textToLoc}}</td>
+                                <td>{{criteria.endText}}</td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </div>
+            </div>
+        </div>
+        
+        <div *ngIf="tabFindIndex == 3">
+          <div nz-row [nzGutter]="8">
+            <div nz-col class="gutter-row" [nzSpan]="6">
+              <div nz-row  style="border: 1px solid #e8e8e8;">
+                <div nz-row style="background-color:#fafafa;padding:4px;">
+                  <label class="text-center"><b>The Only Staff That Can Be Used</b></label>
+                </div>
+                <div nz-col>
+                  <div class="staff-wrapper" style="height: 30rem; width: 100%; overflow: auto; padding: .5rem 1rem;">
+                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event,1)"> 
+                      <div nz-row>
+                        <!-- <div nz-col nzSpan="24" *ngFor="let branch of branchesList">
+                          <label nz-checkbox [nzValue]="branch.description" [(ngModel)]="branch.checked" (ngModelChange)="updateSingleCheckedFilters(1)" [ngModelOptions]="{standalone: true}">{{ branch.description }}</label>
+                        </div> -->
+                      </div>
+                    </nz-checkbox-wrapper>   
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div nz-col class="gutter-row" [nzSpan]="6">
+              <div nz-row  style="border: 1px solid #e8e8e8;">
+                <div nz-row style="background-color:#fafafa;padding:4px;">
+                  <label class="text-center"><b>Staff Specifically Excludeed</b></label>
+                </div>
+                <div nz-col>
+                  <div class="staff-wrapper" style="height: 30rem; width: 100%; overflow: auto; padding: .5rem 1rem;">
+                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event,2)">
+                      <div nz-row>
+                        <!-- <div nz-col nzSpan="24" *ngFor="let prog of diciplineList">
+                          <label nz-checkbox  [nzValue]="prog.description" [(ngModel)]="prog.checked" (ngModelChange)="updateSingleCheckedFilters(2)" [ngModelOptions]="{standalone: true}">{{ prog.description }}</label>
+                        </div> -->
+                      </div>
+                    </nz-checkbox-wrapper>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div nz-col class="gutter-row" [nzSpan]="12">
+              <div nz-row  style="border: 1px solid #e8e8e8;">
+                <div nz-row style="background-color:#fafafa;padding:4px;">
+                  <label class="text-center"><b>Staff With Missing Or Expired Competency</b></label>
+                </div>
+                <div nz-col>
+                  <div class="staff-wrapper" style="height: 30rem; width: 100%; overflow: auto; padding: .5rem 1rem;">
+                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event,2)">
+                      <div nz-row>
+                        <!-- <div nz-col nzSpan="24" *ngFor="let prog of diciplineList">
+                          <label nz-checkbox  [nzValue]="prog.description" [(ngModel)]="prog.checked" (ngModelChange)="updateSingleCheckedFilters(2)" [ngModelOptions]="{standalone: true}">{{ prog.description }}</label>
+                        </div> -->
+                      </div>
+                    </nz-checkbox-wrapper>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> -->
+        <div *ngIf="tabFindIndex == 4">
+          <div nz-row [nzGutter]="8">
+            <div nz-col class="gutter-row" [nzSpan]="5">
+              <div nz-row  style="border: 1px solid #e8e8e8;">
+                <div nz-row style="background-color:#fafafa;color: white;padding:4px;">
+                  <label nz-checkbox
+                  [(ngModel)]="allBranches"
+                  (ngModelChange)="updateAllCheckedFilters(1)"
+                  [nzIndeterminate]="allBranchIntermediate" [ngModelOptions]="{standalone: true}"><b>ALL Branches</b></label>
+                </div>
+                <div nz-col>
+                  <div class="staff-wrapper" style="height: 30rem; width: 100%; overflow: auto; padding: .5rem 1rem;">
+                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event,1)"> 
+                      <div nz-row>
+                        <div nz-col nzSpan="24" *ngFor="let branch of branchesList">
+                          <label nz-checkbox [nzValue]="branch.description" [(ngModel)]="branch.checked" (ngModelChange)="updateSingleCheckedFilters(1)" [ngModelOptions]="{standalone: true}">{{ branch.description }}</label>
+                        </div>
+                      </div>
+                    </nz-checkbox-wrapper>   
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div nz-col class="gutter-row" [nzSpan]="7">
+              <div nz-row  style="border: 1px solid #e8e8e8;">
+                <div nz-row style="background-color:#fafafa;color: white;padding:4px;">
+                  <label nz-checkbox
+                  [(ngModel)]="allProgarms"
+                  (ngModelChange)="updateAllCheckedFilters(2)"
+                  [nzIndeterminate]="allprogramIntermediate" [ngModelOptions]="{standalone: true}"><b>ALL Teams/Areas</b></label>
+                </div>
+                <div nz-col>
+                  <div class="staff-wrapper" style="height: 30rem; width: 100%; overflow: auto; padding: .5rem 1rem;">
+                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event,2)">
+                      <div nz-row>
+                        <div nz-col nzSpan="24" *ngFor="let prog of diciplineList">
+                          <label nz-checkbox  [nzValue]="prog.description" [(ngModel)]="prog.checked" (ngModelChange)="updateSingleCheckedFilters(2)" [ngModelOptions]="{standalone: true}">{{ prog.description }}</label>
+                        </div>
+                      </div>
+                    </nz-checkbox-wrapper>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div nz-col class="gutter-row" [nzSpan]="6">
+              <div nz-row  style="border: 1px solid #e8e8e8;">
+                <div nz-row style="background-color:#fafafa;color: white;padding:4px;">
+                  <label nz-checkbox
+                  [(ngModel)]="allcat"
+                  (ngModelChange)="updateAllCheckedFilters(4)"
+                  [nzIndeterminate]="allCatIntermediate" [ngModelOptions]="{standalone: true}"><b>ALL Job Categories</b></label>
+                </div>
+                <div nz-col>
+                  <div class="staff-wrapper" style="height: 30rem; width: 100%; overflow: auto; padding: .5rem 1rem;">
+                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event,4)">
+                      <div nz-row>
+                        <div nz-col nzSpan="24" *ngFor="let manager of categoriesList">
+                          <label nz-checkbox  [nzValue]="manager.description" [(ngModel)]="manager.checked" (ngModelChange)="updateSingleCheckedFilters(4)" [ngModelOptions]="{standalone: true}">{{ manager.description }}</label>
+                        </div>
+                      </div>
+                    </nz-checkbox-wrapper>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div nz-col class="gutter-row" [nzSpan]="6">
+              <div nz-row  style="border: 1px solid #e8e8e8;">
+                <div nz-row style="background-color:#fafafa;color: white;padding:4px;">
+                  <label nz-checkbox
+                  [(ngModel)]="allCordinatore"
+                  (ngModelChange)="updateAllCheckedFilters(3)"
+                  [nzIndeterminate]="allCordinatorIntermediate"
+                  [ngModelOptions]="{standalone: true}"><b>ALL Coordinators</b></label>
+                </div>
+                <div nz-col>
+                  <div class="staff-wrapper" style="height: 30rem; width: 100%; overflow: auto; padding: .5rem 1rem;">
+                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event,3)">
+                      <div nz-row>
+                        <div nz-col nzSpan="24" *ngFor="let manager of casemanagers">
+                          <label nz-checkbox  [nzValue]="manager.description" [(ngModel)]="manager.checked" (ngModelChange)="updateSingleCheckedFilters(3)" [ngModelOptions]="{standalone: true}">{{ manager.description }}</label>
+                        </div>
+                      </div>
+                    </nz-checkbox-wrapper>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> <!-- end of 19 coulmns -->
+    </div>
+</div> <!-- end of model -->
+</nz-modal>

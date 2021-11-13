@@ -123,7 +123,10 @@ export class SuburbComponent implements OnInit, OnDestroy, ControlValueAccessor 
     //From ControlValueAccessor interface
     writeValue(value: any) {
 
+        console.log("here inside" + value);
+
         let _value = value ? value.trim() : '';
+        
         if (this.globalS.isEmpty(_value)) {
             this.lists = [];
             this.innerValue = '';

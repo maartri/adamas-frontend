@@ -172,7 +172,6 @@ export class SwitchService {
                     isMultiple: false
                 }
                 this.sqlCommand = "SELECT RecordNumber, Description FROM DataDomains WHERE Domain =  'FINANCIALCLASS'"
-                
                 break;
                 case 19:
                 this.modalVariables = {
@@ -961,6 +960,20 @@ export class SwitchService {
                     table: 'DataDomains'
                 }
                 break;
+                case'CUSTOM DATASETS':
+                this.anyVariable = {
+                    variables: {
+                        description: (inputVariables.display).toUpperCase(),
+                        domain: 'CUSTOM DATASETS',
+                        dataset: 'USER',
+                        embedded: 0,
+                        user1: '',
+                        user2: '',
+                        endDate: inputVariables.end_date,
+                    },
+                    table: 'DataDomains'
+                }
+                break;
                 case 'Filing Classification':
                 this.anyVariable = {
                     variables: {
@@ -1701,6 +1714,7 @@ export class SwitchService {
                 case'Occupations':
                 case'Religion':
                 case'Financial Classification':
+                case 'CUSTOM DATASETS':
                 case'Filing Classification':
                 case'Document Categories':
                 case'Initial Actions':

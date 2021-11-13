@@ -176,6 +176,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
     rpthttp = 'https://45.77.37.207:5488/api/report'
     
     loading: boolean = false;
+    navigationExtras:any;
     //MUFEED's END
     // MUFEED ADDED fb FormBuilder,modalService
     constructor(
@@ -264,6 +265,12 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
         }
         if(index == 20){
             this.router.navigate(['/admin/distribution-list']);
+        }
+        if(index == 91){
+            this.router.navigate(['/admin/notification-list']);
+        }
+        if(index == 92){
+            this.router.navigate(['/admin/customdataset']);
         }
         if(index == 21){
             this.router.navigate(['/admin/initial-actions']);

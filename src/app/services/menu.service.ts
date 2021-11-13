@@ -130,8 +130,32 @@ export class MenuService {
         deleteconfigurationservicescompetency(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/services/competency/${recordNo}`)
         }
-
         /***/
+        /**
+         *  Recipient Absenses
+        */
+        workflowstafflist(): Observable<any>{
+            return this.auth.get(`${menu}/workflowstafflist`)
+        }
+        getconfigurationworkflows(group:string,is_where:number):Observable<any>{
+            return this.auth.get(`${menu}/configurationworkflows/${group}/${is_where}`)
+        }
+
+        postconfigurationfollowups(data: any): Observable<any> {
+            return this.auth.post(`${menu}/configurationfollowups`, data);
+        }
+    
+        updateconfigurationfollowups(data: any): Observable<any> {
+            return this.auth.put(`${menu}/configurationfollowups`, data);
+        }
+        deleteconfigurationfollowups(recordNo: number,group:string): Observable<any> {
+            return this.auth.delete(`${menu}/configurationfollowups/${group}/${recordNo}`)
+        }
+
+        activateconfigurationfollowups(recordNo: number,group:string): Observable<any> {
+            return this.auth.delete(`${menu}/activeconfigurationfollowups/${group}/${recordNo}`)
+        }
+
         /***************************************************************************/
         
         

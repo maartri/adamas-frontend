@@ -72,7 +72,8 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
 
   ngOnChanges(changes: SimpleChanges) {
     for (let property in changes) {
-        this.searchKin(this.user);      
+        console.log('run contacts')
+        this.searchKin(this.user);
     }
   }
 
@@ -96,7 +97,8 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
       oni2: false,
       ecode: [''],
       creator: [''],
-      recordNumber: null
+      recordNumber: null,
+      subType: ''
     });
 
     this.inputForm = this.formBuilder.group({
@@ -182,31 +184,29 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
   }
 
   showDetails(kin: any) {
-
     this.timeS.getcontactskinstaffdetails(kin.recordNumber)
       .subscribe(data => {
-    
         this.kindetailsGroup.patchValue({
           address1: data.address1,
           address2: data.address2,
           name: data.contactName,
-          type: data.contactType,
+          type: data.subType,
           email: data.email,
           fax: data.fax,
           mobile: data.mobile,
           notes: data.notes,
           phone1: data.phone1,
           phone2: data.phone2,
-          suburbcode: (data.postcode || '').trim() + ' ' + (data.suburb || '').trim(),
+          suburbcode: (data.postcode != '') ? (data.postcode || '').trim() + ' ' + (data.suburb || '').trim() : '',
           suburb: data.suburb,
           postcode: data.postcode,
           listOrder: '',
           oni1: (data.equipmentCode || '').toUpperCase() == 'PERSON1',
           oni2: (data.equipmentCode || '').toUpperCase() == 'PERSON2',
-          recordNumber: data.recordNumber
+          recordNumber: data.recordNumber,
+          // subType: data.subType
         })
       })
-
   }
 
   //From ControlValueAccessor interface

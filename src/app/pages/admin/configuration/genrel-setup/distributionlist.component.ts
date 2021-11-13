@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { ListService, MenuService } from '@services/index';
+import { ListService, MenuService, PrintService } from '@services/index';
 import { GlobalService } from '@services/global.service';
 import { takeUntil, switchMap } from 'rxjs/operators';
 import { Subject, EMPTY } from 'rxjs';
@@ -49,7 +49,11 @@ export class DistributionlistComponent implements OnInit {
   dateFormat: string = 'dd/MM/yyyy';
   check : boolean = false;
   userRole:string="userrole";
-  whereString :string="Where ISNULL(xDeletedRecord,0) = 0 AND (xEndDate Is Null OR xEndDate >= GETDATE()) ";
+  whereString :string="where ListName IN ('INCIDENT','DOCUSIGN','EVENT') AND ISNULL(xDeletedRecord,0) = 0 AND (xEndDate Is Null OR xEndDate >= GETDATE()) ";
+  selectedStaff: any[];
+  allStaff: any;
+  staffList: any;
+  allstaffIntermediate: boolean;
   
   constructor(
     private globalS: GlobalService,
@@ -58,6 +62,7 @@ export class DistributionlistComponent implements OnInit {
     private menuS:MenuService,
     private formBuilder: FormBuilder,
     private http: HttpClient,
+    private printS:PrintService,
     private fb: FormBuilder,
     private sanitizer: DomSanitizer,
     private ModalS: NzModalService
@@ -91,6 +96,7 @@ export class DistributionlistComponent implements OnInit {
     }
     populateDropdowns(){
       this.listType = ['INCIDENT','DOCUSIGN','EVENT'];
+      this.menuS.workflowstafflist().subscribe(data  =>  {this.staffList   = data});
       let sql  = "SELECT TITLE FROM ITEMTYPES WHERE ProcessClassification IN ('OUTPUT', 'EVENT', 'ITEM') AND ENDDATE IS NULL";
       this.listS.getlist(sql).subscribe(data => {
         this.services = data;
@@ -206,31 +212,39 @@ export class DistributionlistComponent implements OnInit {
       if(!this.isUpdate){        
         this.postLoading = true;   
         const group    = this.inputForm;
-        let ltype      = this.globalS.isValueNull(group.get('ltype').value);
-        let staff      = this.globalS.isValueNull(group.get('staff').value);
-        let service    = this.globalS.isValueNull(group.get('service').value);
-        let prgm       = this.globalS.isValueNull(group.get('prgm').value);
-        let location   = this.globalS.isValueNull(group.get('location').value);
-        let recepient  = this.globalS.isValueNull(group.get('recepient').value);
-        let saverity   = this.globalS.isValueNull(group.get('saverity').value);
-        let mandatory  = this.trueString(group.get('mandatory').value);
-        let assignee   = this.trueString(group.get('assignee').value);
-        let end_date   = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
-        let values = recepient+","+service+","+location+","+prgm+","+staff+","+mandatory+","+assignee+","+saverity+","+ltype+","+end_date;
-        let sql = "insert into IM_DistributionLists([Recipient],[Activity],[Location],[Program],[Staff],[Mandatory],[DefaultAssignee],[Severity],[ListName],[xEndDate]) Values ("+values+")"; 
-        
-        console.log(sql);
-        this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
-          
-          if (data) 
+          let flag       = false;
+          if(this.selectedStaff.length > 0){
+            this.selectedStaff.forEach(staf => {
+            let ltype      = this.globalS.isValueNull(group.get('ltype').value);
+            let staff      = staf;
+            let service    = this.globalS.isValueNull(group.get('service').value);
+            let prgm       = this.globalS.isValueNull(group.get('prgm').value);
+            let location   = this.globalS.isValueNull(group.get('location').value);
+            let recepient  = this.globalS.isValueNull(group.get('recepient').value);
+            let saverity   = this.globalS.isValueNull(group.get('saverity').value);
+            let mandatory  = this.trueString(group.get('mandatory').value);
+            let assignee   = this.trueString(group.get('assignee').value);
+            let end_date   = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
+            let values = recepient+","+service+","+location+","+prgm+",'"+staff+"',"+mandatory+","+assignee+","+saverity+","+ltype+","+end_date;
+            let sql = "insert into IM_DistributionLists([Recipient],[Activity],[Location],[Program],[Staff],[Mandatory],[DefaultAssignee],[Severity],[ListName],[xEndDate]) Values ("+values+")"; 
+            this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
+              flag = true;
+            });
+        });
+      }else{
+        this.globalS.sToast('Success', 'Select Atleast One Staff');
+        return false;
+      }
+        if (flag)
           this.globalS.sToast('Success', 'Saved successful');     
-          else
-          this.globalS.sToast('Success', 'Saved successful');
+        else
+          this.globalS.sToast('Success', 'Something Went Wrong Try Again');
+
           this.loadData();
           this.postLoading = false;          
           this.handleCancel();
           this.resetModal();
-        });
+
       }else{
         const group       = this.inputForm;
         let ltype      = this.globalS.isValueNull(group.get('ltype').value);
@@ -311,7 +325,37 @@ export class DistributionlistComponent implements OnInit {
         this.events = data;
       })
     }
-    
+    updateAllCheckedFilters(filter: any): void {
+      this.selectedStaff = [];
+      if (this.allStaff) {
+        this.staffList.forEach(x => {
+          x.checked = true;
+          this.selectedStaff.push(x.staffCode);
+        });
+      }else{
+        this.staffList.forEach(x => {
+          x.checked = false;
+        });
+        this.selectedStaff = [];
+      }
+      console.log(this.selectedStaff);
+    }
+    updateSingleCheckedFilters(index:number): void {
+      if (this.staffList.every(item => !item.checked)) {
+        this.allStaff = false;
+        this.allstaffIntermediate = false;
+      } else if (this.staffList.every(item => item.checked)) {
+        this.allStaff = true;
+        this.allstaffIntermediate = false;
+      } else {
+        this.allstaffIntermediate = true;
+        this.allStaff = false;
+      }
+    }
+    log(event: any) {
+      this.selectedStaff = event;
+      console.log(this.selectedStaff);
+    }
     handleOkTop() {
       this.generatePdf();
       this.tryDoctype = ""
@@ -329,15 +373,6 @@ export class DistributionlistComponent implements OnInit {
       var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recipient) AS Field1," +
       "Recipient as Field2,Activity as Field3,Location as Field4,Program as Field5,Staff as Field6," + 
       "ListName as  Field7,Severity as Field8,CONVERT(varchar, [xEndDate],105) as Field9 from IM_DistributionLists "+this.whereString+" Order by recipient";
-      
-      const headerDict = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      }
-      
-      const requestOptions = {
-        headers: new HttpHeaders(headerDict)
-      };
       
       const data = {
         "template": { "_id": "0RYYxAkMCftBE9jc" },
@@ -357,14 +392,12 @@ export class DistributionlistComponent implements OnInit {
           "head9": "End Date",
         }
       }
-      this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-      .subscribe((blob: any) => {
+      this.printS.print(data).subscribe(blob => { 
         let _blob: Blob = blob;
         let fileURL = URL.createObjectURL(_blob);
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
         this.loading = false;
-      }, err => {
-        console.log(err);
+        }, err => {
         this.loading = false;
         this.ModalS.error({
           nzTitle: 'TRACCS',
@@ -374,6 +407,7 @@ export class DistributionlistComponent implements OnInit {
           },
         });
       });
+
       this.loading = true;
       this.tryDoctype = "";
       this.pdfTitle = "";

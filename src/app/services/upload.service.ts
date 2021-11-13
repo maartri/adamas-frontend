@@ -35,7 +35,7 @@ export class UploadService {
    postdocumenttemplate(data: any): Observable<any> {
       return this.http.post(`${upload}/document/template`, data);
    }
-
+   
    getdocumenttemplate(): Observable<any> {
       return this.http.get(`${upload}/document/template`);
    }
@@ -110,6 +110,10 @@ export class UploadService {
 
    downloadFileDocumentRemoteServer(data: any): Observable<any> {
       return this.http.post(`${fileV2}/download-document-remote`, data, { responseType: 'blob', reportProgress: true });
+   }
+
+   downloadFileDocumentRemoteNetwork(data: any = null): Observable<any> {
+      return this.http.post(`${fileV2}/download-document-network`, data, { responseType: 'blob', reportProgress: true });
    }
 
 

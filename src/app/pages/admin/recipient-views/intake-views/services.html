@@ -36,8 +36,8 @@
 <nz-modal [nzWidth]="1000" [(nzVisible)]="modalOpen" [nzTitle]="addOREdit == 1 ? 'Add New Service Profile Detail' : 'Edit Service Profile Detail'"
 (nzOnCancel)="handleCancel()">
 <div [formGroup]="inputForm">
-    <div nz-row nzGutter="24" class="mrg-btm" >
-        <nz-tabset [nzTabPosition]="'top'" [nzType]="'card'" [nzSelectedIndex]="tabFindIndex">
+    <div nz-row lass="mrg-btm" >
+        <nz-tabset [nzTabPosition]="'top'" [nzType]="'card'" [nzSize]="'small'" [nzSelectedIndex]="tabFindIndex">
             <nz-tab nzTitle="Service Information" (nzClick)="tabFindChange(0)"> </nz-tab>
         </nz-tabset>      
         <div *ngIf="tabFindIndex == 0">
@@ -62,7 +62,7 @@
                                     </div>
                                     <div nz-col nzSpan="18">
                                         <nz-select [nzSize]="'small'" [nzDropdownMatchSelectWidth]="false" formControlName="program" nzShowSearch nzAllowClear style="width:100%;">
-                                            <nz-option *ngFor="let prog of program" [nzLabel]="prog.name" [nzValue]="prog.name"></nz-option>
+                                            <nz-option *ngFor="let prog of program" [nzLabel]="prog" [nzValue]="prog"></nz-option>
                                         </nz-select>
                                     </div>
                                 </div>
@@ -109,13 +109,13 @@
                     <div nz-row nzJustify class="mrg-btm-half">
                         <nz-card [nzSize]="'small'" nzTitle="Budget">
                             <div nz-row nzJustify>
-                                <div nz-col nzSpan="6" class="text-left pad-r-5">
+                                <div nz-col nzSpan="7" class="text-left pad-r-5">
                                     <label for="Type">Type</label>
                                     <nz-select [nzSize]="'small'" [nzDropdownMatchSelectWidth]="false" formControlName="budgetType" nzShowSearch nzAllowClear style="width:100%;">
                                         <nz-option *ngFor="let type of budgetTypes" [nzLabel]="type" [nzValue]="type"></nz-option>
                                     </nz-select>
                                 </div>
-                                <div nz-col nzSpan="4" class="text-left pad-r-5">
+                                <div nz-col nzSpan="5" class="text-left pad-r-5">
                                     <label for="Amount">Amount</label>
                                     <input nz-input [nzSize]="'small'" formControlName="bamount" />
                                 </div>
@@ -135,13 +135,13 @@
                     <div nz-row nzJustify class="mrg-btm-half">
                         <nz-card [nzSize]="'small'" nzTitle="Special Pricing" [nzExtra]="extraTemplate">
                             <div nz-row nzJustify>
-                                <div nz-col nzSpan="6" class="text-left pad-r-5">
+                                <div nz-col nzSpan="7" class="text-left pad-r-5">
                                     <label for="Bill Unit">Bill Unit</label>
                                     <nz-select [nzSize]="'small'" [nzDropdownMatchSelectWidth]="false" [nzDisabled]="!this.inputForm.get('specialPricing').value" formControlName="billunit" nzShowSearch nzAllowClear style="width:100%;">
                                         <nz-option *ngFor="let unit of billunit" [nzLabel]="unit" [nzValue]="unit"></nz-option>
                                     </nz-select>
                                 </div>
-                                <div nz-col nzSpan="3" class="text-left pad-r-5">
+                                <div nz-col nzSpan="5" class="text-left pad-r-5">
                                     <label for="Amount">Amount</label>
                                     <input nz-input [nzSize]="'small'" [disabled]="!this.inputForm.get('specialPricing').value" formControlName="namount" />
                                 </div>

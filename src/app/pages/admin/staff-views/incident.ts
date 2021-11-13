@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 
-import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes } from '@services/index';
+import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, PrintService } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
 import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -60,6 +60,7 @@ export class StaffIncidentAdmin implements OnInit, OnDestroy {
         private globalS: GlobalService,
         private formBuilder: FormBuilder,
         private modalService: NzModalService,
+        private printS:PrintService,
         private http: HttpClient,
         private sanitizer: DomSanitizer,
         private ModalS: NzModalService,
@@ -196,16 +197,7 @@ export class StaffIncidentAdmin implements OnInit, OnDestroy {
             this.loading = true;
             
             var fQuery = "SELECT Status as Field1,CONVERT(varchar, [Date],105) as Field2, [Type] as Field3, ShortDesc AS Field4, CurrentAssignee AS Field5 FROM IM_Master IM INNER JOIN Staff S ON S.[UniqueID] = IM.[PersonID] WHERE S.[AccountNo] = '"+this.user.code+"' ORDER BY STATUS DESC, DATE DESC";
-            
-            const headerDict = {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            }
-            
-            const requestOptions = {
-                headers: new HttpHeaders(headerDict)
-            };
-            
+         
             const data = {
                 "template": { "_id": "0RYYxAkMCftBE9jc" },
                 "options": {
@@ -220,24 +212,24 @@ export class StaffIncidentAdmin implements OnInit, OnDestroy {
                     "head5" : "Assigned To",
                 }
             }
-            this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-            .subscribe((blob: any) => {
-                let _blob: Blob = blob;
-                let fileURL = URL.createObjectURL(_blob);
-                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                this.loading = false;
-                this.cd.detectChanges();
-            }, err => {
-                console.log(err);
-                this.loading = false;
-                this.ModalS.error({
-                    nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                    nzOnOk: () => {
-                        this.drawerVisible = false;
-                    },
-                });
-            });
+            this.printS.print(data)
+                        .subscribe((blob: any) => {
+                            let _blob: Blob = blob;
+                            let fileURL = URL.createObjectURL(_blob);
+                            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                            this.loading = false;
+                            this.cd.detectChanges();
+                        }, err => {
+                            console.log(err);
+                            this.loading = false;
+                            this.ModalS.error({
+                                nzTitle: 'TRACCS',
+                                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                                nzOnOk: () => {
+                                    this.drawerVisible = false;
+                                },
+                            });
+                        });
             this.cd.detectChanges();
             this.loading = true;
             this.tryDoctype = "";

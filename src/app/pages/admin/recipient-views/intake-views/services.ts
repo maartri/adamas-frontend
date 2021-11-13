@@ -21,6 +21,23 @@ import { NzModalService } from 'ng-zorro-antd/modal';
         .ant-card-small>.ant-card-head {
             min-height: 20px !important;
         }
+
+        nz-tabset{
+            margin-top:1rem;
+        }
+        nz-tabset >>> div > div.ant-tabs-nav-container{
+            height: 25px !important;
+            font-size: 13px !important;
+        }
+        
+        nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-nav-scroll div.ant-tabs-nav div div.ant-tabs-tab{
+            line-height: 24px;
+            height: 25px;
+        }
+        nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-nav-scroll div.ant-tabs-nav div div.ant-tabs-tab.ant-tabs-tab-active{
+            background: #717e94;
+            color: #fff;
+        }
     `],
 })
 
@@ -123,10 +140,10 @@ export class IntakeServices implements OnInit, OnDestroy {
             this.activities = data;
         });
         this.program = [];
-        let prog = "select distinct Name from HumanResourceTypes WHERE [GROUP]= 'PROGRAMS' AND ((EndDate IS NULL) OR (EndDate > GETDATE()))";
-        this.listS.getlist(prog).subscribe(data => {
+        
+        this.listS.getintakeprogram(this.user.id).subscribe(data => {
             this.program = data;
-        });
+        })
 
         let comp = "SELECT Description as name from DataDomains Where ISNULL(DataDomains.DeletedRecord, 0) = 0 AND Domain = 'STAFFATTRIBUTE' OR Domain = 'RECIPATTRIBUTE' ORDER BY Description";
         this.listS.getlist(comp).subscribe(data => {
@@ -256,33 +273,36 @@ export class IntakeServices implements OnInit, OnDestroy {
     }
 
     showEditModal(data: any) {
+        console.log(data);
+
         this.addOREdit = 2;
         this.listDropDown();
         this.loadCompetency();
         this.modalOpen = true;
         this.isUpdate = true;
-        this.checkValueChange(data.specialPricing)
+        // this.checkValueChange(data.specialPricing);
+
         this.inputForm.patchValue({
             PersonID: this.user.id,
-              status: data.status,
-              program: data.serviceProgram,
-              activity:data.activity,
-              freq:data.frequency,
-              period:data.period,
-              duration:data.duration,
-              billunit:data.unitType,
-              namount:data.unitBillRate,
-              activityBreakDown:data.activityBreakDown,
-              serviceBiller:data.serviceBiller,
-              specialPricing:(data.forceSpecialPrice == false) ? false : true,
-              gst:(data.taxRate == false) ? false : true,
-              autoInsertNotes:(data.autoInsertNotes == false) ? false : true,
-              excludeFromNDIAPriceUpdates:(data.excludeFromNDIAPriceUpdates == false) ? false : true,
-              budgetType:data.budgetType,
-              bamount:'',
-              enforcement:data.budgetLimitType,
-              starting:data.budgetStartDate,
-              recordNumber:data.recordNumber
+            status: data.status,
+            program: data.serviceProgram,
+            activity:data.activity,
+            freq:data.frequency,
+            period:data.period,
+            duration:data.duration,
+            billunit:data.unitType,
+            namount:data.unitBillRate,
+            activityBreakDown:data.activityBreakDown,
+            serviceBiller:data.serviceBiller,
+            specialPricing:(data.forceSpecialPrice == false) ? false : true,
+            gst:(data.taxRate == false) ? false : true,
+            autoInsertNotes:(data.autoInsertNotes == false) ? false : true,
+            excludeFromNDIAPriceUpdates:(data.excludeFromNDIAPriceUpdates == false) ? false : true,
+            budgetType:data.budgetType,
+            bamount:'',
+            enforcement:data.budgetLimitType,
+            starting:data.budgetStartDate,
+            recordNumber:data.recordNumber
         });
         
     }
@@ -365,6 +385,9 @@ export class IntakeServices implements OnInit, OnDestroy {
     saveCompetency(){
         this.postLoading = true;
         let insertOne = false;
+        
+        this.competencyForm.controls['mandatory'].setValue((this.competencyForm.value.mandatory == null) ? false : this.competencyForm.value.mandatory)
+        this.competencyForm.controls['notes'].setValue((this.competencyForm.value.notes == null) ? '' : this.competencyForm.value.notes)
         const { notes,competency,mandatory,PersonID,recordNumber} = this.competencyForm.value;
         if(!this.isUpdateCompetency){
           this.CompetencycheckedList.forEach( (element) => {
@@ -416,6 +439,7 @@ export class IntakeServices implements OnInit, OnDestroy {
     handleCompetencyCancel(){
         this.competencyForm.reset();
         this.competencymodal = false;
+        this.isUpdateCompetency = false;
     }
     
     tabFindIndex: number = 0;

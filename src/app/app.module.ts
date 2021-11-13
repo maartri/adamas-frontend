@@ -39,6 +39,7 @@ import {
   AdminStaffRouteGuard,
   LoginGuard,
   TimeSheetService,
+  BillingService,
   ListService,
   UploadService,
   MemberService,
@@ -51,7 +52,8 @@ import {
   SettingsService,
   VersionCheckService,
   MenuService,
-  
+  JsreportService,
+  PrintService  
 } from './services/index';
 
 import { IconsProviderModule } from './icons-provider.module';
@@ -76,7 +78,7 @@ import { ContextMenuModule } from 'ngx-contextmenu';
 
 registerLocaleData(en);
 
-export function tokenGetter() {
+export function tokenGetter(request) {
   return localStorage.getItem('access_token');
 }
 
@@ -154,6 +156,7 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     AdminStaffRouteGuard,
     LoginGuard,
     TimeSheetService,
+    BillingService,
     ListService,
     UploadService,
     MemberService,
@@ -166,7 +169,9 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     SettingsService,
     VersionCheckService,
     CurrencyPipe, DatePipe, DecimalPipe, TitleCasePipe,
-    MenuService
+    MenuService,
+    JsreportService,
+    PrintService
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]

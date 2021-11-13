@@ -4,6 +4,7 @@ import { GlobalService } from '@services/global.service';
 import { ListService } from '@services/list.service';
 import { SwitchService } from '@services/switch.service';
 import { MenuService } from '@services/menu.service';
+import { PrintService } from '@services/print.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -47,6 +48,7 @@ export class BudgetgroupsComponent implements OnInit {
     private switchS:SwitchService,
     private formBuilder: FormBuilder,
     private http: HttpClient,
+    private printS:PrintService,
     private fb: FormBuilder,
     private sanitizer: DomSanitizer,
     private ModalS: NzModalService
@@ -230,16 +232,6 @@ export class BudgetgroupsComponent implements OnInit {
           this.loading = true;
           
           var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,CONVERT(varchar, [enddate],105) as Field3 from DataDomains "+this.whereString+" Domain='BUDGETGROUP'";
-          
-          const headerDict = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          }
-          
-          const requestOptions = {
-            headers: new HttpHeaders(headerDict)
-          };
-          
           const data = {
             "template": { "_id": "0RYYxAkMCftBE9jc" },
             "options": {
@@ -252,13 +244,12 @@ export class BudgetgroupsComponent implements OnInit {
               "head3" : "End Date",
             }
           }
-          this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-          .subscribe((blob: any) => {
+          this.printS.print(data).subscribe(blob => { 
             let _blob: Blob = blob;
             let fileURL = URL.createObjectURL(_blob);
             this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
             this.loading = false;
-          }, err => {
+            }, err => {
             console.log(err);
             this.loading = false;
             this.ModalS.error({
@@ -268,7 +259,7 @@ export class BudgetgroupsComponent implements OnInit {
                 this.drawerVisible = false;
               },
             });
-          });
+           });
           this.loading = true;
           this.tryDoctype = "";
           this.pdfTitle = "";

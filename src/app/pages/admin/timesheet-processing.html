@@ -1,0 +1,47 @@
+<div nz-layout>
+    <div>
+        <div nz-col nzSpan="24">
+            <nz-tabset [nzTabPosition]="'top'" [nzType]="'card'">
+                <nz-tab nzTitle="Timesheet Processing">
+                    <div nz row>
+                        <div nz-col [nzSpan]="24">
+                            <ul nz-menu nzMode="horizontal">
+                                <li nz-menu-item>
+                                    <i nz-icon nzType="user"></i>
+                                    <strong>General</strong>
+                                    <div>
+                                        <button nz-button nzType="default" (click)="view(1)"
+                                            id="btn-Systm-PayExportIntegrityCheck">
+                                            <i nz-icon nzType="read"></i>
+                                            Pay Export Integrity Check
+                                        </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" (click)="view(3)"
+                                            id="btn-Systm-CloseRosterPeriod">
+                                            <i nz-icon nzType="read"></i>
+                                            Close Roster Period
+                                        </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" (click)="view(5)" id="btn-Systm-PayUpdate">
+                                            <i nz-icon nzType="read"></i>
+                                            Pay Update
+                                        </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" (click)="view(6)"
+                                            id="btn-Systm-TravelUpdate">
+                                            <i nz-icon nzType="read"></i>
+                                            Travel Update
+                                        </button>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nz-tab>
+            </nz-tabset>
+        </div>
+    </div>
+</div>

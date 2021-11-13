@@ -9,6 +9,7 @@ import { takeUntil } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NzModalService } from 'ng-zorro-antd';
+import { PrintService } from '@services/print.service';
 
 @Component({
   selector: 'app-purposestatement',
@@ -46,15 +47,16 @@ dateFormat: string ='dd/MM/yyyy';
   pdfTitle: string;
   tryDoctype: any;
   drawerVisible: boolean =  false;  
-check : boolean = false;
-userRole:string="userrole";
-whereString :string="Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND";
+  check : boolean = false;
+  userRole:string="userrole";
+  whereString :string="Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND";
   temp_title: any;
   
   constructor(
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
     private listS:ListService,
+    private printS:PrintService,
     private menuS:MenuService,
     private switchS:SwitchService,
     private formBuilder: FormBuilder,
@@ -250,15 +252,6 @@ whereString :string="Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate 
           
           var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2,DeletedRecord as is_deleted,CONVERT(varchar, [enddate],105) as Field3 from DataDomains "+this.whereString+" Domain='PKGPURPOSE'";
           
-          const headerDict = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          }
-          
-          const requestOptions = {
-            headers: new HttpHeaders(headerDict)
-          };
-          
           const data = {
             "template": { "_id": "0RYYxAkMCftBE9jc" },
             "options": {
@@ -271,14 +264,13 @@ whereString :string="Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate 
               "head3" : "End Date"
             }
           }
-          this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-          .subscribe((blob: any) => {
+
+          this.printS.print(data).subscribe(blob => { 
             let _blob: Blob = blob;
             let fileURL = URL.createObjectURL(_blob);
             this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
             this.loading = false;
-          }, err => {
-            console.log(err);
+            }, err => {
             this.loading = false;
             this.ModalS.error({
               nzTitle: 'TRACCS',
@@ -288,6 +280,8 @@ whereString :string="Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate 
               },
             });
           });
+    
+
           this.loading = true;
           this.tryDoctype = "";
           this.pdfTitle = "";

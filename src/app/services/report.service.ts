@@ -13,4 +13,20 @@ export class ReportService {
     getreferrallist(): Observable<any>{
         return this.auth.get(`${report}/referrallist`);
     }
+    InsertReport(sqlString: string): Observable<any>{
+        return this.auth.post(`${report}/addReport`, {Sql: sqlString})
+    } 
+    GetReportNames(format: string): Observable<any>{
+        return this.auth.get(`${report}/getreportlist/${format}`);
+    }
+    GetReportSql(title: string): Observable<any>{
+        return this.auth.get(`${report}/report-sql/${title}`);
+    }   
+    GetReportFormat(name: string): Observable<any>{
+        return this.auth.get(`${report}/report-format/${name}`);
+    }
+
+
+
+
 }

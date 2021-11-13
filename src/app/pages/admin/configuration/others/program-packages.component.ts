@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder,FormsModule,ReactiveFormsModule } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
-import { GlobalService, ListService, MenuService} from '@services/index';
+import { GlobalService, ListService, MenuService, PrintService} from '@services/index';
 import { SwitchService } from '@services/switch.service';
 import { isEmpty } from 'lodash';
 import { NzModalService } from 'ng-zorro-antd';
@@ -141,6 +141,7 @@ export class ProgramPackagesComponent implements OnInit {
     private switchS:SwitchService,
     private listS:ListService, 
     private menuS:MenuService,
+    private printS:PrintService,
     private formBuilder: FormBuilder,
     private http: HttpClient,
     private fb: FormBuilder,
@@ -1563,14 +1564,12 @@ export class ProgramPackagesComponent implements OnInit {
           "head10" : "GL Super A/C",
         }
       }
-      this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-      .subscribe((blob: any) => {
+      this.printS.print(data).subscribe(blob => {  
         let _blob: Blob = blob;
         let fileURL = URL.createObjectURL(_blob);
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
         this.loading = false;
-      }, err => {
-        console.log(err);
+        }, err => {
         this.loading = false;
         this.ModalS.error({
           nzTitle: 'TRACCS',

@@ -47,7 +47,7 @@
                 <div nz-row class="margin">
                     <div nz-col nzSpan="10"  >
                         <div class="form-group"  [formGroup]="inputForm">                                 
-                            <nz-select formControlName="functionsArr"   >
+                            <nz-select formControlName="functionsArr" (ngModelChange)= "SetValueFrame()"  >
                                 <nz-option *ngFor="let option of functionsArr" [nzLabel]="option" [nzValue]="option"></nz-option> 
                             </nz-select>                                                               
                         </div>
@@ -61,18 +61,16 @@
                                 <nz-option *ngFor="let option of Arr" [nzLabel]="option" [nzValue]="option"></nz-option> 
                             </nz-select>    -->                                                           
                         </div>
-                    </div>                
-                    <div nz-col nzSpan="10"   class="margin" >
+                    </div>  
+                    
+                    <div nz-col nzSpan="10"   class="margin" *ngIf="frm_SecondValue">
                         <div class="form-group"  [formGroup]="inputForm">  
-                            <input nz-input placeholder=" Values"formControlName="valArr"  />                             
-                        <!--    <nz-select formControlName="valArr"   >
-                                <nz-option *ngFor="let option of valArr" [nzLabel]="option" [nzValue]="option"></nz-option> 
-                            </nz-select>    -->                                                           
+                            <input nz-input placeholder=" Values"formControlName="valArr"   />                                                                                                               
                         </div>
-                    </div>
+                    </div> 
                 </div>
                 <div>
-                    <button nzType="default"  nzJustify="start" (click)="apply()">Apply</button>
+                    <button nzType="default" class="btn" (click)="apply()">Apply</button>
                 </div>
                 <div nz-row   >
                     <div nz-col nzSpan="22"  class="criteria" >                       
@@ -87,42 +85,54 @@
                                         <td class="colwidth" >
                                             <span> Value </span>
                                         </td>
+                                        <td class="colwidth" *ngIf="frm_SecondVal">
+                                            <span> Value </span>
+                                        </td>
                                         <td class="colwidth"  >
                                             <span> Action </span>
                                         </td>
-                                    </tr>                                                            
-                                <!--
-                                        <tr >
-                                        <td *ngFor="let item of datarow;let indexofelement= index;">                            
-                                            {{item}}                                                                                                          
-                                        </td>
-                                        <td class="item-right">
-                                            <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete ?"
-                                            nzPopconfirmPlacement="bottom" >Delete</a>
-                                        </td> 
-                                       
-                                    </tr> 
+                                    </tr>                                                              
                                     
-                                        <tr  >
-                                        <td *ngFor="let item of entity;let indexofelement= index;">                            
-                                            {{item1}}
-                                        </td>
-                                        <td *ngFor="let item of condition;let indexofelement= index;">                            
-                                            {{item2}}
-                                        </td>
-                                        <td *ngFor="let item of value;let indexofelement= index;">                            
-                                            {{item3}}
+                                    <tr > 
+                                        <td>
+                                            <nz-list [nzGrid] >
+                                                <nz-list-item *ngFor="let item of entity;let indexofelement= index;"> 
+                                                    <span>{{item}}</span>                                                                                                                                                     
+                                                </nz-list-item>
+                                            </nz-list>
+                                        </td> 
+                                        <td>
+                                            <nz-list [nzGrid] >
+                                                <nz-list-item *ngFor="let item of condition;let indexofelement= index;"> 
+                                                    <span>{{item}}</span>                                                                                                                                           
+                                                </nz-list-item>
+                                            </nz-list>
                                         </td>
                                         <td>
-                                            <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete ?"
-                                            nzPopconfirmPlacement="bottom" >Delete</a>
-                                        </td> 
-                                        <br>
-                                    </tr> 
-
-                                    -->
-                                    <tr >                                            
-                                        <td class="colwidthentity"  *ngFor="let item of entity;let indexofelement= index;" >                                               
+                                            <nz-list [nzGrid] >
+                                                <nz-list-item *ngFor="let item of value;let indexofelement= index;"> 
+                                                    <span>{{item}}</span>                                                                                                                                           
+                                                </nz-list-item>
+                                            </nz-list>
+                                        </td>
+                                        <td  *ngIf="frm_SecondVal">
+                                            <nz-list [nzGrid] >
+                                                <nz-list-item *ngFor="let item of Endvalue;let indexofelement= index;"> 
+                                                    <span>{{item}}</span>                                                                                                                                           
+                                                </nz-list-item>
+                                            </nz-list>
+                                        </td>
+                                        <td>
+                                            <nz-list [nzGrid] >
+                                                <nz-list-item *ngFor="let item of value;let indexofelement= index;"> 
+                                                    <div *ngIf="frm_delete"> <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete?"
+                                                        nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(datarow)">Delete</a>                                            
+                                                    </div>                                                                                                                                         
+                                                </nz-list-item>
+                                            </nz-list>
+                                        </td>                                        
+                                        
+                                        <!--<td class="colwidthentity"  *ngFor="let item of entity;let indexofelement= index;" >                                               
                                             <span>{{item}}</span>                                            
                                         </td>
                                         <td class="colwidth"  *ngFor="let item of condition;let indexofelement= index;" >                                               
@@ -135,29 +145,50 @@
                                             <div *ngIf="frm_delete"> <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete?"
                                                 nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(datarow)">Delete</a>                                            
                                             </div>
-                                        </td>
+                                        </td> -->
                                   </tr>                                                                
                             </table>                                               
                     </div>
                     <div class="form-group"  [formGroup]="inputForm">
                         <nz-radio-group formControlName="radiofiletr">
-                            <label nz-radio nzValue="meet">Only Records that meet selection Criteria</label>
+                            <label nz-radio nzValue="meet">Only Records that meet selection Criteria</label><br>
                             <label nz-radio nzValue="donotmeet">Only Records that do not meet selection Criteria</label>                                                        
                         </nz-radio-group>
                     </div>
-                    <div>
-                        <button nzType="default"  nzJustify="start" (click)="ShowReport()">Preview</button>                       
+                    <div class="item-right">
+                        <button nzType="primary" class="btn" (click)="back2adminRpt()">Back</button> 
+                        <button nzType="primary" class="btn" (click)="showprompt()">Save</button> 
+                        <button nzType="primary" class="btn"  (click)="ShowReport()">Preview</button>                                               
                     </div>
                 </div>        
         </div> 
-    </div>    
+    </div>  
+    
+    <div nz-row>
+        <nz-modal
+            nzWidth="400px"
+            [nzStyle]="{top: '50px',height:'300px', overflow: 'auto' }"         
+            [(nzVisible)]="isVisibleprompt"
+            nzTitle= "TRACCS"
+            (nzOnCancel)="handleCancelTop()"
+            (nzOnOk)="SaveReport()"
+        >
+        <div nz-row >
+            <div nz-col nzSpan="20" >
+                <div class="form-group" [formGroup]="inputForm">                
+                    <input nz-input placeholder="Report Name" formControlName="RptTitle"  />                                        
+                </div>      
+            </div>
+        </div>
+        </nz-modal>
+    </div> 
 </div>
 
-<nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
+<nz-drawer [nzHeight]= "650" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="top" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
     <div class="col-md-12 spinner" *ngIf="loading">
         <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
     </div>
     <div nz-row>
-        <iframe *ngIf="tryDoctype" [src]="tryDoctype" width="950" height="600"></iframe> 
+        <iframe *ngIf="tryDoctype" [src]="tryDoctype" width="950" height="650"></iframe> 
     </div>
 </nz-drawer>

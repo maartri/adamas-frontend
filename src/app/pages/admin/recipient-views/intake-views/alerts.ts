@@ -177,7 +177,8 @@ export class IntakeAlerts implements OnInit, OnDestroy {
         this.competencyGroup.controls['personID'].setValue(this.user.id)
 
         const competency = this.competencyGroup.value;
-
+        this.competencyGroup.controls['mandatory'].setValue((this.competencyGroup.value.mandatory == null) ? false : this.competencyGroup.value.mandatory)
+        this.competencyGroup.controls['notes'].setValue((this.competencyGroup.value.notes == null) ? '' : this.competencyGroup.value.notes)
         if(this.addOREdit == 0){
                 this.timeS.postintakecompetency(this.competencyGroup.value)
                     .subscribe(data => {
@@ -200,7 +201,7 @@ export class IntakeAlerts implements OnInit, OnDestroy {
     }
 
     showAddModal() {
-        this.addOREdit = 1;
+        this.addOREdit = 0;
         this.clearForm();
         this.alertOpen = true;
     }
@@ -220,7 +221,7 @@ export class IntakeAlerts implements OnInit, OnDestroy {
     }
 
     updatecompetency(data: any){
-        this.addOREdit = 0;
+        this.addOREdit = 1;
 
         this.alertOpen = true;
 

@@ -10,18 +10,18 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 
 @Component({
     styles: [`
-        nz-table{
-            margin-top:20px;
-        }
-        nz-select{
-            width:100%;
-        }
-        div.divider-subs div{
-            margin-top:1rem;
-        }
-        .btn-container button{
-            margin-left:1rem;
-        }
+    nz-table{
+        margin-top:20px;
+    }
+    nz-select{
+        width:100%;
+    }
+    div.divider-subs div{
+        margin-top:1rem;
+    }
+    .btn-container button{
+        margin-left:1rem;
+    }
     `],
     templateUrl: './pension.html',
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -34,22 +34,22 @@ export class RecipientPensionAdmin implements OnInit, OnDestroy {
     user: any;
     inputForm: FormGroup;
     pensionForm: FormGroup;
-
+    
     checked: boolean = false;
     isDisabled: boolean = false;
-
+    
     alist: Array<any> = [];
     blist: Array<any> = [];
     clist: Array<any> = [];
     dlist: Array<any> = [];
-
+    
     dateFormat: string = 'dd/MM/yyyy';
-
+    
     modalOpen: boolean = false;
     addOREdit: number;
     isLoading: boolean = false;
     printLoad: boolean = false;
-
+    
     constructor(
         private timeS: TimeSheetService,
         private sharedS: ShareService,
@@ -59,223 +59,232 @@ export class RecipientPensionAdmin implements OnInit, OnDestroy {
         private formBuilder: FormBuilder,
         private cd: ChangeDetectorRef,
         private modalService: NzModalService
-    ) {
-        this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-            if (data instanceof NavigationEnd) {
-                if (!this.sharedS.getPicked()) {
-                    this.router.navigate(['/admin/recipient/personal'])
+        ) {
+            this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+                if (data instanceof NavigationEnd) {
+                    if (!this.sharedS.getPicked()) {
+                        this.router.navigate(['/admin/recipient/personal'])
+                    }
                 }
-            }
-        });
-
-        this.sharedS.changeEmitted$.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-            if (this.globalS.isCurrentRoute(this.router, 'insurance-pension')) {
-                this.user = data;
-                this.search(data);
-            }
-        });
-    }
-
-    ngOnInit(): void {
-        this.user = this.sharedS.getPicked();
-        this.search(this.user);
-        this.buildForm();
-    }
-
-    ngOnDestroy(): void {
-        this.unsubscribe.next();
-        this.unsubscribe.complete();
-    }
-
-    print(){
-        console.log('sss')
-    }
-
-    changeDetection(){
-        this.cd.detectChanges();
-        this.cd.markForCheck();
-    }
-
-    search(user: any = this.user) {
-        
-        this.timeS.getinsurance(user.id).subscribe(data => {
-            this.inputForm.patchValue({
-                medicareNumber: data.medicareNumber,
-                medicareExpiry: data.medicareExpiry,
-                medicareRecipientID: data.medicareRecipientID,
-                pensionStatus: data.pensionStatus,
-                concessionNumber: data.concessionNumber,
-                dvaNumber: data.dvaNumber,
-                ambulanceType: data.ambulanceType,
-                haccDvaCardHolderStatus: data.haccdvaCardholderStatus,
-                dvaBenefits: data.dvaBenefits,
-                pensionVoracity: data.pensionVoracity,
-                ambulance: data.ambulance,
-                dateofDeath: data.dateOfDeath,
-                willAvailable: data.willAvailable,
-                whereWillHeld: data.whereWillHeld,
-                funeralArrangements: data.funeralArrangements
             });
-
-            this.changeDetection();
-        });
-
+            
+            this.sharedS.changeEmitted$.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+                if (this.globalS.isCurrentRoute(this.router, 'insurance-pension')) {
+                    this.user = data;
+                    this.search(data);
+                }
+            });
+        }
         
-        this.listS.getpension(this.user.id).subscribe(data => {
-            this.blist = data;
-            this.changeDetection();
-        });
-
-        this.listS.getpensionall().subscribe(data => {
-            this.clist = data;
-            this.changeDetection();
-        });
-        this.listS.getcardstatus().subscribe(data => {
-            this.dlist = data;
-            this.changeDetection();
-        })
-
-        this.getpension();
-    }
-
-    getpension() {
-        this.timeS.getpension(this.user.id).subscribe(data => {
-            this.alist = data;
-            this.changeDetection();
-        });
-    }
-
-    showAddModal() {
-        this.addOREdit = 1;
-        this.modalOpen = true;
-    }
-
-    edit(index: number) {
-        const { recordNumber, personID, name, address1, address2, notes } = this.alist[index]
+        ngOnInit(): void {
+            this.user = this.sharedS.getPicked();
+            this.search(this.user);
+            this.buildForm();
+        }
         
-        this.pensionForm.patchValue({
-            recordNumber,
-            personID,
-            name,
-            address1,
-            address2,
-            notes
-        });
-
-        this.addOREdit = 0;
-        this.modalOpen = true;
-    }
-
-    buildForm() {
-        this.inputForm = this.formBuilder.group({
-            personID: '',
-            medicareNumber: '',
-            medicareExpiry: null,
-            medicareRecipientID: '',
-            pensionStatus: '',
-            concessionNumber: '',
-            dvaNumber: '',
-            ambulanceType: '',
-            haccDvaCardHolderStatus: '',
-            dvaBenefits: false,
-            pensionVoracity: false,
-            ambulance: false,
-            dateofDeath: null,
-            willAvailable: '',
-            whereWillHeld: '',
-            funeralArrangements: ''
-        });
-
-        this.pensionForm = this.formBuilder.group({
-            recordNumber: null,
-            personID: null,
-            name: null,
-            address1: null,
-            address2: null,
-            notes: null
-        });
-    }
-
-    onKeyPress(data: KeyboardEvent) {
-        return this.globalS.acceptOnlyNumeric(data);
-    }
-
-    delete(index: number) {
-        const { recordNumber } = this.alist[index];
-
-        this.timeS.deletespension(recordNumber)
+        ngOnDestroy(): void {
+            this.unsubscribe.next();
+            this.unsubscribe.complete();
+        }
+        
+        print(){
+            console.log('sss')
+        }
+        
+        changeDetection(){
+            this.cd.detectChanges();
+            this.cd.markForCheck();
+        }
+        
+        search(user: any = this.user) {
+            
+            this.timeS.getinsurance(user.id).subscribe(data => {
+                this.inputForm.patchValue({
+                    medicareNumber: data.medicareNumber,
+                    medicareExpiry: data.medicareExpiry,
+                    medicareRecipientID: data.medicareRecipientID,
+                    pensionStatus: data.pensionStatus,
+                    concessionNumber: data.concessionNumber,
+                    dvaNumber: data.dvaNumber,
+                    ambulanceType: data.ambulanceType,
+                    haccDvaCardHolderStatus: data.haccdvaCardholderStatus,
+                    dvaBenefits: data.dvaBenefits,
+                    pensionVoracity: data.pensionVoracity,
+                    ambulance: data.ambulance,
+                    dateofDeath: data.dateOfDeath,
+                    willAvailable: data.willAvailable,
+                    whereWillHeld: data.whereWillHeld,
+                    funeralArrangements: data.funeralArrangements
+                });
+                
+                this.changeDetection();
+            });
+            
+            
+            this.listS.getpension(this.user.id).subscribe(data => {
+                this.blist = data;
+                this.changeDetection();
+            });
+            
+            this.listS.getpensionall().subscribe(data => {
+                this.clist = data;
+                this.changeDetection();
+            });
+            this.listS.getcardstatus().subscribe(data => {
+                this.dlist = data;
+                this.changeDetection();
+            })
+            
+            this.getpension();
+        }
+        
+        getpension() {
+            this.timeS.getpension(this.user.id).subscribe(data => {
+                this.alist = data;
+                this.changeDetection();
+            });
+        }
+        
+        showAddModal() {
+            this.addOREdit = 1;
+            this.modalOpen = true;
+        }
+        
+        edit(index: number) {
+            const { recordNumber, personID, name, address1, address2, notes } = this.alist[index]
+            
+            this.pensionForm.patchValue({
+                recordNumber,
+                personID,
+                name,
+                address1,
+                address2,
+                notes
+            });
+            
+            this.addOREdit = 0;
+            this.modalOpen = true;
+        }
+        
+        buildForm() {
+            this.inputForm = this.formBuilder.group({
+                personID: '',
+                medicareNumber: '',
+                medicareExpiry: null,
+                medicareRecipientID: '',
+                pensionStatus: '',
+                concessionNumber: '',
+                dvaNumber: '',
+                ambulanceType: '',
+                haccDvaCardHolderStatus: '',
+                dvaBenefits: false,
+                pensionVoracity: false,
+                ambulance: false,
+                dateofDeath: null,
+                willAvailable: '',
+                whereWillHeld: '',
+                funeralArrangements: ''
+            });
+            
+            this.pensionForm = this.formBuilder.group({
+                recordNumber: null,
+                personID: null,
+                name: null,
+                address1: null,
+                address2: null,
+                notes: null
+            });
+        }
+        
+        onKeyPress(data: KeyboardEvent) {
+            return this.globalS.acceptOnlyNumeric(data);
+        }
+        
+        delete(index: number) {
+            const { recordNumber } = this.alist[index];
+            
+            this.timeS.deletespension(recordNumber)
             .subscribe(data => {
                 this.globalS.sToast('Success', 'Data Deleted');
                 this.handleCancel();
                 this.getpension();
             });
-    }
-
-    save() {
-        const input = this.inputForm.value;
-
-        const medicareExpiry = this.globalS.VALIDATE_AND_FIX_DATETIMEZONE_ANOMALY(input.medicareExpiry);
-        const dateofDeath = this.globalS.VALIDATE_AND_FIX_DATETIMEZONE_ANOMALY(input.dateofDeath);
-
-        this.inputForm.patchValue({
-            medicareExpiry,
-            dateofDeath
-        });
-
-        this.timeS.updateinsurance(this.inputForm.value, this.user.id)
+        }
+        
+        save() {
+            const input = this.inputForm.value;
+            
+            const medicareExpiry = this.globalS.VALIDATE_AND_FIX_DATETIMEZONE_ANOMALY(input.medicareExpiry);
+            const dateofDeath = this.globalS.VALIDATE_AND_FIX_DATETIMEZONE_ANOMALY(input.dateofDeath);
+            
+            this.inputForm.patchValue({
+                medicareExpiry,
+                dateofDeath
+            });
+            
+            this.timeS.updateinsurance(this.inputForm.value, this.user.id)
             .subscribe(data => {
                 this.globalS.sToast('Success', 'Data Updated');
                 this.inputForm.markAsPristine();
             });
-    }
-
-    savePension() {
-        if (!this.globalS.IsFormValid(this.pensionForm))
+        }
+        
+        savePension() {
+            if (!this.globalS.IsFormValid(this.pensionForm))
             return;
-        
-        this.isLoading = true;
-        
-        if (this.addOREdit == 1) {
-            this.pensionForm.controls["personID"].setValue(this.user.id)
-            this.timeS.postpension(this.pensionForm.value)
+            
+            this.isLoading = true;
+            
+            var name = this.pensionForm.value.name;
+            var address1 = this.pensionForm.value.address1;
+            
+            if(address1 == null || name == null){
+                this.globalS.wToast('Error', 'All manmdatpry fields must be completed'); 
+                this.isLoading = false;
+                return false;
+            }
+            
+            if (this.addOREdit == 1) {
+                this.pensionForm.controls["personID"].setValue(this.user.id)
+                this.timeS.postpension(this.pensionForm.value)
                 .subscribe(data => {
                     this.globalS.sToast('Success', 'Data Inserted');
                     this.getpension();
                     this.handleCancel();
                 });
-        }
-
-        if (this.addOREdit == 2) {
-            this.timeS.updatepension(this.pensionForm.value)
+            }
+            
+            if (this.addOREdit == 2) {
+                this.timeS.updatepension(this.pensionForm.value)
                 .subscribe(data => {
                     this.globalS.sToast('Success', 'Data Inserted');
                     this.getpension();
                     this.handleCancel();
                 });
+            }
+        }
+        
+        handleCancel() {
+            this.pensionForm.reset();
+            this.modalOpen = false;
+            this.isLoading = false;
+        }
+        
+        canDeactivate() {
+            if (this.inputForm && this.inputForm.dirty) {
+                this.modalService.confirm({
+                    nzTitle: 'Save changes before exiting?',
+                    nzContent: '',
+                    nzOkText: 'Yes',
+                    nzOnOk: () => {
+                        this.save();
+                    },
+                    nzCancelText: 'No',
+                    nzOnCancel: () => {
+                        
+                    }
+                });
+            }
+            return true;
         }
     }
-
-    handleCancel() {
-        this.pensionForm.reset();
-        this.modalOpen = false;
-        this.isLoading = false;
-    }
-
-    canDeactivate() {
-        if (this.inputForm && this.inputForm.dirty) {
-            this.modalService.confirm({
-                nzTitle: 'Save changes before exiting?',
-                nzContent: '',
-                nzOkText: 'Yes',
-                nzOnOk: () => {
-                    this.save();
-                },
-                nzCancelText: 'No',
-                nzOnCancel: () => {
-
-                }
-            });
-        }
-        return true;
-    }
-}

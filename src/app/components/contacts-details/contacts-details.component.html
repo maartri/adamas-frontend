@@ -15,7 +15,7 @@
                     <li *ngFor="let list of kinsArray">
                         <div (click)="showDetails(list); selected = list" [class.active]="selected == list">
                             <h4>{{ list.name | uppercase  }}</h4>
-                            <span>{{list.type | uppercase}}</span>
+                            <span>{{list.type || '-' | uppercase}}</span>
                             <i nz-icon nzType="right" nzTheme="outline"></i>
                         </div>
                     </li>
@@ -27,7 +27,7 @@
                     <form nz-form [nzNoColon]="true" [formGroup]="kindetailsGroup">
                         <nz-form-item>
                             <nz-form-label [nzSpan]="5">Type</nz-form-label>
-                            <nz-form-control [nzSpan]="12" nzErrorTip="Please input your username!">
+                            <nz-form-control [nzSpan]="12" >
                                 <input type="text" nz-input formControlName="type" />
                             </nz-form-control>
                         </nz-form-item>
@@ -41,70 +41,70 @@
             
                         <nz-form-item>
                             <nz-form-label [nzSpan]="5">Address 1</nz-form-label>
-                            <nz-form-control [nzSpan]="19" nzErrorTip="Please input your username!">
+                            <nz-form-control [nzSpan]="19" >
                                 <input type="text" nz-input formControlName="address1" />
                             </nz-form-control>
                         </nz-form-item>
             
                         <nz-form-item>
                             <nz-form-label [nzSpan]="5">Address 2</nz-form-label>
-                            <nz-form-control [nzSpan]="19" nzErrorTip="Please input your username!">
+                            <nz-form-control [nzSpan]="19" >
                                 <input type="text" nz-input formControlName="address2" />
                             </nz-form-control>
                         </nz-form-item>
             
                         <nz-form-item>
                             <nz-form-label [nzSpan]="5">Suburb</nz-form-label>
-                            <nz-form-control [nzSpan]="19" nzErrorTip="Please input your username!">
+                            <nz-form-control [nzSpan]="19" >
                                 <suburb formControlName="suburbcode"></suburb>
                             </nz-form-control>
                         </nz-form-item>
             
                         <nz-form-item>
                             <nz-form-label [nzSpan]="5">Phone 1</nz-form-label>
-                            <nz-form-control [nzSpan]="12" nzErrorTip="Please input your username!">
+                            <nz-form-control [nzSpan]="12" >
                                 <app-phonefax formControlName="phone1"></app-phonefax>
                             </nz-form-control>
                         </nz-form-item>
             
                         <nz-form-item>
                             <nz-form-label [nzSpan]="5">Phone 2</nz-form-label>
-                            <nz-form-control [nzSpan]="12" nzErrorTip="Please input your username!">
+                            <nz-form-control [nzSpan]="12" >
                                 <app-phonefax formControlName="phone2"></app-phonefax>
                             </nz-form-control>
                         </nz-form-item>
             
                         <nz-form-item>
                             <nz-form-label [nzSpan]="5">Mobile</nz-form-label>
-                            <nz-form-control [nzSpan]="12" nzErrorTip="Please input your username!">
+                            <nz-form-control [nzSpan]="12" >
                                 <app-phonefax [isMobile]="true" formControlName="mobile"></app-phonefax>
                             </nz-form-control>
                         </nz-form-item>
             
                         <nz-form-item>
                             <nz-form-label [nzSpan]="5">Fax</nz-form-label>
-                            <nz-form-control [nzSpan]="12" nzErrorTip="Please input your username!">
+                            <nz-form-control [nzSpan]="12" >
                                 <app-phonefax formControlName="fax"></app-phonefax>
                             </nz-form-control>
                         </nz-form-item>
             
                         <nz-form-item>
                             <nz-form-label [nzSpan]="5">Email</nz-form-label>
-                            <nz-form-control [nzSpan]="19" nzErrorTip="Please input your username!">
+                            <nz-form-control [nzSpan]="19" >
                                 <input type="text" nz-input formControlName="email" />
                             </nz-form-control>
                         </nz-form-item>
             
                         <nz-form-item>
                             <nz-form-label [nzSpan]="5">List Order</nz-form-label>
-                            <nz-form-control [nzSpan]="5" nzErrorTip="Please input your username!">
+                            <nz-form-control [nzSpan]="5" >
                                 <input type="text" nz-input formControlName="listOrder" />
                             </nz-form-control>
                         </nz-form-item>
             
                         <nz-form-item>
                             <nz-form-label [nzSpan]="5">Notes</nz-form-label>
-                            <nz-form-control [nzSpan]="12" nzErrorTip="Please input your username!">
+                            <nz-form-control [nzSpan]="12" >
                                 <textarea rows="4" nz-input formControlName="notes"></textarea>
                             </nz-form-control>
                         </nz-form-item>

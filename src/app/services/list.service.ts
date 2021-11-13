@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 import { HttpParams } from '@angular/common/http';
 
-import { CallDeceaseProcedure, CallReferralOutProcedure } from '@modules/modules';
+import { CallDeceaseProcedure, CallReferralOutProcedure, ReferralSourceDto } from '@modules/modules';
 import { PackageClient } from '@client/package';
 
 const list: string = "api/list"
@@ -16,11 +16,50 @@ export class ListService {
         public http: HttpClient,
         public auth: AuthService
     ) { }
-    
 
+    getaccountinghistory(id: string):Observable<any>{
+        return this.auth.get(`${list}/accounting-history/${id}`);
+    }
+
+    getaccountingprofile(id: string):Observable<any>{
+        return this.auth.get(`${list}/accounting-profile/${id}`);
+    }
+
+    deletecasestaff(id: any):Observable<any>{
+        return this.auth.delete(`${list}/case-staff/${id}`);
+    }
+
+    postcasestaff(data: any): Observable<any> {
+        return this.auth.post(`${list}/case-staff`, data);
+    }
+
+    getcasestaffpopulate(id: string):Observable<any>{
+        return this.auth.get(`${list}/case-staff-populate-field/${id}`);
+    }
+
+    getcasestaffprograms():Observable<any>{
+        return this.auth.get(`${list}/case-staff-programs`);
+    }
+
+    getcasestafflist(id: string):Observable<any>{
+        return this.auth.get(`${list}/case-staff-list/${id}`);
+    }
+
+    getreferraltypes(source: any):Observable<any>{
+        return this.auth.get(`${list}/referral-source-v2`, source);
+    }
+    
     // sendDOCSIGN(data: any): Observable<any>{
     //     return this.auth.post(`${docSign}/create`, data);
     // }
+
+    getmedicallist():Observable<any>{
+        return this.auth.get(`${list}/list-medical`);
+    }
+
+    getaccceptcharges(program: string):Observable<any>{
+        return this.auth.get(`${list}/accept-charges/${program}`);
+    }
 
     getrosterpublishdate():Observable<any>{
         return this.auth.get(`${list}/last-roster-publish-date`);
@@ -254,7 +293,7 @@ export class ListService {
         return this.auth.get(`${list}/getcharges/${id}`);
     } */
     GetCMPERC(id: string): Observable<any>{
-        return this.auth.get(`${list}/getcmperc/${id}`);
+        return this.auth.getstring(`${list}/getcmperc/${id}`);
     }
     GetTOpUP(id: string): Observable<any>{
         return this.auth.get(`${list}/gettopup/${id}`);
@@ -264,7 +303,7 @@ export class ListService {
     }
     
     GetAdmPerc(id: string): Observable<any>{
-        return this.auth.get(`${list}/getadmperc/${id}`);
+        return this.auth.getstring(`${list}/getadmperc/${id}`);
     }    
     
     GetDailyliving(id: string): Observable<any>{
@@ -581,9 +620,11 @@ export class ListService {
     getcategoriesobj(): Observable<any>{
         return this.auth.get(`${list}/categories/obj`)
     }
-    
     getstaffcategory(): Observable<any>{
         return this.auth.get(`${list}/staff-category`)
+    }
+    getstaffcategorylist(): Observable<any>{
+        return this.auth.get(`${list}/staff-Job-category-list`) 
     }
     
     getstaffdiscipline(): Observable<any>{
@@ -612,6 +653,10 @@ export class ListService {
     getdiscipline(): Observable<any>{
         return this.auth.get(`${list}/intake/discipline/list`)
     }
+    
+    getdisciplinelist(): Observable<any>{
+        return this.auth.get(`${list}/staff/dicipline/teams/list`)
+    }
 
     getfileclassification(): Observable<any>{
         return this.auth.get(`${list}/intake/file-classification/list`)
@@ -635,11 +680,19 @@ export class ListService {
     getpension(personID: string): Observable<any>{
         return this.auth.get(`${list}/pension/${personID}`)
     }   
-
+    
+    getfundingsource(): Observable<any>{
+        return this.auth.get(`${list}/funding-source`)
+    }
     getlistrecipientreminders(): Observable<any>{
         return this.auth.get(`${list}/recipient/reminders`)
     }   
-
+    getlistrecipientremindersObj(): Observable<any>{
+        return this.auth.get(`${list}/recipient/remindersObj`)
+    }
+    customdatasetObj(): Observable<any>{
+        return this.auth.get(`${list}/customdatasetObj`)
+    }
     getcompetenciesall(): Observable<any>{
         return this.auth.get(`${list}/competencies/all`)
     }
@@ -718,6 +771,10 @@ export class ListService {
     getlistcasemanagers(): Observable<any>{
         return this.auth.get(`${list}/casemanagers`)
     }
+    casemanagerslist(): Observable<any>{
+        return this.auth.get(`${list}/casemanagerslist`)
+    }
+    
     getlistreminders(): Observable<any>{
         return this.auth.get(`${list}/reminders`)
     }    

@@ -1,0 +1,391 @@
+<nz-modal [nzWidth]="1000" [(nzVisible)]="modalOpen" [nzTitle]="loadTitle()" (nzOnCancel)="handleCancel()">
+    <div class="flexy">
+        <nz-tabset *ngIf="inputForm" [formGroup]="inputForm" style="width: 100%;">
+            <nz-tab nzTitle="Travel Audit / Update">
+                <div>
+                    <div nz-row style="height: 30px;">
+                        <div nz-col nzSpan="8" class="">
+                            <h3 style="color:#1890FF; line-height: 30px;">Timesheet Date:</h3>
+                        </div>
+                        <div nz-col nzSpan="10" class="text-right pad-r-5">
+                            <p style="color:black; text-align: right; line-height: 30px;">Date to be Appear on
+                                Timesheets:</p>
+                        </div>
+                        <div nz-col nzSpan="4">
+                            <!-- <nz-date-picker [nzPlaceHolder]="'Timesheet Date'" name="TImesheet_date"
+                                [nzFormat]="dateFormat">
+                            </nz-date-picker> -->
+                            <nz-date-picker formControlName="TimesheetDate"></nz-date-picker>
+                        </div>
+                    </div>
+
+                    <!-- <nz-divider style="margin-top: 6px; margin-bottom: 6px;" nzText="" nzOrientation="left">
+                    </nz-divider> -->
+
+                    <div nz-col nzSpan="24" class="mrg-btm" style="background-color:#A4A4A4;">
+                        <p style="margin: 0px;"><b>Travel Auto Creaton Options (automatically creates travel km and time
+                                entries in timesheets)</b>
+                        </p>
+                    </div>
+
+                    <div nz-row nzGutter=24>
+                        <div>
+                            <div nz-col nzSpan="8">
+                                <div style="height: 0.8pc;" nz-row></div>
+                                <p nz-checkbox style="color:black">Auto Create KM Allowance</p>
+                                <div style="height: 0.4pc;" nz-row></div>
+                                <div nz-row nzSpan="14">
+                                    <div nz-col nzSpan="6">
+                                        <label> Program: </label>
+                                    </div>
+                                    <div nz-col nzSpan="18">
+                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="programList"
+                                            nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let etype of programList" [nzLabel]="etype"
+                                                [nzValue]="etype">
+                                            </nz-option>
+                                        </nz-select>
+                                    </div>
+                                </div>
+                                <div style="height: 0.4pc;" nz-row></div>
+                                <div nz-row nzSpan="14">
+                                    <div nz-col nzSpan="6">
+                                        <label> Activity: </label>
+                                    </div>
+                                    <div nz-col nzSpan="18">
+                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="activityList"
+                                            nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let etype of activityList" [nzLabel]="etype"
+                                                [nzValue]="etype">
+                                            </nz-option>
+                                        </nz-select>
+                                    </div>
+                                </div>
+                                <div style="height: 0.4pc;" nz-row></div>
+                                <div nz-row nzSpan="14">
+                                    <div nz-col nzSpan="6">
+                                        <label> Paytype: </label>
+                                    </div>
+                                    <div nz-col nzSpan="18">
+                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="paytypeList"
+                                            nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let etype of paytypeList" [nzLabel]="etype"
+                                                [nzValue]="etype">
+                                            </nz-option>
+                                        </nz-select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div nz-col nzSpan="10">
+                                <div style="height: 0.8pc;" nz-row></div>
+                                <p nz-checkbox style="color:black">Auto Create Travel Time Entry</p>
+                                <div style="height: 0.4pc;" nz-row></div>
+                                <div nz-row nzSpan="14">
+                                    <div nz-col nzSpan="16">
+                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="programList"
+                                            nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let etype of programList" [nzLabel]="etype"
+                                                [nzValue]="etype">
+                                            </nz-option>
+                                        </nz-select>
+                                    </div>
+                                </div>
+                                <div style="height: 0.4pc;" nz-row></div>
+                                <div nz-row nzSpan="14">
+                                    <div nz-col nzSpan="16">
+                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="activityList"
+                                            nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let etype of activityList" [nzLabel]="etype"
+                                                [nzValue]="etype">
+                                            </nz-option>
+                                        </nz-select>
+                                    </div>
+                                </div>
+                                <div style="height: 0.4pc;" nz-row></div>
+                                <div nz-row nzSpan="14">
+                                    <div nz-col nzSpan="6">
+                                        <label> Weekday: </label>
+                                    </div>
+                                    <div nz-col nzSpan="16">
+                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="paytypeList"
+                                            nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let etype of paytypeList" [nzLabel]="etype"
+                                                [nzValue]="etype">
+                                            </nz-option>
+                                        </nz-select>
+                                    </div>
+                                </div>
+                                <div style="height: 0.4pc;" nz-row></div>
+                                <div nz-row nzSpan="14">
+                                    <div nz-col nzSpan="6">
+                                        <label> Saturday: </label>
+                                    </div>
+                                    <div nz-col nzSpan="16">
+                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="paytypeList"
+                                            nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let etype of paytypeList" [nzLabel]="etype"
+                                                [nzValue]="etype">
+                                            </nz-option>
+                                        </nz-select>
+                                    </div>
+                                </div>
+                                <div style="height: 0.4pc;" nz-row></div>
+                                <div nz-row nzSpan="14">
+                                    <div nz-col nzSpan="6">
+                                        <label> Sunday: </label>
+                                    </div>
+                                    <div nz-col nzSpan="16">
+                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="paytypeList"
+                                            nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let etype of paytypeList" [nzLabel]="etype"
+                                                [nzValue]="etype">
+                                            </nz-option>
+                                        </nz-select>
+                                    </div>
+                                </div>
+                                <div style="height: 0.4pc;" nz-row></div>
+                                <div nz-row nzSpan="14">
+                                    <div nz-col nzSpan="6">
+                                        <label> Public Holiday: </label>
+                                    </div>
+                                    <div nz-col nzSpan="16">
+                                        <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="paytypeList"
+                                            nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                                            <nz-option *ngFor="let etype of paytypeList" [nzLabel]="etype"
+                                                [nzValue]="etype">
+                                            </nz-option>
+                                        </nz-select>
+                                    </div>
+                                </div>
+                                <div style="height: 0.4pc;" nz-row></div>
+                                <div nz-row nzSpan="14">
+                                    <div nz-col nzSpan="20">
+                                    <label nz-checkbox name="name" style="font-size: 9pt;"> Auto-fill Gap Between Where Gap Less Than (Minites)</label>
+                                </div>
+                                    <div nz-col nzSpan="2">
+                                        <input nz-input formControlName="name" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div nz-col nzSpan="6" class="wrap-container">
+                                <label style="font-weight: bolder;"> KM/Time Options </label>
+                                <div nz-row nzSpan="6">
+                                    <label nz-checkbox name="name"> Seperate Claim Per Instance </label>
+                                </div>
+                                <div nz-row nzSpan="6">
+                                    <label nz-checkbox name="name"> Clear Travel Audit </label>
+                                </div>
+                                <div nz-row nzSpan="6">
+                                    <label nz-checkbox name="name"> Start From Branch </label>
+                                </div>
+                                <div nz-row nzSpan="6">
+                                    <label nz-checkbox name="name"> Finish At Branch </label>
+                                </div>
+                                <div nz-row nzSpan="6">
+                                    <label nz-checkbox name="name"> Avoid Tolls </label>
+                                </div>
+                                <div nz-row nzSpan="6">
+                                    <label nz-checkbox name="name"> Avoid Highways </label>
+                                </div>
+                                <div nz-row nzSpan="6">
+                                    <label nz-checkbox name="name"> Avoid Ferries </label>
+                                </div>
+                                <div nz-row nzSpan="6">
+                                    <label nz-checkbox name="name"> Include Unapproved Entries </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div nz-row>
+                        <div nz-col nzSpan="21"></div>
+                        <div nz-col nzSpan="3">
+                            <button nz-button nzType="primary"
+                                style="font-size: 14pt; height: 2.5pc; width: 8pc; float: right;"> Start
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </nz-tab>
+            <nz-tab nzTitle="Selection Options">
+
+                <div>
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="6">
+                            <h3 style="color:#1890FF;">Invoice Types</h3>
+                        </div>
+                        <div nz-col nzSpan="8">
+                            <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="invType" nzPlaceHolder=""
+                                nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-option *ngFor="let etype of invType" [nzLabel]="etype" [nzValue]="etype">
+                                </nz-option>
+                            </nz-select>
+                        </div>
+                    </div>
+
+                    <nz-divider style="margin-top: 6px; margin-bottom: 6px;" nzText="" nzOrientation="left">
+                    </nz-divider>
+
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="4">
+                            <h3 style="color:#1890FF;"> Dates </h3>
+                        </div>
+                        <div nz-col nzSpan="3" class="text-right pad-r-5">
+                            <label for="Name" style="margin-top: 5px; font-size: 11pt;"> Select All</label>
+                        </div>
+                        <div nz-col nzSpan="1" style="text-align: center;">
+                            <label nz-checkbox style="margin-top: 5px;"></label>
+                        </div>
+                        <div nz-col nzSpan="1"></div>
+                        <div nz-col nzSpan="5">
+                            <!-- <nz-date-picker nzPlaceHolder="Start Date" formControlName="dtpStartDate"
+                                [nzFormat]="dateFormat">
+                            </nz-date-picker> -->
+                            <nz-date-picker formControlName="startDate"></nz-date-picker>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <p style="text-align: center; margin-top: 5px;"> TO </p>
+                        </div>
+                        <div nz-col nzSpan="5">
+                            <!-- <nz-date-picker nzPlaceHolder="End Date" formControlName="dtpEndDate"
+                                [nzFormat]="dateFormat">
+                            </nz-date-picker> -->
+                            <nz-date-picker formControlName="endDate"></nz-date-picker>
+                        </div>
+                    </div>
+
+                    <nz-divider style="margin-top: 1px; margin-bottom: 1px;" nzText="" nzOrientation="left">
+                    </nz-divider>
+
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="4">
+                            <h3 style="color:#1890FF;"> Branches </h3>
+                        </div>
+                        <div nz-col nzSpan="3" class="text-right pad-r-5">
+                            <label for="Name" style="margin-top: 5px; font-size: 11pt;"> Select All</label>
+                            <div nz-col style="text-align: right;">
+                                <button nz-button nzType="primary"
+                                    style="font-size: 10pt; text-align: center; padding: 3px; height: 1.75pc; width: 5.5pc;">
+                                    Un-Select All
+                                </button>
+                            </div>
+                        </div>
+                        <div nz-col nzSpan="1" style="text-align: center;">
+                            <label nz-checkbox style="margin-top: 5px;"></label>
+                        </div>
+                        <div>
+                            <div nz-col nzSpan="16" class="mrg-btm">
+                                <div nz-row style="line-height: 4pc;">
+                                    <div nz-col>
+                                        <nz-table style="margin-top: 0px;" [nzScroll]="{ y: '150px' }"
+                                            [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
+                                            [nzLoading]="loading" [nzData]="tableData">
+                                            <tbody>
+                                                <tr *ngFor="let data of branchList;let i = index;">
+                                                    <td style="width: 4px;" class="right">
+                                                        <label nz-checkbox></label>
+                                                    </td>
+                                                    <td class="left">{{ data.description }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </nz-table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <nz-divider style="margin-top: 1px; margin-bottom: 1px;" nzText="" nzOrientation="left">
+                    </nz-divider>
+
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="4">
+                            <h3 style="color:#1890FF;"> Programs </h3>
+                        </div>
+                        <div nz-col nzSpan="3" class="text-right pad-r-5">
+                            <label for="Name" style="margin-top: 5px; font-size: 11pt;"> Select All</label>
+                            <div nz-col style="text-align: right;">
+                                <button nz-button nzType="primary"
+                                    style="font-size: 10pt; text-align: center; padding: 3px; height: 1.75pc; width: 5.5pc;">
+                                    Un-Select All
+                                </button>
+                            </div>
+                        </div>
+                        <div nz-col nzSpan="1" style="text-align: center;">
+                            <label nz-checkbox style="margin-top: 5px;"></label>
+                        </div>
+                        <div>
+                            <div nz-col nzSpan="16" class="mrg-btm">
+                                <div nz-row style="line-height: 4pc;">
+                                    <div nz-col>
+                                        <nz-table style="margin-top: 0px;" [nzScroll]="{ y: '150px' }"
+                                            [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
+                                            [nzLoading]="loading" [nzData]="tableData">
+                                            <tbody>
+                                                <tr *ngFor="let data of programList;let i = index;">
+                                                    <td style="width: 4px;" class="right">
+                                                        <label nz-checkbox></label>
+                                                    </td>
+                                                    <td class="left">{{ data.name }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </nz-table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <nz-divider style="margin-top: 1px; margin-bottom: 1px;" nzText="" nzOrientation="left">
+                    </nz-divider>
+
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="4">
+                            <h3 style="color:#1890FF;"> Categories </h3>
+                        </div>
+                        <div nz-col nzSpan="3" class="text-right pad-r-5">
+                            <label for="Name" style="margin-top: 5px; font-size: 11pt;"> Select All</label>
+                            <div nz-col style="text-align: right;">
+                                <button nz-button nzType="primary"
+                                    style="font-size: 10pt; text-align: center; padding: 3px; height: 1.75pc; width: 5.5pc;">
+                                    Un-Select All
+                                </button>
+                            </div>
+                        </div>
+                        <div nz-col nzSpan="1" style="text-align: center;">
+                            <label nz-checkbox style="margin-top: 5px;"></label>
+                        </div>
+                        <div>
+                            <div nz-col nzSpan="16" class="mrg-btm">
+                                <div nz-row style="line-height: 4pc;">
+                                    <div nz-col>
+                                        <nz-table style="margin-top: 0px;" [nzScroll]="{ y: '150px' }"
+                                            [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
+                                            [nzLoading]="loading" [nzData]="tableData">
+                                            <tbody>
+                                                <tr *ngFor="let data of categoriesList;let i = index;">
+                                                    <td style="width: 4px;" class="right">
+                                                        <label nz-checkbox></label>
+                                                    </td>
+                                                    <td class="left">{{ data.description }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </nz-table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </nz-tab>
+        </nz-tabset>
+    </div>
+
+    <div *nzModalFooter>
+        <ng-container>
+            <!-- <button nz-button nzType="default" (click)="handleCancel()">Start</button> -->
+        </ng-container>
+    </div>
+
+</nz-modal>

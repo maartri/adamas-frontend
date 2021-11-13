@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, SimpleChanges,forwardRef, OnChanges, Output, EventEmitter, ChangeDetectorRef  } from '@angular/core';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
 
-import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, ClientService, StaffService, view } from '@services/index';
+import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, ClientService, StaffService, view,PrintService } from '@services/index';
 import { mergeMap, takeUntil, concatMap, switchMap, map } from 'rxjs/operators';
 import { forkJoin, Observable, EMPTY, Subject } from 'rxjs';
 
@@ -75,7 +75,7 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
   incidentDocument: any;
 
   current: number = 0;
-
+  addEdit: number = 0;
   incidentTypeList: Array<any> = [];
 
   listPrograms: Array<string> = [];
@@ -142,6 +142,7 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
     private sanitizer: DomSanitizer,
     private http: HttpClient,
     private ModalS: NzModalService,
+    private printS: PrintService,
   ) { 
 
   }
@@ -156,8 +157,14 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
       }
       if (property == 'operation' && !changes[property].firstChange && changes[property].currentValue != null) {
         this.operation = changes[property].currentValue;
-        if(this.operation.process == 'UPDATE') this.current = 0;
-        if(this.operation.process == 'ADD') this.current = 0;
+        if(this.operation.process == 'UPDATE'){
+          this.current = 0;
+          this.addEdit = 1;
+        }
+        if(this.operation.process == 'ADD'){
+          this.current = 0;
+          this.addEdit = 0;
+        }
       }
     }
   }
@@ -1182,14 +1189,7 @@ updateCheckBoxesInStep1(defaultString: string){
 
         var fQuery = "Select WhoCode as Field1,CONVERT(varchar, [DetailDate],105) as Field2,Detail as Field3,CONVERT(varchar, [AlarmDate],100) as Field4, Creator as Field5 FROM History WHERE PersonID = '"+this.incidentForm.value.recordNo+"' AND ExtraDetail1 = 'RECIMNOTE'  AND (([PrivateFlag] = 0) OR ([PrivateFlag] = 1 AND [Creator] = 'sysmgr')) AND DeletedRecord <> 1 "+whereString+" ORDER BY DetailDate DESC, RecordNumber DESC";
         // console.log(fQuery);
-    const headerDict = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-    }
     
-    const requestOptions = {
-        headers: new HttpHeaders(headerDict)
-    };
     
     const data = {
         "template": { "_id": "0RYYxAkMCftBE9jc" },
@@ -1205,28 +1205,30 @@ updateCheckBoxesInStep1(defaultString: string){
             "head5" : "Creator",
         }
     }
-    this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-    .subscribe((blob: any) => {
-        let _blob: Blob = blob;
-        let fileURL = URL.createObjectURL(_blob);
-        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-        this.loadingPDF = false;
-        console.log("compiled after data")
-        this.cd.detectChanges();
-    }, err => {
-        console.log(err);
-        this.loadingPDF = false;
-        this.ModalS.error({
-            nzTitle: 'TRACCS',
-            nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-            nzOnOk: () => {
-                this.drawerVisible = false;
-            },
-        });
-    });
-    this.cd.detectChanges();
+
+
     this.loadingPDF = true;
-    this.tryDoctype = "";
-    this.pdfTitle = "";
+
+    this.printS.print(data).subscribe((blob: any) => {
+          //  this.pdfTitle = ""
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loadingPDF = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loadingPDF = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
+
+        return;
 }
 }//

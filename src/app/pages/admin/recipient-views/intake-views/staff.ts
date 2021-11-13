@@ -110,13 +110,13 @@ export class IntakeStaff implements OnInit, OnDestroy {
         recordNumber: '',
         personID: '',
         list: '',
-        notes: ''
+        notes: ['']
       })
     }
     
     get title() {
       const str = this.whatView == 1 ? 'Excluded Staff' : 'Approved Staff';
-      const pro = this.editOrAdd == 1 ? 'Add' : 'Update';
+      const pro = this.editOrAdd == 1 ? 'Add' : 'Edit';
       return `${pro} ${str}`;
     }
     trackByFn(index, item) {
@@ -148,7 +148,7 @@ export class IntakeStaff implements OnInit, OnDestroy {
       
       if (index == 1) {    
         this.timeS.postintakestaff({
-          Notes: notes,
+          Notes: (notes == null) ? '' : notes,
           PersonID: this.user.id,
           Name: list,
           StaffCategory:0,
@@ -165,7 +165,7 @@ export class IntakeStaff implements OnInit, OnDestroy {
       
       if (index == 2) {
         this.timeS.postintakestaff({
-          notes: notes,
+          Notes: (notes == null) ? '' : notes,
           personID: this.user.id,
           name: list,
           staffCategory:1,

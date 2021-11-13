@@ -58,12 +58,19 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   private onTouchedCallback: () => void = noop;
   private onChangeCallback: (_: any) => void = noop;
 
+
+  coordinator$: Observable<any>;
+  programs$: Observable<any>;
+
   showUpload: boolean = false;
   innerValue: ProfileInterface;
+
+  current: number = 0;
 
   profileStaffModal: boolean = false;
   profileStaffOptionsModal: boolean = false;
   profileStaffPreferredModal: boolean = false;
+  addCaseStaffModal: boolean = false;
 
   tabIndex: number = 0;
 
@@ -79,6 +86,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
   contactsArray: Array<any> = [];
   addressArray: Array<any> = [];
+  caseStaffArray: Array<any> = [];
 
   years: Array<string> = [];
   months: Array<string> = [];
@@ -92,6 +100,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   userForm: FormGroup;
   emailCoordinatorGroup: FormGroup;
   contactIssueGroup: FormGroup;
+  caseStaffGroup: FormGroup;
 
   loading: boolean = false;
   editProfileDrawer: boolean = false;
@@ -118,7 +127,10 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
   showAvatar: boolean;
   staffrecordview: string; 
-  token: any
+  token: any;
+
+  topBelow = { top: '20px' }
+
 
   constructor(
     private globalS: GlobalService,
@@ -142,7 +154,9 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
     if(user && role == 'ADMIN USER'){
       this.listS.getstaffrecordview(user).subscribe(data => {
-          this.staffrecordview = data.staffRecordView;
+          if(data !== null){
+            this.staffrecordview = data.staffRecordView;
+          }
       });
     }
 
@@ -167,14 +181,23 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   buildForms(): void {
 
     this.contactIssueGroup = this.formBuilder.group({
-      value: ''
+      contactIssues: '',
+      rosterAlerts: '',
+      runsheetAlerts: ''
+    });
+
+    this.caseStaffGroup = this.formBuilder.group({
+      coordinator: null,
+      program: null,
+      notes: null
     });
 
     this.contactForm = this.formBuilder.group({
       id: [''],
       type: ['', [Validators.required]],
-      details: ['', [Validators.required]],
-      personId: ['']
+      details: [null, [Validators.required]],
+      personId: [''],
+      primaryPhone: [false]
     });
 
     this.addressForm = this.formBuilder.group({
@@ -182,7 +205,8 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
       description: [null, [Validators.required]],
       address: [null, [Validators.required]],
       pcodesuburb: [null],
-      personId: ['']
+      personId: [''],
+      primaryAddress: [false]
     });
 
 
@@ -224,7 +248,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
       isCaseLoad: false,
       excludeFromConflictChecking:false,
       stf_Department: '',
-      rating: ''
+      rating: '',
     });
 
     this.resetEmailCoordinator();
@@ -249,11 +273,15 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
         branch: user.branch,
         file2: user.urNumber,
         subCategory: user.ubdMap,
-        serviceRegion: user.agencyDefinedGroup
+        serviceRegion: user.agencyDefinedGroup,
+        uniqueID: user.uniqueID,
+        preferredName: user.preferredName
       });
 
       this.contactIssueGroup.patchValue({
-        value: user.contactIssues
+        contactIssues: user.contactIssues,
+        rosterAlerts: user.notes,
+        runsheetAlerts: user.specialConsiderations
       })
 
       // this.contactIssueGroup.patchValue({
@@ -306,6 +334,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
         isRosterable: user.isRosterable,
         isCaseLoad: user.caseManager
       });
+
       this.globalS.var1 = this.userForm.value.recordId;      
       this.cd.markForCheck();
       this.cd.detectChanges();
@@ -337,7 +366,21 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     this.emailManagerNoEmailShowNotif = this.globalS.isEmpty(this.caseManagerDetails) ? false : true; 
   }
 
+  detectChanges(): void{
+    this.cd.markForCheck();
+    this.cd.detectChanges();
+  }
+
+  populateCaseStaff(id: any = this.innerValue.id): void{
+    this.listS.getcasestaffpopulate(id).subscribe(data =>{
+        this.caseStaffArray = data;
+        this.detectChanges();
+    });
+  }
+
   pathForm(token: ProfileInterface) {
+
+    this.populateCaseStaff(token.id);
 
     if (this.globalS.isEmpty(token))
       return;
@@ -359,8 +402,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
           this.user.contacts = this.contactBuilder(data[1]);
           this.user.casestaff = data[2];
 
-          this.cd.markForCheck();
-          this.cd.detectChanges();
+          this.detectChanges();
 
           // this.globalS.userProfile = this.user;
 
@@ -375,6 +417,10 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
           // this.tempContactArray = this.contactForm.get('contacts').value;
           console.log(this.user.filePhoto)
           if(!this.user.filePhoto){
+            this.imgSrc = null;
+            this.showAvatar = true;
+            this.src = null;
+            this.detectChanges();
             return EMPTY;
           }
           return this.staffS.getimages({ directory: this.user.filePhoto })
@@ -386,13 +432,14 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
           this.imgSrc = this.ds.bypassSecurityTrustUrl(this.defaultURL);
           this.src = this.defaultURL;
+          
         } else {
+          this.imgSrc = null;
           this.showAvatar = true;
           this.src = null;
         }
 
-        this.cd.markForCheck();
-        this.cd.detectChanges();
+        this.detectChanges();
       });     
     }
 
@@ -427,6 +474,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
           // this.contactForm.setControl('contacts', this.formBuilder.array(this.contactBuilder(data[1]) || []));
           // this.tempContactArray = this.contactForm.get('contacts').value;
           if(!this.user.filePhoto){
+            this.imgSrc = null;
             return EMPTY;
           }
           return this.staffS.getimages({ directory: this.user.filePhoto })
@@ -443,6 +491,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
         } else {
           this.showAvatar = true;
           this.src = null;
+          this.imgSrc = null;
         }
 
         this.cd.markForCheck();
@@ -529,6 +578,33 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     }
   }
 
+  
+
+  next(){
+    this.current++;
+  }
+
+  pre(){
+    this.current--;
+  }
+
+  addCaseStaff(){
+    const { coordinator, notes, program } = this.caseStaffGroup.value;
+
+    this.listS.postcasestaff({
+      personId: this.innerValue.id,
+      notes: notes,
+      caseManagerId: coordinator,
+      program: program
+    }).subscribe(data => {
+      this.globalS.sToast('Success', 'Case Staff is added');
+      this.populateCaseStaff();
+      this.addCaseStaffModal = false;
+
+      this.detectChanges();
+    });
+  }
+
   handleCancel(): void {
     
     this.addressForm.reset();
@@ -539,6 +615,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     this.profileRecipientOptionsModal = false;
     this.changeProfilePictureModal = false;
     this.loadPhoto = false;
+    this.addCaseStaffModal = false;
     this.src = '';
   }
 
@@ -556,13 +633,14 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   formatContact(contactForm: FormGroup): Array<PhoneFaxOther> {
     let temp: Array<PhoneFaxOther> = [];
 
-    const { id, type, details, personId } = contactForm.value;
+    const { id, type, details, personId, primaryPhone } = contactForm.value;
 
     let pf: PhoneFaxOther = {
       RecordNumber: id,
       Type: type,
       Detail: details,
-      PersonID: personId
+      PersonID: personId,
+      PrimaryPhone: primaryPhone
     }
 
     temp.push(pf);
@@ -647,8 +725,8 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
           urNumber: data.file2,
           branch: data.branch,
           agencyDefinedGroup: data.serviceRegion,
-          ubdMap: data.subCategory
-
+          ubdMap: data.subCategory,
+          preferredName: data.preferredName
         }
 
         this.subscriptionArray.push(this.clientS.updateusername(user));
@@ -659,7 +737,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   }
 
   formatAddress(addressForm: FormGroup): Array<NamesAndAddresses> {
-    const { pcodesuburb, address, description, id, personId } = addressForm.value;
+    const { pcodesuburb, address, description, id, personId, primaryAddress } = addressForm.value;
 
     let pcode = /(\d+)/g.test(pcodesuburb) ? pcodesuburb.match(/(\d+)/g)[0].trim() : "";
     let suburb = /(\D+)/g.test(pcodesuburb) ? pcodesuburb.match(/(\D+)/g)[0].trim() : ""
@@ -674,7 +752,8 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
       Description: description,
       Address1: address,
       RecordNumber: id,
-      PersonID: personId
+      PersonID: personId,
+      PrimaryAddress: primaryAddress
     }
 
     temp.push(na);
@@ -739,7 +818,9 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   }
 
   processSubscriptions() {
+
     this.loading = true;
+    
     forkJoin(this.subscriptionArray).subscribe(
       data => {
         this.subscriptionArray = [];
@@ -771,6 +852,8 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
     if (this.window == 1) {
       this.loading = true;
+      // console.log(this.addressForm.value);
+      // return;
       this.clientS.updateuseraddress(this.formatAddress(this.addressForm))
         .subscribe(data => {
           if (data.success) {
@@ -817,7 +900,13 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
   addContactOpen() {
     this.addContactDrawer = true;
-    this.contactForm.reset();
+    this.contactForm.reset({
+      id: '',
+      type: null,
+      details: null,
+      personId: '',
+      primaryPhone: false
+    });
     this.POPULATE_CONTACTS();
   }
 
@@ -871,28 +960,30 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     this.editModalOpen = true;
     this.window = 1;
     this.addressForm.reset();
-
     this.addressForm.patchValue({
       id: address.recordNumber,
       description: address.description,
       address: address.address1,
       pcodesuburb: `${address.postCode} ${address.suburb ? address.suburb.trim() : ''} ${address.stat ? `, ${address.stat}` : ''}`,
-      personId: address.personID
+      personId: address.personID,
+      primaryAddress: address.primaryAddress
     });
 
     this.POPULATE_ADDRESS();
   }
 
   editContactOpen(contact: any): void {
+
     this.editModalOpen = true;
     this.window = 2;
 
+    // console.log(contact);
     this.contactForm.patchValue({
       id: contact.recordNumber,
       type: contact.type,
       details: contact.detail,
       personId: contact.personID,
-
+      primaryPhone: contact.primaryPhone
     });
 
     this.POPULATE_CONTACTS();
@@ -959,6 +1050,13 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
   }
 
+  POPULATE_CASE_STAFF(){
+    this.current = 0;
+    this.caseStaffGroup.reset();
+    this.coordinator$ = this.listS.getcasestafflist(this.innerValue.id);
+    this.programs$ = this.listS.getcasestaffprograms();
+  }
+
   POPULATE_DATE_DROPDOWNS() {
     this.months = months;
     this.years = this.globalS.year();
@@ -988,8 +1086,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
     if (!this.emailCoordinatorGroup.valid)
       return;
-    
-    console.log(this.user);
+
     const { title, firstName, surnameOrg, accountNo } = this.user;
     const { subject, content } = this.emailCoordinatorGroup.value;
     const { detail, description } = this.caseManagerDetails;
@@ -1029,7 +1126,17 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   }
 
   saveTab() {
-    const { sqlId } = this.user;
+    const { sqlId, uniqueID } = this.user;
+    const { contactIssues,  rosterAlerts, runsheetAlerts  } = this.contactIssueGroup.value;
+
+    this.timeS.updatecontactrosterrunsheet({
+      contactIssues,
+      rosterAlerts,
+      runsheetAlerts,
+      uniqueId: uniqueID
+    }).subscribe(data => this.globalS.sToast('Success', 'Contact Issues Updated'));
+
+    return;
 
     if (this.tabIndex == 0) {
 
@@ -1040,8 +1147,8 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
       }).subscribe(data => {
         this.globalS.sToast('Success', 'Contact Issues Updated');
       });
-      this.contactIssueGroup.markAsPristine();
 
+      this.contactIssueGroup.markAsPristine();
     }
 
     if (this.tabIndex == 1) {
@@ -1098,8 +1205,8 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   }
 
   private imgBlobData: any;
+  
   imgBLOB(file: any) {
-    console.log(file);
     this.imgBlobData = file;
   }
 
@@ -1130,6 +1237,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   isPhoneFax(data: any){
     return data == 'FAX' || data == 'HOME' || data == 'WORK';
   }
+
   toMap(address: any){
              var adds = [];
              var addr = new Address(address.postCode, address.address1, address.suburb, address.stat);
@@ -1137,5 +1245,14 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
               console.log(addres);
              window.open(`https://www.google.com/maps/dir${addres.join('')}`,'_blank');
              return false;
-}
+  }
+
+
+  deleteStaff(data){
+    console.log(data);
+    this.listS.deletecasestaff(data.recordNumber).subscribe(data => {
+      this.populateCaseStaff();
+      this.globalS.sToast('Success','Case Staff deleted');
+    })
+  }
 }

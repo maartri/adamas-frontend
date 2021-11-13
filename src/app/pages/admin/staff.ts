@@ -2,9 +2,11 @@ import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDet
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { filter, switchMap } from 'rxjs/operators';
 import format from 'date-fns/format';
-import { GlobalService, StaffService, ShareService, leaveTypes, ListService, TimeSheetService, SettingsService, LoginService } from '@services/index';
+
+import { GlobalService,nodes,StaffService,sbFieldsSkill, ShareService,timeSteps,conflictpointList,checkOptionsOne,sampleList,genderList,statusList,leaveTypes, ListService,PrintService, TimeSheetService, SettingsService, LoginService } from '@services/index';
+import { NzFormatEmitEvent } from 'ng-zorro-antd/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
-import { EMPTY } from 'rxjs';
+import { EMPTY, forkJoin } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ApplicationUser } from '@modules/modules';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -73,6 +75,55 @@ interface UserView{
             margin:1rem auto;
             width:1px;
             }
+            .status{
+              font-size: 11px;
+              padding: 3px 5px;
+              border-radius: 11px;
+              color: #fff;
+              
+              margin-right: 10px;
+            }
+            .status.active{            
+              background: #42ca46;
+            }
+            .status.inactive{            
+              background: #c70000;
+            }
+            .status.type{
+              background:#c8f2ff;
+              color: black;
+            }
+            .status-program{
+              display: inline-block;
+              float: left;
+              margin-right:1rem;
+            }
+            .status-program i{
+              font-size: 1.4rem;
+              color: #bfbfbf;
+              margin-right:10px;
+              cursor:pointer;
+            }
+            .status-program i:hover{
+              color: #000;
+            }
+            
+            .tree-overflow{
+              max-height: 24rem;
+              overflow: auto;
+            }
+            label.columns{
+              display:block;
+              margin:0;
+            }
+            .ant-card-small>.ant-card-head>.ant-card-head-wrapper>.ant-card-extra {
+              margin-left:unset !important;
+              float:none !important;
+              color:green !important;
+            }
+            .ant-table-thead>tr>th{
+              background:green;
+            }
     `],
     templateUrl: './staff.html',
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -89,6 +140,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
 
     terminateModal: boolean = false;
     changeCodeModal: boolean = false;
+    searchAvaibleModal : boolean = false;
     putonLeaveModal: boolean = false;
     newStaffModal: boolean = false;
     
@@ -123,8 +175,145 @@ export class StaffAdmin implements OnInit, OnDestroy {
     Cycles: Array<any> = ['Cycle 1', 'Cycle 2', 'Cycle 3', 'Cycle 4', 'Cycle 5', 'Cycle 6', 'Cycle 7', 'Cycle 8', 'Cycle 9', 'Cycle 10'];
     DayNames: Array<any> = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
     fDays : Array<any> = ['7','14','21','28',];
-
-    listChange(event: any) {
+    
+    sampleList: Array<any> = sampleList;
+    cariteriaList:Array<any> = [];
+    nodelist:Array<any> = [];
+    checkOptionsOne = checkOptionsOne;
+    
+    branchesList: any;
+    diciplineList: any;
+    casemanagers: any;
+    categoriesList: any;
+    skillsList:any;
+    selectedRecpientTypes: any[];
+    types: any[];
+    
+    extendedSearch: any;
+    filteredResult: any;
+    selectedTypes:any;
+    selectedbranches: any[];
+    testcheck : boolean = false;
+    selectedPrograms: any;
+    selectedCordinators: any;
+    selectedCategories: any;
+    selectedSkills:any;
+    
+    allBranches:boolean = true;
+    allBranchIntermediate:boolean = false;
+    
+    allProgarms:boolean = true;
+    allprogramIntermediate:boolean = false;
+    
+    allcat:boolean = true;
+    allCatIntermediate:boolean = false;
+    
+    allCordinatore:boolean = true;
+    allCordinatorIntermediate:boolean = false;
+    
+    allChecked: boolean = true;
+    indeterminate: boolean = false;
+    quicksearch: FormGroup;
+    filters: FormGroup;
+    loading: boolean;
+    findModalOpen: boolean = false;
+    statusList:any = statusList;
+    genderList:any = genderList;
+    conflictpointList:any = conflictpointList;
+    timeSteps:Array<string>;
+    sbFieldsSkill:any;
+    nzEvent(event: NzFormatEmitEvent): void {
+      if (event.eventName === 'click') {
+        var title = event.node.origin.title;
+  
+        this.extendedSearch.patchValue({
+          title : title,
+        });
+        var keys       = event.keys;
+      
+      }
+  
+    }
+    columns: Array<any> = [
+        {
+          name: 'ID',
+          checked: false
+        },
+        {
+          name: 'URNumber',
+          checked: false
+        },
+        {
+          name: 'AccountNo',
+          checked: false
+        },
+        {
+          name: 'Surname',
+          checked: false
+        },
+        {
+          name: 'Firstname',
+          checked: false
+        },
+        {
+          name: 'Fullname',
+          checked: false
+        },
+        {
+          name: 'Gender',
+          checked: true
+        },
+        {
+          name: 'DOB',
+          checked: true
+        },
+        {
+          name: 'Address',
+          checked: true
+        },
+        {
+          name: 'Contact',
+          checked: true
+        },
+        {
+          name: 'Type',
+          checked: true
+        },
+        {
+          name: 'Branch',
+          checked: true
+        },
+        {
+          name: 'Coord',
+          checked: false
+        },
+        {
+          name: 'Category',
+          checked: false
+        },
+        {
+          name: 'ONI',
+          checked: false
+        },
+        {
+          name: 'Activated',
+          checked: false
+        },
+        {
+          name: 'Deactivated',
+          checked: false
+        },
+        {
+          name: 'Suburb',
+          checked: false
+        }
+      ]
+  avilibilityForm: FormGroup;
+      handleCancel() {
+        this.findModalOpen = false;
+      }
+      
+      listChange(event: any) {
 
         if (event == null) {
             this.user = null;
@@ -137,14 +326,6 @@ export class StaffAdmin implements OnInit, OnDestroy {
             this.view(0);
             this.isFirstLoad = true;
         }
-
-        // this.user = {
-        //     agencyDefinedGroup: undefined,
-        //     code: "AASTAFF HELP",
-        //     id: "S0100005616",
-        //     sysmgr: true,
-        //     view: "staff"
-        // }
 
         this.user = {
             code: event.accountNo,
@@ -173,15 +354,20 @@ export class StaffAdmin implements OnInit, OnDestroy {
         private http: HttpClient,
         private ModalS: NzModalService,
         private sanitizer: DomSanitizer,
+        private printS: PrintService,
     ) {        
       
     }
 
-    ngOnInit(): void {        
+    ngOnInit(): void {
         this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
+        this.sbFieldsSkill = sbFieldsSkill;
+        this.nodelist = nodes;
         this.buildForm();
+        this.buildForms();
+        this.timeSteps = timeSteps;
+        this.getUserData();
         this.normalRoutePass();
-
     }
 
     normalRoutePass(): void{
@@ -209,7 +395,45 @@ export class StaffAdmin implements OnInit, OnDestroy {
             console.log(data);
         });
     }
+    buildForms(){
+        
+      this.quicksearch = this.fb.group({
+          availble: false,
+          option: false,
+          status:'Active',
+          gender:'Any Gender',
+          surname:'',
+          staff:true,
+          brokers:true,
+          volunteers:true,
+          onleaveStaff:true,
+          previousWork:false,
+          searchText:'',
+        });
+        
+        this.avilibilityForm = this.fb.group({
+          date  :[new Date()],
+          start :'09:00',
+          end   :'10:00',
+          drtn  :'01:00',
+          conflict:true,
+          conflictminutes:'',
+        });
 
+        this.filters = this.fb.group({
+          activeprogramsonly:false,
+        });
+        
+        this.extendedSearch = this.fb.group({
+          title:'',
+          rule:'',
+          from:'',
+          to:'',
+          
+          activeonly: true,
+        });
+        
+    }
     buildForm(): void{
         var date = new Date();
         let monthStart = new Date(date.getFullYear(), date.getMonth(), 1);
@@ -337,13 +561,28 @@ export class StaffAdmin implements OnInit, OnDestroy {
     ngOnDestroy(): void {
 
     }
-    handleOk(){                         
+    handleOk(){ 
+                            
         this.ReportRender();
-        this.tryDoctype = ""
-        this.pdfTitle = ""        
+                
     //    this.printSummaryModal = false;
      
     }
+    getUserData() {
+        return forkJoin([
+          this.listS.getlistbranchesObj(),
+          this.listS.getdisciplinelist(),
+          this.listS.casemanagerslist(),
+          this.listS.getstaffcategorylist(),
+          this.listS.getskills(),
+        ]).subscribe(x => {
+          this.branchesList   = x[0];
+          this.diciplineList  = x[1];
+          this.casemanagers   = x[2];
+          this.categoriesList = x[3];
+          this.skillsList     = x[4];
+        });
+      }
     view(index: number) {
         this.nzSelectedIndex = index;
 
@@ -482,6 +721,8 @@ export class StaffAdmin implements OnInit, OnDestroy {
     }
     handleCancelTop(){
         this.SummarydrawerVisible = false;
+        this.tryDoctype = ""
+        this.pdfTitle = ""
     }
 ReportRender(){
       
@@ -491,17 +732,13 @@ ReportRender(){
     if(this.printSummaryGroup.value.fileLabels == true){
         id = "PDg8Im0vdY"
         var Title = "Address Labels"
+        rptfile = "Staff Address Labels"
     }else{
-        id = "RYeIj0QuEc"
+        id = "2OIfvSiZPw5TUnvz"
         var Title = "Summary Sheet"
+        rptfile = "Staff Summary Sheet"
     }
-  
-   
-   
-    
-
-
-        if(id == "RYeIj0QuEc"){
+        if(id == "2OIfvSiZPw5TUnvz"){
           var date = new Date();
    
             if (this.trainingFrom != null) { Trainstrdate = format(this.trainingFrom, 'yyyy/MM/dd') } 
@@ -587,33 +824,34 @@ ReportRender(){
                   break;
               }
               let cyclestrdate =  new Date(temp1)
+                let enddate =  new Date(temp1)
               switch (this.printSummaryGroup.value.fDays.toString()) {
                 case '14':
-                  temp2 = cyclestrdate.setDate(14)
+                  temp2 = enddate.setDate(14)
                   break;
                 case '21':
-                  temp2 = cyclestrdate.setDate(21)
+                  temp2 = enddate.setDate(21)
                   break;
                 case '28':
-                  temp2 = cyclestrdate.setDate(28)
+                  temp2 = enddate.setDate(28)
                   break;            
                 default:
-                  temp2 = cyclestrdate.setDate(7)
+                  temp2 = enddate.setDate(7)
                   break;
               } 
                   let cycleendate =  new Date(temp2) 
 
-
+      //console.log(this.globalS.var1.toString(),this.globalS.var2.toString())
           const data = {
-    
-            "template": { "shortid": id },
+            //"_id": "2OIfvSiZPw5TUnvz"
+            "template": { "_id": id },
                         
             "options": {
                 "reports": { "save": false },                                  
                 "userid": this.tocken.user,
                 "txtTitle": Title,
                 "txtid":this.globalS.var1.toString(),
-                "txtacc":this.globalS.var2.toString(),
+              //  "txtacc":this.globalS.var2.toString(),
 
                 "inclNameContact": this.printSummaryGroup.value.nameandContacts,
                 "inclContactIssues": this.printSummaryGroup.value.contactIssue,
@@ -648,7 +886,7 @@ ReportRender(){
                  "StaffInclusion":this.printSummaryGroup.value.recepientSearc,
 
                  "cycleSDate":format(cyclestrdate,'yyyy/MM/dd'),
-                "cycleEDate":format(cycleendate,'yyyy/MM/dd'),
+                 "cycleEDate":format(cycleendate,'yyyy/MM/dd'),
                  //"days":this.inputForm.value.fDays,
                  //"dayname":this.inputForm.value.DayNames,
                  
@@ -658,44 +896,31 @@ ReportRender(){
                 
             }
         }
-        this.SummarydrawerVisible = true;
+         
         this.spinloading = true;
         
-        const headerDict = {
+        
+        this.printS.print(data).subscribe((blob: any) => {
+          this.pdfTitle = rptfile;
+          this.SummarydrawerVisible = true;                   
+          let _blob: Blob = blob;
+          let fileURL = URL.createObjectURL(_blob);
+          this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+          this.spinloading = false;
+          this.cd.detectChanges();
+      }, err => {
+          console.log(err);
+          this.spinloading = false;
+          this.ModalS.error({
+              nzTitle: 'TRACCS',
+              nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+              nzOnOk: () => {
+                  this.SummarydrawerVisible = false;
+              },
+          });
+      });
 
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',                                                
-        }
-
-        const requestOptions = {
-            headers: new HttpHeaders(headerDict),
-            credentials: true
-        };
-
-        //this.rpthttp
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-            .subscribe((blob: any) => {
-                console.log(blob);
-
-                let _blob: Blob = blob;
-
-                let fileURL = URL.createObjectURL(_blob);
-                this.pdfTitle = rptfile;
-
-                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                this.spinloading = false;
-
-            }, err => {
-                console.log(err);
-                this.ModalS.error({
-                    nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and needs to close (' + err + ')',
-                    nzOnOk: () => {
-                             this.SummarydrawerVisible = false;
-                              
-                             },
-                  });
-            }); 
+      return;
         }
         else{
 
@@ -721,53 +946,310 @@ ReportRender(){
                 
             }
         }
-        this.SummarydrawerVisible = true;
+        
         this.spinloading = true;
         
-        const headerDict = {
+        this.printS.print(data).subscribe((blob: any) => {
+          this.pdfTitle = rptfile;
+          this.SummarydrawerVisible = true;                   
+          let _blob: Blob = blob;
+          let fileURL = URL.createObjectURL(_blob);
+          this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+          this.spinloading = false;
+          this.cd.detectChanges();
+      }, err => {
+          console.log(err);
+          this.spinloading = false;
+          this.ModalS.error({
+              nzTitle: 'TRACCS',
+              nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+              nzOnOk: () => {
+                  this.SummarydrawerVisible = false;
+              },
+          });
+      });
 
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',                                                
-        }
+      return;
+            }
+}
 
-        const requestOptions = {
-            headers: new HttpHeaders(headerDict),            
-            credentials: true,                       
-        };
 
-        //this.rpthttp
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers,  responseType: 'blob' })
-            .subscribe((blob: any) => {
-                console.log(blob);
+ log(event: any,index:number) {
+    console.log("-----");
+    this.testcheck = true;   
+    if(index == 1)
+    this.selectedbranches = event;
+    if(index == 2)
+    this.selectedPrograms = event;
+    if(index == 3)
+    this.selectedCordinators = event;
+    if(index == 4)
+    this.selectedCategories = event;  
 
-                let _blob: Blob = blob;
-
-                let fileURL = URL.createObjectURL(_blob) ;
-                this.pdfTitle = rptfile;
-
-                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                this.ifrmtryDoctype = true;
-                this.spinloading = false;
-
-            }, err => {
-                console.log(err);
-                this.ModalS.error({
-                    nzTitle: 'TRACCS',
-                    nzContent: 'The report has encountered the error and needs to close (' + err + ')',
-                    nzOnOk: () => {
-                             this.SummarydrawerVisible = false;
-                              
-                             },
-                  });
-            });
-
-        }
-            
-            
-
-          
+    if(index == 5 && event.target.checked){
+      this.searchAvaibleModal = true;
+    }
+ }
+  
+  setCriteria(){ 
+    this.cariteriaList.push({
+      fieldName  : this.extendedSearch.value.title,
+      searchType : this.extendedSearch.value.rule,
+      textToLoc  : this.extendedSearch.value.from,
+      endText    : this.extendedSearch.value.to,
+    })
+  }
+  searchData() : void{
+    this.loading = true;      
     
+    this.selectedTypes = this.checkOptionsOne
+    .filter(opt => opt.checked)
+    .map(opt => opt.value).join("','")
+    
+    this.selectedPrograms = this.diciplineList
+    .filter(opt => opt.checked)
+    .map(opt => opt.description)
+    
+    this.selectedCordinators = this.casemanagers
+    .filter(opt => opt.checked)
+    .map(opt => opt.uniqueID)
+    
+    this.selectedCategories = this.categoriesList
+    .filter(opt => opt.checked)
+    .map(opt => opt.description)
+    
+    this.selectedbranches = this.branchesList
+    .filter(opt => opt.checked)
+    .map(opt => opt.description)
+
+    this.selectedSkills  = this.skillsList
+    .filter(opt => opt.checked)
+    .map(opt => this.sbFieldsSkill[opt.identifier])
+    
+    console.log(this.selectedSkills.length);
+    // JSON.stringify(object)
+    // console.log(JSON.stringify(this.selectedSkills));
+    // console.log(this.sbFieldsSkill.get("fstaffContainer9-Competencies0022"))
+
+
+    var postdata = {
+      status:this.quicksearch.value.status,
+      gender:this.quicksearch.value.gender,
+      staff:this.quicksearch.value.staff,
+      brokers:this.quicksearch.value.brokers,
+      volunteers:this.quicksearch.value.volunteers,
+      onleaveStaff:this.quicksearch.value.onleaveStaff,
+      searchText:this.quicksearch.value.searchText,
+      
+      allTeamAreas      : this.allProgarms,
+      selectedTeamAreas : (this.allProgarms == false) ? this.selectedPrograms : '',
+
+      allcat:this.allcat,
+      selectedCategories:(this.allcat == false) ? this.selectedCategories : '',
+
+      allBranches:this.allBranches,
+      selectedbranches:(this.allBranches == false) ? this.selectedbranches : '',
+
+      allCordinatore:this.allCordinatore,
+      selectedCordinators:(this.allCordinatore == false) ? this.selectedCordinators : '',
+
+      allSkills:(this.selectedSkills.length) ? false : true,
+      selectedSkills: (this.selectedSkills.length) ? this.selectedSkills : '',
+
+      // onleaveStaff:this.quicksearch.value.onleaveStaff,
+      // previousWork:this.quicksearch.value.previousWork,
+      
+      // allcat:this.allcat,
+      // selectedCategories:(this.allcat == false) ? this.selectedCategories : '',
+      // activeprogramsonly:this.filters.value.activeprogramsonly,
+      // surname:this.quicksearch.value.surname,
+      // firstname:this.quicksearch.value.firstname,
+      // phoneno:this.quicksearch.value.phoneno,
+      // suburb:this.quicksearch.value.suburb,
+      // dob:(!this.globalS.isEmpty(this.quicksearch.value.dob)) ? this.globalS.convertDbDate(this.quicksearch.value.dob,'yyyy-MM-dd') : '',
+      // fileno:this.quicksearch.value.fileno,
+      // searchText:this.quicksearch.value.searchText,
+      // criterias:this.cariteriaList
+      // list of rules
+    }
+
+    this.timeS.poststaffquicksearch(postdata).subscribe(data => {
+      this.filteredResult = data;
+      this.loading = false;
+      this.cd.detectChanges();
+    });
+  }
+  detectChanges() {
+        throw new Error('Method not implemented.');
+  }
+  allcompetencieschecked(): void {
+      console.log("added");
+      this.skillsList = this.skillsList.map(item => 
+        (
+          {
+          ...item,
+          checked: true
+          }
+        )
+      );
+  }
+  allcompetenciesunchecked(): void {
+      this.skillsList = this.skillsList.map(item => ({
+        ...item,
+        checked: false,
+      }));
+  }
+  updateAllChecked(): void {
+    this.indeterminate = false;
+    if (this.allChecked) {
+      this.checkOptionsOne = this.checkOptionsOne.map(item => ({
+        ...item,
+        checked: true
+      }));
+    } else {
+      this.checkOptionsOne = this.checkOptionsOne.map(item => ({
+        ...item,
+        checked: false
+      }));
+    }
+  }
+  updateAllCheckedFilters(filter: any): void {
+    
+    if(filter == 1 || filter == -1){
+      
+      console.log(this.testcheck + "test flag");
+      
+      if(this.testcheck == false){  // why its returing undefined 
+        if (this.allBranches) {
+          this.branchesList.forEach(x => {
+            x.checked = true;
+          });
+        }else{
+          this.branchesList.forEach(x => {
+            x.checked = false;
+          });
+        }
+      }
+    }
+    
+    if(filter == 2 || filter == -1){
+      if(this.testcheck == false){
+        if (this.allProgarms) {
+          this.diciplineList.forEach(x => {
+            x.checked = true;
+          });
+        }else{
+          this.diciplineList.forEach(x => {
+            x.checked = false;
+          });
+        }
+      }
+    }
+    if(filter == 3 || filter == -1){
+      if(this.testcheck == false){
+        if (this.allCordinatore) {
+          this.casemanagers.forEach(x => {
+            x.checked = true;
+          });
+        }else{
+          this.casemanagers.forEach(x => {
+            x.checked = false;
+          });
+        }
+      }
+    }
+    
+    if(filter == 4 || filter == -1){
+      if(this.testcheck == false){
+        if (this.allcat) {
+          this.categoriesList.forEach(x => {
+            x.checked = true;
+          });
+        }else{
+          this.categoriesList.forEach(x => {
+            x.checked = false;
+          });
+        }
+      }
+    }
+  }
+  updateSingleChecked(): void {
+    if (this.checkOptionsOne.every(item => !item.checked)) {
+      this.allChecked = false;
+      this.indeterminate = false;
+    } else if (this.checkOptionsOne.every(item => item.checked)) {
+      this.allChecked = true;
+      this.indeterminate = false;
+    } else {
+      this.indeterminate = true;
+      this.allChecked = false;
+    }
+  }
+  updateSingleCheckedFilters(index:number): void {
+    if(index == 1){
+      if (this.branchesList.every(item => !item.checked)) {
+        this.allBranches = false;
+        this.allBranchIntermediate = false;
+      } else if (this.branchesList.every(item => item.checked)) {
+        this.allBranches = true;
+        this.allBranchIntermediate = false;
+      } else {
+        this.allBranchIntermediate = true;
+        this.allBranches = false;
+      }
+    }
+    if(index == 2){
+      if (this.diciplineList.every(item => !item.checked)) {
+        this.allProgarms = false;
+        this.allprogramIntermediate = false;
+      } else if (this.diciplineList.every(item => item.checked)) {
+        this.allProgarms = true;
+        this.allprogramIntermediate = false;
+      } else {
+        this.allprogramIntermediate = true;
+        this.allProgarms = false;
+      }
+    }
+    if(index == 3){
+      if (this.casemanagers.every(item => !item.checked)) {
+        this.allCordinatore = false;
+        this.allCordinatorIntermediate = false;
+      } else if (this.casemanagers.every(item => item.checked)) {
+        this.allCordinatore = true;
+        this.allCordinatorIntermediate = false;
+      } else {
+        this.allCordinatorIntermediate = true;
+        this.allCordinatore = false;
+      }
+    }
+    if(index == 4){
+      if (this.categoriesList.every(item => !item.checked)) {
+        this.allcat = false;
+        this.allCatIntermediate = false;
+      } else if (this.categoriesList.every(item => item.checked)) {
+        this.allcat = true;
+        this.allCatIntermediate = false;
+      } else {
+        this.allCatIntermediate = true;
+        this.allcat = false;
+      }
+    }
+  }
+  openFindModal(){
+    this.tabFindIndex = 0;
+    
+    this.updateAllCheckedFilters(-1);
+    
+    this.findModalOpen = true;
 
   }
+  
+  tabFindIndex: number = 0;
+  tabFindChange(index: number){
+    this.tabFindIndex = index;
+  }
+  
+  filterChange(index: number){
     
+  }
 }

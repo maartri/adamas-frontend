@@ -13,6 +13,9 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 import { NzModalService } from 'ng-zorro-antd/modal';
 
+const PRINT: string = 'PRINT';
+const GENERATING: string = 'GENERATING';
+
 @Component({
     selector: 'package-client',
     styles: [`
@@ -41,7 +44,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
         nz-descriptions >>> table > tbody > tr:nth-child(4) > td:first-child {
             background: #adffb7;
         }
-        a.print{
+        button.print{
             float:right;
         }
         .title-col{
@@ -62,6 +65,9 @@ export class PackageClient implements OnInit, OnDestroy {
     rpthttp = 'https://www.mark3nidad.com:5488/api/report';
     
     drawerVisible: boolean = false;
+    generateReportBool: boolean = false;
+    printGenStr: string = PRINT;
+
     tryDoctype: any;
 
     @Input() id: any;
@@ -154,6 +160,8 @@ export class PackageClient implements OnInit, OnDestroy {
                 this.table = data.list;
 
                 this.generateURL();
+                this.detectChanges();
+                
             }));
 
         this.subscriptions$.push(this.programResult$.pipe(
@@ -188,7 +196,6 @@ export class PackageClient implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.client = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.pickedMember) : this.globalS.decode();
-        console.log(this.client)
 
         this.clientS.getprofile(this.client.code).subscribe(data => {
             this.user = data;
@@ -202,6 +209,9 @@ export class PackageClient implements OnInit, OnDestroy {
                 this.program = this.programs[0];
                 this.date = moment().subtract(this.MINUS_MONTH, 'months').format('YYYY-MM-DD')
                 this.dateStream.next();
+
+                this.detectChanges();
+                               
             })
 
         this.clientS.gethideportalbalance(this.client.user).subscribe(data => {
@@ -219,6 +229,11 @@ export class PackageClient implements OnInit, OnDestroy {
 
         this.programStream.complete();
         this.dateStream.complete();
+    }
+
+    detectChanges(){
+        this.cd.detectChanges();
+        this.cd.markForCheck();
     }
 
     saveFundingInLocalStorage(data: any) {
@@ -297,15 +312,32 @@ export class PackageClient implements OnInit, OnDestroy {
         // return;
         var fQuery = "Select CONVERT(varchar, [DetailDate],105) as Field1, Detail as Field2, CONVERT(varchar, [AlarmDate],105) as Field4, Creator as Field3 From History HI INNER JOIN Staff ST ON ST.[UniqueID] = HI.[PersonID] WHERE ST.[AccountNo] = '"+this.user.code+"' AND HI.DeletedRecord <> 1 AND (([PrivateFlag] = 0) OR ([PrivateFlag] = 1 AND [Creator] = 'sysmgr')) AND ExtraDetail1 = 'OPNOTE' ORDER BY DetailDate DESC, RecordNumber DESC";
 
+        const user = {
+            recipient: `${this.user.title} ${this.user.firstName} ${this.user.surnameOrg}`,
+            accountNo: this.user.accountNo,
+            period: this.monthPeriodFilter.transform(this.date)
+        }
+
+        const balances = {
+            opening: `$${this.openB.toLocaleString()}`,
+            balance: `$${this.closeB.toLocaleString()}`,
+            contingency: `$${this.continB.toLocaleString()}`,
+            total: `$${(this.closeB + this.continB).toLocaleString()}`,
+        }
+
         const data = {
             "template": { "_id": "MtyAvCbVCMDMpPeL" },
             "options": {
                 "reports": { "save": false },
                 "txtTitle": "Staff OP NOTES List",
                 "sql": fQuery,
-                "body": this.table
+                "body": this.table,
+                "profile": user,
+                "balances": balances
             }
         }
+        this.generateReportBool = true;
+        this.printGenStr = GENERATING;
 
         this.printS.print(data).subscribe((blob: any) => {
             this.drawerVisible = true;
@@ -314,8 +346,7 @@ export class PackageClient implements OnInit, OnDestroy {
             this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
             this.loading = false;
             this.cd.detectChanges();
-        }, err => {
-            console.log(err);
+        }, err => {            
             this.loading = false;
             this.ModalS.error({
                 nzTitle: 'TRACCS',
@@ -324,6 +355,9 @@ export class PackageClient implements OnInit, OnDestroy {
                     this.drawerVisible = false;
                 },
             });
+        }, () =>{
+            this.generateReportBool = false;
+            this.printGenStr = PRINT;
         });
 
         return;

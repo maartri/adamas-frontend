@@ -17,6 +17,14 @@ export class ListService {
         public auth: AuthService
     ) { }
 
+    getaccountinghistory(id: string):Observable<any>{
+        return this.auth.get(`${list}/accounting-history/${id}`);
+    }
+
+    getaccountingprofile(id: string):Observable<any>{
+        return this.auth.get(`${list}/accounting-profile/${id}`);
+    }
+
     deletecasestaff(id: any):Observable<any>{
         return this.auth.delete(`${list}/case-staff/${id}`);
     }

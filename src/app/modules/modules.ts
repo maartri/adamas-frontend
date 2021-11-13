@@ -775,7 +775,8 @@ export interface Filters{
     includeArchivedNotes?: boolean,
     display?: number,
     startDate?: Date,
-    endDate?: Date
+    endDate?: Date,
+    type?:string
 }
 
 export interface CallProcedure {

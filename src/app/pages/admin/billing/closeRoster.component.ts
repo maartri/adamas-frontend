@@ -215,7 +215,6 @@ export class CloseRosterComponent implements OnInit {
     });
   }
 
-
   fetchID(index: number): void {
     if (index == 1) {
       this.BlockFunded = true;

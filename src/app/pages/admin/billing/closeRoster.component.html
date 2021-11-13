@@ -19,26 +19,26 @@
                             <label for="Name" style="margin-top: 5px; font-size: 11pt;"> Block Funded </label>
                         </div>
                         <div nz-col nzSpan="1" style="text-align: center;">
-                            <label nz-checkbox formControlName="chkBlockFunded" style="margin-top: 5px;"></label>
+                            <label nz-checkbox [(ngModel)]="BlockFunded" (ngModelChange)="log($event,11)" [ngModelOptions]="{standalone: true}" style="margin-top: 5px;"></label>
                         </div>
                         <div nz-col nzSpan="4" class="text-right">
                             <label for="Name" style="margin-top: 5px; font-size: 11pt;"> Individual Packages </label>
                         </div>
                         <div nz-col nzSpan="1" style="text-align: center;">
-                            <label nz-checkbox formControlName="chkIndividualPackages" style="margin-top: 5px;"></label>
+                            <label nz-checkbox [(ngModel)]="IndividualPackages" (ngModelChange)="log($event,12)" [ngModelOptions]="{standalone: true}" style="margin-top: 5px;"></label>
                         </div>
                         <div nz-col nzSpan="4" class="text-right">
                             <label for="Name" style="margin-top: 5px; font-size: 11pt;"> NON CDC Packages </label>
                         </div>
                         <div nz-col nzSpan="1" style="text-align: center;">
-                            <label nz-checkbox formControlName="chkNonCDCPackages" style="margin-top: 5px;"></label>
+                            <label nz-checkbox [(ngModel)]="NonCDCPackages" (ngModelChange)="log($event,13)" [ngModelOptions]="{standalone: true}" style="margin-top: 5px;"></label>
                         </div>
                         <div nz-col nzSpan="4" class="text-right">
                             <label for="Name" style="margin-top: 5px; font-size: 11pt;"> CDC Packages </label>
                         </div>
                         <div nz-col nzSpan="1" style="text-align: center;">
-                            <label nz-checkbox formControlName="chkCDCPackages" style="margin-top: 5px;"></label>
-                        </div>
+                            <label nz-checkbox [(ngModel)]="CDCPackages" (ngModelChange)="log($event,14)" [ngModelOptions]="{standalone: true}" style="margin-top: 5px;"></label>
+                        </div> 
                     </div>
 
                     <nz-divider style="margin-top: 1px; margin-bottom: 1px;" nzText="" nzOrientation="left">
@@ -121,7 +121,7 @@
                                                         <nz-checkbox-wrapper style="width: 100%;"
                                                             (nzOnChange)="log($event,2)">
                                                             <div nz-row *ngFor="let list of programList; let i = index">
-                                                                <label nz-checkbox [nzValue]="list.description"
+                                                                <label nz-checkbox [nzValue]="list.title"
                                                                     [(ngModel)]="list.checked"
                                                                     [ngModelOptions]="{standalone: true}">{{
                                                                     list.title }}</label>
@@ -141,7 +141,7 @@
                             <p style="margin: 0px;"></p>
                         </div>
                         <div nz-col nzSpan="2">
-                            <button nz-button nzType="primary"
+                            <button nz-button nzType="primary" (click)="closeRosterPeriod()"
                                 style="font-size: 14pt; margin-top: 10px; height: 2.4pc; width: 8pc; float: right;"> Save </button>
                         </div>
                     </div>

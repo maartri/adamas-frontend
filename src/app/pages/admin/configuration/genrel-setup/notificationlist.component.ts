@@ -201,6 +201,11 @@ export class NotificationlistComponent implements OnInit {
     
     handleCancel() {
       this.modalOpen = false;
+      this.isUpdate  = false;
+      this.staffList.forEach(x => {
+        x.checked = false;
+      });
+      this.selectedStaff = [];
     }
     updateAllCheckedFilters(filter: any): void {
       this.selectedStaff = [];
@@ -270,11 +275,9 @@ export class NotificationlistComponent implements OnInit {
           this.globalS.sToast('Success', 'Select Atleast One Staff');
           return false;
         }
-        if (flag)
+     
         this.globalS.sToast('Success', 'Saved successful');     
-        else
-        this.globalS.sToast('Success', 'Something Went Wrong Try Again');
-
+        
         this.loadData();
         this.postLoading = false;          
         this.handleCancel();

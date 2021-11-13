@@ -2544,7 +2544,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   if(this.option == RECIPIENT_OPTION.DISCHARGE)
                   {
                     // this.populateNotificationDetails();
-                    this.dischargeReason$ = this.listS.getlist(`SELECT DISTINCT Description, HACCCode, RecordNumber FROM DataDomains WHERE Domain = 'REASONCESSSERVICE'`);
+                    //, HACCCode, RecordNumber
+                    this.dischargeReason$ = this.listS.getlist(`SELECT Description FROM DataDomains WHERE Domain = 'REASONCESSSERVICE' Group By Description`);
                   }
                   
                   if(this.option == RECIPIENT_OPTION.ITEM)

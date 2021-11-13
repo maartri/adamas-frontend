@@ -87,7 +87,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   contactsArray: Array<any> = [];
   addressArray: Array<any> = [];
   caseStaffArray: Array<any> = [];
-
+  activePrograms: Array<any> = [];
   years: Array<string> = [];
   months: Array<string> = [];
   days: Array<string> = [];
@@ -401,6 +401,12 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
           this.user.addresses = this.addressBuilder(data[0]);
           this.user.contacts = this.contactBuilder(data[1]);
           this.user.casestaff = data[2];
+          
+          var arr111 = [];
+          
+          this.activePrograms = (data[3] == null) ? arr111 : data[3],
+
+
 
           this.detectChanges();
 
@@ -520,7 +526,8 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     return forkJoin([
       this.clientS.getaddress(code),
       this.clientS.getcontacts(code),
-      this.timeS.getcasestaff(code)
+      this.timeS.getcasestaff(code),
+      this.listS.getProfileActiveprogram(code)
     ]);
   }
 
@@ -1034,7 +1041,8 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
       this.listS.getlistcasemanagers(),
       this.listS.getserviceregion(),
       this.listS.getlistdisabilities(),
-      this.listS.getlistindigstatus()
+      this.listS.getlistindigstatus(),
+      
     ]).subscribe(data=> {
       this.dropDowns = {
         branchesArr: data[0],
@@ -1044,7 +1052,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
         managerArr: data[4],
         serviceRegionArr: data[5],
         disabilitiesArr: data[6],
-        indigenousArr: data[7]
+        indigenousArr: data[7],
       }
     });
 
@@ -1053,8 +1061,11 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   POPULATE_CASE_STAFF(){
     this.current = 0;
     this.caseStaffGroup.reset();
+    
     this.coordinator$ = this.listS.getcasestafflist(this.innerValue.id);
-    this.programs$ = this.listS.getcasestaffprograms();
+    // this.programs$ = this.listS.getcasestaffprograms();
+    this.programs$ = this.timeS.getprogrampackages(this.user.uniqueID);
+    
   }
 
   POPULATE_DATE_DROPDOWNS() {

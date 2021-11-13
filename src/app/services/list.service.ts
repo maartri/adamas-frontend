@@ -704,7 +704,10 @@ export class ListService {
     getintakeprogram(personID: string): Observable<any>{
         return this.auth.get(`${list}/intake/services/programs/${personID}`)
     }
-
+    getProfileActiveprogram(personID: string): Observable<any>{
+        return this.auth.get(`${list}/peronal/active/programs/${personID}`)
+    }
+    
     getintakeactivity(personID: string, program: string, date: string): Observable<any>{
         return this.auth.get(`${list}/intake/activity/${personID}/${program}/${date}`)
     }

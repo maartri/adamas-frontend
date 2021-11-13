@@ -237,6 +237,10 @@ export class FollowupComponent implements OnInit {
     handleCancel() {
       this.modalOpen = false;
       this.isUpdate  = false;
+      this.selectedStaff = [];
+      this.staffList.forEach(x => {
+        x.checked = false;
+      });
     }
     pre(): void {
       this.current -= 1;

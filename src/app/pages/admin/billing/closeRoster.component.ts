@@ -325,6 +325,7 @@ export class CloseRosterComponent implements OnInit {
       this.dtpEndDate = this.inputForm.get('dtpEndDate').value;
       // this.dtpEndDate = formatDate(this.dtpEndDate, 'MM-dd-yyyy','en_US');
 
+      //this code is to close roster using direct query
       // let sql = "UPDATE HumanResourceTypes set CloseDate = '"+this.dtpEndDate+"' WHERE [NAME] IN ('"+this.selectedPrograms+"') AND [TYPE] IN ('"+this.selectedFunding+"') AND CloseDate <= '"+this.dtpEndDate+"'"; 
       // // console.log(sql);
       // this.menuS.updatUDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{        

@@ -2084,8 +2084,7 @@ export class AddQuoteComponent implements OnInit {
             // this.GENERATE_QUOTE_LINE();
             // this.CHECKACCEPTCHARGES();
         } else {
-            console.log(this.quoteLines)
-            console.log(this.quoteLines.findIndex(x => x.mainGroup === 'ADMIN-DEFAULT'));
+            this.quoteLines = [...this.quoteLines.filter(x => x.mainGroup !== 'ADMIN-DEFAULT')]
         }
     }
 

@@ -867,6 +867,9 @@ export class ListService {
     Getrptsettings_vehicles(): Observable<any>{        
         return this.auth.get(`${list}/settings_vehicles`)
     }
+    GetGroupMeals(): Observable<any>{        
+        return this.auth.get(`${list}/group-meals-runsheet`)
+    }
 
 
 

@@ -1,14 +1,17 @@
-import { Component, OnInit, OnDestroy, Input, AfterViewInit} from '@angular/core'
+import { Component, OnInit, OnDestroy, Input, AfterViewInit,ChangeDetectorRef,} from '@angular/core'
 import { Router } from '@angular/router';
 import format from 'date-fns/format';
 import { FormBuilder, FormGroup, Validators, FormControl, FormArray, } from '@angular/forms';
 import {  NzModalService } from 'ng-zorro-antd/modal';
-import { ListService} from '@services/index';
+import { ListService,PrintService,GlobalService} from '@services/index';
 import { DomSanitizer } from '@angular/platform-browser';
 import { HttpClient, HttpHeaders, HttpParams, } from '@angular/common/http';
 
 //Sets defaults of Criteria Model
 const inputFormDefault = {
+    Rptformat : ['Format Run Sheet'],
+    displayby : ['DISPLAY BY STAFF CODE'],
+
     branchesArr: [[]],
     allBranches: [true],
 
@@ -31,12 +34,24 @@ const inputFormDefault = {
     allPackages: [true],
 
     BatchNoArr: [[]],
+
+    MealGroups : [[]],
+    allGroups : [true],
+
+    staffteamArr: [[]],
+    allStaffTeams: [true],
+
+    staffgroupsArr: [[]],
+    allstfGroups: [true],
    
 
     filterArr : ['Invoiced Only'],
 
     single_input_number: [1],
     AgingCycles: [30],
+
+    frm_formats : false,
+    frm_display : false,
       
      
 }
@@ -101,7 +116,10 @@ const inputFormDefault = {
 export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
     
     // drawerVisible: boolean = false;
-    
+    bodystyle:object;
+    tocken :any;
+    frm_formats : boolean;
+    frm_display : boolean;
     tabset = false;
     isVisibleTop =false;
     Single_input_integer = false; 
@@ -131,6 +149,9 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
     enddate: Date;
     startdate: Date;
 
+    Rptformat : Array<any> = [];
+    displayby : Array<any> = [];
+
     branchesArr: Array<any> = [];    
     managersArr: Array<any> = [];
     recipientArr: Array<any> = [];
@@ -139,6 +160,10 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
     AccountsArr : Array<any> = [];
     PackagesArr : Array<any> = [];
     BatchNoArr : Array<any> = [];
+    MealGroups : Array<any> = [];
+    staffteamArr : Array<any> = [];
+    staffgroupsArr: Array<any> = [];
+    
     
 
     filterArr: Array<any> = [];
@@ -146,7 +171,9 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
 
     frm_Recipients: boolean;
     frm_Managers: boolean;
+    frm_StaffTeam : boolean;
     frm_Branches: boolean;
+    frm_group :boolean;
     frm_Date: boolean;
     frm_Categories: boolean;
     frm_Programs: boolean;
@@ -162,6 +189,8 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
     options : boolean;
 
     s_CoordinatorSQL: string;
+    s_StfTeamSQL : string;
+    s_StfGroupSQL : string;
     s_BranchSQL: string; 
     s_ProgramSQL: string;
     s_ManagersSQL: string;
@@ -186,13 +215,16 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
         private sanitizer: DomSanitizer,
         private modalService: NzModalService,
         private listS: ListService,
+        private printS: PrintService,
+        private cd: ChangeDetectorRef,
+        private GlobalS:GlobalService,
         )
     {
         
     }
     handleCancelTop(): void {
         this.isVisibleTop = false;          
-      //  this.drawerVisible = false;
+        this.drawerVisible = false;
         //MUFEED's START
         this.Single_input_integer = false; //modal 
         this.isVisible = false;             //modal
@@ -489,7 +521,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
     ngOnInit(): void {
 
        
-
+        this.tocken = this.GlobalS.pickedMember ? this.GlobalS.GETPICKEDMEMBERDATA(this.GlobalS.GETPICKEDMEMBERDATA):this.GlobalS.decode();
         this.inputForm = this.fb.group(inputFormDefault);
 
         var date = new Date();
@@ -509,8 +541,33 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
             this.inputForm.patchValue({
                 managersArr: []
             });
+        }); //
+        this.inputForm.get('allPrograms').valueChanges.subscribe(data => {
+            this.inputForm.patchValue({
+                programsArr: []
+            });
+        });
+        this.inputForm.get('allServiceRegion').valueChanges.subscribe(data => {
+            this.inputForm.patchValue({
+                serviceRegionsArr: []
+            });
         });
 
+        this.inputForm.get('allGroups').valueChanges.subscribe(data => {
+            this.inputForm.patchValue({
+                MealGroups: []
+            });
+        });
+        this.inputForm.get('allStaffTeams').valueChanges.subscribe(data => {
+            this.inputForm.patchValue({
+                staffteamArr: []
+            });
+        });        
+    this.inputForm.get('allstfGroups').valueChanges.subscribe(data => {
+        this.inputForm.patchValue({
+            staffgroupsArr: []
+        });
+    });
         this.inputForm.get('allRecipients').valueChanges.subscribe(data => {
             this.inputForm.patchValue({
                 recipientArr: []
@@ -541,10 +598,21 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
             includeInactive: false
         }).subscribe(x => this.managersArr = x)
 
+        this.listS.getreportcriterialist({
+            listType: 'PROGRAMS',
+            includeInactive:false
+        }).subscribe(x => this.programsArr = x);
+
         this.listS.GetRecipientAll().subscribe(x => this.recipientArr = x);
         this.listS.GetRecipientActive().subscribe(x => this.AccountsArr = x);
         this.listS.Getpackages().subscribe(x => this.PackagesArr = x);
         this.listS.GetBatchNo().subscribe(x => this.BatchNoArr = x);
+        this.listS.GetGroupMeals().subscribe(x => this.MealGroups = x);
+        this.listS.getliststaffteam().subscribe(x => this.staffteamArr = x)
+        this.listS.getliststaffgroup().subscribe(x => this.staffgroupsArr = x)
+        this.listS.getserviceregion().subscribe(x => this.serviceRegionsArr = x)
+        
+        //
    
    
    
@@ -581,7 +649,9 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
         this.frm_Date = false;        
         this.frm_Recipients = false;
         this.frm_Branches = false;
+        this.frm_group = false;
         this.frm_Managers = false;
+        this.frm_StaffTeam = false;
         this.frm_Categories= false;
         this.frm_Programs = false;
         this.selection = false;
@@ -664,25 +734,92 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
             
                 break;
             case "medicine-claim-report":
+                this.ModalName = "CDC MEDICINE CLAIM REPORT";                                                       
+                
+                this.frm_BatchNo = true;
+                this.frm_Branches = true;
+                this.frm_Packages = true;
+                this.frm_Categories = true;                                                
+                this.isVisibleTop = true;
               
             
                 break;
             case "print-staff-rosters":
+                this.ModalName = "PRINT STAFF ROSTER";                                                       
+                this.frm_Date = true;
+                this.frm_Branches = true;
+                this.frm_Packages = true;
+                this.frm_Categories = true;
+                this.frm_Programs = true;
+                this.frm_Managers = true;
+                
+                this.isVisibleTop = true;
             
                 break;
             case "print-location-rosters":
+                this.ModalName = "PRINT ROSTER LOCATION";                                                       
+                this.frm_Date = true;
+                //this.frm_locations = true;
+                this.frm_Branches = true;                
+                this.frm_Programs = true;
+                this.frm_Categories = true;
+                this.frm_Managers = true;
+                this.frm_StaffTeam = true;
             
+                this.isVisibleTop = true;
                 break;
             case "print-group-activity-rosters":
+                this.ModalName = "PRINT GROUP ACTIVITY ROSTER";                                                       
+                this.frm_Date = true;
+                this.frm_group = true;
+                this.frm_Branches = true;                
+                this.frm_Programs = true;
+                this.frm_Categories = true;
+                this.frm_Managers = true;
+                this.frm_StaffTeam = true;
+
+                this.isVisibleTop = true;
             
                 break;
             case "print-transport-run-sheets":
+            this.ModalName = "PRINT TRANSPORT RUNSHEET";                                                       
+                this.frm_Date = true;
+                //this.frm_vehicles = true;
+                this.frm_Branches = true;                
+                this.frm_Programs = true;
+                this.frm_Categories = true;
+                this.frm_Managers = true;
+                this.frm_StaffTeam = true;
+                this.isVisibleTop = true;
             
                 break;
             case "print-meal-run-sheets":
+                this.ModalName = "PRINT MEAL RUNSHEET";                                                       
+                this.frm_Date = true;
+                this.frm_group = true;
+                this.frm_Branches = true;                
+                this.frm_Programs = true;
+                this.frm_Categories = true;
+                this.frm_Managers = true;
+                this.displayby = ['DISPLAY BY STAFF CODE','DISPLAY BY RECIPIENT CODE']
+                this.Rptformat = ['Format Run Sheet','Format Meal Plan','Format Pack Sheet']; 
+                this.frm_StaffTeam = true;
+                this.frm_formats = true;
+                this.frm_display = true;
             
+                this.isVisibleTop = true;
                 break;
             case "print-staff-rosters":
+                this.ModalName = "PRINT JOB SHEET";                                                       
+                this.frm_Date = true;
+                //this.frm_staff = true;
+                this.frm_Branches = true;                
+                this.frm_Programs = true;
+                this.frm_Categories = true;
+                this.frm_Managers = true;
+                this.frm_StaffTeam = true;
+                this.isVisibleTop = true;
+
             
                 break;
             case "print-invoices":
@@ -756,6 +893,8 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
             
             endate = format(new Date(date.getFullYear(), date.getMonth() + 1, 0), 'dd/MM/yyyy');
         }
+      
+
         var s_Branches = this.inputForm.value.branchesArr;
         var s_Managers = this.inputForm.value.managersArr;        
         var s_Programs = this.inputForm.value.programsArr;        
@@ -764,6 +903,9 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
         var s_Accounts = this.inputForm.value.AccountsArr;
         var s_Package = this.inputForm.value.PackagesArr;
         var s_Batch = this.inputForm.value.BatchNoArr;
+        var s_StaffTeam = this.inputForm.value.staffteamArr;
+        var s_StfGroup = this.inputForm.value.staffgroupsArr;
+        var s_Groups = this.inputForm.value.MealGroups;
 
         switch (this.btnid) {
             case "ndia-package-statement":
@@ -794,28 +936,33 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
                 this.CDCLeaveVerification(strdate, endate)
             
                 break;
-        /*    case "medicine-claim-report":
-              
-            
+            case "medicine-claim-report":
+                this.medicareclaim();
+                          
                 break;
             case "print-staff-rosters":
+                this.staffroster();
             
                 break;
             case "print-location-rosters":
-            
+            this.locationrosters();
                 break;
             case "print-group-activity-rosters":
+                this.groupActivityRoster();
             
                 break;
             case "print-transport-run-sheets":
+                this.transportrunsheet();
             
                 break;
             case "print-meal-run-sheets":
-            
+                this.mealrunsheet(s_Groups,s_Branches,s_Programs,s_StfGroup,s_Managers,s_StaffTeam,strdate, endate);
                 break;
+      
             case "print-staff-rosters":
+                this.staffjoobsheet();
             
-                break; */
+                break; 
             case "print-invoices":
                                          
             break;
@@ -934,33 +1081,23 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
+                "userid": this.tocken.user,
 
 
             }
         }
         this.loading = true;
+        this.drawerVisible = true;
 
-        const headerDict = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        }
-
-        const requestOptions = {
-            headers: new HttpHeaders(headerDict)
-        };
-
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-            .subscribe((blob: any) => {
-                console.log(blob);
-
-                let _blob: Blob = blob;
-
-                let fileURL = URL.createObjectURL(_blob);
-                this.pdfTitle = "NDIA Package Statement.pdf"
-                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                this.loading = false;
-
-            }, err => {
+        this.printS.print(data).subscribe((blob: any) => {
+            this.pdfTitle = "NDIA Package Statement.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
                 console.log(err);
             });
     }
@@ -1020,33 +1157,23 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
+                "userid": this.tocken.user,
 
 
             }
         }
         this.loading = true;
+        
 
-        const headerDict = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        }
-
-        const requestOptions = {
-            headers: new HttpHeaders(headerDict)
-        };
-
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-            .subscribe((blob: any) => {
-                console.log(blob);
-
-                let _blob: Blob = blob;
-
-                let fileURL = URL.createObjectURL(_blob);
-                this.pdfTitle = "NDIA UnClaimed Items.pdf"
-                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                this.loading = false;
-
-            }, err => {
+        this.printS.print(data).subscribe((blob: any) => {
+            this.pdfTitle = "NDIA UnClaimed Items.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
                 console.log(err);
             });
     }
@@ -1078,33 +1205,23 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
+                "userid": this.tocken.user,
 
 
             }
         }
         this.loading = true;
+        
 
-        const headerDict = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        }
-
-        const requestOptions = {
-            headers: new HttpHeaders(headerDict)
-        };
-
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-            .subscribe((blob: any) => {
-                console.log(blob);
-
-                let _blob: Blob = blob;
-
-                let fileURL = URL.createObjectURL(_blob);
-                this.pdfTitle = "NDIA Batch Register.pdf"
-                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                this.loading = false;
-
-            }, err => {
+        this.printS.print(data).subscribe((blob: any) => {
+            this.pdfTitle = "NDIA Batch Register.pdf"    
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
                 console.log(err);
             });
     }
@@ -1181,33 +1298,23 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
+                "userid": this.tocken.user,
 
 
             }
         }
         this.loading = true;
+        
 
-        const headerDict = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        }
-
-        const requestOptions = {
-            headers: new HttpHeaders(headerDict)
-        };
-
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-            .subscribe((blob: any) => {
-                console.log(blob);
-
-                let _blob: Blob = blob;
-
-                let fileURL = URL.createObjectURL(_blob);
-                this.pdfTitle = "CDC Fee Verification.pdf"
-                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                this.loading = false;
-
-            }, err => {
+        this.printS.print(data).subscribe((blob: any) => {
+            this.pdfTitle = "CDC Fee Verification.pdf"    
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
                 console.log(err);
             });
     }
@@ -1244,33 +1351,23 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
+                "userid": this.tocken.user,
 
 
             }
         }
         this.loading = true;
+        
 
-        const headerDict = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        }
-
-        const requestOptions = {
-            headers: new HttpHeaders(headerDict)
-        };
-
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-            .subscribe((blob: any) => {
-                console.log(blob);
-
-                let _blob: Blob = blob;
-
-                let fileURL = URL.createObjectURL(_blob);
-                this.pdfTitle = "CDC Leave Verification.pdf"
-                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                this.loading = false;
-
-            }, err => {
+        this.printS.print(data).subscribe((blob: any) => {
+            this.pdfTitle = "CDC Leave Verification.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
                 console.log(err);
             });
     }
@@ -1340,33 +1437,23 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
+                "userid": this.tocken.user,
 
 
             }
         }
         this.loading = true;
+        
 
-        const headerDict = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        }
-
-        const requestOptions = {
-            headers: new HttpHeaders(headerDict)
-        };
-
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-            .subscribe((blob: any) => {
-                console.log(blob);
-
-                let _blob: Blob = blob;
-
-                let fileURL = URL.createObjectURL(_blob);
-                this.pdfTitle = "CDC Claim Verification.pdf"
-                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                this.loading = false;
-
-            }, err => {
+        this.printS.print(data).subscribe((blob: any) => {
+            this.pdfTitle = "CDC Claim Verification.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
                 console.log(err);
             });
     }
@@ -1419,7 +1506,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
 
         console.log(fQuery)
 
-        //this.drawerVisible = true;
+        this.drawerVisible = true;
 
         const data = {
             "template": { "_id": "FMdcJXxcL2qmptzt" },
@@ -1428,36 +1515,397 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
+                "userid": this.tocken.user,
 
 
             }
         }
         this.loading = true;
+        
 
-        const headerDict = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        }
-
-        const requestOptions = {
-            headers: new HttpHeaders(headerDict)
-        };
-
-        this.http.post(this.rpthttp, JSON.stringify(data), { headers: requestOptions.headers, responseType: 'blob' })
-            .subscribe((blob: any) => {
-                console.log(blob);
-
-                let _blob: Blob = blob;
-
-                let fileURL = URL.createObjectURL(_blob);
-                this.pdfTitle = "CDC Package Statement.pdf"
-                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                this.loading = false;
-
-            }, err => {
+        this.printS.print(data).subscribe((blob: any) => {
+            this.pdfTitle = "CDC Package Statement.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
                 console.log(err);
             });
     }
+    staffroster(){
+        var fQuery = " SELECT [Roster].[RecordNo], [Roster].[Carer Code], [Roster].[Date], [Roster].[YearNo], [Roster].[MonthNo], [Roster].[Dayno], [Roster].[Start Time], [Roster].[Duration] As FiveMinBlocks,Convert(nvarchar,DateAdd(minute,([Roster].[Duration] * 5),[Roster].[Start Time]), 108) as [End Time],Datename(weekday,[Date]) As [Day], [Roster].[CostUnit], [Roster].[Client Code], [Program] AS Program, [Roster].[Service Type], [Roster].[Type], [Roster].[Service Description], [Roster].[ServiceSetting], [Roster].[RecordNo] AS TimeLogId, [Roster].[Notes] as RosterNotes, [Roster].[Client Code] + ' ' + [Recipients].[FirstName] AS ClientCode_FirstName, [ItemTypes].[RosterGroup], [ItemTypes].[MinorGroup], [ItemTypes].[InfoOnly], CASE WHEN [ItemTypes].[InfoOnly] = 1 THEN 0 ELSE [Roster].[Duration] * 5 END As DurationInMinutes, [Staff].[FirstName], [Staff].[LastName], [Staff].[STF_CODE], [Staff].[StaffGroup], [Staff].[PAN_Manager], [Staff].[StaffTeam], [Recipients].[SpecialConsiderations], [Recipients].[FirstName] AS rFirstName, [Recipients].[AgencyIDReportingCode], [Recipients].[AgencyDefinedGroup], [Recipients].[Branch], [Recipients].[BillTo] as DebtorCode, [Roster].[BillQTY] * [Roster].[Unit Bill Rate] AS TotalFare, [Recipients].[UniqueID], [Recipients].[Careplanchange], [Recipients].[Careplanchange], CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS Address, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS Contact FROM [Roster] INNER JOIN [Staff] ON [Roster].[Carer Code] = [Staff].AccountNo INNER JOIN [Recipients] ON [Roster].[Client Code] = [Recipients].AccountNo INNER JOIN [ItemTypes] ON [Roster].[Service Type] = [ItemTypes].Title INNER JOIN [HumanResourceTypes] pr ON [Roster].[Program] = pr.Name LEFT JOIN (SELECT PERSONID, Suburb,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE '' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE '' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE '' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE '' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = Recipients.UniqueID LEFT JOIN (SELECT TOP 1 PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE '' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE '' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE '' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE '' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = Recipients.UniqueID LEFT JOIN (SELECT PersonID,  CASE WHEN Detail <> '' THEN Detail ELSE '' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = Recipients.UniqueID LEFT JOIN (SELECT TOP 1 PersonID,  CASE WHEN Detail <> '' THEN Detail ELSE '' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = Recipients.UniqueID WHERE [Roster].[Type] <> 13 AND[Roster].[Type] <> 9  AND  ([Roster].[Date] BETWEEN '2019/08/02' AND '2019/08/15') AND ([Roster].[Start Time] BETWEEN '00:00' AND '24:00') AND [Roster].[Carer Code] > '!z'  ORDER BY Roster.[Carer Code], Roster.Date,  Roster.[Start Time], Roster.[Client Code] , Roster.Type "
+        var lblcriteria;
+
+
+
+        const data = {
+            "template": { "_id": "wE05f9PtCWLd67G8" },
+            "options": {
+                "reports": { "save": false },
+
+                "sql": fQuery,
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
+
+
+            }
+        }
+        this.loading = true;
+        this.drawerVisible = true;
+        
+
+        this.printS.print(data).subscribe((blob: any) => {
+            this.pdfTitle = "Staff Roster.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+                console.log(err);
+            });
+
+    }     
+    mealrunsheet(group,branch,program,jobcategory,manager,staffteam,startdate,enddate){
+        //var fQuery = " SELECT [Roster].[Carer Code], [Roster].[Date], [Roster].[YearNo], [Roster].[MonthNo], [Roster].[Dayno], [Roster].[Start Time], [Roster].[Duration] As FiveMinBlocks, [Roster].[Duration] * 5 As DurationInMinutes, [Roster].[CostUnit], [Roster].[BillQTY], [Roster].[Unit Bill Rate] AS Charge, (SELECT Sum(ISNULL(BillQty,0) * ISNULL([Unit Bill Rate], 0)) FROM Roster WHERE ItemTypes.MINORGROUP = 'MEALS' AND  ([Roster].[Date] BETWEEN '2021/11/13' AND '2021/11/13') AND ([Roster].[Start Time] BETWEEN '00:00' AND '24:00') AND [Roster].[Carer Code] > '!z' ) AS TotalCharge , [Roster].[Client Code], [Roster].[Program], [Roster].[Service Type], [Roster].[Type], [Roster].[Service Description], [Roster].[ServiceSetting], [Roster].[Notes], [Staff].[FirstName], [Staff].[LastName], [Staff].[STF_CODE], [Staff].[StaffGroup], [Recipients].[SpecialConsiderations], [Recipients].[FirstName], CASE WHEN [Recipients].[FirstName] <> '' THEN [Recipients].[Surname/Organisation] + ', ' + [Recipients].[FirstName] ELSE [Recipients].[Surname/Organisation]END AS [RecipientName], [Recipients].[AgencyIDReportingCode], [Recipients].[AgencyDefinedGroup], [Recipients].[Careplanchange], [Recipients].[Branch] FROM [Roster] INNER JOIN [Staff] ON [Roster].[Carer Code] = [Staff].AccountNo INNER JOIN [Recipients] ON [Roster].[Client Code] = [Recipients].AccountNo INNER JOIN [ItemTypes] ON [Roster].[Service Type] = [ItemTypes].Title WHERE  ItemTypes.MINORGROUP = 'MEALS'  AND  ([Roster].[Date] BETWEEN '2021/03/01' AND '2021/11/13') AND ([Roster].[Start Time] BETWEEN '00:00' AND '24:00') "
+        //AND [Roster].[Carer Code] > '!z'  
+        //ORDER BY Roster.[ServiceSetting], Roster.Date,  Roster.[Start Time], Roster.[Carer Code] , Roster.[Service Type] "
+        var lblcriteria;
+        var template_id;
+        let temp1 = new Date (startdate);
+        let temp2 = new Date (enddate);
+        var  tempsdate =  format(temp1, 'yyyy/MM/dd')
+        var  tempedate = format(new Date (startdate), 'yyyy/MM/dd')
+
+        var fQuery = " SELECT [Roster].[Carer Code], [Roster].[Date], [Roster].[YearNo], [Roster].[MonthNo], [Roster].[Dayno], [Roster].[Start Time], [Roster].[Duration] As FiveMinBlocks, [Roster].[Duration] * 5 As DurationInMinutes, [Roster].[CostUnit], [Roster].[BillQTY], [Roster].[Unit Bill Rate] AS Charge, (SELECT Sum(ISNULL(BillQty,0) * ISNULL([Unit Bill Rate], 0)) FROM Roster WHERE ItemTypes.MINORGROUP = 'MEALS' " 
+         fQuery =  fQuery + " AND  ([Roster].[Date] BETWEEN " + tempsdate + " AND " + tempedate +") AND ([Roster].[Start Time] BETWEEN '00:00' AND '24:00')  "
+        //" AND (([Recipients].[Branch] = 'PERTH')) AND (([Roster].[ServiceSetting] = 'MEALS')) AND (([Roster].[Program] = 'AADMIN') OR ([Roster].[Program] = 'ADMIN TRAINING/EDUC - 19500') OR ([Roster].[Program] = 'CBI-78001')
+        // 
+          
+/*        //branch, manager, region, , startdate, enddate
+
+
+            AND  ([Roster].[Date] BETWEEN '2021/01/13' AND '2021/11/13') 
+            AND ([Roster].[Start Time] BETWEEN '00:00' AND '24:00') 
+            AND [Roster].[Client Code] > '!z'  
+            AND (([Recipients].[Branch] = 'PERTH')) 
+            AND (([Roster].[ServiceSetting] = 'MEALS')) 
+            AND (([Roster].[Program] = 'AADMIN') OR ([Roster].[Program] = 'ADMIN TRAINING/EDUC - 19500') OR ([Roster].[Program] = 'CBI-78001')) 
+        
+            ORDER BY Roster.[ServiceSetting], Roster.Date,  Roster.[Start Time], Roster.[Client Code] , Roster.[Service Type]
+            */
+                     
+        fQuery = fQuery + " AND ( [Roster].[Client Code] > '!z' "     
+        if (branch != "") {
+            this.s_BranchSQL = "[Recipients].[Branch] in ('" + branch.join("','") + "')";
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL };
+        }
+        if (manager != "") {
+            this.s_CoordinatorSQL = "[Recipients].[RECIPIENT_CoOrdinator] in ('" + manager.join("','") + "')";
+            if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+        }
+        if (program != "") {
+            this.s_ProgramSQL = " ([Roster].[Program] in ('" + program.join("','") + "'))";
+            if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+        }
+        if (jobcategory != "") {
+            this.s_StfGroupSQL = "( StaffGroup in ('" + jobcategory.join("','") + "'))";
+            if (this.s_StfGroupSQL != "") { fQuery = fQuery + " AND " + this.s_StfGroupSQL };
+        }
+        if (staffteam != "") {
+            this.s_StfTeamSQL = "([STAFFTEAM] in ('" + staffteam.join("','") + "'))";
+            if (this.s_StfTeamSQL != "") { fQuery = fQuery + " AND " + this.s_StfTeamSQL };
+        }
+        if (group != "") {
+            this.s_StfTeamSQL = "([STAFFTEAM] in ('" + staffteam.join("','") + "'))";
+            if (this.s_StfTeamSQL != "") { fQuery = fQuery + " AND " + this.s_StfTeamSQL };
+        }
+
+        fQuery = fQuery + " ) ) AS TotalCharge , [Roster].[Client Code], [Roster].[Program], [Roster].[Service Type], [Roster].[Type], [Roster].[Service Description], [Roster].[ServiceSetting], [Roster].[Notes], [Staff].[FirstName], [Staff].[LastName], [Staff].[STF_CODE], [Staff].[StaffGroup], [Recipients].[SpecialConsiderations], [Recipients].[FirstName], CASE WHEN [Recipients].[FirstName] <> '' THEN [Recipients].[Surname/Organisation] + ', ' + [Recipients].[FirstName] ELSE [Recipients].[Surname/Organisation]END AS [RecipientName], [Recipients].[AgencyIDReportingCode], [Recipients].[AgencyDefinedGroup], [Recipients].[Careplanchange], [Recipients].[Branch] FROM [Roster] INNER JOIN [Staff] ON [Roster].[Carer Code] = [Staff].AccountNo INNER JOIN [Recipients] ON [Roster].[Client Code] = [Recipients].AccountNo INNER JOIN [ItemTypes] ON [Roster].[Service Type] = [ItemTypes].Title WHERE ItemTypes.MINORGROUP = 'MEALS' "
+
+        if (startdate != "" || enddate != "") {
+            this.s_DateSQL = "  [Roster].[Date] BETWEEN '" + tempsdate + ("'AND'") + tempedate + "'";
+            if (this.s_DateSQL != "") { fQuery = fQuery + " AND " + this.s_DateSQL };
+        }   
+           
+        if (branch != "") {
+            this.s_BranchSQL = "[Recipients].[Branch] in ('" + branch.join("','") + "')";
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL };
+        }
+        if (manager != "") {
+            this.s_CoordinatorSQL = "[Recipients].[RECIPIENT_CoOrdinator] in ('" + manager.join("','") + "')";
+            if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+        }
+        if (program != "") {
+            this.s_ProgramSQL = " ([Roster].[Program] in ('" + program.join("','") + "'))";
+            if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+        }
+        if (jobcategory != "") {
+            this.s_StfGroupSQL = "( StaffGroup in ('" + jobcategory.join("','") + "'))";
+            if (this.s_StfGroupSQL != "") { fQuery = fQuery + " AND " + this.s_StfGroupSQL };
+        }
+        if (staffteam != "") {
+            this.s_StfTeamSQL = "([STAFFTEAM] in ('" + staffteam.join("','") + "'))";
+            if (this.s_StfTeamSQL != "") { fQuery = fQuery + " AND " + this.s_StfTeamSQL };
+        }
+        if (group != "") {
+            this.s_StfTeamSQL = "([STAFFTEAM] in ('" + staffteam.join("','") + "'))";
+            if (this.s_StfTeamSQL != "") { fQuery = fQuery + " AND " + this.s_StfTeamSQL };
+        }
+
+
+
+
+
+
+
+        
+        if (this.inputForm.value.displayby.toString() == 'DISPLAY BY RECIPIENT CODE') {
+            var Title = "FOR RECIPIENT"                                     
+            fQuery = fQuery + " ORDER BY Roster.[ServiceSetting], Roster.Date,  Roster.[Start Time], Roster.[Client Code] , Roster.[Service Type] "        
+        }else {
+            Title = "FOR STAFF"
+            fQuery = fQuery + " ORDER BY Roster.[ServiceSetting], Roster.Date,  Roster.[Start Time], Roster.[Carer Code] , Roster.[Service Type] "
+        }
+        
+        console.log(fQuery)
+        
+        switch (this.inputForm.value.Rptformat.toString()) {            
+            case 'Format Run Sheet': 
+                this.pdfTitle = "Run Sheet.pdf"
+                template_id = "YT596enOno44LTQR"
+                     
+                break;
+            case 'Format Meal Plan':
+                this.pdfTitle = "Meal Plan.pdf"
+                template_id = "C7ejywKAsIDA10jQ"
+                
+                break;
+            case 'Format Pack Sheet':
+                this.pdfTitle = "Pack Sheet.pdf"
+                template_id = "3fcEJt86rAvucSeP"
+                
+                break;
+                        
+            default:
+                this.pdfTitle = "Meal RunSheet.pdf"
+                template_id = "YT596enOno44LTQR"
+                break;
+        }
+
+        const data = {
+            "template": { "_id": template_id },
+            "options": {
+                "reports": { "save": false },
+
+                "sql": fQuery,
+                "Criteria": lblcriteria,
+                "TitleDisplay": Title,
+                "userid": this.tocken.user,
+
+
+            }
+        }
+        this.loading = true;
+        this.drawerVisible = true;
+        
+
+        this.printS.print(data).subscribe((blob: any) => {
+           
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+                console.log(err);
+            });
+
+    }    
+    transportrunsheet(){
+        var fQuery = " SELECT [Roster].[Carer Code], [Recipients].[BillTo] as DebtorCode, [Roster].[Date],Datename(weekday,[Date]) As [Day], [Roster].[YearNo], [Roster].[MonthNo], [Roster].[Dayno], [Roster].[Start Time], [Roster].[Duration] As FiveMinBlocks, [Roster].[Duration] * 5 As DurationInMinutes,Convert(nvarchar,DateAdd(minute,([Roster].[Duration] * 5),[Roster].[Start Time]), 108) as [End Time], [Roster].[BillQTY], [Roster].[Unit Bill Rate] AS Charge, [Roster].[BillQTY] * [Roster].[Unit Bill Rate] AS TotalFare, [Roster].[Unit Bill Rate] AS Charge, [Roster].[CostUnit], [Roster].[Client Code], [Roster].[Program], [Roster].[Service Type], [Roster].[Type], [Roster].[Service Description], [Roster].[ServiceSetting], [Roster].[Notes] as RosterNotes, [Roster].[ShiftName] as Driver, [Roster].[Time2], [Staff].[FirstName], [Staff].[LastName], [Staff].[STF_CODE], [Staff].[StaffGroup], [Recipients].[SpecialConsiderations], CASE WHEN [Recipients].[PreferredName] <> '' THEN [Recipients].[PreferredName] ELSE CASE WHEN [Recipients].[FirstName] <> '' THEN [Recipients].[FirstName] ELSE '' END END + ' ' + CASE WHEN [Recipients].[Surname/Organisation] <> '' THEN [Recipients].[Surname/Organisation] ELSE '' END AS RecipientName, [Recipients].[Surname/Organisation], [Recipients].[AgencyIDReportingCode], [Recipients].[AgencyDefinedGroup], [Recipients].[Careplanchange], [Recipients].[Mobility] AS Mobility, [Recipients].[Branch], CASE WHEN ISNULL([Recipients].[HideTransportFare], 0) = 0 THEN 'FALSE' ELSE 'TRUE' END AS ShowFare, TransportDetail.PickUpAddress1, TransportDetail.PickUpAddress2, TransportDetail.DropOffAddress2, TransportDetail.DropOffAddress1, TransportDetail.DropOffAddress3 AS RetVcl FROM [Roster] INNER JOIN [Staff] ON [Roster].[Carer Code] = [Staff].AccountNo INNER JOIN [Recipients] ON [Roster].[Client Code] = [Recipients].AccountNo LEFT OUTER JOIN TransportDetail ON Roster.RecordNo = TransportDetail.RosterID WHERE [Roster].[Type] = 10 AND  ([Roster].[Date] BETWEEN '2017/10/19' AND '2017/12/29') AND ([Roster].[Start Time] BETWEEN '00:00' AND '24:00') AND [Roster].[Carer Code] > '!z'  ORDER BY Roster.[ServiceSetting], Roster.Date,  Roster.[Start Time], Roster.[Carer Code] , Roster.Type "
+        var lblcriteria;
+
+
+
+
+        const data = {
+            "template": { "_id": "z9t6vX3nAjCeLHtc" },
+            "options": {
+                "reports": { "save": false },
+
+                "sql": fQuery,
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
+
+
+            }
+        }
+        this.loading = true;
+        this.drawerVisible = true;
+        
+
+        this.printS.print(data).subscribe((blob: any) => {
+            this.pdfTitle = "Transport RunSheet.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+                console.log(err);
+            });
+
+    }  
+    groupActivityRoster(){
+        var fQuery = " SELECT CASE WHEN [Roster].[Carer Code] = 'BOOKED' THEN '**UNFILLED SHIFT' ELSE [Roster].[Carer Code] END AS [Carer Code], [Roster].[Date], [Recipients].[BillTo] as DebtorCode, [Roster].[YearNo], [Roster].[MonthNo], [Roster].[Dayno], [Roster].[Start Time], [Roster].[Duration] As FiveMinBlocks, [Roster].[Duration] * 5 As DurationInMinutes,Convert(nvarchar,DateAdd(minute,([Roster].[Duration] * 5),[Roster].[Start Time]), 108) as [End Time], [Roster].[CostUnit], [Roster].[Client Code], [Roster].[Program], [Roster].[Service Type], [Roster].[Type], [Roster].[Service Description], [Roster].[ServiceSetting], [Roster].[Notes], [Recipients].[SpecialConsiderations], [Recipients].[FirstName], [Recipients].[AgencyIDReportingCode], [Recipients].[AgencyDefinedGroup], [Recipients].[Branch], [Recipients].[Careplanchange], [Roster].[BillQTY] * [Roster].[Unit Bill Rate] AS TotalFare, CASE WHEN ISNULL([Recipients].[HideTransportFare], 0) = 0 THEN 'FALSE' ELSE 'TRUE' END AS ShowFare, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS Address, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS Contact FROM [Roster] INNER JOIN [Recipients] ON [Roster].[Client Code] = [Recipients].AccountNo LEFT JOIN [Staff] ON [Roster].[Carer Code] = [Staff].AccountNo LEFT JOIN (SELECT PERSONID, Suburb,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE '' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE '' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE '' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE '' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = Recipients.UniqueID LEFT JOIN (SELECT TOP 1 PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE '' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE '' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE '' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE '' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = Recipients.UniqueID LEFT JOIN (SELECT PersonID,  CASE WHEN Detail <> '' THEN Detail ELSE '' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = Recipients.UniqueID LEFT JOIN (SELECT TOP 1 PersonID,  CASE WHEN Detail <> '' THEN Detail ELSE '' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = Recipients.UniqueID WHERE ([Roster].[Type] = 12) AND  ([Roster].[Date] BETWEEN '2017/10/22' AND '2017/10/27') AND ([Roster].[Start Time] BETWEEN '00:00' AND '24:00') AND [Roster].[Carer Code] > '!z'  ORDER BY Roster.[ServiceSetting], Roster.Date,  Roster.[Start Time], Roster.[Carer Code] , Roster.Type "
+        var lblcriteria;
+
+
+
+        const data = {
+            "template": { "_id": "CoDMIh3sgJNoIS43" },
+            "options": {
+                "reports": { "save": false },
+
+                "sql": fQuery,
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
+
+
+            }
+        }
+        this.loading = true;
+        this.drawerVisible = true;
+        
+
+        this.printS.print(data).subscribe((blob: any) => {
+            this.pdfTitle = "Group Activity Rosters.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+                console.log(err);
+            });
+
+    }
+    locationrosters(){
+        var fQuery = " SELECT CASE WHEN [Roster].[Carer Code] = 'BOOKED' THEN '**UNFILLED SHIFT' ELSE [Roster].[Carer Code] END AS [Carer Code], [Roster].[Date], [Recipients].[BillTo] as DebtorCode, [Roster].[YearNo], [Roster].[MonthNo], [Roster].[Dayno], [Roster].[Start Time], [Roster].[Duration] As FiveMinBlocks, [Roster].[Duration] * 5 As DurationInMinutes,Convert(nvarchar,DateAdd(minute,([Roster].[Duration] * 8),[Roster].[Start Time]), 108) as [End Time], [Roster].[CostUnit], [Roster].[Client Code], [Roster].[Program], [Roster].[Service Type], [Roster].[Type], [Roster].[Service Description], [Roster].[ServiceSetting], [Roster].[Notes], [Recipients].[SpecialConsiderations], [Recipients].[FirstName], [Recipients].[AgencyIDReportingCode], [Recipients].[AgencyDefinedGroup], [Recipients].[Branch], [Recipients].[Careplanchange], [Roster].[BillQTY] * [Roster].[Unit Bill Rate] AS TotalFare, CASE WHEN ISNULL([Recipients].[HideTransportFare], 0) = 0 THEN 'FALSE' ELSE 'TRUE' END AS ShowFare, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS Address, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS Contact FROM [Roster] INNER JOIN [Recipients] ON [Roster].[Client Code] = [Recipients].AccountNo LEFT JOIN [Staff] ON [Roster].[Carer Code] = [Staff].AccountNo LEFT JOIN (SELECT PERSONID, Suburb,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE '' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE '' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE '' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE '' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = Recipients.UniqueID LEFT JOIN (SELECT TOP 1 PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE '' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE '' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE '' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE '' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = Recipients.UniqueID LEFT JOIN (SELECT PersonID,  CASE WHEN Detail <> '' THEN Detail ELSE '' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = Recipients.UniqueID LEFT JOIN (SELECT TOP 1 PersonID,  CASE WHEN Detail <> '' THEN Detail ELSE '' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = Recipients.UniqueID WHERE ([Roster].[Type] = 11) AND  ([Roster].[Date] BETWEEN '2018/10/26' AND '2018/10/26') AND ([Roster].[Start Time] BETWEEN '00:00' AND '24:00') AND [Roster].[Client Code] > '!z'  ORDER BY Roster.[ServiceSetting], Roster.Date,  Roster.[Start Time], Roster.[Client Code] , Roster.Type "
+        var lblcriteria;
+
+
+
+        const data = {
+            "template": { "_id": "tQmPyebgakeI4q0x" },
+            "options": {
+                "reports": { "save": false },
+
+                "sql": fQuery,
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
+
+
+            }
+        }
+        this.loading = true;
+        this.drawerVisible = true;
+        
+
+        this.printS.print(data).subscribe((blob: any) => {
+            this.pdfTitle = "Location Rosters.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+                console.log(err);
+            });
+
+}   
+    staffjoobsheet(){
+        var fQuery = " SELECT [Roster].[RecordNo], [Roster].[Carer Code], [Roster].[Date], [Roster].[YearNo], [Roster].[MonthNo], [Roster].[Dayno], [Roster].[Start Time], [Roster].[Duration] As FiveMinBlocks,Convert(nvarchar,DateAdd(minute,([Roster].[Duration] * 5),[Roster].[Start Time]), 108) as [End Time],Datename(weekday,[Date]) As [Day], [Roster].[CostUnit], [Roster].[Client Code], [Program] AS Program, [Roster].[Service Type], [Roster].[Type], [Roster].[Service Description], [Roster].[ServiceSetting], [Roster].[RecordNo] AS TimeLogId, [Roster].[Notes] as RosterNotes, [Roster].[Client Code] + ' ' + [Recipients].[FirstName] AS ClientCode_FirstName, [ItemTypes].[RosterGroup], [ItemTypes].[MinorGroup], [ItemTypes].[InfoOnly], CASE WHEN [ItemTypes].[InfoOnly] = 1 THEN 0 ELSE [Roster].[Duration] * 5 END As DurationInMinutes, [Staff].[FirstName], [Staff].[LastName], [Staff].[STF_CODE], [Staff].[StaffGroup], [Staff].[PAN_Manager], [Staff].[StaffTeam], [Recipients].[SpecialConsiderations], [Recipients].[FirstName] AS rFirstName, [Recipients].[AgencyIDReportingCode], [Recipients].[AgencyDefinedGroup], [Recipients].[Branch], [Recipients].[BillTo] as DebtorCode, [Roster].[BillQTY] * [Roster].[Unit Bill Rate] AS TotalFare, [Recipients].[UniqueID], [Recipients].[Careplanchange], [Recipients].[Careplanchange], CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS Address, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS Contact FROM [Roster] INNER JOIN [Staff] ON [Roster].[Carer Code] = [Staff].AccountNo INNER JOIN [Recipients] ON [Roster].[Client Code] = [Recipients].AccountNo INNER JOIN [ItemTypes] ON [Roster].[Service Type] = [ItemTypes].Title INNER JOIN [HumanResourceTypes] pr ON [Roster].[Program] = pr.Name LEFT JOIN (SELECT PERSONID, Suburb,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE '' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE '' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE '' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE '' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = Recipients.UniqueID LEFT JOIN (SELECT TOP 1 PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE '' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE '' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE '' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE '' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = Recipients.UniqueID LEFT JOIN (SELECT PersonID,  CASE WHEN Detail <> '' THEN Detail ELSE '' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = Recipients.UniqueID LEFT JOIN (SELECT TOP 1 PersonID,  CASE WHEN Detail <> '' THEN Detail ELSE '' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = Recipients.UniqueID WHERE [Roster].[Type] <> 13 AND[Roster].[Type] <> 9  AND  ([Roster].[Date] BETWEEN '2019/08/02' AND '2019/08/15') AND ([Roster].[Start Time] BETWEEN '00:00' AND '24:00') AND [Roster].[Carer Code] > '!z'  ORDER BY Roster.[Carer Code], Roster.Date,  Roster.[Start Time], Roster.[Client Code] , Roster.Type "
+        var lblcriteria;
+
+
+
+        const data = {
+            "template": { "_id": "cdt0yJ66aXouhNux" },
+            "options": {
+                "reports": { "save": false },
+
+                "sql": fQuery,
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
+
+
+            }
+        }
+        this.loading = true;
+        this.drawerVisible = true;
+        
+
+        this.printS.print(data).subscribe((blob: any) => {
+            this.pdfTitle = "Staff Job Sheet.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+                console.log(err);
+            });
+
+}    
+    medicareclaim(){
+        var fQuery = " "
+        var lblcriteria;
+
+
+
+
+        const data = {
+            "template": { "_id": "" },
+            "options": {
+                "reports": { "save": false },
+
+                "sql": fQuery,
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
+
+
+            }
+        }
+        this.loading = true;
+        this.drawerVisible = true;
+        
+
+        this.printS.print(data).subscribe((blob: any) => {
+            this.pdfTitle = "CDC Medicare Claim.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+                console.log(err);
+            });
+
+}
+
+    
 
 
 

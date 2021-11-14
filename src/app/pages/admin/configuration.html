@@ -815,7 +815,7 @@
                                 </div>
                             </div> 
                         </nz-tab>
-                        <!--    <nz-tab nzTitle="Report Menus">
+                            <nz-tab nzTitle="Report Menus">
                             <div nz-row >
                                 <div nz-col [nzSpan]="6">
                                     <ul nz-menu nzMode="horizontal">
@@ -980,7 +980,7 @@
                                     </ul>
                                 </div>
                             </div>
-                        </nz-tab> -->
+                        </nz-tab> 
                     </nz-tabset>
                 </div>
             </div>
@@ -989,6 +989,7 @@
                 <nz-modal
                 nzWidth="600px"
                 [nzStyle]="{ top: '20px' }"
+                [nzBodyStyle]=  "bodystyle"
                 [(nzVisible)]="isVisibleTop"
                 [(nzTitle)]="ModalName"
                 (nzOnCancel)="handleCancelTop()"
@@ -1067,6 +1068,56 @@
                             </div>
                         </div>
                     </div>
+                    <div nz-row *ngIf="frm_group" >
+                        <div nz-col nzSpan="20">
+                            <div class="form-group">
+                                <label><i nz-icon nzType="apartment" nzTheme="outline"></i> Groups </label>  
+                                <label class="checks" nz-checkbox formControlName="allGroups">All Groups </label>                              
+                                <nz-select formControlName="MealGroups" nzMode="multiple" [nzDisabled]="inputForm.value.allGroups" >
+                                    <nz-option *ngFor="let option of MealGroups" [nzLabel]="option" [nzValue]="option"  ></nz-option>
+                                </nz-select>                                        
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div nz-row *ngIf="frm_StaffTeam" >
+                        <div nz-col nzSpan="20">
+                            <div class="form-group">
+                                <label><i nz-icon nzType="bank" nzTheme="outline"></i> Team </label>
+                                <label class="checks" nz-checkbox formControlName="allStaffTeams">All Staff Teams </label>
+                                <nz-select formControlName="staffteamArr" nzMaxTagCount="4" nzMode="multiple" [nzDisabled]="inputForm.value.allStaffTeams">
+                                    <nz-option *ngFor="let option of staffteamArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                </nz-select>                                    
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+
+
+                    <div nz-row *ngIf="frm_display" >
+                        <div nz-col nzSpan="20">
+                            <div class="form-group">
+                                <label><i nz-icon nzType="apartment" nzTheme="outline"></i> Report Displayby </label>                                
+                                <nz-select formControlName="displayby"  >
+                                    <nz-option *ngFor="let option of displayby" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                </nz-select>                                        
+                            </div>
+                        </div>
+                    </div>
+                    <div nz-row *ngIf="frm_formats" >
+                        <div nz-col nzSpan="20">
+                            <div class="form-group">
+                                <label><i nz-icon nzType="apartment" nzTheme="outline"></i> Report Format </label>                                
+                                <nz-select formControlName="Rptformat"  >
+                                    <nz-option *ngFor="let option of Rptformat" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                </nz-select>                                        
+                            </div>
+                        </div>
+                    </div>                    
                 </div>
                 
             </nz-modal>

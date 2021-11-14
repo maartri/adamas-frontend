@@ -155,7 +155,13 @@ IconCellType2.prototype.paint = function (ctx, value, x, y, w, h, style, context
 export class RostersAdmin implements AfterViewInit  {
     spreadBackColor = "white";  
     sheetName = "Staff Rosters";  
-    hostStyle = {  
+    hostStyle = {
+        width: 'calc(100% - 50px)',
+        height: '1000px',
+        overflow: 'hidden',
+        float: 'left'
+    };
+    hostStyle2 = {  
       width: '100%',     
       height: '1000px',
       overflow: 'auto',
@@ -1212,7 +1218,13 @@ ClearMultishift(){
       spread.options.scrollbarAppearance = GC.Spread.Sheets.ScrollbarAppearance.mobile;
       spread.options.scrollByPixel = true;
       spread.options.scrollPixel = 5;
-      
+      sheet.options.selectionBorderColor = 'blue';
+      sheet.options.selectionBackColor = '#BDCED1';
+
+    //   var si = new spread.Data.StyleInfo();  
+    //    si.Foreground = 'white';
+    //    si.BackGround = '#e0e0de'; 
+    //    spread.ActiveSheet.ColumnHeader.DefaultStyle = si;  
       //sheet.options.selectionBorderColor = 'blue';
       //sheet.options.selectionBackColor = '#e0e0de';
      
@@ -1220,38 +1232,54 @@ ClearMultishift(){
     //  spread.options.resizeZeroIndicator = GC.Spread.Sheets.SheetArea.Enhanced
 
             sheet.bind(GC.Spread.Sheets.Events.LeaveCell, function (event, infos) {
-            //    var res:string = sheet.getCell(0, infos.col,GC.Spread.Sheets.SheetArea.colHeader).value()
-            //    // Reset the backcolor of cell before moving
-            //    if (self.prev_cell.service==null)
-            //        sheet.getCell(infos.row, infos.col).backColor(undefined);
-            //    infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).backColor(undefined);
-            //     var res:string = infos.sheet.getText(0, infos.col,GC.Spread.Sheets.SheetArea.colHeader);
-
-            //     if ( res.substring(3, 4)=="S"){
-            //         infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).backColor("#85B9D5");
-            //         infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).foreColor("#000000");
-            //      } else{
-            //         infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).foreColor("#ffffff");
-            //         infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).backColor("#002060");
-            //     }
-                
+               var res:string = sheet.getCell(0, infos.col,GC.Spread.Sheets.SheetArea.colHeader).value()
+               // Reset the backcolor of cell before moving
+               spread.suspendPaint();
+                    
+                if ( res.endsWith("Sat") || res.endsWith("Sun")){
+                    
+                  
+                    
+                    infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).backColor("#CDE0E3");
+                    infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).foreColor("#000000");
+                 } else{
+                    infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).backColor("#002060");
+                    infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).foreColor("#ffffff");
+                    
+                }
+                    spread.resumePaint();
                 });
 
               
             
-                sheet.bind(GC.Spread.Sheets.Events.EnterCell, function (event, infos) {
-                   
-                  
-               // infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).text("#002060")
-            });
+    sheet.bind(GC.Spread.Sheets.Events.EnterCell, function (event, infos) {
+        spread.suspendPaint(); 
+        var active_row = sheet.getRange(0, -1, 1, -1, GC.Spread.Sheets.SheetArea.colHeader);
+        active_row.backColor("Red");
+        active_row.foreColor("White");          
+        
+        var res:string = sheet.getCell(0, infos.col,GC.Spread.Sheets.SheetArea.colHeader).value()
+        
+        if ( res.endsWith("Sat") || res.endsWith("Sun")){
+                    
+            infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).backColor("#ffffff");
+            infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).foreColor("#000000");
+         } else{
+            infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).backColor("#002060");
+            infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).foreColor("#ffffff");
+            
+        }
+        spread.resumePaint();
+    
+    
+    });
             
          
-           spread.bind(spreadNS.Events.CellClick, function (e: any, args: any) {
+    spread.bind(spreadNS.Events.CellClick, function (e: any, args: any) {
             let row,col, duration=0,type=0,service;
             
               let sheetArea = args.sheetArea === 0 ? 'sheetCorner' : args.sheetArea === 1 ? 'columnHeader' : args.sheetArea === 2 ? 'rowHeader' : 'viewPort';
-             
-            
+              
               if(args.sheetArea==1 || args.sheetArea==2){
                 sheet.options.isProtected = false;
                 return;
@@ -1284,13 +1312,13 @@ ClearMultishift(){
                  
                   
                   if (sheet.getTag(row,col,GC.Spread.Sheets.SheetArea.viewport)!=null) {
-                  self.cell_value=sheet.getTag(row,col,GC.Spread.Sheets.SheetArea.viewport)
-                 
-                  row=self.cell_value.row
-                  col=self.cell_value.col
-                  duration=Number(self.cell_value.duration)
-                  type=self.cell_value.type;
-                  service=self.cell_value.service;
+                    self.cell_value=sheet.getTag(row,col,GC.Spread.Sheets.SheetArea.viewport)
+                    
+                    row=self.cell_value.row
+                    col=self.cell_value.col
+                    duration=Number(self.cell_value.duration)
+                    type=self.cell_value.type;
+                    service=self.cell_value.service;
                  
       
 
@@ -1335,8 +1363,8 @@ ClearMultishift(){
                   // sheet.getCell(row, col).setBorder(new GC.Spread.Sheets.LineBorder("#C3C1C1", GC.Spread.Sheets.LineStyle.thin), {all:true});
                  
             }
-                  self.prev_cell = {row,col,duration, type,service};
-                
+                  self.prev_cell = {row,col,duration, type,service};    
+                       
                   spread.resumePaint();
           });
           spread.bind(GC.Spread.Sheets.Events.CellDoubleClick, function (sender, args) {
@@ -2100,11 +2128,13 @@ ClearMultishift(){
        // sheet.autoFitColumn(i)            
 
       if ((this.DayOfWeek( date.getDay())=="Sat") || (this.DayOfWeek( date.getDay())=="Sun")){
-          sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).backColor("#85B9D5");
+          //sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).backColor("#85B9D5");
+         sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).backColor("#CDE0E3");
+         //CDE0E3,HB5BCE0
           if (this.Days_View>=30)
-            sheet.setValue(0, i, { richText: [{ style: { font: 'bold 10px Segoe UI ', foreColor: '#c7060c' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
+            sheet.setValue(0, i, { richText: [{ style: { font: 'bold 10px Segoe UI ', foreColor: '#000000' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
         else
-            sheet.setValue(0, i, { richText: [{ style: { font: 'bold 12px Segoe UI ', foreColor: '#c7060c' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
+            sheet.setValue(0, i, { richText: [{ style: { font: 'bold 12px Segoe UI ', foreColor: '#000000' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
           
       //row_header.backColor("#D1A6BC");
      
@@ -2136,13 +2166,13 @@ ClearMultishift(){
         else
             row_txt= "";
 
-         sheet.setValue(j, 0, { richText: [{ style: { font: 'bold 12px Segoe UI ', foreColor: 'white' }, text: row_txt   }] }, GC.Spread.Sheets.SheetArea.rowHeader);        
+         sheet.setValue(j, 0, { richText: [{ style: { font: '12px Segoe UI ', foreColor: 'white' }, text: row_txt   }] }, GC.Spread.Sheets.SheetArea.rowHeader);        
        
        // sheet.getRange(j, 0, 1, 1).tag(this.numStr(time.hours)  + ":" + this.numStr(time.minutes));
         sheet.getCell(j, 0, GC.Spread.Sheets.SheetArea.rowHeader).tag(this.numStr(time.hours)  + ":" + this.numStr(time.minutes));
 
         this.time_map.set(j,this.numStr(time.hours)  + ":" + this.numStr(time.minutes))
-        sheet.getCell(j, 0, GC.Spread.Sheets.SheetArea.rowHeader).backColor("#002060");
+        sheet.getCell(j, 0, GC.Spread.Sheets.SheetArea.rowHeader).backColor("#92B0E1");
         sheet.getCell(j, 0, GC.Spread.Sheets.SheetArea.rowHeader).foreColor("#ffffff");
         sheet.setColumnWidth(0, 60.0,GC.Spread.Sheets.SheetArea.rowHeader);
         

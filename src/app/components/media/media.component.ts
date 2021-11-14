@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, Input, ChangeDetectionStrateg
 import { GlobalService, UploadService, TimeSheetService } from '@services/index';
 import { HttpClient, HttpRequest, HttpEventType, HttpResponse, HttpEvent } from '@angular/common/http'
 
-
+import { Router, ActivatedRoute } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { UploadChangeParam } from 'ng-zorro-antd/upload';
@@ -32,6 +32,7 @@ export class MediaComponent implements OnInit {
   fileList: any[] = [];
 
   constructor(
+    private router: Router,
     private http: HttpClient,
     private globalS: GlobalService,
     private uploadS: UploadService,
@@ -62,9 +63,6 @@ export class MediaComponent implements OnInit {
 
 
   getMedia() {
-
-    
-
     this.uploadS.getMedia(this.personID)
       .subscribe(files => {
 
@@ -123,23 +121,20 @@ export class MediaComponent implements OnInit {
   handleUpload(){
 
       var formData = new FormData()
-       
       for (var file of this.fileList) {
         formData.append(file.name, file)
       }
-  
+
       formData.append("title", this.title);
       formData.append("description", this.description);
       formData.append("group", this.group);
-
-  
       const req = new HttpRequest('POST', `api/upload/media/${this.personID}`, formData);
-  
       this.http.request(req).subscribe(event => {
         if(event){
           this.globalS.sToast('Success','Media has been saved');
           this.getMedia();
           this.clear();
+          this.router.navigate(['/admin/recipient/perm-roster'])
           // this.uploadModal = false;
         }           
       });

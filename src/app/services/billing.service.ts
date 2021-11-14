@@ -22,4 +22,11 @@ export class BillingService {
     postdebtorbilling(data: any): Observable<any> {
         return this.auth.post(`${billing}/post-debtor-billing`, data)
     }
+    
+    getlistProgramPackagesFilter(is_where: boolean):Observable<any>{
+        return this.auth.get(`${billing}/programPackagesFilter/${is_where}`)
+    }
+    updateCloseRosterPeriod(data: any): Observable<any> {
+        return this.auth.put(`${billing}/closeRosterPeriod`, data);
+    }
 }

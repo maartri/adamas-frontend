@@ -5,8 +5,10 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 // import { ListService, MenuService } from '@services/index';
 import { BillingService, TimeSheetService, GlobalService, ListService, MenuService } from '@services/index';
 import { timeout } from 'rxjs/operators';
-import { setDate } from 'date-fns';
+import { setDate, toDate } from 'date-fns';
 import { FormsModule } from '@angular/forms';
+import { formatDate } from '@angular/common';
+import { first } from 'lodash';
 
 @Component({
   selector: 'app-billing',
@@ -119,10 +121,10 @@ export class DebtorComponent implements OnInit {
       billingMode: 'CONSOLIDATED BILLING',
       AccPackage: 'TEST 1',
       name: null,
-      invoiceDate: null,
+      invoiceDate: new Date(),
       invType: null,
-      startDate: null,
-      endDate: null
+      dtpEndDate: null,
+      dtpStartDate: null,
     });
   }
 
@@ -272,17 +274,14 @@ export class DebtorComponent implements OnInit {
     });
   }
   GetPayPeriodEndDate() {
-    let sql = "SELECT convert(varchar, PayPeriodEndDate, 103) AS PayPeriodEndDate FROM SysTable"
+    let sql = "SELECT convert(varchar, PayPeriodEndDate, 101) AS PayPeriodEndDate FROM SysTable"
     this.loading = true;
     this.listS.getlist(sql).subscribe(data => {
-      // setTimeout(()=>{        
-      //  }, 50000);
       if (data[0].payPeriodEndDate != "") {
         this.dtpEndDate = data[0].payPeriodEndDate;
         this.inputForm.patchValue({
-          dtpEndDate: data[0].payPeriodEndDate,
-        });
-        console.log("Test 1 is: ", this.dtpEndDate)
+          dtpEndDate: this.dtpEndDate,
+        })
       }
       else {
         this.inputForm.patchValue({
@@ -296,22 +295,18 @@ export class DebtorComponent implements OnInit {
     let fsql = "SELECT DefaultPayPeriod as DefaultPayPeriod FROM Registration";
     this.listS.getlist(fsql).subscribe(fdata => {
       if (fdata[0].defaultPayPeriod != "") {
-        this.PayPeriodLength = fdata[0].defaultPayPeriod;
-
-        var firstDate = this.dtpEndDate;
-        console.log("Test 3.0 is: ", firstDate);
-        firstDate.setDate(firstDate.getDate() - 8);
-        this.dtpStartDate = firstDate;
-
-        console.log("Test 3.1 is: ", this.PayPeriodLength);
-        console.log("Test 3.2 is: ", firstDate);
-        console.log("Test 3.3 is: ", this.dtpStartDate);
+        this.PayPeriodLength = fdata[0].defaultPayPeriod
       }
       else {
-        this.PayPeriodLength = 14;
-        console.log("Test 3 ELSE is: ", this.PayPeriodLength);
-      }
+        this.PayPeriodLength = 14
+      }      
+      var firstDate = new Date(this.dtpEndDate);
+      firstDate.setDate(firstDate.getDate() - (this.PayPeriodLength - 1));
+      this.dtpStartDate = formatDate(firstDate, 'MM-dd-yyyy','en_US');
+      this.inputForm.patchValue({
+        dtpStartDate: this.dtpStartDate,
+      });
     });
-  };
+  }
 }
 

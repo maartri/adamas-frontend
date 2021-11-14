@@ -246,9 +246,9 @@
         </nz-table> 
    
         
-        <nz-table #columnTable [nzScroll]="{ y: '300px' }" [nzPageSize]="5" [nzShowPagination]="false"  [nzLoading]="loading" 
+        <nz-table #columnTable  [nzPageSize]="5" [nzShowPagination]="false"  [nzLoading]="loading" 
            [nzData]="lstCarerPlans" [nzBordered]="true" >
-    <!-- [nzFrontPagination]="true" [nzShowSizeChanger]="true" [nzPaginationPosition]="'top'" [nzPageSizeOptions]="[5, 10, 20,25, 30]" -->
+    <!-- [nzScroll]="{ y: '300px' }" [nzFrontPagination]="true" [nzShowSizeChanger]="true" [nzPaginationPosition]="'top'" [nzPageSizeOptions]="[5, 10, 20,25, 30]" -->
           
     <thead >
         <tr>
@@ -256,14 +256,14 @@
         </tr>
         <tr>                        
             
-            <th style="background-color: #d7dbe4; color: black " class="left">Paln No.</th> 
-            <th style="background-color: #d7dbe4; color: black " class="left">Paln Name</th> 
-            <th style="background-color: #d7dbe4; color: black " class="left">Start Date</th> 
-            <th style="background-color: #d7dbe4; color: black " class="left">End Date</th> 
-            <th style="background-color: #d7dbe4; color: black " class="left">Co PayAmount</th> 
-            <th style="background-color: #d7dbe4; color: black " class="left">Created By</th> 
-            <th style="background-color: #d7dbe4; color: black " class="left">Detail</th>
-            <th style="background-color: #d7dbe4; color: black " class="left">Action</th>
+            <th  class="left">Paln No.</th> 
+            <th  class="left">Paln Name</th> 
+            <th  class="left">Start Date</th> 
+            <th  class="left">End Date</th> 
+            <th  class="left">Co PayAmount</th> 
+            <th  class="left">Created By</th> 
+            <th  class="left">Detail</th>
+            <th  class="left">Action</th>
         </tr>
     </thead>
     <tbody>

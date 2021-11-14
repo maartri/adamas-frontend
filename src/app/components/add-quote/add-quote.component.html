@@ -579,7 +579,7 @@
         </div>
 
         <div nz-row class="line" nzGutter="12">
-            <div nz-col nzSpan="6" [formGroup]="quoteListForm" *ngIf="quoteListForm.get('chargeType').value">
+            <div nz-col nzSpan="10" [formGroup]="quoteListForm" *ngIf="quoteListForm.get('chargeType').value">
                 <div class="form-group">
                     <label for="">Activity Code</label>
                     <nz-select formControlName="code"  nzAllowClear nzPlaceHolder="Code">
@@ -588,7 +588,7 @@
                 </div>
             </div>
 
-            <div nz-col nzSpan="12" [formGroup]="quoteListForm" *ngIf="quoteListForm.get('chargeType').value">
+            <div nz-col nzSpan="8" [formGroup]="quoteListForm" *ngIf="quoteListForm.get('chargeType').value">
                 <div class="form-group">
                     <label for="">Display Text</label>
                     <input nz-input formControlName="displayText" placeholder="Display Text"   />
@@ -643,7 +643,6 @@
                 <div nz-col nzSpan="9">
                     <div nz-row class="calc-wrapper" [hidden]="!weekly" >
                         <div class="spacing flex" [formGroup]="quoteListForm"> 
-                            <!-- <input class="three-five" formControlName="quantity" nz-input  /> -->
                             <nz-input-number formControlName="quantity" [nzMin]="1" [nzStep]="1" [nzSize]="size"></nz-input-number>
                             <nz-select  nzAllowClear [nzDropdownMatchSelectWidth]="false" placeholder="Bill Unit" formControlName="billUnit">
                                 <nz-option *ngFor="let l of billUnitArr" [nzValue]="l" [nzLabel]="l"></nz-option>

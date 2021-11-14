@@ -55,6 +55,7 @@ export class DistributionlistComponent implements OnInit {
   allStaff: any;
   staffList: any;
   allstaffIntermediate: boolean;
+  funding_source: any;
   
   constructor(
     private globalS: GlobalService,
@@ -88,7 +89,7 @@ export class DistributionlistComponent implements OnInit {
       }
     }
     loadData(){
-      let sql ="SELECT RecordNo, Recipient,Activity,Location,Program,Staff,Mandatory as mandatory,DefaultAssignee as assignee,ListName as ltype,Severity ,xDeletedRecord as is_deleted,xEndDate as end_date from IM_DistributionLists "+this.whereString+" order by Recipient";
+      let sql ="SELECT RecordNo, Recipient,Activity,Location,Program,Staff,ListGroup as funding_source,Mandatory as mandatory,DefaultAssignee as assignee,ListName as ltype,Severity ,xDeletedRecord as is_deleted,xEndDate as end_date from IM_DistributionLists "+this.whereString+" order by Recipient";
       this.loading = true;
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;
@@ -106,6 +107,8 @@ export class DistributionlistComponent implements OnInit {
         };
         this.services.unshift(da);
       });
+
+      this.listS.getfundingsource().subscribe(data => this.funding_source = data);
       
       let staff_query = "SELECT distinct [AccountNo] as name from Staff Where AccountNo not like '!%' Order BY [AccountNo] ";
       this.listS.getlist(staff_query).subscribe(data => {
@@ -169,6 +172,7 @@ export class DistributionlistComponent implements OnInit {
         activity,
         severity,
         mandatory,
+        funding_source,
         end_date,
         recordNo,
         
@@ -181,6 +185,7 @@ export class DistributionlistComponent implements OnInit {
         prgm:program,
         location:location,
         recepient:recipient,
+        funding_source:funding_source,
         saverity:severity,
         mandatory:(mandatory == "True") ? true : false,
         end_date:end_date,
@@ -225,14 +230,15 @@ export class DistributionlistComponent implements OnInit {
             let staff      = staf;
             let service    = this.globalS.isValueNull(group.get('service').value);
             let prgm       = this.globalS.isValueNull(group.get('prgm').value);
+            let funding_source = this.globalS.isValueNull(group.get('funding_source').value);
             let location   = this.globalS.isValueNull(group.get('location').value);
             let recepient  = this.globalS.isValueNull(group.get('recepient').value);
             let saverity   = this.globalS.isValueNull(group.get('saverity').value);
             let mandatory  = this.trueString(group.get('mandatory').value);
             let assignee   = this.trueString(group.get('assignee').value);
             let end_date   = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+format(group.get('end_date').value,'yyyy/MM/dd')+"'" : null;
-            let values = recepient+","+service+","+location+","+prgm+",'"+staff+"',"+mandatory+","+assignee+","+saverity+","+ltype+","+end_date;
-            let sql = "insert into IM_DistributionLists([Recipient],[Activity],[Location],[Program],[Staff],[Mandatory],[DefaultAssignee],[Severity],[ListName],[xEndDate]) Values ("+values+")"; 
+            let values = recepient+","+service+","+location+","+prgm+",'"+staff+"',"+mandatory+","+assignee+","+saverity+","+ltype+","+funding_source+","+end_date;
+            let sql = "insert into IM_DistributionLists([Recipient],[Activity],[Location],[Program],[Staff],[Mandatory],[DefaultAssignee],[Severity],[ListName],[ListGroup],[xEndDate]) Values ("+values+")"; 
             // console.log(sql);
             this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
               flag = true;
@@ -243,17 +249,18 @@ export class DistributionlistComponent implements OnInit {
           return false;
         }
         this.globalS.sToast('Success', 'Saved successful');
-        //   this.loading = true;
-        //   this.loadData();
-        //   this.handleCancel();
-        //   this.resetModal();   
-        //   this.isUpdate = false; 
+        this.loading = true;  
+        this.loadData();
+        this.postLoading = false;          
+        this.handleCancel();
+        this.resetModal();
       }else{
         const group       = this.inputForm;
         let ltype      = this.globalS.isValueNull(group.get('ltype').value);
         let staff      = this.globalS.isValueNull(group.get('staff').value);
         let service    = this.globalS.isValueNull(group.get('service').value);
         let prgm       = this.globalS.isValueNull(group.get('prgm').value);
+        let funding_source = this.globalS.isValueNull(group.get('funding_source').value);
         let location   = this.globalS.isValueNull(group.get('location').value);
         let recepient  = this.globalS.isValueNull(group.get('recepient').value);
         let saverity   = this.globalS.isValueNull(group.get('saverity').value);
@@ -261,25 +268,18 @@ export class DistributionlistComponent implements OnInit {
         let assignee   = this.trueString(group.get('assignee').value);
         let end_date   = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
         let recordNo   = group.get('recordNo').value;
-        let sql  = "Update IM_DistributionLists SET [Recipient]="+ recepient + ",[Activity] ="+ service + ",[Program] ="+ prgm +",[Staff] ="+ staff+",[Severity] ="+ saverity +",[Mandatory] ="+ mandatory +",[DefaultAssignee] ="+ assignee +",[ListName] ="+ltype+",[xEndDate] = "+end_date+ ",[Location] ="+ location+ " WHERE [recordNo] ='"+recordNo+"'";
+        let sql  = "Update IM_DistributionLists SET [Recipient]="+ recepient + ",[Activity] ="+ service + ",[Program] ="+ prgm +",[Staff] ="+ staff+",[Severity] ="+ saverity +",[Mandatory] ="+ mandatory +",[DefaultAssignee] ="+ assignee +",[ListName] ="+ltype+",[xEndDate] = "+end_date+ ",[Location] ="+ location+ ",[ListGroup] ="+ funding_source + " WHERE [recordNo] ='"+recordNo+"'";
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
-          // if (data) 
-        this.globalS.sToast('Success', 'Saved successful');     
-        //   else
-        //   this.globalS.sToast('Success', 'Saved successful');
-        //   this.loading = true;
-        //   this.loadData();
-        //   this.handleCancel();
-        //   this.resetModal();   
-        //   this.isUpdate = false; 
+          
+        
+        this.globalS.sToast('Success', 'Saved successful');   
+        this.loading = true;  
+        this.loadData();
+        this.postLoading = false;          
+        this.handleCancel();
+        this.resetModal();
         });
       }
-      this.globalS.sToast('Success', 'Saved successful');   
-      this.loading = true;  
-      this.loadData();
-      this.postLoading = false;          
-      this.handleCancel();
-      this.resetModal();
     }
     
     delete(data: any) {
@@ -313,6 +313,7 @@ export class DistributionlistComponent implements OnInit {
         service:'',
         assignee:false,
         prgm:'',
+        funding_source:'',
         location:'',
         recepient:'',
         saverity:'',
@@ -382,7 +383,7 @@ export class DistributionlistComponent implements OnInit {
         
         var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recipient) AS Field1," +
         "Recipient as Field2,Activity as Field3,Location as Field4,Program as Field5,Staff as Field6," + 
-        "ListName as  Field7,Severity as Field8,CONVERT(varchar, [xEndDate],105) as Field9 from IM_DistributionLists "+this.whereString+" Order by recipient";
+        "ListName as  Field7,Severity as Field8,CONVERT(varchar, [xEndDate],105) as Field9,ListGroup as Field10 from IM_DistributionLists "+this.whereString+" Order by recipient";
         
         const data = {
           "template": { "_id": "0RYYxAkMCftBE9jc" },
@@ -397,6 +398,7 @@ export class DistributionlistComponent implements OnInit {
             "head4": "Location",
             "head5": "Program",
             "head6": "Staff",
+            "head10": "Funding",
             "head7": "ItemType",
             "head8": "Severity",
             "head9": "End Date",

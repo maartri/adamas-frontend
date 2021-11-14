@@ -135,7 +135,7 @@ export class FollowupComponent implements OnInit {
         this.listS.getlistrecipientremindersObj().subscribe(data => this.staffList = data);
       }
       if(this.menuType == 'DOCUMENTS'){
-        this.uploadS.getdocumenttemplate().subscribe(data => this.staffList = data);;
+        this.uploadS.getdocumenttemplate().subscribe(data => this.staffList = data);
       }
       if(this.menuType == 'XTRADATA'){
         this.listS.customdatasetObj().subscribe(data => this.staffList = data)

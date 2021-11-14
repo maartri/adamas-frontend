@@ -45,6 +45,7 @@ export class RecipientExternal implements OnInit, OnDestroy {
     @Output() recipientexternalDone:EventEmitter<any>= new EventEmitter();
    
     Person:any={id:'0',code:'',personType:'', noteType:''};
+    Column:any={key:'',title:''};
 
     nzSelectedIndex:number=0;
     Info:any=null;
@@ -60,6 +61,9 @@ export class RecipientExternal implements OnInit, OnDestroy {
     lstOpNotes:Array<any>=[];
     lstCurrentRosters:Array<any>=[];
     lstPermanentRosters:Array<any>=[];
+    
+    columnsDefinition:Array<any>=[];    
+    item = new Map();
     HighlightRow:number;
     loading:boolean=true;
     fixedColumn :boolean=false;
@@ -213,7 +217,7 @@ export class RecipientExternal implements OnInit, OnDestroy {
             });
     
     }
-
+   
     view(index: number) {
         this.nzSelectedIndex = index;
         
@@ -231,6 +235,8 @@ export class RecipientExternal implements OnInit, OnDestroy {
                         this.lstApprovedProgram=data[0];
                         this.lstApprovedServices=data[1];
                         this.lstCarerPlans=data[2];
+
+                      
                     })
                
             });

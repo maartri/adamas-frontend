@@ -1594,9 +1594,9 @@ export class AddQuoteComponent implements OnInit {
    
     const quoteForm = this.quoteForm.getRawValue();
 
-    this.goalsAndStratergies.forEach(e => {
-        goals.push(e.goal);
-    });    
+    // this.goalsAndStratergies.forEach(e => {
+    //     goals.push(e.goal);
+    // });    
 
     this.quoteLines.forEach(x => {
         let da: QuoteLineDTO = {

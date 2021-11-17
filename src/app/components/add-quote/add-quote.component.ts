@@ -1073,6 +1073,8 @@ export class AddQuoteComponent implements OnInit {
   }
 
   showEditCarePlanModal(data:any){
+      console.log(data);
+
       this.goalAndStrategiesmodal = true;
       this.isUpdateGoal = true;
       this.listStrtegies(data.recordnumber);
@@ -1132,13 +1134,15 @@ export class AddQuoteComponent implements OnInit {
 
   showEditQuoteModal(data: any, index: number){
 
+    console.log(data);
+
     this.addNewQuoteLine = false;
     this.quoteLineIndex = index;
 
     this.listS.getquotelinedetails(data.recordNumber)
         .subscribe(x => {
-            this.updateValues = x;                         
-            console.log(this.GET_CORRECT_ROSTER(x))
+            
+            this.updateValues = x;
             this.quoteListForm.patchValue({
                 chargeType: this.getChargeType(x.mainGroup),
                 code: x.title,
@@ -1279,6 +1283,37 @@ export class AddQuoteComponent implements OnInit {
 
         var _quote, _quote2;
 
+        // let _quote: QuoteLineDTO = {
+        //     docHdrId: this.tempIds.quoteHeaderId,
+        //     billUnit: quote.billUnit,
+        //     code: quote.code,
+        //     displayText: quote.displayText,
+        //     qty: quote.quantity,
+        //     frequency: quote.period,
+        //     quoteQty: quote.weekNo, 
+        //     roster: quote.rosterString,
+        //     unitBillRate: quote.price,
+        //     tax: quote.gst,
+        //     itemId: quote.itemId,
+        //     mainGroup: quote.mainGroup,
+        //     recordNumber: quote.recordNumber
+        // }
+
+        var samp = {
+            billUnit: '',
+            code: '',
+            displayText: '',
+            docHdrId: 123,
+            frequency: '',
+            itemId: 123,
+            qty: 1,
+            quoteQty: 52,
+            recordNumber: null,
+            roster: null,
+            tax: null,
+            unitBillRate: '23'
+        }
+
         forkJoin([
             this.listS.getaccceptcharges(this.quoteForm.value.program)
         ]).subscribe(x => {
@@ -1321,10 +1356,8 @@ export class AddQuoteComponent implements OnInit {
             this.total_quote = (this.generate_total() + this.total_admin).toFixed(2);
             this.total_base_quote = (this.total_quote - this.total_admin).toFixed(2);
 
-            // this.remaining_fund = (this.quoteForm.value.govtContrib - this.total_quote).toFixed(2);
-
             this.handleCancelLine();
-            this.detectChanges();                
+            this.detectChanges();
         });
     }
 
@@ -1350,7 +1383,8 @@ export class AddQuoteComponent implements OnInit {
                             tax: quote.gst,
                             itemId: quote.itemId,
                             mainGroup: quote.mainGroup,
-                            recordNumber: quote.recordNumber
+                            recordNumber: quote.recordNumber,
+                            lengthInWeeks: quote.weekNo
                         }
  
                         this.listS.createQuoteLine(_quote).subscribe(data => {
@@ -1382,36 +1416,24 @@ export class AddQuoteComponent implements OnInit {
                     }
 
                     let da: QuoteLineDTO = {
-                        sortOrder: 0,
                         billUnit: quote.billUnit,
-                        itemId: quote.itemId,
-                        qty: quote.quantity,
+                        code: quote.code,
                         displayText: quote.displayText,
-
-                        unitBillRate: quote.price,
+                        qty: quote.quantity,
                         frequency: quote.period,
-                        lengthInWeeks: quote.weekNo,
+                        quoteQty: quote.weekNo, 
                         roster: quote.rosterString,
-                        serviceType: quote.code,
-                        quoteQty: quote.weekNo
+                        unitBillRate: quote.price,
+                        tax: quote.gst,
+                        mainGroup: quote.mainGroup,
+                        recordNumber: quote.recordNumber,
+                        lengthInWeeks: quote.weekNo
                     };
 
                     this.listS.updatequoteline(da, quote.recordNumber)
                         .subscribe(data => {
-                                // console.log(data);
-                                this.globalS.sToast('Success', 'Quote Line updated');
 
-                                // var q = this.quoteLines[this.quoteLineIndex];
-                                // console.log(q);
-                                // q.code = quoteLine.code;
-                                // q.displayText = quoteLine.displayText;
-                                // q.quantity = quoteLine.quantity;
-                                // q.billUnit = quoteLine.billUnit;
-                                // q.frequency = quoteLine.period;
-                                // q.lengthInWeeks = quoteLine.weekNo;
-                                // q.price = quoteLine.price;
-                                // q.tax = quoteLine.gst;
-                                // q.recordNumber = quoteLine.recordNumber;
+                                this.globalS.sToast('Success', 'Quote Line updated');
 
                                 const quoteLinesTemp = [...this.quoteLines];            
                                 quoteLinesTemp[this.quoteLineIndex] = { ...quoteLinesTemp[this.quoteLineIndex], 
@@ -1572,9 +1594,9 @@ export class AddQuoteComponent implements OnInit {
    
     const quoteForm = this.quoteForm.getRawValue();
 
-    this.goalsAndStratergies.forEach(e => {
-        goals.push(e.goal);
-    });    
+    // this.goalsAndStratergies.forEach(e => {
+    //     goals.push(e.goal);
+    // });    
 
     this.quoteLines.forEach(x => {
         let da: QuoteLineDTO = {
@@ -1709,7 +1731,6 @@ export class AddQuoteComponent implements OnInit {
 
 
     printQuoteLines(){
-        console.log('print quotelines')
 
         let qteLineArr: Array<QuoteLineDTO> = [];
         let goals: Array<any> = [];
@@ -2077,14 +2098,22 @@ export class AddQuoteComponent implements OnInit {
         return daily;   
     }
 
+    calculateTotal(){
+        this.total_admin = this.generate_total_admin();
+        this.total_quote = (this.generate_total() + this.total_admin).toFixed(2);
+        this.total_base_quote = (this.total_quote - this.total_admin).toFixed(2);
+    }
+
     checkValue(event){
         if (event.target.checked){
             this.CHECKACCEPTCHARGES();
-            // this.option = 'add';
-            // this.GENERATE_QUOTE_LINE();
-            // this.CHECKACCEPTCHARGES();
         } else {
-            this.quoteLines = [...this.quoteLines.filter(x => x.mainGroup !== 'ADMIN-DEFAULT')]
+            this.quoteLines = [...this.quoteLines.filter(x => x.mainGroup !== 'ADMIN-DEFAULT')];
+
+            this.calculateTotal();
+
+            this.handleCancelLine();
+            this.detectChanges();
         }
     }
 

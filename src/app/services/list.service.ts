@@ -17,6 +17,10 @@ export class ListService {
         public auth: AuthService
     ) { }
 
+    getcoordinators_from_data_domain(): Observable<any>{
+        return this.auth.get(`${list}/coordinators-list-data-domains`);
+    }
+
     getdoctorinformation():Observable<any>{
         return this.auth.get(`${list}/doctors-information`);
     }

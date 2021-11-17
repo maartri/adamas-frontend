@@ -30,6 +30,8 @@ export class NotificationlistComponent implements OnInit {
   recipients:Array<any>;
   locations:Array<any>;
   services:Array<any>;
+  branches: Array<any>;
+  coordinators: Array<any>;
   severity:Array<any>;
   checked = true;
   checked2=true;
@@ -102,6 +104,24 @@ export class NotificationlistComponent implements OnInit {
 
       this.listS.getfundingsource().subscribe(data => this.funding_source = data);
 
+      let branchSql  = "SELECT DESCRIPTION FROM DATADOMAINS WHERE DOMAIN = 'BRANCHES' ORDER BY Description";
+      this.listS.getlist(branchSql).subscribe(data => {
+        this.branches = data;
+        let da ={
+          "title" :"ALL"
+        };
+        this.branches.unshift(da);
+      });
+
+      let coordinatorSql  = "SELECT DESCRIPTION FROM DATADOMAINS WHERE DOMAIN = 'CASE MANAGERS' ORDER BY Description";
+      this.listS.getlist(coordinatorSql).subscribe(data => {
+        this.coordinators = data;
+        let da ={
+          "title" :"ALL"
+        };
+        this.coordinators.unshift(da);
+      });
+
       let sql  = "SELECT TITLE FROM ITEMTYPES WHERE ProcessClassification IN ('OUTPUT', 'EVENT', 'ITEM') AND ENDDATE IS NULL";
       this.listS.getlist(sql).subscribe(data => {
         this.services = data;
@@ -119,6 +139,7 @@ export class NotificationlistComponent implements OnInit {
         };
         this.staff.unshift(da);
       });
+
       let prog = "SELECT [NAME] as name FROM HumanResourceTypes WHERE [GROUP] = 'PROGRAMS' AND ENDDATE IS NULL";
       this.listS.getlist(prog).subscribe(data => {
         this.program = data;
@@ -254,24 +275,29 @@ export class NotificationlistComponent implements OnInit {
       if(!this.isUpdate){        
         this.postLoading = true;   
         const group    = this.inputForm;
-
         let flag       = false;
+
+        var { branch, coordinator } = this.inputForm.value;
+        
         if(this.selectedStaff.length > 0){
-          this.selectedStaff.forEach(staf => {
-            let ltype      = this.globalS.isValueNull(group.get('ltype').value);
-            let staff      = staf;
-            let service    = this.globalS.isValueNull(group.get('service').value);
-            let prgm       = this.globalS.isValueNull(group.get('prgm').value);
-            let location   = this.globalS.isValueNull(group.get('location').value);
-            let recepient  = this.globalS.isValueNull(group.get('recepient').value);
+
+          this.selectedStaff.forEach(staf => {            
+            let ltype         = this.globalS.isValueNull(group.get('ltype').value);
+            let _branch       = this.globalS.isValueNull(branch);
+            let _coordinator  = this.globalS.isValueNull(coordinator);
+            let staff         = staf;
+            let service       = this.globalS.isValueNull(group.get('service').value);
+            let prgm          = this.globalS.isValueNull(group.get('prgm').value);
+            let location      = this.globalS.isValueNull(group.get('location').value);
+            let recepient     = this.globalS.isValueNull(group.get('recepient').value);
             let funding_source = this.globalS.isValueNull(group.get('funding_source').value);
-            let saverity   = this.globalS.isValueNull(group.get('saverity').value);
-            let mandatory  = this.trueString(group.get('mandatory').value);
-            let assignee   = this.trueString(group.get('assignee').value);
-            let end_date   = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
-            let values = recepient+","+service+","+location+","+prgm+",'"+staff+"',"+mandatory+","+assignee+","+saverity+","+ltype+","+funding_source+","+end_date;
-            let sql = "insert into IM_DistributionLists([Recipient],[Activity],[Location],[Program],[Staff],[Mandatory],[DefaultAssignee],[Severity],[ListName],[ListGroup],[xEndDate]) Values ("+values+")"; 
-            console.log(sql);
+            let saverity      = this.globalS.isValueNull(group.get('saverity').value);
+            let mandatory     = this.trueString(group.get('mandatory').value);
+            let assignee      = this.trueString(group.get('assignee').value);
+            let end_date      = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
+            let values        = recepient+","+service+","+location+","+prgm+",'"+staff+"',"+mandatory+","+assignee+","+saverity+","+ltype+","+funding_source+","+end_date+","+_branch+","+_coordinator;
+            let sql           = "insert into IM_DistributionLists([Recipient],[Activity],[Location],[Program],[Staff],[Mandatory],[DefaultAssignee],[Severity],[ListName],[ListGroup],[xEndDate],[Branch],[Coordinator]) Values ("+values+")"; 
+
             this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
               flag = true;
             });
@@ -352,7 +378,9 @@ export class NotificationlistComponent implements OnInit {
         end_date:'',
         mandatory:false,
         recordNo:null,
-        event: null
+        event: null,
+        coordinator: null,
+        branch: null
       });
       
       this.inputForm.get('ltype').valueChanges

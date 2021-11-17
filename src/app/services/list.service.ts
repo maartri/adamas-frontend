@@ -17,6 +17,10 @@ export class ListService {
         public auth: AuthService
     ) { }
 
+    getnotificationslist(isChecked: boolean = false):Observable<any>{
+        return this.auth.get(`${list}/notifications-list/${isChecked}`);
+    }
+
     getcoordinators_from_data_domain(): Observable<any>{
         return this.auth.get(`${list}/coordinators-list-data-domains`);
     }

@@ -82,20 +82,26 @@ export class NotificationlistComponent implements OnInit {
     }
     fetchAll(e){
       if(e.target.checked){
-        this.whereString = " WHERE ListName IN ('Referral Notification','Assessment Notification','Admission Notification','Refer On Notification','Not Proceed Notification','Discharge Notification','Suspend Notification','Reinstate Notification','Admin Notification','Lifecycle Event Notification') ";
-        this.loadData();
+        // this.whereString = " WHERE ListName IN ('Referral Notification','Assessment Notification','Admission Notification','Refer On Notification','Not Proceed Notification','Discharge Notification','Suspend Notification','Reinstate Notification','Admin Notification','Lifecycle Event Notification') ";
+        this.loadData(true);
       }else{
-        this.whereString = " WHERE ListName IN ('Referral Notification','Assessment Notification','Admission Notification','Refer On Notification','Not Proceed Notification','Discharge Notification','Suspend Notification','Reinstate Notification','Admin Notification','Lifecycle Event Notification') AND ISNULL(xDeletedRecord,0) = 0 AND (xEndDate Is Null OR xEndDate >= GETDATE()) ";
+        // this.whereString = " WHERE ListName IN ('Referral Notification','Assessment Notification','Admission Notification','Refer On Notification','Not Proceed Notification','Discharge Notification','Suspend Notification','Reinstate Notification','Admin Notification','Lifecycle Event Notification') AND ISNULL(xDeletedRecord,0) = 0 AND (xEndDate Is Null OR xEndDate >= GETDATE()) ";
         this.loadData();
       }
     }
-    loadData(){
-      let sql ="SELECT RecordNo, Recipient,Activity,Location,Program,Staff,ListGroup as funding_source,Mandatory as mandatory,DefaultAssignee as assignee,ListName as ltype,Severity ,xDeletedRecord as is_deleted,xEndDate as end_date from IM_DistributionLists "+this.whereString+"order by Recipient";
+    loadData(isChecked: boolean = false){
+      // let sql ="SELECT RecordNo, Recipient,Activity,Location,Program,Staff,ListGroup as funding_source,Mandatory as mandatory,DefaultAssignee as assignee,ListName as ltype,Severity ,xDeletedRecord as is_deleted,xEndDate as end_date from IM_DistributionLists "+this.whereString+"order by Recipient";
       this.loading = true;
-      this.listS.getlist(sql).subscribe(data => {
+      this.listS.getnotificationslist(isChecked).subscribe(data => {
+        console.log(data)
         this.tableData = data;
         this.loading = false;
-      });
+      })
+      // this.listS.getlist(sql).subscribe(data => {
+      //   console.log(data)
+      //   this.tableData = data;
+      //   this.loading = false;
+      // });
     }
     populateDropdowns(){
       this.listType = notificationTypes;
@@ -197,8 +203,13 @@ export class NotificationlistComponent implements OnInit {
         mandatory,
         end_date,
         recordNo,
-        
+        branch,
+        coordinator
       } = this.tableData[index];
+
+      // console.log(this.tableData[index]);
+      // return;
+
       this.inputForm.patchValue({
         ltype:ltype,
         staff:staff,
@@ -210,8 +221,10 @@ export class NotificationlistComponent implements OnInit {
         funding_source:funding_source,
         saverity:severity,
         mandatory:(mandatory == "True") ? true : false,
-        end_date:end_date,
+        end_date: new Date(end_date),
         recordNo:recordNo,
+        branch: branch,
+        coordinator:coordinator
       });
     }
     trueString(data: any): string{
@@ -272,13 +285,14 @@ export class NotificationlistComponent implements OnInit {
       this.current += 1;
     }
     save() {
+
+      var { branch, coordinator } = this.inputForm.value;
+
       if(!this.isUpdate){        
         this.postLoading = true;   
         const group    = this.inputForm;
         let flag       = false;
 
-        var { branch, coordinator } = this.inputForm.value;
-        
         if(this.selectedStaff.length > 0){
 
           this.selectedStaff.forEach(staf => {            
@@ -313,29 +327,35 @@ export class NotificationlistComponent implements OnInit {
         this.postLoading = false;          
         this.handleCancel();
         this.resetModal();
-      }else{
-        const group       = this.inputForm;
-        let ltype      = this.globalS.isValueNull(group.get('ltype').value);
-        let staff      = this.globalS.isValueNull(group.get('staff').value);
-        let service    = this.globalS.isValueNull(group.get('service').value);
-        let prgm       = this.globalS.isValueNull(group.get('prgm').value);
-        let location   = this.globalS.isValueNull(group.get('location').value);
-        let recepient  = this.globalS.isValueNull(group.get('recepient').value);
-        let funding_source = this.globalS.isValueNull(group.get('funding_source').value);
-        let saverity   = this.globalS.isValueNull(group.get('saverity').value);
-        let mandatory  = this.trueString(group.get('mandatory').value);
-        let assignee   = this.trueString(group.get('assignee').value);
-        let end_date   = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
-        let recordNo   = group.get('recordNo').value;
-        let sql  = "Update IM_DistributionLists SET [Recipient]="+ recepient + ",[Activity] ="+ service + ",[Program] ="+ prgm +",[Staff] ="+ staff+",[Severity] ="+ saverity +",[Mandatory] ="+ mandatory +",[DefaultAssignee] ="+ assignee +",[ListName] ="+ltype+",[xEndDate] = "+end_date+ ",[Location] ="+ location+ ",[ListGroup] ="+ funding_source+ " WHERE [recordNo] ='"+recordNo+"'";
-        this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
-        
-        this.globalS.sToast('Success', 'Saved successful');
-        this.loading = true;  
-        this.loadData();
-        this.postLoading = false;          
-        this.handleCancel();
-        this.resetModal(); 
+      } else{
+
+        const group           = this.inputForm;
+        let ltype             = this.globalS.isValueNull(group.get('ltype').value);
+        let _branch           = this.globalS.isValueNull(branch);
+        let _coordinator      = this.globalS.isValueNull(coordinator);
+        let staff             = this.globalS.isValueNull(group.get('staff').value);
+        let service           = this.globalS.isValueNull(group.get('service').value);
+        let prgm              = this.globalS.isValueNull(group.get('prgm').value);
+        let location          = this.globalS.isValueNull(group.get('location').value);
+        let recepient         = this.globalS.isValueNull(group.get('recepient').value);
+        let funding_source    = this.globalS.isValueNull(group.get('funding_source').value);
+        let saverity          = this.globalS.isValueNull(group.get('saverity').value);
+        let mandatory         = this.trueString(group.get('mandatory').value);
+        let assignee          = this.trueString(group.get('assignee').value);
+        let end_date          = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
+        let recordNo          = group.get('recordNo').value;
+
+
+        let sql  = "Update IM_DistributionLists SET [Recipient]="+ recepient + ",[Activity] ="+ service + ",[Program] ="+ prgm +",[Staff] ="+ staff+",[Severity] ="+ saverity +",[Mandatory] ="+ mandatory +",[DefaultAssignee] ="+ assignee +",[ListName] ="+ltype+",[xEndDate] = "+end_date+ ",[Location] ="+ location+ ",[ListGroup] ="+ funding_source+ ",[Branch]="+ _branch + ",[Coordinator]="+ _coordinator + "  WHERE [recordNo] ='"+recordNo+"'";
+        console.log(sql);
+
+        this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{        
+          this.globalS.sToast('Success', 'Saved successful');
+          this.loading = true;  
+          this.loadData();
+          this.postLoading = false;          
+          this.handleCancel();
+          this.resetModal(); 
         });
       }
     }

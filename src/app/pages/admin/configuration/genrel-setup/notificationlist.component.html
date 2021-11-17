@@ -30,7 +30,7 @@
                         <td class="left">{{ data.funding_source  }} </td>
                         <td class="left">{{ data.severity  }} </td>
                         <td class="left">{{ data?.end_date | date: 'dd/MM/y' }}</td>
-                        <td *ngIf="data.is_deleted == 'False' || data.is_deleted == 'false' || data.is_deleted == '' ">
+                        <td *ngIf="data.is_deleted == 'False' || data.is_deleted == 'false' || data.is_deleted == '' || data.is_delete == null ">
                             <a (click)="showEditModal(i)">Update</a>
                             <nz-divider nzType="vertical"></nz-divider>
                             <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this from Distribution List?"

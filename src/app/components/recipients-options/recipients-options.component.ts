@@ -586,6 +586,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
     }
     
     selectedProgram: any;
+    fundingSource: any;
 
     selectedProgramChange(name: any){
       this.selectedProgram = name;
@@ -2372,7 +2373,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 this.listS.getnotifications({
                   branch: this.BRANCH_NAME,
                   coordinator: this.COORDINATOR,
-                  listname: this.GETLISTNAME(this.option)
+                  listname: this.GETLISTNAME(this.option),
+                  fundingsource: this.fundingSource
                 }).subscribe(data => {
                   this.notifCheckBoxes = data.map(x => {
                     return {
@@ -2454,6 +2456,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
 
                   if(this.option == RECIPIENT_OPTION.REFER_IN)
                   { 
+
+                    this.listS.getfundingSourcePerProgram(this.selectedProgram).subscribe(data => this.fundingSource = data);
 
                     this.listS.getspecificemailmanager(this.COORDINATOR)
                         .subscribe(data => {

@@ -17,6 +17,10 @@ export class ListService {
         public auth: AuthService
     ) { }
 
+    getfundingSourcePerProgram(program: string): Observable<any>{
+        return this.auth.getstring(`${list}/funding-source-per-program/${program}`);
+    }
+
     getnotificationslist(isChecked: boolean = false):Observable<any>{
         return this.auth.get(`${list}/notifications-list/${isChecked}`);
     }

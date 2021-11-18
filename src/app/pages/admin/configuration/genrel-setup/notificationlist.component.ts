@@ -114,7 +114,7 @@ export class NotificationlistComponent implements OnInit {
       this.listS.getlist(branchSql).subscribe(data => {
         this.branches = data;
         let da ={
-          "title" :"ALL"
+          "description" :"ALL"
         };
         this.branches.unshift(da);
       });
@@ -123,7 +123,7 @@ export class NotificationlistComponent implements OnInit {
       this.listS.getlist(coordinatorSql).subscribe(data => {
         this.coordinators = data;
         let da ={
-          "title" :"ALL"
+          "description" :"ALL"
         };
         this.coordinators.unshift(da);
       });

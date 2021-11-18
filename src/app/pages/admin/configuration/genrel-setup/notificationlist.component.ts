@@ -207,7 +207,7 @@ export class NotificationlistComponent implements OnInit {
         coordinator
       } = this.tableData[index];
 
-      // console.log(this.tableData[index]);
+       console.log(this.tableData[index]);
       // return;
 
       this.inputForm.patchValue({
@@ -220,8 +220,8 @@ export class NotificationlistComponent implements OnInit {
         recepient:recipient,
         funding_source:funding_source,
         saverity:severity,
-        mandatory:(mandatory == "True") ? true : false,
-        end_date: new Date(end_date),
+        mandatory:mandatory,
+        end_date: end_date == null ? null : new Date(end_date),
         recordNo:recordNo,
         branch: branch,
         coordinator:coordinator
@@ -310,7 +310,7 @@ export class NotificationlistComponent implements OnInit {
             let assignee      = this.trueString(group.get('assignee').value);
             let end_date      = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
             let values        = recepient+","+service+","+location+","+prgm+",'"+staff+"',"+mandatory+","+assignee+","+saverity+","+ltype+","+funding_source+","+end_date+","+_branch+","+_coordinator;
-            let sql           = "insert into IM_DistributionLists([Recipient],[Activity],[Location],[Program],[Staff],[Mandatory],[DefaultAssignee],[Severity],[ListName],[ListGroup],[xEndDate],[Branch],[Coordinator]) Values ("+values+")"; 
+            let sql           = "insert into IM_DistributionLists([Recipient],[Activity],[Location],[Program],[StaffToNotify],[Mandatory],[DefaultAssignee],[Severity],[ListName],[ListGroup],[xEndDate],[Branch],[Coordinator]) Values ("+values+")"; 
 
             this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
               flag = true;
@@ -346,7 +346,7 @@ export class NotificationlistComponent implements OnInit {
         let recordNo          = group.get('recordNo').value;
 
 
-        let sql  = "Update IM_DistributionLists SET [Recipient]="+ recepient + ",[Activity] ="+ service + ",[Program] ="+ prgm +",[Staff] ="+ staff+",[Severity] ="+ saverity +",[Mandatory] ="+ mandatory +",[DefaultAssignee] ="+ assignee +",[ListName] ="+ltype+",[xEndDate] = "+end_date+ ",[Location] ="+ location+ ",[ListGroup] ="+ funding_source+ ",[Branch]="+ _branch + ",[Coordinator]="+ _coordinator + "  WHERE [recordNo] ='"+recordNo+"'";
+        let sql  = "Update IM_DistributionLists SET [Recipient]="+ recepient + ",[Activity] ="+ service + ",[Program] ="+ prgm +",[StaffToNotify] ="+ staff+",[Severity] ="+ saverity +",[Mandatory] ="+ mandatory +",[DefaultAssignee] ="+ assignee +",[ListName] ="+ltype+",[xEndDate] = "+end_date+ ",[Location] ="+ location+ ",[ListGroup] ="+ funding_source+ ",[Branch]="+ _branch + ",[Coordinator]="+ _coordinator + "  WHERE [recordNo] ='"+recordNo+"'";
         console.log(sql);
 
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{        

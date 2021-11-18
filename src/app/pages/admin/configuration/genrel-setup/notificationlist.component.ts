@@ -292,6 +292,7 @@ export class NotificationlistComponent implements OnInit {
         this.postLoading = true;   
         const group    = this.inputForm;
         let flag       = false;
+        let _sql = "";
 
         if(this.selectedStaff.length > 0){
 
@@ -310,11 +311,15 @@ export class NotificationlistComponent implements OnInit {
             let assignee      = this.trueString(group.get('assignee').value);
             let end_date      = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
             let values        = recepient+","+service+","+location+","+prgm+",'"+staff+"',"+mandatory+","+assignee+","+saverity+","+ltype+","+funding_source+","+end_date+","+_branch+","+_coordinator;
-            let sql           = "insert into IM_DistributionLists([Recipient],[Activity],[Location],[Program],[StaffToNotify],[Mandatory],[DefaultAssignee],[Severity],[ListName],[ListGroup],[xEndDate],[Branch],[Coordinator]) Values ("+values+")"; 
+            let sql           = "insert into IM_DistributionLists([Recipient],[Activity],[Location],[Program],[StaffToNotify],[Mandatory],[DefaultAssignee],[Severity],[ListName],[ListGroup],[xEndDate],[Branch],[Coordinator]) Values ("+values+");"; 
 
-            this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
-              flag = true;
-            });
+         
+            _sql = _sql + sql;
+          });
+          // console.log(_sql);
+          this.menuS.InsertDomain(_sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
+            flag = true;
+            this.loadData();
           });
         }
         else{

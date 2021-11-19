@@ -1623,7 +1623,7 @@ admincharges :number = 0;
         if (!this.isVarNull(data)) {
             return "'"+data+"'";
         }
-        return null;
+        return "''";
     }
     isPackageLeaveTypeExists(tableData,username) {
         return tableData.some(function(el) {

@@ -17,6 +17,18 @@ export class ListService {
         public auth: AuthService
     ) { }
 
+    getfundingSourcePerProgram(program: string): Observable<any>{
+        return this.auth.getstring(`${list}/funding-source-per-program/${program}`);
+    }
+
+    getnotificationslist(isChecked: boolean = false):Observable<any>{
+        return this.auth.get(`${list}/notifications-list/${isChecked}`);
+    }
+
+    getcoordinators_from_data_domain(): Observable<any>{
+        return this.auth.get(`${list}/coordinators-list-data-domains`);
+    }
+
     getdoctorinformation():Observable<any>{
         return this.auth.get(`${list}/doctors-information`);
     }

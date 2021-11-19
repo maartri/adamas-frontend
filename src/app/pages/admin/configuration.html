@@ -916,7 +916,7 @@
                                                 </button>
                                             </div>
                                             <div>
-                                                <button nz-button nzType="default"  id="print-staff-rosters" (click) = "ShowModal(this.id)" >
+                                                <button nz-button nzType="default"  id="print-staff-jobsheet" (click) = "ShowModal(this.id)" >
                                                     <i nz-icon nzType="read"></i>
                                                     Print Job Sheets
                                                 </button>
@@ -1032,10 +1032,21 @@
                             </div>
                         </div>
                     </div>
+                    <div nz-row *ngIf="frm_Outlets" >                                                                                            
+                        <div nz-col nzSpan="20">
+                            <div class="form-group">
+                                <label><i nz-icon nzType="environment" nzTheme="outline"></i>  Outlets</label>
+                                <label class="checks" nz-checkbox formControlName="allOutlets">All Outlets</label>
+                                <nz-select formControlName="outletsArr"  nzMode="multiple" [nzDisabled]="inputForm.value.allOutlets">
+                                    <nz-option *ngFor="let option of outletsArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                </nz-select>
+                            </div>
+                        </div>
+                    </div> 
                     <div nz-row *ngIf="frm_Branches">
                         <div nz-col nzSpan="20">
                             <div class="form-group">
-                                <label><i nz-icon nzType="environment" nzTheme="outline"></i>  Branches</label>
+                                <label><i nz-icon nzType="branches" nzTheme="outline"></i>  Branches</label>
                                 <label class="checks" nz-checkbox formControlName="allBranches">All Branches</label>
                                 <nz-select formControlName="branchesArr"  nzMode="multiple" [nzDisabled]="inputForm.value.allBranches">
                                     <nz-option *ngFor="let option of branchesArr" [nzLabel]="option" [nzValue]="option"></nz-option>
@@ -1199,7 +1210,7 @@
                     <div nz-row >
                         <div nz-col nzSpan="20">
                             <div class="form-group">
-                                <label><i nz-icon nzType="environment" nzTheme="outline"></i>Branches to Print for</label>
+                                <label><i nz-icon nzType="branches" nzTheme="outline"></i>Branches to Print for</label>
                                 <label class="checks" nz-checkbox formControlName="allBranches">All Branches</label>
                                 <nz-select formControlName="branchesArr"  nzMode="multiple" [nzDisabled]="inputForm.value.allBranches">
                                     <nz-option *ngFor="let option of branchesArr" [nzLabel]="option" [nzValue]="option"></nz-option>

@@ -10,11 +10,14 @@ import { HttpClient, HttpHeaders, HttpParams, } from '@angular/common/http';
 //Sets defaults of Criteria Model
 const inputFormDefault = {
     
-    Rptformat : ['Format Run Sheet'],
+    Rptformat : ['Default'],
     displayby : ['DISPLAY BY STAFF CODE'],
 
     branchesArr: [[]],
     allBranches: [true],
+
+    outletsArr: [[]],
+    allOutlets: [true],
 
     managersArr: [[]],
     allManager: [true],
@@ -128,6 +131,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
     tocken :any;
     frm_formats : boolean;
     frm_display : boolean;
+    frm_Outlets: boolean;
     tabset = false;
     isVisibleTop =false;
     Single_input_integer = false; 
@@ -160,6 +164,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
     Rptformat : Array<any> = [];
     displayby : Array<any> = [];
 
+    outletsArr: Array<any> = [];
     branchesArr: Array<any> = [];    
     managersArr: Array<any> = [];
     recipientArr: Array<any> = [];
@@ -202,6 +207,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
 
     s_CoordinatorSQL: string;
     s_StfTeamSQL : string;
+    s_locationSQL : string;
     s_GroupSQL : string;
     s_vehicleSQL : string;
     s_StfGroupSQL : string;
@@ -612,6 +618,11 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
             staffArr: []
         });
     });
+    this.inputForm.get('allOutlets').valueChanges.subscribe(data => {
+        this.inputForm.patchValue({
+            outletsArr: []
+        });
+    });
     
 
        
@@ -643,6 +654,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
         this.listS.getserviceregion().subscribe(x => this.serviceRegionsArr = x)
         this.listS.GetVehicles().subscribe(x => this.vehiclesArr = x);
         this.listS.GetTraccsStaffCodes().subscribe(x => this.staffArr = x) 
+        this.listS.getcstdaoutlets().subscribe(x => this.outletsArr = x);
    
    
    
@@ -776,27 +788,30 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
               
             
                 break;
-        /*    case "print-staff-rosters":
-                this.ModalName = "PRINT STAFF ROSTER";                                                       
+            case "print-staff-jobsheet":
+                this.ModalName = "PRINT STAFF JOBSHET";                                                       
                 this.frm_Date = true;
+                this.frm_Staff = true;
                 this.frm_Branches = true;
                 this.frm_Packages = true;
                 this.frm_Categories = true;
                 this.frm_Programs = true;
                 this.frm_Managers = true;
                 
-                this.isVisibleTop = true;
+            //  this.isVisibleTop = true;
             
-                break;  */
+                break;  
             case "print-location-rosters":
                 this.ModalName = "PRINT ROSTER LOCATION";                                                       
                 this.frm_Date = true;
-                //this.frm_locations = true;
+                this.frm_Outlets = true;
                 this.frm_Branches = true;                
                 this.frm_Programs = true;
                 this.frm_Categories = true;
                 this.frm_Managers = true;
                 this.frm_StaffTeam = true;
+                this.Rptformat = ['Default','Attendance Sheet'];                                                    
+                this.frm_formats = true;
             
                 this.isVisibleTop = true;
                 break;
@@ -835,7 +850,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
                 this.frm_Categories = true;
                 this.frm_Managers = true;
                 this.displayby = ['DISPLAY BY STAFF CODE','DISPLAY BY RECIPIENT CODE']
-                this.Rptformat = ['Format Run Sheet','Format Meal Plan','Format Pack Sheet']; 
+                this.Rptformat = ['Default','Format Run Sheet','Format Meal Plan','Format Pack Sheet']; 
                 this.frm_StaffTeam = true;
                 this.frm_formats = true;
                 this.frm_display = true;
@@ -843,7 +858,9 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
                 this.isVisibleTop = true;
                 break;
             case "print-staff-rosters":
-                this.ModalName = "PRINT JOB SHEET";                                                       
+                this.ModalName = "PRINT STAFF ROSTERS";   
+                this.Rptformat = ['Default','Fixed Layout'];                                                    
+                this.frm_formats = true;
                 this.frm_Date = true;
                 this.frm_Staff = true;
                 this.frm_Branches = true;                
@@ -944,6 +961,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
         var s_Groups = this.inputForm.value.MealGroups;
         var s_Vehicles = this.inputForm.value.vehiclesArr;
         var s_Staff = this.inputForm.value.staffArr;
+        var s_OutLetID = this.inputForm.value.outletsArr;
         
 
         switch (this.btnid) {
@@ -984,10 +1002,10 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
             
                 break;
             case "print-location-rosters":
-            this.locationrosters();
+            this.locationrosters(s_OutLetID,s_Branches,s_Programs,s_StfGroup,s_Managers,s_StaffTeam,strdate, endate);
                 break;
             case "print-group-activity-rosters":
-                this.groupActivityRoster();
+                this.groupActivityRoster(s_Groups,s_Branches,s_Programs,s_StfGroup,s_Managers,s_StaffTeam,strdate, endate);
             
                 break;
             case "print-transport-run-sheets":
@@ -998,10 +1016,10 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
                 this.mealrunsheet(s_Groups,s_Branches,s_Programs,s_StfGroup,s_Managers,s_StaffTeam,strdate, endate);
                 break;
       
-            /*case "print-staff-rosters":
+            case "print-staff-jobsheet":
                 this.staffjoobsheet();
             
-                break; */
+                break; 
             case "print-invoices":
                                          
             break;
@@ -1625,15 +1643,19 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
 
         fQuery = fQuery + " ORDER BY R.RECORDNO "
 
-        //console.log(fQuery)
+        console.log(fQuery)
 
-
+if(this.inputForm.value.Rptformat.toString() == 'Fixed Layout'){
+var id = "cdt0yJ66aXouhNux";
+}else{
+var id = "wE05f9PtCWLd67G8";
+}
 
 
 
 
         const data = {
-            "template": { "_id": "wE05f9PtCWLd67G8" },
+            "template": { "_id": id },
             "options": {
                 "reports": { "save": false },
 
@@ -1898,11 +1920,53 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
             });
 
     }  
-    groupActivityRoster(){
-        var fQuery = " SELECT CASE WHEN [Roster].[Carer Code] = 'BOOKED' THEN '**UNFILLED SHIFT' ELSE [Roster].[Carer Code] END AS [Carer Code], [Roster].[Date], [Recipients].[BillTo] as DebtorCode, [Roster].[YearNo], [Roster].[MonthNo], [Roster].[Dayno], [Roster].[Start Time], [Roster].[Duration] As FiveMinBlocks, [Roster].[Duration] * 5 As DurationInMinutes,Convert(nvarchar,DateAdd(minute,([Roster].[Duration] * 5),[Roster].[Start Time]), 108) as [End Time], [Roster].[CostUnit], [Roster].[Client Code], [Roster].[Program], [Roster].[Service Type], [Roster].[Type], [Roster].[Service Description], [Roster].[ServiceSetting], [Roster].[Notes], [Recipients].[SpecialConsiderations], [Recipients].[FirstName], [Recipients].[AgencyIDReportingCode], [Recipients].[AgencyDefinedGroup], [Recipients].[Branch], [Recipients].[Careplanchange], [Roster].[BillQTY] * [Roster].[Unit Bill Rate] AS TotalFare, CASE WHEN ISNULL([Recipients].[HideTransportFare], 0) = 0 THEN 'FALSE' ELSE 'TRUE' END AS ShowFare, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS Address, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS Contact FROM [Roster] INNER JOIN [Recipients] ON [Roster].[Client Code] = [Recipients].AccountNo LEFT JOIN [Staff] ON [Roster].[Carer Code] = [Staff].AccountNo LEFT JOIN (SELECT PERSONID, Suburb,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE '' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE '' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE '' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE '' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = Recipients.UniqueID LEFT JOIN (SELECT TOP 1 PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE '' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE '' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE '' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE '' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = Recipients.UniqueID LEFT JOIN (SELECT PersonID,  CASE WHEN Detail <> '' THEN Detail ELSE '' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = Recipients.UniqueID LEFT JOIN (SELECT TOP 1 PersonID,  CASE WHEN Detail <> '' THEN Detail ELSE '' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = Recipients.UniqueID WHERE ([Roster].[Type] = 12) AND  ([Roster].[Date] BETWEEN '2017/10/22' AND '2017/10/27') AND ([Roster].[Start Time] BETWEEN '00:00' AND '24:00') AND [Roster].[Carer Code] > '!z'  ORDER BY Roster.[ServiceSetting], Roster.Date,  Roster.[Start Time], Roster.[Carer Code] , Roster.Type "
+    groupActivityRoster(group,branch,program,jobcategory,manager,staffteam,startdate,enddate){
+        var fQuery = " SELECT CASE WHEN [Roster].[Carer Code] = 'BOOKED' THEN '**UNFILLED SHIFT' ELSE [Roster].[Carer Code] END AS [Carer Code], [Roster].[Date], [Recipients].[BillTo] as DebtorCode, [Roster].[YearNo], [Roster].[MonthNo], [Roster].[Dayno], [Roster].[Start Time], [Roster].[Duration] As FiveMinBlocks, [Roster].[Duration] * 5 As DurationInMinutes, [Roster].[CostUnit], [Roster].[Client Code], [Roster].[Program], [Roster].[Service Type], [Roster].[Type], [Roster].[Service Description], [Roster].[ServiceSetting], [Roster].[Notes], [Recipients].[SpecialConsiderations], [Recipients].[FirstName], [Recipients].[AgencyIDReportingCode], [Recipients].[AgencyDefinedGroup], [Recipients].[Branch], [Recipients].[Careplanchange], [Roster].[BillQTY] * [Roster].[Unit Bill Rate] AS TotalFare, CASE WHEN ISNULL([Recipients].[HideTransportFare], 0) = 0 THEN 'FALSE' ELSE 'TRUE' END AS ShowFare, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS Address, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS Contact FROM [Roster] INNER JOIN [Recipients] ON [Roster].[Client Code] = [Recipients].AccountNo LEFT JOIN [Staff] ON [Roster].[Carer Code] = [Staff].AccountNo LEFT JOIN (SELECT PERSONID, Suburb,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE '' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE '' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE '' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE '' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = Recipients.UniqueID LEFT JOIN (SELECT TOP 1 PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE '' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE '' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE '' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE '' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = Recipients.UniqueID LEFT JOIN (SELECT PersonID,  CASE WHEN Detail <> '' THEN Detail ELSE '' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = Recipients.UniqueID LEFT JOIN (SELECT TOP 1 PersonID,  CASE WHEN Detail <> '' THEN Detail ELSE '' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = Recipients.UniqueID WHERE ([Roster].[Type] = 12) AND [Roster].[Carer Code] > '!z' AND ([Roster].[Start Time] BETWEEN '00:00' AND '24:00') "
+    
+        //AND  ([Roster].[Date] BETWEEN '2021/11/19' AND '2021/11/19') 
+        //AND (([Staff].[STF_DEPARTMENT] = 'ADELAIDE') OR ([Staff].[STF_DEPARTMENT] = 'BRISBANE'))
+        // AND (([Staff].[StaffGroup] = 'ADMIN AND FINANCE') OR ([Staff].[StaffGroup] = 'BOARD MEMBER')) 
+        //AND (([Staff].[PAN_Manager] = 'ALLA KASPARSKI') OR ([Staff].[PAN_Manager] = 'ALLY ARNLEY')) 
+        //AND (([Staff].[StaffTeam] = 'ACCOMODATION SERVICES') OR ([Staff].[StaffTeam] = 'ADMINISTRATION')) 
+        //AND (([Roster].[ServiceSetting] = 'A BAILEY C PARTRIDGE') OR ([Roster].[ServiceSetting] = 'AFTER SCHOOL GRP')) 
+        //AND (([Roster].[Program] = 'AAA LEV 3 CRAIG SMITH') OR ([Roster].[Program] = 'AADMIN'))  "
+               
         var lblcriteria;
 
+        var  tempsdate = format(this.startdate, 'yyyy/MM/dd')
+        var  tempedate = format(this.enddate, 'yyyy/MM/dd')
 
+        if (startdate != null || enddate != null) {
+            this.s_DateSQL = "  [Roster].[Date] BETWEEN '" + tempsdate + ("'AND'") + tempedate + "'";
+            if (this.s_DateSQL != "") { fQuery = fQuery + " AND " + this.s_DateSQL };
+        }   
+           
+        if (branch != "") {
+            this.s_BranchSQL = "[Staff].[STF_DEPARTMENT] in ('" + branch.join("','") + "')";
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL };
+        }
+        if (manager != "") {
+            this.s_CoordinatorSQL = "[Staff].[PAN_Manager] in ('" + manager.join("','") + "')";
+            if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+        }
+        if (program != "") {
+            this.s_ProgramSQL = " ([Roster].[Program] in ('" + program.join("','") + "'))";
+            if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+        }
+        if (jobcategory != "") {
+            this.s_StfGroupSQL = "( [Staff].[StaffGroup] in ('" + jobcategory.join("','") + "'))";
+            if (this.s_StfGroupSQL != "") { fQuery = fQuery + " AND " + this.s_StfGroupSQL };
+        }
+        if (staffteam != "") {
+            this.s_StfTeamSQL = "([Staff].[StaffTeam] in ('" + staffteam.join("','") + "'))";
+            if (this.s_StfTeamSQL != "") { fQuery = fQuery + " AND " + this.s_StfTeamSQL };
+        }
+        if (group != "") {
+            this.s_GroupSQL = "([Roster].[ServiceSetting] in ('" + group.join("','") + "'))";
+            if (this.s_GroupSQL != "") { fQuery = fQuery + " AND " + this.s_GroupSQL };
+        }
+
+        fQuery = fQuery + " ORDER BY Roster.[ServiceSetting], Roster.Date,  Roster.[Start Time], Roster.[Carer Code] , Roster.Type "
 
         const data = {
             "template": { "_id": "CoDMIh3sgJNoIS43" },
@@ -1933,14 +1997,80 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
             });
 
     }
-    locationrosters(){
-        var fQuery = " SELECT CASE WHEN [Roster].[Carer Code] = 'BOOKED' THEN '**UNFILLED SHIFT' ELSE [Roster].[Carer Code] END AS [Carer Code], [Roster].[Date], [Recipients].[BillTo] as DebtorCode, [Roster].[YearNo], [Roster].[MonthNo], [Roster].[Dayno], [Roster].[Start Time], [Roster].[Duration] As FiveMinBlocks, [Roster].[Duration] * 5 As DurationInMinutes,Convert(nvarchar,DateAdd(minute,([Roster].[Duration] * 8),[Roster].[Start Time]), 108) as [End Time], [Roster].[CostUnit], [Roster].[Client Code], [Roster].[Program], [Roster].[Service Type], [Roster].[Type], [Roster].[Service Description], [Roster].[ServiceSetting], [Roster].[Notes], [Recipients].[SpecialConsiderations], [Recipients].[FirstName], [Recipients].[AgencyIDReportingCode], [Recipients].[AgencyDefinedGroup], [Recipients].[Branch], [Recipients].[Careplanchange], [Roster].[BillQTY] * [Roster].[Unit Bill Rate] AS TotalFare, CASE WHEN ISNULL([Recipients].[HideTransportFare], 0) = 0 THEN 'FALSE' ELSE 'TRUE' END AS ShowFare, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS Address, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS Contact FROM [Roster] INNER JOIN [Recipients] ON [Roster].[Client Code] = [Recipients].AccountNo LEFT JOIN [Staff] ON [Roster].[Carer Code] = [Staff].AccountNo LEFT JOIN (SELECT PERSONID, Suburb,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE '' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE '' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE '' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE '' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = Recipients.UniqueID LEFT JOIN (SELECT TOP 1 PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE '' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE '' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE '' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE '' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = Recipients.UniqueID LEFT JOIN (SELECT PersonID,  CASE WHEN Detail <> '' THEN Detail ELSE '' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = Recipients.UniqueID LEFT JOIN (SELECT TOP 1 PersonID,  CASE WHEN Detail <> '' THEN Detail ELSE '' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = Recipients.UniqueID WHERE ([Roster].[Type] = 11) AND  ([Roster].[Date] BETWEEN '2018/10/26' AND '2018/10/26') AND ([Roster].[Start Time] BETWEEN '00:00' AND '24:00') AND [Roster].[Client Code] > '!z'  ORDER BY Roster.[ServiceSetting], Roster.Date,  Roster.[Start Time], Roster.[Client Code] , Roster.Type "
-        var lblcriteria;
+    locationrosters(location,branch,program,jobcategory,manager,staffteam,startdate,enddate){
+        
+        
+         var lblcriteria;
 
+        if(this.inputForm.value.Rptformat.toString() == 'Attendance Sheet'){
+            var fQuery = " SELECT CASE WHEN [Recipients].[PreferredName] <> '' THEN [Recipients].[PreferredName]+' '+ [Recipients].[Surname/Organisation] ELSE [Recipients].[FirstName] +' '+ [Recipients].[Surname/Organisation] END AS RecipientName, [R].[Notes], [R].[DATE],[R].[TYPE],[R].[CLIENT CODE], [R].[SERVICE TYPE],  [R].[BILLQTY] * [R].[UNIT BILL RATE] AS FEE , (SELECT TOP 1 [ServiceSetting] FROM Roster r1      WHERE          r1.[Client Code] = R.[Client Code]      AND r1.[Date] = R.Date      AND r1.[Start Time] < R.[Start Time]      AND r1.Type = 10) AS ServiceSetting FROM Roster R INNER JOIN [Recipients] ON [R].[Client Code] = [Recipients].AccountNo WHERE [R].[Type] IN (11) AND ([R].[Start Time] BETWEEN '00:00' AND '24:00') AND [R].[Client Code] > '!z' "                   
+            }else{
+               var fQuery = "SELECT CASE WHEN [Roster].[Carer Code] = 'BOOKED' THEN '**UNFILLED SHIFT' ELSE [Roster].[Carer Code] END AS [Carer Code], [Roster].[Date], [Recipients].[BillTo] as DebtorCode, [Roster].[YearNo], [Roster].[MonthNo], [Roster].[Dayno], [Roster].[Start Time], [Roster].[Duration] As FiveMinBlocks, [Roster].[Duration] * 5 As DurationInMinutes, [Roster].[CostUnit], [Roster].[Client Code], [Roster].[Program], [Roster].[Service Type], [Roster].[Type], [Roster].[Service Description], [Roster].[ServiceSetting], [Roster].[Notes], [Recipients].[SpecialConsiderations], [Recipients].[FirstName], [Recipients].[AgencyIDReportingCode], [Recipients].[AgencyDefinedGroup], [Recipients].[Branch], [Recipients].[Careplanchange], [Roster].[BillQTY] * [Roster].[Unit Bill Rate] AS TotalFare, CASE WHEN ISNULL([Recipients].[HideTransportFare], 0) = 0 THEN 'FALSE' ELSE 'TRUE' END AS ShowFare, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS Address, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS Contact FROM Roster R INNER JOIN [Recipients] ON [Roster].[Client Code] = [Recipients].AccountNo LEFT JOIN [Staff] ON [Roster].[Carer Code] = [Staff].AccountNo LEFT JOIN (SELECT PERSONID, Suburb,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE '' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE '' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE '' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE '' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = Recipients.UniqueID LEFT JOIN (SELECT TOP 1 PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE '' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE '' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE '' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE '' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = Recipients.UniqueID LEFT JOIN (SELECT PersonID,  CASE WHEN Detail <> '' THEN Detail ELSE '' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = Recipients.UniqueID LEFT JOIN (SELECT TOP 1 PersonID,  CASE WHEN Detail <> '' THEN Detail ELSE '' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = Recipients.UniqueID WHERE ([Roster].[Type] = 11)  AND ([Roster].[Start Time] BETWEEN '00:00' AND '24:00') AND [Roster].[Client Code] > '!z' "
+            }
+            //AND  ([Roster].[Date] BETWEEN '2021/11/19' AND '2021/11/19') 
+            //AND (([Recipients].[Branch] = 'ADELAIDE') OR ([Recipients].[Branch] = 'BRISBANE')) 
+            //AND (([Roster].[ServiceSetting] = 'AA COMMUNITY') OR ([Roster].[ServiceSetting] = 'AHMAD')) 
+            //AND (([Roster].[Program] = 'AAA LEV 3 CRAIG SMITH') OR ([Roster].[Program] = 'AADMIN')) "
+           
+
+        
+
+        var  tempsdate = format(this.startdate, 'yyyy/MM/dd')
+        var  tempedate = format(this.enddate, 'yyyy/MM/dd')
+
+        if (startdate != null || enddate != null) {
+            this.s_DateSQL = "  [R].[Date] BETWEEN '" + tempsdate + ("'AND'") + tempedate + "'";
+            if (this.s_DateSQL != "") { fQuery = fQuery + " AND " + this.s_DateSQL };
+        }   
+           
+        if (branch != "") {
+            this.s_BranchSQL = "[Recipients].[Branch] in ('" + branch.join("','") + "')";
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL };
+        }
+        if (manager != "") {
+            this.s_CoordinatorSQL = "[Staff].[PAN_Manager] in ('" + manager.join("','") + "')";
+            if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+        }
+        if (program != "") {
+            this.s_ProgramSQL = " ([R].[Program] in ('" + program.join("','") + "'))";
+            if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+        }
+        if (jobcategory != "") {
+            this.s_StfGroupSQL = "( [Staff].[StaffGroup] in ('" + jobcategory.join("','") + "'))";
+            if (this.s_StfGroupSQL != "") { fQuery = fQuery + " AND " + this.s_StfGroupSQL };
+        }
+        if (staffteam != "") {
+            this.s_StfTeamSQL = "([Staff].[StaffTeam] in ('" + staffteam.join("','") + "'))";
+            if (this.s_StfTeamSQL != "") { fQuery = fQuery + " AND " + this.s_StfTeamSQL };
+        }
+        if (location != "") {
+            this.s_locationSQL = "([R].[ServiceSetting] in ('" + location.join("','") + "'))";
+            if (this.s_locationSQL != "") { fQuery = fQuery + " AND " + this.s_locationSQL };
+        }
+
+          
+
+        
+
+        
+
+
+
+
+
+        if(this.inputForm.value.Rptformat.toString() == 'Attendance Sheet'){
+            fQuery = fQuery + " ORDER BY [DATE], [ServiceSetting], RECIPIENTNAME"
+            var id = "UAPvwdP5GydahuRa";
+            }else{
+                fQuery = fQuery + " ORDER BY Roster.[ServiceSetting], Roster.Date,  Roster.[Start Time], Roster.[Client Code] , Roster.Type "
+                var id = "tQmPyebgakeI4q0x";
+            }
+
+            console.log(fQuery)
 
 
         const data = {
-            "template": { "_id": "tQmPyebgakeI4q0x" },
+            "template": { "_id": id },
             "options": {
                 "reports": { "save": false },
 

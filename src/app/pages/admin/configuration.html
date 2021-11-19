@@ -1010,6 +1010,28 @@
                     </div>
                 </div>
                 <div nz-row [formGroup]="inputForm">
+                    <div nz-row *ngIf="frm_vehicles" >
+                        <div nz-col nzSpan="20">
+                            <div class="form-group">
+                                <label><i nz-icon nzType="car" nzTheme="outline"></i> Vehicles</label>
+                                <label class="checks" nz-checkbox formControlName="allVehicles">All Vehicles</label>                                        
+                                <nz-select formControlName="vehiclesArr"  nzMode="multiple" [nzDisabled]="inputForm.value.allVehicles" >
+                                    <nz-option *ngFor="let option of vehiclesArr" [nzLabel]="option" [nzValue]="option" ></nz-option>
+                                </nz-select>                                        
+                            </div> 
+                        </div>
+                    </div>
+                    <div nz-row *ngIf="frm_Staff" >
+                        <div nz-col nzSpan="20">
+                            <div class="form-group">
+                                <label><i nz-icon nzType="bank" nzTheme="outline"></i> Staff  </label>
+                                <label class="checks" nz-checkbox formControlName="allStaff">All Staff </label>
+                                <nz-select formControlName="staffArr" nzMaxTagCount="4" nzMode="multiple" [nzDisabled]="inputForm.value.allStaff">
+                                    <nz-option *ngFor="let option of staffArr" [nzLabel]="option" [nzValue]="option"></nz-option>
+                                </nz-select>                                    
+                            </div>
+                        </div>
+                    </div>
                     <div nz-row *ngIf="frm_Branches">
                         <div nz-col nzSpan="20">
                             <div class="form-group">
@@ -1101,7 +1123,7 @@
                     <div nz-row *ngIf="frm_display" >
                         <div nz-col nzSpan="20">
                             <div class="form-group">
-                                <label><i nz-icon nzType="apartment" nzTheme="outline"></i> Report Displayby </label>                                
+                                <label> Report Display </label>                                
                                 <nz-select formControlName="displayby"  >
                                     <nz-option *ngFor="let option of displayby" [nzLabel]="option" [nzValue]="option"></nz-option>
                                 </nz-select>                                        
@@ -1111,7 +1133,7 @@
                     <div nz-row *ngIf="frm_formats" >
                         <div nz-col nzSpan="20">
                             <div class="form-group">
-                                <label><i nz-icon nzType="apartment" nzTheme="outline"></i> Report Format </label>                                
+                                <label> Report Format </label>                                
                                 <nz-select formControlName="Rptformat"  >
                                     <nz-option *ngFor="let option of Rptformat" [nzLabel]="option" [nzValue]="option"></nz-option>
                                 </nz-select>                                        
@@ -1148,7 +1170,7 @@
         [(nzVisible)]="isVisible"
         [(nzTitle)]="ModalTitle"
         [nzFooter]="modalFooter"
-        
+        (nzOnCancel)="handleCancelTop()"
         >
         <nz-container>
             <div *ngIf="selection"> 
@@ -1162,6 +1184,7 @@
                     </div>
                 </div>
                 <div [formGroup]="inputForm">
+                    
                     <div nz-row *ngIf="frm_BatchNo" > 
                         <div nz-col nzSpan="20">
                             <div class="form-group"> 
@@ -1184,7 +1207,7 @@
                                 
                             </div>
                         </div>   
-                    </div>
+                    </div>                    
                     <div nz-row *ngIf="frm_Accounts">
                         <div nz-col nzSpan="20">
                             <div class="form-group"> 
@@ -1192,8 +1215,7 @@
                                 <label class="checks" nz-checkbox formControlName="allAccounts">All Accounts</label>
                                 <nz-select formControlName="AccountsArr"  nzMode="multiple" [nzDisabled]="inputForm.value.allAccounts">
                                     <nz-option *ngFor="let option of AccountsArr" [nzLabel]="option" [nzValue]="option"></nz-option>
-                                </nz-select>
-                                
+                                </nz-select>                                
                             </div>
                         </div>   
                     </div> 
@@ -1208,10 +1230,7 @@
                                 
                             </div>
                         </div>   
-                    </div>
-                    
-                    
-                    
+                    </div>                                                            
                 </div>
             </div>
             <div *ngIf="options" >
@@ -1231,7 +1250,7 @@
 </div>
 <!--MUFEED-->
 </div>
-<nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
+<nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancel()">
     <div class="col-md-12 spinner" *ngIf="loading">
         <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
     </div>

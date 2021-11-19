@@ -4,12 +4,18 @@ import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes 
 import { Router, NavigationEnd } from '@angular/router';
 import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
 import { takeUntil,switchMap, tap } from 'rxjs/operators';
-
+import { DatePipe } from '@angular/common';
+import parseISO from 'date-fns/parseISO'
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
 
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { nextDay } from 'date-fns';
 import format from 'date-fns/format';
+import * as moment from 'moment';
+
+import { SqlWizardService } from '@services/sqlwizard.service';
+
+interface CarePlan{planNumber:number,planName:string,planStartDate:Date,planEndDate:Date,planCoPayAmount:number,planDetail:any};
 
 @Component({
     styles: [`
@@ -46,7 +52,7 @@ export class RecipientExternal implements OnInit, OnDestroy {
    
     Person:any={id:'0',code:'',personType:'', noteType:''};
     Column:any={key:'',title:''};
-
+   
     nzSelectedIndex:number=0;
     Info:any=null;
     lstAddress:Array<any>=[];
@@ -56,6 +62,7 @@ export class RecipientExternal implements OnInit, OnDestroy {
     lstTasks:Array<any>=[];
     lstApprovedProgram:Array<any>=[];
     lstApprovedServices:Array<any>=[];
+    lstCarerPlanDate:Array<CarePlan>=[];
     lstCarerPlans:Array<any>=[];
     lstCaseNotes:Array<any>=[];
     lstOpNotes:Array<any>=[];
@@ -70,7 +77,16 @@ export class RecipientExternal implements OnInit, OnDestroy {
     date1:Date;
     date2:Date
     dateFormat: string = 'dd/MM/yyyy';
-   
+    isCarerPlanVisible:boolean
+    selectedPlan:{recnum:0,planNumber:0,planName:'',planStartDate:'2021/01/01',planEndDate:'2021/01/01',planCoPayAmount:0,planDetail:''};
+    planNumber:0;
+    planName:'';
+    planStartDate:Date ;;
+    planEndDate:Date ;;
+    planCoPayAmount:0;
+    planDetail:'';
+    edit:boolean=false;
+    editCache: { [key: string]: { edit: boolean; data: any } } = {};
 
     private values$: Subscription;   
     private values2$: Subscription;
@@ -86,16 +102,59 @@ export class RecipientExternal implements OnInit, OnDestroy {
         private router: Router,
         private globalS: GlobalService,
         private formBuilder: FormBuilder,
-        private modalService: NzModalService
+        private modalService: NzModalService,
+        public datepipe: DatePipe,
     ) {
         
 
     }
 
     showEditModal(i:number){
+        this.selectedPlan = this.lstCarerPlans[i];
+        
+        this.planNumber=this.selectedPlan.planNumber;
+        this.planName=this.selectedPlan.planName;
+        this.planStartDate = moment(this.selectedPlan.planStartDate,"YYYY-MM-DD").toDate();  
+        this.planEndDate=moment(this.selectedPlan.planEndDate,"YYYY-MM-DD").toDate();  
+        this.planCoPayAmount=this.selectedPlan.planCoPayAmount;
+        this.planDetail=this.selectedPlan.planDetail;
 
+        this.isCarerPlanVisible=true;
+       //this.edit=true;
     }
     
+    updatePlan(){
+        this.edit=false;
+        this.isCarerPlanVisible=false;
+        
+            let sql :any= {TableName:'',Columns:'',ColumnValues:'',SetClause:'',WhereClause:''};
+            
+            sql.TableName='CarePlanItem ';
+            let frmt="yyyy/MM/dd";
+           sql.SetClause=`set  PlanNumber=${this.planNumber}, 
+           PlanName='${this.planName}', 
+           PlanStartDate='${format(this.planStartDate,frmt) } ',
+           PlanEndDate='${format(this.planEndDate,frmt)}',
+           PlanCoPayAmount=${this.planCoPayAmount},
+           PlanDetail=N'${this.planDetail}'`;
+
+           sql.WhereClause=` WHERE Recnum = ${this.selectedPlan.recnum} `;
+       
+               this.listS.updatelist(sql).subscribe(data=>{
+                   console.log("Plan updated");
+                   
+                   forkJoin(                   
+                    this.getCarerPlans(this.Info.uniqueID)                   
+                ).subscribe(d=>{
+                  
+                    this.lstCarerPlans=d[0];
+                  
+                })
+               });
+       
+            //    PlanStartDate='${this.planStartDate}',
+            //    PlanEndDate='${this.planEndDate}',
+    }
     delete(i:number){
 
     }
@@ -161,6 +220,8 @@ export class RecipientExternal implements OnInit, OnDestroy {
         
         return this.listS.getlist(sql);
     }
+
+    
     getApprovedServices(PersonId: string): Observable<any> {
         let sql;
         
@@ -291,6 +352,8 @@ export class RecipientExternal implements OnInit, OnDestroy {
             this.loading=true;
             this.date1 = new Date();
             this.date2 = new Date();
+            this.planStartDate= new Date();
+            this.planEndDate=new Date();
             this.date2.setDate(this.date2.getDate() + 14);
             this.observerable4 =  new Observable(observer => {
                  

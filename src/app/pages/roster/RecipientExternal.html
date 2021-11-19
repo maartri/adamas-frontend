@@ -1,3 +1,4 @@
+
 <nz-modal
 [(nzVisible)]="isVisible"
 [nzTitle]="modalTitle"
@@ -27,7 +28,7 @@
         <div nz-row *ngIf="nzSelectedIndex==0" nzGutter="6">
                 <div nz-col nzGutter="1" nzSpan="12" >
                     <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading"
-                    [nzData]="lstAddress" [nzLoadingDelay]="3000">
+                    [nzData]="lstAddress" >
                     
                     <thead >
                         <tr>
@@ -193,10 +194,9 @@
                 [nzData]="lstApprovedProgram" [nzScroll]="{ y: '100px' }">
                 <thead >
                     <tr>
-                        <th style="background-color: #d7dbe4; color: black " class="left"></th>
-                        <th style="background-color: #d7dbe4; color: black " class="left"> <i nz-icon nzType="file-text" nzTheme="outline"> </i> Approved Programs</th>                                 
-                        <th style="background-color: #d7dbe4; color: black " class="left"></th>
-                        <th style="background-color: #d7dbe4; color: black " class="left"></th>
+                        
+                        <th colSpan="4" style="padding-left: 10px; text-align: left; background-color: #d7dbe4; color: black " class="left"> <i nz-icon nzType="file-text" nzTheme="outline"> </i> Approved Programs</th>                                 
+                        
                     </tr>
                 </thead>
                 <tbody>
@@ -222,9 +222,9 @@
             [nzData]="lstApprovedServices" [nzScroll]="{ y: '100px' }">
             <thead >
                 <tr>
-                    <th style="background-color: #d7dbe4; color: black " class="left"></th>
-                    <th style="background-color: #d7dbe4; color: black " class="left"> <i nz-icon nzType="file-text" nzTheme="outline"> </i> Approved Services</th>                                 
-                    <th style="background-color: #d7dbe4; color: black " class="left"></th>
+                    
+                    <th colSpan="3" style="padding-left: 10px; text-align: left;background-color: #d7dbe4; color: black " class="left"> <i nz-icon nzType="file-text" nzTheme="outline"> </i> Approved Services</th>                                 
+                    
                     
                 </tr>
             </thead>
@@ -246,44 +246,41 @@
         </nz-table> 
    
         
-        <nz-table #columnTable  [nzPageSize]="5" [nzShowPagination]="false"  [nzLoading]="loading" 
-           [nzData]="lstCarerPlans" [nzBordered]="true" >
-    <!-- [nzScroll]="{ y: '300px' }" [nzFrontPagination]="true" [nzShowSizeChanger]="true" [nzPaginationPosition]="'top'" [nzPageSizeOptions]="[5, 10, 20,25, 30]" -->
+        <nz-table #basicTable [nzSize]="'small'" [nzLoading]="loading"  [nzShowPagination]="false"
+           [nzData]="lstCarerPlans" [nzBordered]="true"  >
+    <!--[nzScroll]="{x:'1200px', y:'250px' }" -->
           
     <thead >
         <tr>
-            <th colSpan="8" style=" width:100%; background-color: #d7dbe4; color: black " class="left">Current Carer plans</th> 
+            <th colSpan="8" style="padding-left: 10px; text-align: left;  background-color: #d7dbe4; color: black " >Current Carer plans</th> 
         </tr>
         <tr>                        
             
-            <th  class="left">Paln No.</th> 
-            <th  class="left">Paln Name</th> 
-            <th  class="left">Start Date</th> 
-            <th  class="left">End Date</th> 
-            <th  class="left">Co PayAmount</th> 
-            <th  class="left">Created By</th> 
-            <th  class="left">Detail</th>
-            <th  class="left">Action</th>
+            <th>Paln No.</th> 
+            <th>Paln Name</th> 
+            <th>Start Date</th> 
+            <th>End Date</th> 
+            <th>Co PayAmount</th> 
+            <th>Created By</th> 
+            <th>Detail</th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
         <tr *ngFor="let data of lstCarerPlans;let i = index;"  
              [style.background-color]="i == HighlightRow ? '#bbd7fa' : 'white'">
-                                
-                <td>{{data.planNumber}}</td>
-                <td>{{data.planName}}</td>
-                <td>{{data.planStartDate}}</td>
-                <td>{{data.planEndDate}}</td>
-                <td>{{data.planCoPayAmount}}</td>
-                <td>{{data.planCreator}}</td>
-                <td>{{data.planDetail}}</td>                      
-                
-                <td>
-                    <a (click)="showEditModal(i)">Update</a>
-                    <!-- <nz-divider nzType="vertical"></nz-divider>
-                    <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this group?" nzPopconfirmPlacement="bottom"
-                        (nzOnConfirm)="delete(i)">Delete</a> -->
-                </td>
+               
+             <ng-container >
+                <td >{{data.planNumber}}</td>
+                <td >{{data.planName}}</td>
+                <td >{{data.planStartDate }}</td>
+                <td >{{data.planEndDate  }}</td>
+                <td >{{data.planCoPayAmount}}</td>
+                <td >{{data.planCreator}}</td>
+                <td >{{data.planDetail}}</td>     
+                <td><a  (click)="showEditModal(i)">Edit</a></td>
+            </ng-container>     
+            
         </tr>          
     </tbody>
     
@@ -304,46 +301,46 @@
             
             <label style="padding:10px;  background-color: #002060; color: #ffffff; margin-right: 10px; font-size: 16px;" class="left">Permanently Rostered Staff</label> 
 
-            <nz-table #fixedTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading"
-                [nzData]="lstPermanentRosters" [nzScroll]="{x:'600px', y:'250px' }" [nzBordered]="true"> 
-                <thead >
+            <nz-table #basicTable [nzSize]="'small'" [nzLoading]="loading" [nzShowPagination]="false"
+                [nzData]="lstPermanentRosters" [nzScroll]="{x:'1200px', y:'250px' }" [nzBordered]="true"> 
+                <thead>
                     <tr>
-                        <th  nzWidth="50px"  style="background-color: #d7dbe4; color: black " >Start Time</th>
-                        <th  nzWidth="50px"  style="background-color: #d7dbe4; color: black " >Duration</th>                                 
-                        <th  nzWidth="100px" style="background-color: #d7dbe4; color: black " >Activity</th>
-                        <th  nzWidth="50px"  style="background-color: #d7dbe4; color: black " >Staff</th>
-                        <th  nzWidth="100px" style="background-color: #d7dbe4; color: black " >Analysis</th>
-                        <th  nzWidth="100px" style="background-color: #d7dbe4; color: black " >Program</th>
-                        <th  nzWidth="100px" style="background-color: #d7dbe4; color: black " >Dataset Type</th>
-                        <th  nzWidth="50px"  style="background-color: #d7dbe4; color: black " >Service Cost</th>
+                        <th  nzWidth="5%"  style="background-color: #d7dbe4; color: black" >Start Time</th>
+                        <th  nzWidth="10%"  style="background-color: #d7dbe4; color: black" >Duration</th>                                 
+                        <th  nzWidth="20%"  style="background-color: #d7dbe4; color: black" >Activity</th>
+                        <th  nzWidth="10%"  style="background-color: #d7dbe4; color: black" >Staff</th>
+                        <th  nzWidth="10%"  style="background-color: #d7dbe4; color: black" >Analysis</th>
+                        <th  nzWidth="20%"  style="background-color: #d7dbe4; color: black" >Program</th>
+                        <th  nzWidth="20%"  style="background-color: #d7dbe4; color: black" >Dataset Type</th>
+                        <th  nzWidth="5%"  style="background-color: #d7dbe4; color: black" >Service Cost</th>
                     </tr>
                 </thead>
                 <tbody>
                    <tr *ngFor="let data of lstPermanentRosters;let i = index;"  
                    [style.background-color]="i == HighlightRow ? '#bbd7fa' : 'white'">
                                                
-                       <td nzWidth="50px"  >                                         
+                       <td >                                         
                             {{data.start_Time}}                                                                         
                        </td>
-                       <td  nzWidth="50px" >                                         
+                       <td >                                         
                             {{data.duration}}                                                                         
                        </td>
-                        <td  nzWidth="100px" >                                         
+                        <td >                                         
                             {{data.activity}}                                                                         
                         </td>
-                        <td  nzWidth="50px" >                                         
+                        <td >                                         
                             {{data.staff}}                                                                         
                         </td>
-                        <td nzWidth="50px"  >                                         
+                        <td >                                         
                             {{data.analysis}}                                                                         
                         </td>
-                        <td  nzWidth="100px">                                         
+                        <td >                                         
                             {{data.program}}                                                                         
                         </td>
-                        <td  nzWidth="100px">                                         
+                        <td >                                         
                             {{data.dataset_Type}}                                                                         
                         </td>
-                        <td  nzWidth="50px">                                         
+                        <td >                                         
                             {{data.service_Cost}}                                                                         
                         </td>
                    </tr>
@@ -360,50 +357,50 @@
   
                 <button type="button" (click)="load_roster()"><i nz-icon nzType="sync" nzTheme="outline"></i></button>
             </div>
-            <nz-table #fixedTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading"
-            [nzData]="lstCurrentRosters" [nzScroll]="{x:'1200px', y:'250px' }" [nzBordered]="true">
+            <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading"
+            [nzData]="lstCurrentRosters" [nzScroll]="{x:'1300px', y:'250px' }" [nzBordered]="true">
             <thead >
                 <tr>
-                    <th nzWidth="50px" style="background-color: #d7dbe4; color: black " class="left">Date</th>
-                    <th nzWidth="50px" style="background-color: #d7dbe4; color: black " class="left">Start Time</th>
-                    <th nzWidth="50px" style="background-color: #d7dbe4; color: black " class="left">Duration</th>                                 
-                    <th nzWidth="100px" style="background-color: #d7dbe4; color: black " class="left">Activity</th>
-                    <th nzWidth="100px" style="background-color: #d7dbe4; color: black " class="left">Staff</th>
-                    <th nzWidth="100px" style="background-color: #d7dbe4; color: black " class="left">Analysis</th>
-                    <th nzWidth="100px" style="background-color: #d7dbe4; color: black " class="left">Program</th>
-                    <th nzWidth="100px" style="background-color: #d7dbe4; color: black " class="left">Dataset Type</th>
-                    <th nzWidth="50px" style="background-color: #d7dbe4; color: black " class="left">Service Cost</th>
+                    <th nzWidth="10%" style="background-color: #d7dbe4; color: black " class="left">Date</th>
+                    <th nzWidth="5%"  style="background-color: #d7dbe4; color: black " class="left">Start Time</th>
+                    <th nzWidth="10%" style="background-color: #d7dbe4; color: black " class="left">Duration</th>                                 
+                    <th nzWidth="15%" style="background-color: #d7dbe4; color: black " class="left">Activity</th>
+                    <th nzWidth="10%" style="background-color: #d7dbe4; color: black " class="left">Staff</th>
+                    <th nzWidth="10%" style="background-color: #d7dbe4; color: black " class="left">Analysis</th>
+                    <th nzWidth="20%" style="background-color: #d7dbe4; color: black " class="left">Program</th>
+                    <th nzWidth="15%" style="background-color: #d7dbe4; color: black " class="left">Dataset Type</th>
+                    <th nzWidth="5%"  style="background-color: #d7dbe4; color: black " class="left">Service Cost</th>
                 </tr>
             </thead>
             <tbody>
                <tr *ngFor="let data of lstCurrentRosters;let i = index;"  
                    [style.background-color]="i == HighlightRow ? '#bbd7fa' : 'white'">                                  
                    
-                   <td nzWidth="50px" class="left" >                                         
-                        {{data.date}}                     
+                   <td  class="left" >                                         
+                        {{data.date }}                     
                     </td>
-                    <td nzWidth="50px" class="left" >                                         
+                    <td class="left" >                                         
                         {{data.start_Time}}                                                                         
                     </td>
-                    <td nzWidth="50px" class="left" >                                         
+                    <td  class="left" >                                         
                             {{data.duration}}                                                                         
                     </td>
-                    <td nzWidth="100px" class="left" >                                         
+                    <td  class="left" >                                         
                         {{data.activity}}                                                                         
                     </td>
-                    <td nzWidth="100px" class="left" >                                         
+                    <td  class="left" >                                         
                         {{data.staff}}                                                                         
                     </td>
-                    <td nzWidth="100px" class="left" >                                         
+                    <td class="left" >                                         
                         {{data.analysis}}                                                                         
                     </td>
-                    <td nzWidth="100px" class="left" >                                         
+                    <td  class="left" >                                         
                         {{data.program}}                                                                         
                     </td>
-                    <td nzWidth="100px" class="left" >                                         
+                    <td  class="left" >                                         
                         {{data.dataset_Type}}                                                                         
                     </td>
-                    <td nzWidth="50px" class="left" >                                         
+                    <td class="left" >                                         
                         {{data.service_Cost}}                                                                         
                     </td>
 
@@ -423,5 +420,65 @@
     </button>
      <button nz-button nzType="default" (click)="handleCancel()">Cancel</button> 
     
+    
+    
 </ng-template>
 </nz-modal>
+
+
+
+<nz-modal [(nzVisible)]="isCarerPlanVisible" nzTitle="Care Plan" (nzOnCancel)="isCarerPlanVisible=false" (nzOnOk)="updatePlan()">
+    <ng-container >
+          
+        
+        <label style="padding:10px;  background-color: #002060; color: #ffffff; margin-right: 10px; font-size: 16px;" class="left">Care Plan Detail</label> 
+
+            <tr>
+                <td>Plan Number : </td>
+                <td>
+                    <input nz-input placeholder="Plan Number" [(ngModel)]="planNumber" />        
+                </td>
+            </tr>
+            <tr>
+                <td>Plan Name : </td>
+                <td >
+                    <input nz-input placeholder="plan Name" [(ngModel)]="planName"/>
+                </td>
+            </tr>
+            <tr>
+                <td>Plan Start Date : </td>
+                <td> 
+                    <nz-date-picker [nzFormat]="dateFormat" [(ngModel)]="planStartDate" ></nz-date-picker>
+                   
+                </td>
+            </tr>
+            <tr>
+                <td>Plan End Date : </td>
+                <td>
+                    <nz-date-picker [nzFormat]="dateFormat" [(ngModel)]="planEndDate" ></nz-date-picker>
+                   
+                    
+                </td>
+            </tr>
+            <tr>
+                <td>Plan CoPay Amount : </td>
+                <td>
+                    <input nz-input placeholder="Pay Amount" [(ngModel)]="planCoPayAmount"/>  
+                </td>
+            </tr>
+            <tr>
+                <td>Details : </td>
+                <td >
+                    <textarea rows="4" cols="4" nz-input  [(ngModel)]="planDetail">    
+                    </textarea>
+                </td>
+            </tr>
+        
+        
+
+    </ng-container>
+  
+  </nz-modal> 
+
+ 
+  

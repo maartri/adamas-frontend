@@ -210,3 +210,10 @@ label.upload-pic:hover{
     color: #515151;
     margin: 0 !important;
 }
+.active-programs{
+    background: #919191;
+    color: #fff;
+    padding: 0px 5px;
+    border-radius: 5px;
+    margin-right: 4px;
+}

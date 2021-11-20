@@ -341,11 +341,9 @@
 
         <ng-container *ngIf="this.innerValue?.view == 'recipient' ">
             <div nz-col nzSpan="24">
-                <div nz-col nzSpan="4">
-                    <label for=""><b>Active In :</b></label>
-                </div>
-                <div nz-col nzSpan="20">
-                    <label for=""><b>{{ activePrograms[0] }}</b></label>
+                <div nz-col nzSpan="24">
+                   <b style="margin-right:1rem">Active In :</b>
+                   <span class="active-programs" *ngFor="let data of activePrograms">{{ data }}</span>
                 </div>
             </div>
             <div nz-col nzSpan="12">

@@ -404,14 +404,11 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
           
           var arr111 = [];
           
-          this.activePrograms = (data[3] == null) ? arr111 : data[3],
-
-
+          this.activePrograms = (data[3] == null) ? arr111 : data[3];
 
           this.detectChanges();
 
           // this.globalS.userProfile = this.user;
-
           // this.addresses = data[0];
           // this.contacts = data[1];
 

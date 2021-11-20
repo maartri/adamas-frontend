@@ -25,7 +25,7 @@ export class MediaComponent implements OnInit {
 
   title: string = ''
   description: string = '';
-  group: string;
+  group: string = '';
 
   groupList: Array<string> = [];
 
@@ -45,7 +45,7 @@ export class MediaComponent implements OnInit {
   ngOnInit(): void {
     this.getMedia();
 
-    this.timeS.getgrouplist('atay')
+    this.timeS.getgrouplist(this.personID)
         .subscribe(x => {
           this.groupList = x;
         })
@@ -127,15 +127,17 @@ export class MediaComponent implements OnInit {
 
       formData.append("title", this.title);
       formData.append("description", this.description);
-      formData.append("group", this.group);
+      formData.append("group", this.globalS.isValueNull(this.group) ? '' : this.group);
       const req = new HttpRequest('POST', `api/upload/media/${this.personID}`, formData);
       this.http.request(req).subscribe(event => {
         if(event){
           this.globalS.sToast('Success','Media has been saved');
+          
           this.getMedia();
           this.clear();
-          this.router.navigate(['/admin/recipient/perm-roster'])
-          // this.uploadModal = false;
+          this.handleCancel();
+          this.router.navigate(['/admin/recipient/personal'])
+          
         }           
       });
   }

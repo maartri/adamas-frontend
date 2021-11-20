@@ -511,11 +511,17 @@ doneBooking(){
     //const { recipientCode, Program, serviceActivity, isMultipleRecipient } = this.bookingForm.value;
 
     //this.fixStartTimeDefault();
-  
+      
+
         let date=this.date;
         let time = {startTime:this.defaultStartTime, endTime:this.defaultEndTime, duration:0};
         const tsheet =  this.bookingForm.value;
       
+        if (tsheet.serviceActivity==null || tsheet.serviceActivity==""){
+           
+            this.globalS.eToast('Error', 'No Service type is selected');
+            return;            
+        }
         let clientCode ='';
         let carerCode = '';
         if (this.viewType=="Staff"){
@@ -2115,12 +2121,6 @@ ClearMultishift(){
      
      sheet.setColumnWidth(i, new_width +"*",GC.Spread.Sheets.SheetArea.viewport);
 
-    //   if (this.Days_View>=30)
-    //     sheet.setColumnWidth(i, 40.0,GC.Spread.Sheets.SheetArea.viewport);
-    //   else if (this.Days_View>=14)
-    //     sheet.setColumnWidth(i, 70.0,GC.Spread.Sheets.SheetArea.viewport);
-    //   else 
-    //     sheet.setColumnWidth(i, 120.0,GC.Spread.Sheets.SheetArea.viewport);
       
         sheet.setColumnResizable(i,true, GC.Spread.Sheets.SheetArea.colHeader);
         
@@ -4500,21 +4500,15 @@ this.bookingForm.get('program').valueChanges.pipe(
         if (this.current==1 && this.serviceActivityList.length<1 ){
             this.globalS.eToast('Error', 'There are no approved services linked to selectd program');
             this.current -= 1;
-            //  this.timeS.getActivities({            
-            //     recipient: this.recipientCode,
-            //     program:this.defaultProgram,  
-            //     forceAll:"1",   
-            //     mainGroup: 'ALL',
-            //     subGroup: '-',           
-            //     viewType: this.viewType,
-            //     AllowedDays: "0",
-            //     duration: this.durationObject?.duration            
-            // }).subscribe(data=>{
-                
-            //     this.serviceActivityList = data;
-            // });
             return;
         }
+
+        if (this.serviceActivityList.length==1)
+        this.bookingForm.patchValue({
+            serviceActivity: this.serviceActivityList[0]         
+        
+        });
+
         if (this.current==1 && this.serviceActivityList.length==1){
            
             if (this.showDone2){

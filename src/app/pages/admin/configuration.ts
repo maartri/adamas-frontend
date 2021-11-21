@@ -1028,9 +1028,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
                
                 break;
             case "print-account-statement":
-                
-                
-                
+                this.AccountStatement(s_Branches,s_Recipient,strdate, endate);                                
                 break;
             case "print-reprint-recipts":
             
@@ -2214,8 +2212,66 @@ InvoiceBatchRegister(BatchNO){
 
 
 
+}
+
+AccountStatement(branch,recipient,startdate,enddate){
+    var fQuery = " SELECT  (RE.Title + ' ' +RE.FirstName+ ' ' +RE.MiddleNames+ ' ' +RE.[Surname/Organisation] ) as Name,RE.AccountNo AS Debtor, IH.[Traccs Processing Date] AS [Date], IH.[Patient Code] AS Recipient, IH.[Invoice Number] AS [Number], CONVERT(money, IH.[Invoice Amount]) AS Amount, CASE WHEN IH.HType = 'R' THEN 0 ELSE CONVERT(money, IH.[Invoice Tax]) END AS GST, CONVERT(money, ISNULL(IH.[Invoice Amount], 0) - ISNULL(IH.Paid, 0)) AS [O/S] , CASE WHEN IH.HType = 'R' THEN 'PAYMENT' WHEN IH.Htype = 'A' THEN 'ADUST' WHEN IH.Htype = 'C' THEN 'CREDIT' ELSE 'INVOICE' END AS [Type], IH.Notes FROM Recipients RE LEFT JOIN InvoiceHeader IH ON RE.AccountNo = IH.[Client Code] WHERE ((ISNULL([Invoice Amount], 0) - ISNULL(Paid, 0) <> 0) "
+    
+    //[Client Code] IN ('AA BB (M) 19560721', 'AAA B C (F)') 
+    //AND [Branch] IN ('ADELAIDE', 'MELBOURNE') 
+    //OR [Traccs Processing Date] BETWEEN '2021-10-31' AND '2021-10-31') "
+    var lblcriteria;
+
+        var  tempsdate = format(this.startdate, 'yyyy/MM/dd')
+        var  tempedate = format(this.enddate, 'yyyy/MM/dd')
+        
+
+        if (startdate != null || enddate != null) {
+            this.s_DateSQL = "  [Traccs Processing Date] BETWEEN '" + tempsdate + ("'AND'") + tempedate + "')";
+            if (this.s_DateSQL != "") { fQuery = fQuery + " OR " + this.s_DateSQL };
+        }   
+           
+        if (branch != "") {
+            this.s_BranchSQL = "[Branch] in ('" + branch.join("','") + "')";
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL };
+        }
+
+        if (recipient != "") {
+            this.s_RecipientSQL = " ([Client Code] in ('" + recipient.join("','") + "'))";
+            if (this.s_RecipientSQL != "") { fQuery = fQuery + " AND " + this.s_RecipientSQL }
+        }
+    
+        fQuery = fQuery + " ORDER BY [traccs processing date], [vision processing date]  ";
+
+    //console.log(fQuery)
+
+    const data = {
+        "template": { "_id": "l3JDWlh6zzEvz8Do" },
+        "options": {
+            "reports": { "save": false },
+
+            "sql": fQuery,
+            "Criteria": lblcriteria,
+            "userid": this.tocken.user,
 
 
+        }
+    }
+    this.loading = true;
+    this.drawerVisible = true;
+    
+
+    this.printS.print(data).subscribe((blob: any) => {
+        this.pdfTitle = "Account Statement.pdf"
+        this.drawerVisible = true;                   
+        let _blob: Blob = blob;
+        let fileURL = URL.createObjectURL(_blob);
+        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+        this.loading = false;
+        this.cd.detectChanges();
+    }, err => {
+            console.log(err);
+        });
 
 }
 

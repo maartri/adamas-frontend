@@ -1355,6 +1355,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   radioGroup,
                   notes,
                   date,
+                  dischargeDate,
                   time,
                   timeSpent,
                   caseCategory,
@@ -1370,8 +1371,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     carerCode: this.token.code,
                     
                     serviceType: referralType,
-                    date: format(date,'yyyy/MM/dd'),
-                    time: format(time,'HH:mm'),
+                    date: format(new Date(this.dischargeGroup.value.dischargeDate),'yyyy/MM/dd'),
+                    time: format(new Date(time),'HH:mm'),
                     
                     creator: this.token.code,
                     editer: this.token.user,

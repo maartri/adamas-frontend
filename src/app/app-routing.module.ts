@@ -264,6 +264,7 @@ import { TravelComponent } from '@admin/billing/travel.component'; //AHSAN
 import { PayComponent } from '@admin/timesheet-processing-views/pay.Component'; //AHSAN 
 import { PayIntegrityComponent } from '@admin/billing/payIntegrity.component'; //AHSAN
 import { CloseRosterComponent } from '@admin/billing/closeRoster.component';
+import { MediaList } from '@admin/recipient-views/mediaList';
 
 const routes: Routes = [
   {
@@ -1169,6 +1170,10 @@ const routes: Routes = [
           {
             path: 'quotes',
             component: RecipientQuotesAdmin
+          },
+          {
+            path: 'media',
+            component: MediaList,
           }
         ]
       }
@@ -1378,6 +1383,7 @@ export const PAGE_COMPONENTS = [
   RecipientPermrosterAdmin,
   RecipientPersonalAdmin,
   RecipientQuotesAdmin,
+  MediaList,
   RecipientRemindersAdmin,
   RecipientFormsAdmin,
   RecipientDocumentsAdmin,

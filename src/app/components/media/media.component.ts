@@ -136,7 +136,6 @@ export class MediaComponent implements OnInit {
           this.getMedia();
           this.clear();
           this.handleCancel();
-          this.router.navigate(['/admin/recipient/personal'])
           
         }           
       });

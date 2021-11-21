@@ -1365,14 +1365,14 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 const blockNoTime = Math.floor(this.globalS.getMinutes(time)/5);
                 const timeInMinutes = this.globalS.getMinutes(timeSpent)
                 const timePercentage = (Math.floor(timeInMinutes/60 * 100) / 100).toString();
-                
+
                 let program: ProcedureRoster = {
                     clientCode: this.user.code,
                     carerCode: this.token.code,
                     
                     serviceType: referralType,
-                    date: format(new Date(this.dischargeGroup.value.dischargeDate),'yyyy/MM/dd'),
-                    time: format(new Date(time),'HH:mm'),
+                    date: format(this.dischargeGroup.value.dischargeDate,'yyyy/MM/dd'),
+                    time: format(time,'HH:mm'),
                     
                     creator: this.token.code,
                     editer: this.token.user,

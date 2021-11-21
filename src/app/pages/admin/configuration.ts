@@ -1024,6 +1024,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
                                          
             break;
             case "print-invoices-batch":
+                this.InvoiceBatchRegister(this.inputForm.value.single_input_number)
                
                 break;
             case "print-account-statement":
@@ -2169,6 +2170,54 @@ var id = "wE05f9PtCWLd67G8";
             });
 
 }
+InvoiceBatchRegister(BatchNO){
+    
+     
+
+    var fQuery = " SELECT DD.Description AS Branch, US.Name AS [Operator], IH.BatchNumber, IH.[traccs processing date] AS [Date], IH.[invoice number], IH.[client code], IH.[patient code], IH.[invoice amount], [vision processing date] FROM InvoiceHeader IH LEFT JOIN DataDomains DD ON IH.BRID = DD.RecordNumber LEFT JOIN Userinfo US ON IH.OPID = US.Recnum WHERE  HType = 'I' "
+    var lblcriteria;
+
+    //AND batchnumber = 12      
+
+    fQuery = fQuery + " AND batchnumber =  " + BatchNO
+    fQuery = fQuery + " ORDER BY [traccs processing date], [vision processing date]  "
+
+    //console.log(fQuery)
+
+    const data = {
+        "template": { "_id": "JD7O2itNGTqaoewL" },
+        "options": {
+            "reports": { "save": false },
+
+            "sql": fQuery,
+            "Criteria": lblcriteria,
+            "userid": this.tocken.user,
+
+
+        }
+    }
+    this.loading = true;
+    this.drawerVisible = true;
+    
+
+    this.printS.print(data).subscribe((blob: any) => {
+        this.pdfTitle = "Invoice Batch Register.pdf"
+        this.drawerVisible = true;                   
+        let _blob: Blob = blob;
+        let fileURL = URL.createObjectURL(_blob);
+        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+        this.loading = false;
+        this.cd.detectChanges();
+    }, err => {
+            console.log(err);
+        });
+
+
+
+
+
+
+}
 
     
 
@@ -2177,5 +2226,5 @@ var id = "wE05f9PtCWLd67G8";
 
     //MUFEED's END
     
-}
-//ConfigurationAdmin 
+}//ConfigurationAdmin
+ 

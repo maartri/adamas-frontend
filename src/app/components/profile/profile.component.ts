@@ -951,7 +951,8 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
     this.addressForm.patchValue({
       personId: this.user.uniqueID,
-      id: -1
+      id: -1,
+      primaryAddress: false
     });
 
     this.subscriptionArray.push(this.clientS.addaddress(this.formatAddress(this.addressForm)));

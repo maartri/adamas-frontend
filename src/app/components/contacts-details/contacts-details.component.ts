@@ -31,6 +31,7 @@ const noop = () => {
 export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,ControlValueAccessor {
   private unsubscribe: Subject<void> = new Subject();
 
+  doctor: any;
   @Input() user: any;  
 
   private onTouchedCallback: () => void = noop;
@@ -79,8 +80,11 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
     }
   }
 
-  doctorChange(data: any){
-    if(!data){
+  doctorChangeEvent(data: any){
+
+    var doc = this.doctors.filter(x => x.name == data).shift();
+
+    if(!doc){
       this.inputForm.patchValue({
         address1: '',
         address2: '',
@@ -88,19 +92,21 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
         phone2:'',
         email: '',
         mobile: '',
-        fax: ''
+        fax: '',
+        name: ''
       })
       return;
     }
 
     this.inputForm.patchValue({
-      address1: data.address1,
-      address2: data.address2,
-      phone1: data.phone1,
-      phone2:data.phone2,
-      email: data.email,
-      mobile: data.mobile,
-      fax: data.fax
+      address1: doc.address1,
+      address2: doc.address2,
+      phone1: doc.phone1,
+      phone2:doc.phone2,
+      email: doc.email,
+      mobile: doc.mobile,
+      fax: doc.fax,
+      name: doc.name
     })
   }
 
@@ -369,12 +375,12 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
       this.inputForm.controls['ecode'].setValue('PERSON2')
     }
 
+   
     this.timeS.postcontactskinstaffdetails(
       this.inputForm.value,
       this.user.id
     ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
       this.globalS.sToast('Success', 'Contact Inserted');
-      console.log(this.user);
       this.handleCancel();
       this.searchKin(this.user);
       this.handleCancel();

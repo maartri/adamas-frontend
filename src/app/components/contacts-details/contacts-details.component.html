@@ -167,14 +167,14 @@
                     </nz-select>
                 </div>
                 <div nz-row class="mrg-btm-2">
-                    <ng-container *ngIf="inputForm.get('type').value != 'DOCTORS' ">
+                    <ng-container *ngIf="inputForm?.get('type').value != 'DOCTORS' ">
                         <input type="text" class="uppercase" nz-input placeholder="Name" formControlName="name" />
                     </ng-container>
 
-                    <ng-container *ngIf="inputForm.get('type').value == 'DOCTORS' ">
-                        <nz-select [nzAutoClearSearchValue]="false" [nzServerSearch]="false" [nzDropdownMatchSelectWidth]="false" style="width:100%" formControlName="name" (ngModelChange)="doctorChange($event)" nzShowSearch nzAllowClear
+                    <ng-container *ngIf="inputForm?.get('type').value == 'DOCTORS' ">
+                        <nz-select [nzAutoClearSearchValue]="false" [ngModelOptions]="{standalone: true}" [nzServerSearch]="false" [nzDropdownMatchSelectWidth]="false" style="width:100%" [(ngModel)]="doctor" (ngModelChange)="doctorChangeEvent($event)" nzShowSearch nzAllowClear
                             nzPlaceHolder="Select a Doctor">
-                            <nz-option *ngFor="let d of doctors" [nzLabel]="d.name" [nzValue]="d"></nz-option>
+                            <nz-option *ngFor="let d of doctors" [nzLabel]="d.name" [nzValue]="d.name"></nz-option>
                         </nz-select>
                     </ng-container>
 

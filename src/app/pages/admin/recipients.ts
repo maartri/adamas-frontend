@@ -194,7 +194,9 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
   nodelist:Array<any> = [];
 
   checkOptionsOne = checkOptionsOne;
-
+  navigationExtras: { state: { StaffCode: string; ViewType: string; IsMaster: boolean; }; };
+  currentDate = new Date();
+  longMonth = this.currentDate.toLocaleString('en-us', { month: 'long' });
   sampleModel: any;
   
   columns: Array<any> = [
@@ -746,7 +748,16 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     closeProgram(){
       this.programModalOpen = false;
     }
-    
+    currentMonthRoster(){
+      console.log(this.user);
+      this.navigationExtras ={state : {StaffCode:this.user.code, ViewType:'Recipient',IsMaster:false }};
+          this.router.navigate(["/admin/rosters"],this.navigationExtras )
+   }
+    rosterMaster(){
+      console.log(this.user);
+        this.navigationExtras ={state : {StaffCode:this.user.code, ViewType:'Recipient',IsMaster:true }};
+            this.router.navigate(["/admin/rosters"],this.navigationExtras )
+    }
     loadPrograms(){
       if(!this.selectedRecipient){
         return;

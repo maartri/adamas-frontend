@@ -9,8 +9,9 @@
             <button class="botton extra" (click)="clicky(12)" [disabled]="status?.b_IsDead  || status == null"><i nz-icon nzType="printer" nzTheme="outline"></i> Print</button>
             
             <!-- <button class="botton other" (click)="openReferModal(null)"><i nz-icon nzType="cloud-upload" nzTheme="outline"></i> Sample</button> -->
-            
-            <button class="botton find" (click)="openFindModal()"><i nz-icon nzType="search" nzTheme="outline"></i> Find</button>
+          <button class="botton success" (click)="currentMonthRoster()" [disabled]="user == null"><i nz-icon nzType="calendar" nzTheme="outline"></i> {{longMonth}} Roster</button>
+          <button class="botton success" (click)="rosterMaster()" [disabled]="user == null"><i nz-icon nzType="calendar" nzTheme="outline"></i> Master</button>  
+          <button class="botton find" (click)="openFindModal()"><i nz-icon nzType="search" nzTheme="outline"></i> Find</button>
         </div> 
     </div>
     <!-- //s -->

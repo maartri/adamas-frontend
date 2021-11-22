@@ -1053,7 +1053,7 @@ showViews(){
     this.load_rosters();
 }
 show_MoreOptions(){
-    this.show_More=true;
+    this.show_More=!this.show_More;
 }
 
 
@@ -1227,43 +1227,36 @@ ClearMultishift(){
       sheet.options.selectionBorderColor = 'blue';
       sheet.options.selectionBackColor = '#BDCED1';
 
-    //   var si = new spread.Data.StyleInfo();  
-    //    si.Foreground = 'white';
-    //    si.BackGround = '#e0e0de'; 
-    //    spread.ActiveSheet.ColumnHeader.DefaultStyle = si;  
-      //sheet.options.selectionBorderColor = 'blue';
-      //sheet.options.selectionBackColor = '#e0e0de';
-     
-     // spread.options.setColumnResizable(0,true, GC.Spread.Sheets.SheetArea.colHeader);
-    //  spread.options.resizeZeroIndicator = GC.Spread.Sheets.SheetArea.Enhanced
 
             sheet.bind(GC.Spread.Sheets.Events.LeaveCell, function (event, infos) {
                var res:string = sheet.getCell(0, infos.col,GC.Spread.Sheets.SheetArea.colHeader).value()
                // Reset the backcolor of cell before moving
+             
                spread.suspendPaint();
-                    
-                if ( res.endsWith("Sat") || res.endsWith("Sun")){
-                    
-                  
-                    
-                    infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).backColor("#CDE0E3");
+                
+                if ( res.endsWith("Sat") || res.endsWith("Sun") || res.endsWith("Saturday") || res.endsWith("Sunday")){                    
+                    infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).backColor("#FFDEDB");
                     infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).foreColor("#000000");
                  } else{
-                    infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).backColor("#002060");
-                    infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).foreColor("#ffffff");
+                    infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).backColor("#F6F6F6");
+                    infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).foreColor("#000000");
                     
                 }
+                
+               
+                
                     spread.resumePaint();
                 });
 
               
             
     sheet.bind(GC.Spread.Sheets.Events.EnterCell, function (event, infos) {
-        spread.suspendPaint(); 
-        var active_row = sheet.getRange(0, -1, 1, -1, GC.Spread.Sheets.SheetArea.colHeader);
-        active_row.backColor("Red");
-        active_row.foreColor("White");          
-        
+     
+       // infos.sheet.getCell(0, infos.col).backColor("pink");
+        infos.sheet.getCell(1, infos.col, GC.Spread.Sheets.SheetArea.colHeader).backColor("pink");
+        if(1==1) return;
+      
+
         var res:string = sheet.getCell(0, infos.col,GC.Spread.Sheets.SheetArea.colHeader).value()
         
         if ( res.endsWith("Sat") || res.endsWith("Sun")){
@@ -2039,14 +2032,36 @@ ClearMultishift(){
                 }
             });
            // sheet.options.isProtected = true;
-            spread.options.allowContextMenu = true;
+        spread.options.allowContextMenu = true;
                
-         
+        // //--------------------------Setting Border of Active Cell----------------------------------
+       
+     
+        // sheet.options.selectionBorderColor = "blue";
+        // sheet.options.selectionBackColor = "rgba(155, 225, 230, 0.2)";
+        // sheet.options.selectedBorderColor = "blue";
+
+        // var style = new GC.Spread.Sheets.Style();
+        // style.font = "bold 22px Arial";
+        // style.foreColor = "red";
+        // style.backColor = "#D3F0E0";
+        // style.hAlign = GC.Spread.Sheets.HorizontalAlign.center;
+        // style.vAlign = GC.Spread.Sheets.VerticalAlign.center;
+
+        // for (var i = 0; i < 7; i++) {
+        //     sheet.setStyle(1, i, style, GC.Spread.Sheets.SheetArea.colHeader);
+        //     sheet.setStyle(2, i, style, GC.Spread.Sheets.SheetArea.colHeader);
+        //     sheet.setStyle(3, i, style, GC.Spread.Sheets.SheetArea.colHeader);
+        // }
+        
+        // sheet.options.style=style;
+ 
   
           spread.resumePaint();
       
           self.prepare_Sheet();
-     
+
+         
           
   }  
   
@@ -2093,67 +2108,57 @@ ClearMultishift(){
     sheet.setColumnCount(this.Days_View, GC.Spread.Sheets.SheetArea.viewport);
     sheet.setRowCount(this.time_slot, GC.Spread.Sheets.SheetArea.viewport);
     sheet.setColumnResizable(0,true, GC.Spread.Sheets.SheetArea.colHeader);
-    // if (this.Days_View==31) {this.Days_View==days}
-    
-    // sheet.setColumnCount(this.Days_View, GC.Spread.Sheets.SheetArea.viewport);
     
     for (let i=0; i<=this.Days_View ; i++)   
-        
-        {
-                
-     // sheet.setValue(0, i, date.getDate() + " " + this.DayOfWeek( date.getDay()), GC.Spread.Sheets.SheetArea.colHeader);
+    {
      
       var head_txt=date.getDate() + " " + this.DayOfWeek( date.getDay());
       if (this.Days_View>=30)
-        sheet.setValue(0, i, { richText: [{ style: { font: '12px Segoe UI ', foreColor: 'white' }, text: head_txt   }] }, GC.Spread.Sheets.SheetArea.colHeader);        
+         sheet.setValue(0, i, { richText: [{ style: { font: '12px Segoe UI ', foreColor: 'white' }, text: head_txt   }] }, GC.Spread.Sheets.SheetArea.colHeader);        
       else
-        sheet.setValue(0, i, { richText: [{ style: { font: '10px Segoe UI ', foreColor: 'white' }, text: head_txt   }] }, GC.Spread.Sheets.SheetArea.colHeader);        
+         sheet.setValue(0, i, { richText: [{ style: { font: '10px Segoe UI ', foreColor: 'white' }, text: head_txt   }] }, GC.Spread.Sheets.SheetArea.colHeader);        
 
-      var row_header = sheet.getRange(i, -1, 1, -1, GC.Spread.Sheets.SheetArea.colHeader);
-       row_header.backColor("#002060");
+      var col_header = sheet.getRange(i, -1, 1, -1, GC.Spread.Sheets.SheetArea.colHeader);
+      col_header.backColor("#002060");
       //row_header.foreColor("#ffffff");
-      
+      //col_header.setBorder(new GC.Spread.Sheets.LineBorder("#000000", GC.Spread.Sheets.LineStyle.double), {all:true}); 
+      col_header.borderTop(new GC.Spread.Sheets.LineBorder("#000000", GC.Spread.Sheets.LineStyle.double));
+  
       sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).tag(date);
 
      var new_width = 100 / this.Days_View;
      
-     //sheet.setColumnWidth(i, new_width,GC.Spread.Sheets.SheetArea.viewport);
-     
+     //setting column height
+     sheet.setRowHeight(0, 40.0,GC.Spread.Sheets.SheetArea.colHeader);
+    //setting column width
      sheet.setColumnWidth(i, new_width +"*",GC.Spread.Sheets.SheetArea.viewport);
+     sheet.setColumnResizable(i,true, GC.Spread.Sheets.SheetArea.colHeader);
+    
+      if ((this.DayOfWeek( date.getDay())=="Saturday") || (this.DayOfWeek( date.getDay())=="Sunday") || ((this.DayOfWeek( date.getDay())=="Sat") || (this.DayOfWeek( date.getDay())=="Sun")))
+      {
+            sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).backColor("#FFDEDB");
+            if (this.Days_View>=30)
+                sheet.setValue(0, i, { richText: [{ style: { font: '10px Tahoma ', foreColor: '#000000' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
+            else
+                sheet.setValue(0, i, { richText: [{ style: { font: '14px Tahoma ', foreColor: '#000000' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
+        }else
+        {
+            sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).backColor("#F6F6F6");
+            if (this.Days_View>=28)
+                //sheet.setValue(0, i, { richText: [{ style: { font: '10px Segoe UI ',foreColor: '#FFFFFF' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
+                sheet.setValue(0, i, { richText: [{ style: { font: '10px Tahoma ',foreColor: '#000000' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
+            else
+                //sheet.setValue(0, i, { richText: [{ style: { font: '12px Segoe UI ',foreColor: '#FFFFFF' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
+                sheet.setValue(0, i, { richText: [{ style: { font: '14px Tahoma ',foreColor: '#000000' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
+        }
+            date.setDate(date.getDate()+1);
 
-      
-        sheet.setColumnResizable(i,true, GC.Spread.Sheets.SheetArea.colHeader);
-        
-        //        
-       // sheet.autoFitColumn(i)            
-
-      if ((this.DayOfWeek( date.getDay())=="Sat") || (this.DayOfWeek( date.getDay())=="Sun")){
-          //sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).backColor("#85B9D5");
-         sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).backColor("#CDE0E3");
-         //CDE0E3,HB5BCE0
-          if (this.Days_View>=30)
-            sheet.setValue(0, i, { richText: [{ style: { font: 'bold 10px Segoe UI ', foreColor: '#000000' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
-        else
-            sheet.setValue(0, i, { richText: [{ style: { font: 'bold 12px Segoe UI ', foreColor: '#000000' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
-          
-      //row_header.backColor("#D1A6BC");
-     
-      }else{
-        sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).backColor("#002060");
-        if (this.Days_View>=30)
-            sheet.setValue(0, i, { richText: [{ style: { font: '10px Segoe UI ',foreColor: '#ffffff' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
-        else
-            sheet.setValue(0, i, { richText: [{ style: { font: '12px Segoe UI ',foreColor: '#ffffff' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
-            
-      }
-      date.setDate(date.getDate()+1); 
     }
 
     let time:Time;
     time={hours:0,
         minutes:0}
-      
-    
+        
 
     for (let j=0; j<this.time_slot; j++)   {      
    
@@ -2165,18 +2170,23 @@ ClearMultishift(){
             row_txt = "     "+this.numStr(time.minutes)  ;
         else
             row_txt= "";
-
-         sheet.setValue(j, 0, { richText: [{ style: { font: '12px Segoe UI ', foreColor: 'white' }, text: row_txt   }] }, GC.Spread.Sheets.SheetArea.rowHeader);        
-       
-       // sheet.getRange(j, 0, 1, 1).tag(this.numStr(time.hours)  + ":" + this.numStr(time.minutes));
+            sheet.setValue(j, 0, { richText: [{ style: { font: '14px Tahoma ', foreColor: 'black' }, text: row_txt   }] }, GC.Spread.Sheets.SheetArea.rowHeader);
+           
+         //sheet.setValue(j, 0, { richText: [{ style: { font: '12px Segoe UI ', foreColor: 'white' }, text: row_txt   }] }, GC.Spread.Sheets.SheetArea.rowHeader);        
+        // sheet.getRange(j, 0, 1, 1).tag(this.numStr(time.hours)  + ":" + this.numStr(time.minutes));
         sheet.getCell(j, 0, GC.Spread.Sheets.SheetArea.rowHeader).tag(this.numStr(time.hours)  + ":" + this.numStr(time.minutes));
 
         this.time_map.set(j,this.numStr(time.hours)  + ":" + this.numStr(time.minutes))
         sheet.getCell(j, 0, GC.Spread.Sheets.SheetArea.rowHeader).backColor("#92B0E1");
         sheet.getCell(j, 0, GC.Spread.Sheets.SheetArea.rowHeader).foreColor("#ffffff");
+        //setting row height
+       // sheet.setRowHeight(j, 40.0,GC.Spread.Sheets.SheetArea.viewport);
+        //setting row width
         sheet.setColumnWidth(0, 60.0,GC.Spread.Sheets.SheetArea.rowHeader);
-        
         sheet.setRowResizable(j,true, GC.Spread.Sheets.SheetArea.rowHeader);
+        var row_header = sheet.getRange(j, -1, 1, -1, GC.Spread.Sheets.SheetArea.rowHeader);      
+        //row_header.setBorder(new GC.Spread.Sheets.LineBorder("#000000", GC.Spread.Sheets.LineStyle.thin), {all:true}); 
+        row_header.borderLeft(new GC.Spread.Sheets.LineBorder("#000000", GC.Spread.Sheets.LineStyle.double));
 
         if (this.time_slot==288)
             time.minutes+=5;
@@ -2190,9 +2200,6 @@ ClearMultishift(){
           time.hours+=1;
         }
 
-         
-     
-        
         
   }
 
@@ -2216,15 +2223,10 @@ ClearMultishift(){
         sheet.options.protectionOptions.allowDragInsertColumns = false;        
         sheet.options.resizeZeroIndicator = GC.Spread.Sheets.ResizeZeroIndicator.enhanced;
 
-        sheet.options.selectionBorderColor = "blue";
-        sheet.options.selectionBackColor = "rgba(155, 225, 230, 0.2)";
-        sheet.options.selectedBorderColor = "blue";
-
+     
   this.Already_loaded=true;
   this.spreadsheet.resumePaint();
   
-
-      
   }
 
   set_Time_Interval(t:number)

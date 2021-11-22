@@ -1,5 +1,5 @@
 
-<div *ngIf="!formloading" style=" text-align: center; width:100%; height:100%">
+<div *ngIf="!formloading" style=" text-align: center; background-color: white; width:100%; ">
     <nz-spin  nzSimple></nz-spin> 
     </div>
                       
@@ -85,7 +85,7 @@
                 
             </div>
     </div>
-        <div  nz-row nz-col nzSpan="24" *ngIf="formloading && !recurrenceView" style="margin-top: 10px;  margin-left: 10px; margin-bottom: 10px;">
+        <div  nz-row nz-col nzSpan="24" *ngIf="formloading && !recurrenceView" style="margin-top: 10px;  margin-left: 10px; margin-bottom: 10px; border-color: transparent; ">
             <div nz-col nzSpan="10" class="nz-button"  >
                 <nz-button-group >
                     <!-- <button nz-button nzType="default" style="padding: 4px;" [disabled]="!enable_buttons"  (click)="add_Shift()" nz-tooltip nzTooltipTitle="Add new booking"><i nz-icon nzType="plus" nzTheme="outline"></i></button> -->
@@ -112,7 +112,7 @@
         </div>     
         
         
-        <div nz-row nz-col nzSpan="23" *ngIf="formloading" style="margin-top: 0px;  margin-left: 10px; margin-right: 10px; background-color: white; ">
+    <div nz-row nz-col nzSpan="23" *ngIf="formloading" style="margin-top: 0px;  margin-left: 10px; margin-right: 10px; background-color: transparent; height: 1000px;">
             
             <button *ngIf="spreadsheet==null"  nz-button nzType="primary" (click)="refreshPage()"  >Reload Grid</button> 
                    

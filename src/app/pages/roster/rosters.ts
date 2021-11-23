@@ -3105,6 +3105,9 @@ return rst;
 
     ngOnInit(): void {
         GC.Spread.Sheets.LicenseKey = license;
+
+        this.screenHeight = window.innerHeight;
+        this.screenWidth = window.innerWidth;
         
         this.date = moment();
         this.AddTime();

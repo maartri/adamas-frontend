@@ -2086,8 +2086,12 @@ ClearMultishift(){
      defaultStyle.font = "Segoe UI";
      defaultStyle.themeFont = "Segoe UI";
      
+ 
+
      sheet.clearSelection();
      sheet.setDefaultStyle(defaultStyle, GC.Spread.Sheets.SheetArea.viewport);
+
+     
      let date:Date = new Date(this.date);
 
     if (this.startRoster==null){
@@ -2112,6 +2116,9 @@ ClearMultishift(){
     sheet.setColumnCount(this.Days_View, GC.Spread.Sheets.SheetArea.viewport);
     sheet.setRowCount(this.time_slot, GC.Spread.Sheets.SheetArea.viewport);
     sheet.setColumnResizable(0,true, GC.Spread.Sheets.SheetArea.colHeader);
+
+    this.spreadsheet.getHost().style.width = "98%";
+    this.spreadsheet.getHost().style.height = "800px";
     
     for (let i=0; i<=this.Days_View ; i++)   
     {

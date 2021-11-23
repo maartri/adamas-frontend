@@ -1106,9 +1106,9 @@
 
                 <div nz-row *ngIf="current == 1">
                     <p>Admission Type</p>
-                    <div>
+                    <div [formGroup]="admitGroup">
                         <ng-container>
-                            <app-select-list-recipient [program]="admitGroup.get('programChecked').value" [option]="option"></app-select-list-recipient>
+                            <app-select-list-recipient formControlName="admissionType" [program]="admitGroup.get('programChecked')?.value" [option]="option"></app-select-list-recipient>
                         </ng-container>
                     </div>
                 </div>

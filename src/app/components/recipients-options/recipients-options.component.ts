@@ -2375,7 +2375,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   branch: this.BRANCH_NAME,
                   coordinator: this.COORDINATOR,
                   listname: this.GETLISTNAME(this.option),
-                  fundingsource: this.fundingSource
+                  fundingsource: this.FUNDING_TYPE
                 }).subscribe(data => {
                   this.notifCheckBoxes = data.map(x => {
                     return {

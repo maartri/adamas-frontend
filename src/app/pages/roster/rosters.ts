@@ -1381,6 +1381,10 @@ ClearMultishift(){
 
             self.cell_value=sheet.getTag(row,col,GC.Spread.Sheets.SheetArea.viewport)
            
+            if(self.cell_value == null){
+                return;
+            }
+            
             let data:any = self.find_roster(self.cell_value.recordNo);
            
             if (data!=null)

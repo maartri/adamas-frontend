@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, ViewChild, AfterViewInit,ChangeDetectorRef,ElementRef,ViewEncapsulation, OnChanges } from '@angular/core'
+import { Component, OnInit, OnDestroy, Input, ViewChild, AfterViewInit,ChangeDetectorRef,ElementRef,ViewEncapsulation, OnChanges, HostListener } from '@angular/core'
 import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { getLocaleDateFormat, getLocaleFirstDayOfWeek, Time,DatePipe } from '@angular/common';
 //import { FullCalendarComponent, CalendarOptions } from '@fullcalendar/angular';
@@ -2078,6 +2078,7 @@ ClearMultishift(){
     }
 
    let sheet:any=this.spreadsheet.getActiveSheet(); 
+   
 
    //this.changeHeight()
    this.spreadsheet.suspendPaint();
@@ -2086,7 +2087,9 @@ ClearMultishift(){
      var defaultStyle = new GC.Spread.Sheets.Style();
      defaultStyle.font = "Segoe UI";
      defaultStyle.themeFont = "Segoe UI";
-     
+     this.spreadsheet.getHost().style.width = (this.screenWidth - 260) + 'px';
+     this.spreadsheet.getHost().style.height = (this.screenHeight - 170) + 'px';
+      
  
 
      sheet.clearSelection();
@@ -2106,7 +2109,7 @@ ClearMultishift(){
     let m = date.getMonth()+1;
     let y=date.getFullYear();
   
-    
+     
    //
     
     let days:number =this.getDaysInMonth(m,y);
@@ -2118,9 +2121,6 @@ ClearMultishift(){
     sheet.setRowCount(this.time_slot, GC.Spread.Sheets.SheetArea.viewport);
     sheet.setColumnResizable(0,true, GC.Spread.Sheets.SheetArea.colHeader);
 
-    this.spreadsheet.getHost().style.width = "98%";
-    this.spreadsheet.getHost().style.height = "100%";
-    
     for (let i=0; i<=this.Days_View ; i++)   
     {
      
@@ -2131,7 +2131,7 @@ ClearMultishift(){
          sheet.setValue(0, i, { richText: [{ style: { font: '10px Segoe UI ', foreColor: 'white' }, text: head_txt   }] }, GC.Spread.Sheets.SheetArea.colHeader);        
 
       var col_header = sheet.getRange(i, -1, 1, -1, GC.Spread.Sheets.SheetArea.colHeader);
-      col_header.backColor("#002060");
+      //col_header.backColor("#002060");
       //row_header.foreColor("#ffffff");
       //col_header.setBorder(new GC.Spread.Sheets.LineBorder("#000000", GC.Spread.Sheets.LineStyle.double), {all:true}); 
       col_header.borderTop(new GC.Spread.Sheets.LineBorder("#000000", GC.Spread.Sheets.LineStyle.double));
@@ -3089,6 +3089,19 @@ return rst;
             });
         }, 100);
     }
+
+    screenHeight: any;
+    screenWidth: any;
+
+
+    @HostListener('window:resize', ['$event'])
+    getScreenSize(event?) {
+          this.screenHeight = window.innerHeight;
+          this.screenWidth = window.innerWidth;
+          console.log(this.screenHeight, this.screenWidth);
+          this.prepare_Sheet();
+    }
+
 
     ngOnInit(): void {
         GC.Spread.Sheets.LicenseKey = license;

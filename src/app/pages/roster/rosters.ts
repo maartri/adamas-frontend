@@ -6,7 +6,8 @@ import { Component, Input, ViewChild, ChangeDetectorRef,ElementRef,ViewEncapsula
     AfterViewInit,
     DoCheck,
     OnDestroy,
-    OnInit } from '@angular/core'
+    OnInit, 
+    HostListener} from '@angular/core'
 import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { getLocaleDateFormat, getLocaleFirstDayOfWeek, Time,DatePipe } from '@angular/common';
 //import { FullCalendarComponent, CalendarOptions } from '@fullcalendar/angular';
@@ -170,15 +171,17 @@ AfterViewChecked,
 OnDestroy  {
     spreadBackColor = "white";  
     sheetName = "Staff Rosters";  
+
     hostStyle = {
         width: 'calc(100% - 50px)',
         height: '500px',
         overflow: 'hidden',
         float: 'left'
     };
+
+
     hostStyle2 = {  
-      width: '100%',     
-      height: '1000px',
+      width: '100%',    
       overflow: 'auto',
       float: 'left'
     };  
@@ -312,7 +315,8 @@ searchAvaibleModal:boolean=false;
     master:boolean=false;
     Master_Roster_label="Current Roster";
     tval:number;
- 
+    screenHeight:number;
+    screenWidth:number;
     sample: any;
     searchStaffModal:boolean=false;
     ViewStaffDetail:boolean=false;
@@ -352,7 +356,7 @@ searchAvaibleModal:boolean=false;
              this.timeList.push(this.numStr(h) + ":"+ this.numStr(t))
     }
     changeHeight() {
-        this.hostStyle.height = this.hostStyle.height === "50%" ? "100%" : "50%";
+        // this.hostStyle.height = this.hostStyle.height === "50%" ? "100%" : "50%";
         setTimeout(() => {
         this.spreadsheet.refresh();
         });
@@ -1222,18 +1226,20 @@ ClearMultishift(){
     workbookInit(args) {  
         console.log("workbookInit called");
       
-      let spread = args.spread;
+      let spread: GC.Spread.Sheets.Workbook = args.spread;
      // this.MainSpread=args.spread;
-      this.spreadsheet = GC.Spread.Sheets.Workbook = args.spread;  
-      spread= GC.Spread.Sheets.Workbook = args.spread;  
+      this.spreadsheet = args.spread;  
+      spread = args.spread;  
       let sheet = spread.getActiveSheet();  
+      
       sheet.setRowCount(this.time_slot, GC.Spread.Sheets.SheetArea.viewport);
       sheet.setColumnCount(31,GC.Spread.Sheets.SheetArea.viewport);
 
-      spread.suspendPaint();
-      let spreadNS = GC.Spread.Sheets;
-      let self = this;
-      
+
+        spread.suspendPaint();
+        let spreadNS = GC.Spread.Sheets;
+        let self = this;
+
       //sheet.getCell(0, 0).text("Fruits wallet").foreColor("blue"); 
       spread.options.columnResizeMode = GC.Spread.Sheets.ResizeMode.split;
       spread.options.rowResizeMode = GC.Spread.Sheets.ResizeMode.split;
@@ -1417,6 +1423,10 @@ ClearMultishift(){
 
             self.cell_value=sheet.getTag(row,col,GC.Spread.Sheets.SheetArea.viewport)
            
+            if(self.cell_value == null){
+                return;
+            }
+            
             let data:any = self.find_roster(self.cell_value.recordNo);
            
             if (data!=null)
@@ -2111,6 +2121,7 @@ ClearMultishift(){
     }
 
    let sheet:any=this.spreadsheet.getActiveSheet(); 
+   
 
    //this.changeHeight()
    this.spreadsheet.suspendPaint();
@@ -2119,9 +2130,15 @@ ClearMultishift(){
      var defaultStyle = new GC.Spread.Sheets.Style();
      defaultStyle.font = "Segoe UI";
      defaultStyle.themeFont = "Segoe UI";
-     
+     this.spreadsheet.getHost().style.width = (this.screenWidth - 260) + 'px';
+     this.spreadsheet.getHost().style.height = (this.screenHeight - 170) + 'px';
+      
+ 
+
      sheet.clearSelection();
      sheet.setDefaultStyle(defaultStyle, GC.Spread.Sheets.SheetArea.viewport);
+
+     
      let date:Date = new Date(this.date);
 
     if (this.startRoster==null){
@@ -2134,6 +2151,9 @@ ClearMultishift(){
 
     let m = date.getMonth()+1;
     let y=date.getFullYear();
+  
+     
+   //
     
     let days:number =this.getDaysInMonth(m,y);
 
@@ -2143,7 +2163,7 @@ ClearMultishift(){
     sheet.setColumnCount(this.Days_View, GC.Spread.Sheets.SheetArea.viewport);
     sheet.setRowCount(this.time_slot, GC.Spread.Sheets.SheetArea.viewport);
     sheet.setColumnResizable(0,true, GC.Spread.Sheets.SheetArea.colHeader);
-    
+
     for (let i=0; i<=this.Days_View ; i++)   
     {
      
@@ -2154,7 +2174,7 @@ ClearMultishift(){
          sheet.setValue(0, i, { richText: [{ style: { font: '10px Segoe UI ', foreColor: 'white' }, text: head_txt   }] }, GC.Spread.Sheets.SheetArea.colHeader);        
 
       var col_header = sheet.getRange(i, -1, 1, -1, GC.Spread.Sheets.SheetArea.colHeader);
-      col_header.backColor("#002060");
+      //col_header.backColor("#002060");
       //row_header.foreColor("#ffffff");
       //col_header.setBorder(new GC.Spread.Sheets.LineBorder("#000000", GC.Spread.Sheets.LineStyle.double), {all:true}); 
       col_header.borderTop(new GC.Spread.Sheets.LineBorder("#000000", GC.Spread.Sheets.LineStyle.double));
@@ -3114,18 +3134,31 @@ return rst;
         }, 100);
     }
 
-reloadComponent() {
-        let currentUrl = this.router.url;
-        this.router.routeReuseStrategy.shouldReuseRoute = () => false;
-        this.router.onSameUrlNavigation = 'reload';
-        this.router.navigate([currentUrl]);
-}
+    
+    @HostListener('window:resize', ['$event'])
+    getScreenSize(event?) {
+          this.screenHeight = window.innerHeight;
+          this.screenWidth = window.innerWidth;
+          console.log(this.screenHeight, this.screenWidth);
+          this.prepare_Sheet();
+    }
+
 
     ngOnInit(): void {
 
 
      
         GC.Spread.Sheets.LicenseKey = license;
+
+        this.screenHeight = window.innerHeight;
+        this.screenWidth = window.innerWidth;
+
+        this.hostStyle = {
+            width: '100%',
+            height: `${this.screenHeight- 170}px`,
+            overflow: 'hidden',
+            float: 'left'
+        };
         
         if (this.spreadsheet!=null){
             this.spreadsheet.getHost().style.width = "100%";
@@ -3163,7 +3196,6 @@ ngAfterContentChecked(){
 
 }
 ngAfterViewInit(){
-
   this.formloading=true;
     console.log("ngAfterViewInit");   
     
@@ -3294,10 +3326,8 @@ reload(reload: boolean){
                  
      }
 
-  
 
-
-    picked(data: any) {
+picked(data: any) {
         console.log(data);
         this.userStream.next(data);
 
@@ -3307,10 +3337,7 @@ reload(reload: boolean){
             this.enable_buttons=false;
             return;
         }
-
-       
         //this.prepare_Sheet(this.spreadsheet);
-     
 
         this.selected = data;
         if (this.master){

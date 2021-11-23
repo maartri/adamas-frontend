@@ -293,32 +293,30 @@ export class AddReferralComponent implements OnInit, OnDestroy {
 
     this.populateDropdowns();
 
-    combineLatest([
-      this.referralGroup.get('branch').valueChanges,
-      this.referralGroup.get('recipientCoordinator').valueChanges.pipe(startWith(false)),
-    ]).pipe(
-      switchMap(([x, x1]): any => {
-        let data = {
-          branch: x,
-          coordinator: x1
-        }
-        return this.listS.getnotifications(data);
-      })
-    ).subscribe((data: any) => {
-        // this.notifications = data;
-        //this.notifCheckBoxGroup = data.map(x => {
+    // combineLatest([
+    //   this.referralGroup.get('branch').valueChanges,
+    //   this.referralGroup.get('recipientCoordinator').valueChanges.pipe(startWith(false)),
+    // ]).pipe(
+    //   switchMap(([x, x1]): any => {
+    //     let data = {
+    //       branch: x,
+    //       coordinator: x1
+    //     }
+    //     return this.listS.getnotifications(data);
+    //   })
+    // ).subscribe((data: any) => {
 
-          console.log(data);
+    //       console.log(data);
           
-          this.notifCheckBoxes = data.map(x => {
-          return {
-            label: x.staffToNotify,
-            value: x.staffToNotify,
-            disabled: x.mandatory ? true : false,
-            check: x.mandatory ? true : false
-          }
-        })
-    });
+    //       this.notifCheckBoxes = data.map(x => {
+    //       return {
+    //         label: x.staffToNotify,
+    //         value: x.staffToNotify,
+    //         disabled: x.mandatory ? true : false,
+    //         check: x.mandatory ? true : false
+    //       }
+    //     })
+    // });
 
     // this.referralGroup.get('otherContacts').valueChanges.subscribe(data => console.log(data))
 

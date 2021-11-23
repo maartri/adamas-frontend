@@ -837,11 +837,11 @@
                 <div nz-col nzSpan="12" >
                     <div class="form-group" style="padding-top: 5px;">
                         <label for="">Start Date</label>
-                        <nz-date-picker [(ngModel)]="recurrentStartDate" [nzFormat]="dateFormat" formControlName="startDate"></nz-date-picker>
+                        <nz-date-picker [nzFormat]="dateFormat" formControlName="startDate"></nz-date-picker>
                     </div>
                     <div class="form-group">
                         <label for="">End Date</label>
-                        <nz-date-picker [(ngModel)]="recurrentEndDate"  [nzFormat]="dateFormat" formControlName="endDate"></nz-date-picker>
+                        <nz-date-picker [nzFormat]="dateFormat" formControlName="endDate"></nz-date-picker>
                     </div>
             </div>
              <div nz-col nzSpan="12">
@@ -871,7 +871,7 @@
                 <div nz-col nzSpan="8" style="padding-top: 5px;">
                
                         
-                    <nz-checkbox-wrapper (nzOnChange)="selectedDays($event)">
+                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="selectedDays($event)">
                         <label nz-checkbox style="padding-left: 8px;"  nzValue="Sunday">Sunday</label>
                         <label nz-checkbox nzValue="Monday">Monday</label>
                         <label nz-checkbox nzValue="Tuesday">Tuesday</label>
@@ -885,7 +885,7 @@
                 </div>
                 <div nz-col nzSpan="8" style="margin-top: 5px;">
                   
-                    <nz-radio-group  [(ngModel)]="Frequency">
+                    <nz-radio-group [ngModelOptions]="{standalone: true}"  [(ngModel)]="Frequency">
                         <label nz-radio  (click)="setFrequency('Weekly')" nzValue="7">Weekly</label>
                         <label nz-radio  (click)="setFrequency('Fortnightly')" nzValue="Fortnightly">Fortnightly</label>
                         <label nz-radio  (click)="setFrequency('Monthly')" nzValue="Monthly">Monthly</label>
@@ -895,7 +895,7 @@
                 </div>
                 <div nz-col nzSpan="6" style="padding-top: 4px;">
                   
-                    <nz-radio-group [(ngModel)]="Pattern" *ngIf="Frequency!='Weekly'">
+                    <nz-radio-group [ngModelOptions]="{standalone: true}" [(ngModel)]="Pattern" *ngIf="Frequency!='Weekly'">
                         <label nz-radio (click)="setPattern('First')" nzValue="First">First</label>
                         <label nz-radio (click)="setPattern('Second')" nzValue="Second">Second</label>
                         <label nz-radio (click)="setPattern('Third')" nzValue="Third" *ngIf="Frequency=='Monthly'">Third</label>

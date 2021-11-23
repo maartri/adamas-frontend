@@ -1205,17 +1205,18 @@ ClearMultishift(){
     workbookInit(args) {  
         console.log("workbookInit called");
       
-      let spread = args.spread;
+      let spread: GC.Spread.Sheets.Workbook = args.spread;
      // this.MainSpread=args.spread;
-      this.spreadsheet = GC.Spread.Sheets.Workbook = args.spread;  
-      spread= GC.Spread.Sheets.Workbook = args.spread;  
+      this.spreadsheet = args.spread;  
+      spread = args.spread;  
       let sheet = spread.getActiveSheet();  
+      
       sheet.setRowCount(this.time_slot, GC.Spread.Sheets.SheetArea.viewport);
       sheet.setColumnCount(31,GC.Spread.Sheets.SheetArea.viewport);
 
-          spread.suspendPaint();
-          let spreadNS = GC.Spread.Sheets;
-          let self = this;
+        spread.suspendPaint();
+        let spreadNS = GC.Spread.Sheets;
+        let self = this;
         
      
       //sheet.getCell(0, 0).text("Fruits wallet").foreColor("blue"); 
@@ -2118,7 +2119,7 @@ ClearMultishift(){
     sheet.setColumnResizable(0,true, GC.Spread.Sheets.SheetArea.colHeader);
 
     this.spreadsheet.getHost().style.width = "98%";
-    this.spreadsheet.getHost().style.height = "800px";
+    this.spreadsheet.getHost().style.height = "100%";
     
     for (let i=0; i<=this.Days_View ; i++)   
     {

@@ -155,15 +155,14 @@ IconCellType2.prototype.paint = function (ctx, value, x, y, w, h, style, context
 export class RostersAdmin implements AfterViewInit  {
     spreadBackColor = "white";  
     sheetName = "Staff Rosters";  
-    hostStyle = {
-        width: 'calc(100% - 50px)',
-        height: '1000px',
-        overflow: 'hidden',
-        float: 'left'
-    };
+
+    screenHeight: number;
+    screenWidth: number;
+
+    hostStyle: any;
+
     hostStyle2 = {  
-      width: '100%',     
-      height: '1000px',
+      width: '100%',    
       overflow: 'auto',
       float: 'left'
     };  
@@ -335,7 +334,7 @@ searchAvaibleModal:boolean=false;
              this.timeList.push(this.numStr(h) + ":"+ this.numStr(t))
     }
     changeHeight() {
-        this.hostStyle.height = this.hostStyle.height === "50%" ? "100%" : "50%";
+        // this.hostStyle.height = this.hostStyle.height === "50%" ? "100%" : "50%";
         setTimeout(() => {
         this.spreadsheet.refresh();
         });
@@ -3090,9 +3089,6 @@ return rst;
         }, 100);
     }
 
-    screenHeight: any;
-    screenWidth: any;
-
 
     @HostListener('window:resize', ['$event'])
     getScreenSize(event?) {
@@ -3108,6 +3104,13 @@ return rst;
 
         this.screenHeight = window.innerHeight;
         this.screenWidth = window.innerWidth;
+
+        this.hostStyle = {
+            width: '100%',
+            height: `${this.screenHeight- 170}px`,
+            overflow: 'hidden',
+            float: 'left'
+        };
         
         this.date = moment();
         this.AddTime();
@@ -3139,10 +3142,10 @@ ngAfterViewChecked(){
  
 }
 ngAfterViewInit(){
-
   this.formloading=true;
-    console.log("ngAfterViewInit");   
-   
+  this.screenHeight = window.innerHeight;
+  this.screenWidth = window.innerWidth;
+  this.prepare_Sheet();
 }
 
 ngOnDestroy(){

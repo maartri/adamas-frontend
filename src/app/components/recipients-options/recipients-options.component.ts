@@ -232,8 +232,6 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
     ngOnChanges(changes: SimpleChanges): void {
       for (let property in changes) {
         if (property == 'open' && !changes[property].firstChange && changes[property].currentValue != null) {
-          // console.log(this.user);
-          // console.log(this.from)
           // GETS Branch name or Gets it through database
           
           if('branch' in this.user){
@@ -245,7 +243,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     this.COORDINATOR = data.coordinator;
                   });
           }
-
+          console.log(this.user);
           if('docId' in this.user){
             this.DOCUMENTID = this.user.docId;
           }
@@ -414,6 +412,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
         radioGroup: 'CASENOTE',
         notes: null,
         programChecked:null,
+        
         caseCategory: 'ADMISSION',
         publishToApp: false,
         reminderDate: null,
@@ -1220,8 +1219,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
 
                   let data = {
                       docId: this.DOCUMENTID,
-                      program: programChecked.program,
-                      admissionType: programChecked,
+                      program: programChecked,
+                      admissionType: admissionType,
                       clientCode: this.user.code,
                       carerCode: this.token.code,
                       serviceType: 'referralType',
@@ -1258,7 +1257,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                           reminderTo: ''
                       }
                   }
-       
+
                   this.listS.postadmissionacceptquote(data).subscribe(data => {
                     this.globalS.sToast('Success', 'Data is saved');
                     this.handleCancel();

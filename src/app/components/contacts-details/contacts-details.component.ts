@@ -52,6 +52,8 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
   loading: boolean;
   tocken: any;
 
+  doctors: Array<any> = [];
+
   constructor(
     private globalS: GlobalService,
     private clientS: ClientService,
@@ -75,6 +77,38 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
         console.log('run contacts')
         this.searchKin(this.user);
     }
+  }
+
+  doctorChange(data: any){
+    if(!data){
+      this.inputForm.patchValue({
+        address1: '',
+        address2: '',
+        phone1: '',
+        phone2:'',
+        email: '',
+        mobile: '',
+        fax: ''
+      })
+      return;
+    }
+
+    this.inputForm.patchValue({
+      address1: data.address1,
+      address2: data.address2,
+      phone1: data.phone1,
+      phone2:data.phone2,
+      email: data.email,
+      mobile: data.mobile,
+      fax: data.fax
+    })
+  }
+
+  populate(){
+    this.listS.getdoctorinformation().subscribe(data => {
+      console.log(data);
+      this.doctors = data;
+    })
   }
 
   buildForm(): void {

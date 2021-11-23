@@ -16,10 +16,9 @@
             <nz-tab nzTitle="General" (nzClick)="view(0)"> </nz-tab>
             <nz-tab nzTitle="Funding Agreed Services & Careplan" (nzClick)="view(1)"> </nz-tab>
             <nz-tab nzTitle="Case/Progress Notes" (nzClick)="view(2)"></nz-tab>
-            <nz-tab nzTitle="Operational Notes" (nzClick)="view(3)"> </nz-tab>
-            <nz-tab nzTitle="OP Notes" (nzClick)="view(4)"> </nz-tab>
-            <nz-tab nzTitle="Support Workers" (nzClick)="view(5)"> </nz-tab>
-            <nz-tab nzTitle="Staff" (nzClick)="view(6)"> </nz-tab>
+            <nz-tab nzTitle="Operational Notes" (nzClick)="view(3)"> </nz-tab>            
+            <nz-tab nzTitle="Support Workers" (nzClick)="view(4)"> </nz-tab>
+            
             
         </nz-tabset>
 
@@ -303,8 +302,198 @@
     </nz-table> 
    
         </div>
+
+        
+        <div nz-row *ngIf="nzSelectedIndex==2" nzGutter="6">
+            <gnotes [user]="Person"></gnotes>
+            <!-- <nz-table #basicTable [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false"
+            [nzData]="lstCaseNotes">
+
+            <thead >
+                <tr>                        
+                        <th class="left" style="width: 60%">Details</th>
+                        <th>Detail Date</th>
+                        <th>Creator </th>
+                        <th class="action">Action</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr  *ngFor="let data of lstCaseNotes;let i = index;"  
+                [style.background-color]="i == HighlightRow ? '#bbd7fa' : 'white'">
+                    <td class="left">
+                        <div class="word-break">
+                            {{ data.detail  }}
+                        </div>
+                    </td>
+                    <td>{{ data.detailDate | date: 'dd/MM/y' }}</td>
+                    <td>{{ data.creator || '-' | uppercase  }}</td>
+                    <td>
+                        <a (click)="showEditModal(i)">Update</a>
+                        <nz-divider nzType="vertical"></nz-divider>
+                        <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this group?" nzPopconfirmPlacement="bottom"
+                            (nzOnConfirm)="delete(i)">Delete</a>
+                    </td>                              
+                
+                </tr>
+            </tbody>
+            
+            </nz-table>  -->
+         </div>
+         <div nz-row *ngIf="nzSelectedIndex==3" nzGutter="6">
+            <gnotes [user]="Person"></gnotes>
+
+            <!-- <nz-table #columnTable [nzScroll]="{ y: '500px' }" [nzPageSize]="5" [nzShowPagination]="false"  [nzLoading]="loading" 
+                [nzData]="lstOpNotes"  >
+            
+            <thead >
+                    <tr>
+                        <th class="left" style="width: 60%">Details</th>
+                        <th>Detail Date</th>
+                        <th>Creator </th>
+                        <th class="action">Action</th>
+                    </tr>                   
+             
+                
+            </thead>
+            <tbody>
+                <tr  *ngFor="let data of lstOpNotes;let i = index;"  
+                [style.background-color]="i == HighlightRow ? '#bbd7fa' : 'white'">
+                <td class="left">
+                    <div class="word-break">
+                        {{ data.detail  }}
+                    </div>
+                </td>
+                <td>{{ data.detailDate | date: 'dd/MM/y' }}</td>
+                <td>{{ data.creator || '-' | uppercase  }}</td>
+                <td>
+                    <a (click)="showEditModal(i)">Update</a>
+                    <nz-divider nzType="vertical"></nz-divider>
+                    <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this group?" nzPopconfirmPlacement="bottom"
+                        (nzOnConfirm)="delete(i)">Delete</a>
+                </td>
+
+                </tr>
+            </tbody>
+            
+            </nz-table>  -->
+         </div>
+         <div nz-row *ngIf="nzSelectedIndex==4" nzGutter="6">
+
+            
+            <label style="padding:10px;  background-color: #002060; color: #ffffff; margin-right: 10px; font-size: 16px;" class="left">Permanently Rostered Staff</label> 
+
+            <nz-table #fixedTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading"
+                [nzData]="lstPermanentRosters" [nzScroll]="{x:'600px', y:'250px' }" [nzBordered]="true"> 
+                <thead >
+                    <tr>
+                        <th  nzWidth="50px"  style="background-color: #002060; color: white; " >Start Time</th>
+                        <th  nzWidth="50px"  style="background-color: #002060; color: white; " >Duration</th>                                 
+                        <th  nzWidth="100px" style="background-color: #002060; color: white; " >Activity</th>
+                        <th  nzWidth="50px"  style="background-color: #002060; color: white; " >Staff</th>
+                        <th  nzWidth="100px" style="background-color: #002060; color: white; " >Analysis</th>
+                        <th  nzWidth="100px" style="background-color: #002060; color: white; " >Program</th>
+                        <th  nzWidth="100px" style="background-color: #002060; color: white; " >Dataset Type</th>
+                        <th  nzWidth="50px"  style="background-color: #002060; color: white; " >Service Cost</th>
+                    </tr>
+                </thead>
+                <tbody>
+                   <tr *ngFor="let data of lstPermanentRosters;let i = index;"  
+                   [style.background-color]="i == HighlightRow ? '#bbd7fa' : 'white'">
+                                               
+                       <td nzWidth="50px"  >                                         
+                            {{data.start_Time}}                                                                         
+                       </td>
+                       <td  nzWidth="50px" >                                         
+                            {{data.duration}}                                                                         
+                       </td>
+                        <td  nzWidth="100px" >                                         
+                            {{data.activity}}                                                                         
+                        </td>
+                        <td  nzWidth="50px" >                                         
+                            {{data.staff}}                                                                         
+                        </td>
+                        <td nzWidth="50px"  >                                         
+                            {{data.analysis}}                                                                         
+                        </td>
+                        <td  nzWidth="100px">                                         
+                            {{data.program}}                                                                         
+                        </td>
+                        <td  nzWidth="100px">                                         
+                            {{data.dataset_Type}}                                                                         
+                        </td>
+                        <td  nzWidth="50px">                                         
+                            {{data.service_Cost}}                                                                         
+                        </td>
+                   </tr>
+               </tbody>        
+            </nz-table> 
+            
+            <div nz-row style="padding:10px; background-color: #002060; margin-top: 10px;   margin-right: 10px; font-size: 16px;  display: flex; justify-content: left;"  nz-col="24">
+                <label style=" color: #ffffff; width:280px" class="left">Currently Rostered Staff Starting From</label> 
+                <!-- <nz-date-picker [nzFormat]="dateFormat" formControlName="date1"></nz-date-picker> -->
+                <nz-date-picker [nzFormat]="dateFormat" [(ngModel)]="date1" ></nz-date-picker>
+                <label style="padding-left: 5px; padding-right: 5px; color: #ffffff; width:30px"class="left">To</label> 
+                <!-- <nz-date-picker [nzFormat]="dateFormat" formControlName="date2"></nz-date-picker> -->
+                <nz-date-picker [nzFormat]="dateFormat" [(ngModel)]="date2" ></nz-date-picker>
+  
+                <button type="button" (click)="load_roster()"><i nz-icon nzType="sync" nzTheme="outline"></i></button>
+            </div>
+            <nz-table #fixedTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading"
+            [nzData]="lstCurrentRosters" [nzScroll]="{x:'1200px', y:'250px' }" [nzBordered]="true">
+            <thead style="margin-left: 20px;width:100%">
+                <tr>
+                    <th nzWidth="50px" style="background-color: #002060; color: white; " class="left">Date</th>
+                    <th nzWidth="50px" style="background-color: #002060; color: white; " class="left">Start Time</th>
+                    <th nzWidth="50px" style="background-color: #002060; color: white; " class="left">Duration</th>                                 
+                    <th nzWidth="100px" style="background-color: #002060; color: white; " class="left">Activity</th>
+                    <th nzWidth="100px" style="background-color: #002060; color: white; " class="left">Staff</th>
+                    <th nzWidth="100px" style="background-color: #002060; color: white; " class="left">Analysis</th>
+                    <th nzWidth="100px" style="background-color: #002060; color: white; " class="left">Program</th>
+                    <th nzWidth="100px" style="background-color: #002060; color: white; " class="left">Dataset Type</th>
+                    <th nzWidth="50px" style="background-color: #002060; color: white; " class="left">Service Cost</th>
+                </tr>
+            </thead>
+            <tbody>
+               <tr *ngFor="let data of lstCurrentRosters;let i = index;"  
+                   [style.background-color]="i == HighlightRow ? '#bbd7fa' : 'white'">
+                                  
+                   
+                   <td nzWidth="50px" class="left" >                                         
+                    {{data.date}}                                                                         
+                    </td>
+                    <td nzWidth="50px" class="left" >                                         
+                        {{data.start_Time}}                                                                         
+                    </td>
+                    <td nzWidth="50px" class="left" >                                         
+                            {{data.duration}}                                                                         
+                    </td>
+                    <td nzWidth="100px" class="left" >                                         
+                        {{data.activity}}                                                                         
+                    </td>
+                    <td nzWidth="100px" class="left" >                                         
+                        {{data.staff}}                                                                         
+                    </td>
+                    <td nzWidth="100px" class="left" >                                         
+                        {{data.analysis}}                                                                         
+                    </td>
+                    <td nzWidth="100px" class="left" >                                         
+                        {{data.program}}                                                                         
+                    </td>
+                    <td nzWidth="100px" class="left" >                                         
+                        {{data.dataset_Type}}                                                                         
+                    </td>
+                    <td nzWidth="50px" class="left" >                                         
+                        {{data.service_Cost}}                                                                         
+                    </td>
+
+            </tr>
+           </tbody>        
+        </nz-table> 
         </div>
-</div>
+
+        </div> <!--Tab Div-->
+</div>  <!--Modal Div-->
 </ng-template>
 
 <ng-template #modalFooter>

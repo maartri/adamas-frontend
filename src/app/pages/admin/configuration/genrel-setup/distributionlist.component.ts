@@ -4,6 +4,7 @@ import { ListService, MenuService, PrintService } from '@services/index';
 import { GlobalService } from '@services/global.service';
 import { takeUntil, switchMap } from 'rxjs/operators';
 import { Subject, EMPTY } from 'rxjs';
+import format from 'date-fns/format';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NzModalService } from 'ng-zorro-antd';
@@ -22,7 +23,7 @@ import { NzModalService } from 'ng-zorro-antd';
 })
 export class DistributionlistComponent implements OnInit {
   events: Array<any>;
-
+  
   tableData: Array<any>;
   staff:Array<any>;
   listType:Array<any>;
@@ -199,6 +200,11 @@ export class DistributionlistComponent implements OnInit {
     
     handleCancel() {
       this.modalOpen = false;
+      this.isUpdate  =  false;
+      this.staffList.forEach(x => {
+        x.checked = false;
+      });
+      this.selectedStaff = [];
     }
     pre(): void {
       this.current -= 1;
@@ -212,9 +218,9 @@ export class DistributionlistComponent implements OnInit {
       if(!this.isUpdate){        
         this.postLoading = true;   
         const group    = this.inputForm;
-          let flag       = false;
-          if(this.selectedStaff.length > 0){
-            this.selectedStaff.forEach(staf => {
+        let flag       = false;
+        if(this.selectedStaff.length > 0){
+          this.selectedStaff.forEach(staf => {
             let ltype      = this.globalS.isValueNull(group.get('ltype').value);
             let staff      = staf;
             let service    = this.globalS.isValueNull(group.get('service').value);
@@ -224,27 +230,24 @@ export class DistributionlistComponent implements OnInit {
             let saverity   = this.globalS.isValueNull(group.get('saverity').value);
             let mandatory  = this.trueString(group.get('mandatory').value);
             let assignee   = this.trueString(group.get('assignee').value);
-            let end_date   = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
+            let end_date   = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+format(group.get('end_date').value,'yyyy/MM/dd')+"'" : null;
             let values = recepient+","+service+","+location+","+prgm+",'"+staff+"',"+mandatory+","+assignee+","+saverity+","+ltype+","+end_date;
             let sql = "insert into IM_DistributionLists([Recipient],[Activity],[Location],[Program],[Staff],[Mandatory],[DefaultAssignee],[Severity],[ListName],[xEndDate]) Values ("+values+")"; 
+            // console.log(sql);
             this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
               flag = true;
             });
-        });
-      }else{
-        this.globalS.sToast('Success', 'Select Atleast One Staff');
-        return false;
-      }
-        if (flag)
-          this.globalS.sToast('Success', 'Saved successful');     
-        else
-          this.globalS.sToast('Success', 'Something Went Wrong Try Again');
-
-          this.loadData();
-          this.postLoading = false;          
-          this.handleCancel();
-          this.resetModal();
-
+          });
+        }else{
+          this.globalS.sToast('Success', 'Select Atleast One Staff');
+          return false;
+        }
+        this.globalS.sToast('Success', 'Saved successful');
+        //   this.loading = true;
+        //   this.loadData();
+        //   this.handleCancel();
+        //   this.resetModal();   
+        //   this.isUpdate = false; 
       }else{
         const group       = this.inputForm;
         let ltype      = this.globalS.isValueNull(group.get('ltype').value);
@@ -260,16 +263,23 @@ export class DistributionlistComponent implements OnInit {
         let recordNo   = group.get('recordNo').value;
         let sql  = "Update IM_DistributionLists SET [Recipient]="+ recepient + ",[Activity] ="+ service + ",[Program] ="+ prgm +",[Staff] ="+ staff+",[Severity] ="+ saverity +",[Mandatory] ="+ mandatory +",[DefaultAssignee] ="+ assignee +",[ListName] ="+ltype+",[xEndDate] = "+end_date+ ",[Location] ="+ location+ " WHERE [recordNo] ='"+recordNo+"'";
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
-          if (data) 
-          this.globalS.sToast('Success', 'Saved successful');     
-          else
-          this.globalS.sToast('Success', 'Saved successful');
-          this.loadData();
-          this.handleCancel();
-          this.resetModal();   
-          this.isUpdate = false; 
+          // if (data) 
+        this.globalS.sToast('Success', 'Saved successful');     
+        //   else
+        //   this.globalS.sToast('Success', 'Saved successful');
+        //   this.loading = true;
+        //   this.loadData();
+        //   this.handleCancel();
+        //   this.resetModal();   
+        //   this.isUpdate = false; 
         });
       }
+      this.globalS.sToast('Success', 'Saved successful');   
+      this.loading = true;  
+      this.loadData();
+      this.postLoading = false;          
+      this.handleCancel();
+      this.resetModal();
     }
     
     delete(data: any) {
@@ -311,106 +321,106 @@ export class DistributionlistComponent implements OnInit {
         recordNo:null,
         event: null
       });
-
+      
       this.inputForm.get('ltype').valueChanges
       .pipe(
         switchMap(x => {
-            if(x != 'EVENT')
-              return EMPTY;
-
-            return this.listS.geteventlifecycle()
+          if(x != 'EVENT')
+          return EMPTY;
+          
+          return this.listS.geteventlifecycle()
         })
-      )
-      .subscribe(data => {
-        this.events = data;
-      })
-    }
-    updateAllCheckedFilters(filter: any): void {
-      this.selectedStaff = [];
-      if (this.allStaff) {
-        this.staffList.forEach(x => {
-          x.checked = true;
-          this.selectedStaff.push(x.staffCode);
-        });
-      }else{
-        this.staffList.forEach(x => {
-          x.checked = false;
-        });
+        )
+        .subscribe(data => {
+          this.events = data;
+        })
+      }
+      updateAllCheckedFilters(filter: any): void {
         this.selectedStaff = [];
+        if (this.allStaff) {
+          this.staffList.forEach(x => {
+            x.checked = true;
+            this.selectedStaff.push(x.staffCode);
+          });
+        }else{
+          this.staffList.forEach(x => {
+            x.checked = false;
+          });
+          this.selectedStaff = [];
+        }
+        console.log(this.selectedStaff);
       }
-      console.log(this.selectedStaff);
-    }
-    updateSingleCheckedFilters(index:number): void {
-      if (this.staffList.every(item => !item.checked)) {
-        this.allStaff = false;
-        this.allstaffIntermediate = false;
-      } else if (this.staffList.every(item => item.checked)) {
-        this.allStaff = true;
-        this.allstaffIntermediate = false;
-      } else {
-        this.allstaffIntermediate = true;
-        this.allStaff = false;
-      }
-    }
-    log(event: any) {
-      this.selectedStaff = event;
-      console.log(this.selectedStaff);
-    }
-    handleOkTop() {
-      this.generatePdf();
-      this.tryDoctype = ""
-      this.pdfTitle = ""
-    }
-    handleCancelTop(): void {
-      this.drawerVisible = false;
-      this.pdfTitle = ""
-    }
-    generatePdf(){
-      this.drawerVisible = true;
-      
-      this.loading = true;
-      
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recipient) AS Field1," +
-      "Recipient as Field2,Activity as Field3,Location as Field4,Program as Field5,Staff as Field6," + 
-      "ListName as  Field7,Severity as Field8,CONVERT(varchar, [xEndDate],105) as Field9 from IM_DistributionLists "+this.whereString+" Order by recipient";
-      
-      const data = {
-        "template": { "_id": "0RYYxAkMCftBE9jc" },
-        "options": {
-          "reports": { "save": false },
-          "txtTitle": "Distribution List",
-          "sql": fQuery,
-          "userid":this.tocken.user,
-          "head1" : "Sr#",
-          "head2": "Recipient",
-          "head3": "Activity",
-          "head4": "Location",
-          "head5": "Program",
-          "head6": "Staff",
-          "head7": "ItemType",
-          "head8": "Severity",
-          "head9": "End Date",
+      updateSingleCheckedFilters(index:number): void {
+        if (this.staffList.every(item => !item.checked)) {
+          this.allStaff = false;
+          this.allstaffIntermediate = false;
+        } else if (this.staffList.every(item => item.checked)) {
+          this.allStaff = true;
+          this.allstaffIntermediate = false;
+        } else {
+          this.allstaffIntermediate = true;
+          this.allStaff = false;
         }
       }
-      this.printS.print(data).subscribe(blob => { 
-        let _blob: Blob = blob;
-        let fileURL = URL.createObjectURL(_blob);
-        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-        this.loading = false;
+      log(event: any) {
+        this.selectedStaff = event;
+        console.log(this.selectedStaff);
+      }
+      handleOkTop() {
+        this.generatePdf();
+        this.tryDoctype = ""
+        this.pdfTitle = ""
+      }
+      handleCancelTop(): void {
+        this.drawerVisible = false;
+        this.pdfTitle = ""
+      }
+      generatePdf(){
+        this.drawerVisible = true;
+        
+        this.loading = true;
+        
+        var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY recipient) AS Field1," +
+        "Recipient as Field2,Activity as Field3,Location as Field4,Program as Field5,Staff as Field6," + 
+        "ListName as  Field7,Severity as Field8,CONVERT(varchar, [xEndDate],105) as Field9 from IM_DistributionLists "+this.whereString+" Order by recipient";
+        
+        const data = {
+          "template": { "_id": "0RYYxAkMCftBE9jc" },
+          "options": {
+            "reports": { "save": false },
+            "txtTitle": "Distribution List",
+            "sql": fQuery,
+            "userid":this.tocken.user,
+            "head1" : "Sr#",
+            "head2": "Recipient",
+            "head3": "Activity",
+            "head4": "Location",
+            "head5": "Program",
+            "head6": "Staff",
+            "head7": "ItemType",
+            "head8": "Severity",
+            "head9": "End Date",
+          }
+        }
+        this.printS.print(data).subscribe(blob => { 
+          let _blob: Blob = blob;
+          let fileURL = URL.createObjectURL(_blob);
+          this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+          this.loading = false;
         }, err => {
-        this.loading = false;
-        this.ModalS.error({
-          nzTitle: 'TRACCS',
-          nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-          nzOnOk: () => {
-            this.drawerVisible = false;
-          },
+          this.loading = false;
+          this.ModalS.error({
+            nzTitle: 'TRACCS',
+            nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+            nzOnOk: () => {
+              this.drawerVisible = false;
+            },
+          });
         });
-      });
-
-      this.loading = true;
-      this.tryDoctype = "";
-      this.pdfTitle = "";
-    }    
-  }
-  
+        
+        this.loading = true;
+        this.tryDoctype = "";
+        this.pdfTitle = "";
+      }    
+    }
+    

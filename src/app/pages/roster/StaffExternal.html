@@ -118,83 +118,50 @@
             </div>
         </div>
          <div nz-row *ngIf="nzSelectedIndex==1" nzGutter="6">
-            
-            <nz-table #columnTable [nzScroll]="{ y: '300px' }" [nzPageSize]="5" [nzShowPagination]="false"  [nzLoading]="loading" 
-                [nzData]="lstNotes"  >
-            <!-- [nzFrontPagination]="true" [nzShowSizeChanger]="true" [nzPaginationPosition]="'top'" [nzPageSizeOptions]="[5, 10, 20,25, 30]" -->
-            <thead >
-                <tr>                        
-                    <th style="background-color: #002060; " class="left"></th> 
-                    <th style="background-color: #002060; color: white " class="left">Operational Notes & History</th> 
-                    <th style="background-color: #002060; " class="left"></th> 
-                </tr>
-            </thead>
-            <tbody>
-                <tr  *ngFor="let data of lstNotes;let i = index;"  
-                [style.background-color]="i == HighlightRow ? '#bbd7fa' : 'white'">
-                                
-                <td class="left"   style="width:20%; ">  
-                        <tr>
-                          <td style="border: thin; border-style: solid;">  {{data.detailDate}} </td>
-                        </tr>
-                        <tr>
-                          <td>Created By: </td>
-                        </tr>
-                        <tr style="background: linear-gradient(to bottom,  #ff9999 0%, #ff6666 100%); color:white; text-align: center;">
-                            <td> {{data.creator}} </td>
-                          </tr>
-                </td>
-                 <td class="left" >                                         
-                    <!-- {{data.detail}}      -->
-                        <textarea rows="4" disabled  nz-input>{{data.detail}}</textarea>                    
-                </td>
-                </tr>
-            </tbody>
-            
-            </nz-table> 
-           
+            <gnotes [user]="Person"></gnotes>
+
         </div>
         <div nz-row *ngIf="nzSelectedIndex==2" nzGutter="6">
             <!-- ,  y:'500px' -->
             <label style="padding:10px;  background-color: #002060; color: #ffffff; margin-right: 10px; font-size: 16px;" class="left">Staff Competencies & Skills</label> 
-            <nz-table #basicTable   [nzScroll]="{x:'1200px'}" [nzBordered]="true" [nzPageSize]="5" [nzShowPagination]="false"  [nzLoading]="loading" 
-                [nzData]="lstCompetencies" [nzTableLayout]="false">
+            <nz-table #fixedTable   [nzScroll]="{x:'1000px', y:'500px'}" [nzBordered]="true" [nzPageSize]="5" [nzShowPagination]="false"  [nzLoading]="loading" 
+                [nzData]="lstCompetencies" class="custum-header">
             <!-- [nzFrontPagination]="true" [nzShowSizeChanger]="true" [nzPaginationPosition]="'top'" [nzPageSizeOptions]="[5, 10, 20,25, 30]" -->
-            <thead>
+            <thead >
                 <tr>                        
-                    <th [nzLeft]="false" style="background-color: #d6d3d3;" >Competency</th> 
-                    <th [nzLeft]="false" style="background-color: #d6d3d3;" >Expiry Date</th> 
-                    <th [nzLeft]="false" style="background-color: #d6d3d3;" >Reminder Date</th> 
-                    <th [nzLeft]="false" style="background-color: #d6d3d3;" >Mandatory</th> 
-                    <th [nzLeft]="false" style="background-color: #d6d3d3;" >Cert./Reg. No.</th> 
-                    <th [nzLeft]="false" style="background-color: #d6d3d3;" >Compeletion Date</th> 
-                    <th [nzLeft]="false" style="background-color: #d6d3d3;" >Notes</th> 
+                    <th   nzWidth="200px" style="background-color: #d6d3d3;" >Competency</th> 
+                    <th   nzWidth="100px" style="background-color: #d6d3d3;" >Expiry Date</th> 
+                    <th   nzWidth="100px" style="background-color: #d6d3d3;" >Reminder Date</th> 
+                    <th   nzWidth="100px" style="background-color: #d6d3d3;" >Mandatory</th> 
+                    <th   nzWidth="100px" style="background-color: #d6d3d3;" >Cert./Reg. No.</th> 
+                    <th   nzWidth="100px" style="background-color: #d6d3d3;" >Compeletion Date</th> 
+                    <th   nzWidth="200px" style="background-color: #d6d3d3;" >Notes</th> 
                 </tr>
             </thead>
-            <tbody>
+            <tbody style="overflow-y: auto; overflow-x: hidden;">
                 <tr *ngFor="let data of lstCompetencies;let i = index;"  
                 [style.background-color]="i == HighlightRow ? '#bbd7fa' : 'white'">
                                 
-                <td [nzLeft]="false" >  
+                <td  >  
                        {{data.competency}}                    
                 </td>
-                 <td [nzLeft]="false"  >                                         
+                 <td   >                                         
                     {{data.expiry_Date}}                   
                 </td>
-                <td [nzLeft]="false"  >                                         
+                <td   >                                         
                     {{data.reminder_Date}}                   
                 </td>
 
-                <td [nzLeft]="false"   [nzShowCheckbox]="true" [nzChecked]="data.mandatory=='True'" >                                         
+                <td    [nzShowCheckbox]="true" [nzChecked]="data.mandatory=='True'" >                                         
                               
                 </td>
-                <td [nzLeft]="false"  >                                         
+                <td   >                                         
                     {{data.address1}}                   
                 </td>
-                <td [nzLeft]="false"  >                                         
+                <td   >                                         
                     {{data.completion_Date}}                   
                 </td>
-                <td [nzLeft]="false"  >                                         
+                <td   >                                         
                     {{data.notes}}                   
                 </td>
                                 

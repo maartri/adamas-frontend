@@ -53,6 +53,7 @@
     "ngx-contextmenu": "^5.4.0",
     "ngx-infinite-scroll": "^8.0.2",
     "ngx-toastr": "^12.0.0",
+    "node": "^17.1.0",
     "rxjs": "~6.5.4",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.2"

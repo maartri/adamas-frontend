@@ -1087,10 +1087,18 @@
     <p class="title" style=" margin-bottom: 24px;">Add Address Information</p>
 
     <form nz-row nzGutter="16" nz-form [nzLayout]="'vertical'" [formGroup]="addressForm">
+        <div nz-col nzSpan="24">
+            <nz-form-item>
+                <nz-form-label>Primary Address</nz-form-label>
+                <nz-form-control>
+                    <label nz-checkbox formControlName="primaryAddress"></label>
+                </nz-form-control>
+            </nz-form-item>
+        </div>
         <div nz-col nzSpan="12">
             <nz-form-item>
                 <nz-form-label>Type</nz-form-label>
-                <nz-form-control nzErrorTip="Description is required!">
+                <nz-form-control nzErrorTip="Type is required!">
                     <nz-select formControlName="description" nzAllowClear nzPlaceHolder=""
                         [nzDropdownMatchSelectWidth]="false">
                         <nz-option *ngFor="let address of addressArray" [nzValue]="address" [nzLabel]="address">
@@ -1134,7 +1142,7 @@
         <div nz-col nzSpan="24">
             <nz-form-item>
                 <nz-form-label>Primary Phone</nz-form-label>
-                <nz-form-control nzErrorTip="Contact Type is required!">
+                <nz-form-control>
                     <label nz-checkbox formControlName="primaryPhone"></label>
                 </nz-form-control>
             </nz-form-item>
@@ -1159,7 +1167,6 @@
                     <input type="text" *ngIf="!isMobile(contactForm.get('type').value) && !isPhoneFax(contactForm.get('type').value)" formControlName="details" placeholder="Details" nz-input />
                     <app-phonefax *ngIf="isMobile(contactForm.get('type').value)" [isMobile]="true" formControlName="details"></app-phonefax>
                     <app-phonefax *ngIf="isPhoneFax(contactForm.get('type').value)" formControlName="details"></app-phonefax>
-
                 </nz-form-control>
             </nz-form-item>
         </div>

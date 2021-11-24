@@ -26,7 +26,7 @@ import { FormBuilder, Validators } from '@angular/forms';
     height: 25px;
   }
   nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-nav-scroll div.ant-tabs-nav div div.ant-tabs-tab.ant-tabs-tab-active{
-    background: #717e94;
+    background: #85B9D5;
     color: #fff;
   }
   ul{
@@ -194,7 +194,9 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
   nodelist:Array<any> = [];
 
   checkOptionsOne = checkOptionsOne;
-
+  navigationExtras: { state: { StaffCode: string; ViewType: string; IsMaster: boolean; }; };
+  currentDate = new Date();
+  longMonth = this.currentDate.toLocaleString('en-us', { month: 'long' });
   sampleModel: any;
   
   columns: Array<any> = [
@@ -723,6 +725,9 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
       if (index == 14) {
         this.router.navigate(['/admin/recipient/accounting'])        
       }
+      if (index == 15) {
+        this.router.navigate(['/admin/recipient/media'])        
+      }
     }
     
     handleCancel() {
@@ -743,7 +748,16 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     closeProgram(){
       this.programModalOpen = false;
     }
-    
+    currentMonthRoster(){
+      console.log(this.user);
+      this.navigationExtras ={state : {StaffCode:this.user.code, ViewType:'Recipient',IsMaster:false }};
+          this.router.navigate(["/admin/rosters"],this.navigationExtras )
+   }
+    rosterMaster(){
+      console.log(this.user);
+        this.navigationExtras ={state : {StaffCode:this.user.code, ViewType:'Recipient',IsMaster:true }};
+            this.router.navigate(["/admin/rosters"],this.navigationExtras )
+    }
     loadPrograms(){
       if(!this.selectedRecipient){
         return;

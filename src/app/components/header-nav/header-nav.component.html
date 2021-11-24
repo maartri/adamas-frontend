@@ -7,7 +7,7 @@
             <div *ngIf="isVisible" class="dropdown">
                 <ul>
                     <li *ngIf="ifClientManager" (click)="settingsDrawerVisible = true">Settings</li>
-                    <li>Edit Password</li>
+                    <li *ngIf="tempRole == roles.admin" (click)="globalSettingsDrawerVisible = true">Settings</li>
                     <li (click)="logout()"><i nz-icon nzType="logout" nzTheme="outline"></i>Logout</li>
                 </ul>
             </div>
@@ -20,3 +20,11 @@
        <label nz-checkbox [(ngModel)]="clientPortalMethod" (ngModelChange)="methodChange($event)">Enable ClientPortalManagerMethod </label>
    </div>
 </nz-drawer>
+
+<nz-drawer [nzClosable]="false" [nzWidth]="1024" [nzVisible]="globalSettingsDrawerVisible" nzPlacement="right" nzTitle="Global Portal Settings" (nzOnClose)="close()">
+    <div nz-row>
+        <ul>
+            <li><label nz-checkbox>Populate Intake Email</label></li>
+        </ul>
+    </div>
+ </nz-drawer>

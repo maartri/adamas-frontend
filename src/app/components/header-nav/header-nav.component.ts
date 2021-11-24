@@ -12,7 +12,10 @@ export class HeaderNavComponent implements OnInit {
   @Input() HIDE_CRUMBS: boolean = false;
 
   isVisible: boolean = false;
+  globalSettingsDrawerVisible: boolean = false;
   isAdmin: boolean = false;
+
+  roles = roles;
 
   tempRole: string;
   ifClientManager: boolean = false;
@@ -51,6 +54,7 @@ export class HeaderNavComponent implements OnInit {
     this.tempRole = this.globalS.isRole();
 
     if (this.tempRole == roles.admin) {
+
     }
     else if (this.tempRole == roles.manager) {
         this.ifClientManager = this.tempRole == roles.manager ? true : false;
@@ -90,12 +94,21 @@ export class HeaderNavComponent implements OnInit {
 
   close(){
     this.settingsDrawerVisible = false;
+    this.globalSettingsDrawerVisible = false;
   }
 
   methodChange(event: boolean){
     this.listS.updateclientportalmethod(event).subscribe(data => {
       this.globalS.sToast('Success','Client Method changed')
     });
+  }
+
+  populateGlobalSettings(): void{
+
+  }
+
+  populateFromRegistrationTable(): void{
+    
   }
 
   

@@ -9,8 +9,9 @@
             <button class="botton extra" (click)="clicky(12)" [disabled]="status?.b_IsDead  || status == null"><i nz-icon nzType="printer" nzTheme="outline"></i> Print</button>
             
             <!-- <button class="botton other" (click)="openReferModal(null)"><i nz-icon nzType="cloud-upload" nzTheme="outline"></i> Sample</button> -->
-            
-            <button class="botton find" (click)="openFindModal()"><i nz-icon nzType="search" nzTheme="outline"></i> Find</button>
+          <button class="botton success" (click)="currentMonthRoster()" [disabled]="user == null"><i nz-icon nzType="calendar" nzTheme="outline"></i> {{longMonth}} Roster</button>
+          <button class="botton success" (click)="rosterMaster()" [disabled]="user == null"><i nz-icon nzType="calendar" nzTheme="outline"></i> Master</button>  
+          <button class="botton find" (click)="openFindModal()"><i nz-icon nzType="search" nzTheme="outline"></i> Find</button>
         </div> 
     </div>
     <!-- //s -->
@@ -68,11 +69,11 @@
                 <nz-tab nzTitle="History" (nzClick)="view(8)"> </nz-tab>
                 <nz-tab nzTitle="Insurance & Pension" (nzClick)="view(9)"> </nz-tab>
                 <nz-tab nzTitle="Quotes" (nzClick)="view(10)"> </nz-tab>
-                
                 <nz-tab nzTitle="Documents" (nzClick)="view(11)"> </nz-tab>
                 <nz-tab nzTitle="Time & Attendance" (nzClick)="view(12)"> </nz-tab>
                 <nz-tab nzTitle="Other" (nzClick)="view(13)"> </nz-tab>
                 <nz-tab nzTitle="Accounting" (nzClick)="view(14)"> </nz-tab>
+                <nz-tab nzTitle="Media" (nzClick)="view(15)"> </nz-tab>
             </nz-tabset>
         </div>
         

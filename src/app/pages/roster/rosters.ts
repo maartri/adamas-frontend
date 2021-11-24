@@ -1,4 +1,13 @@
-import { Component, OnInit, OnDestroy, Input, ViewChild, AfterViewInit,ChangeDetectorRef,ElementRef,ViewEncapsulation, OnChanges } from '@angular/core'
+import { Component, Input, ViewChild, ChangeDetectorRef,ElementRef,ViewEncapsulation, 
+    OnChanges,
+    AfterContentChecked,
+    AfterContentInit,
+    AfterViewChecked,
+    AfterViewInit,
+    DoCheck,
+    OnDestroy,
+    OnInit, 
+    HostListener} from '@angular/core'
 import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { getLocaleDateFormat, getLocaleFirstDayOfWeek, Time,DatePipe } from '@angular/common';
 //import { FullCalendarComponent, CalendarOptions } from '@fullcalendar/angular';
@@ -41,7 +50,7 @@ import { NZ_ICONS, NZ_ICON_DEFAULT_TWOTONE_COLOR } from 'ng-zorro-antd';
 import './styles.css';
 import { ElementSchemaRegistry } from '@angular/compiler';
 import { NzTableModule  } from 'ng-zorro-antd/table';
-import { Router } from '@angular/router';
+import { Router,ActivatedRoute } from '@angular/router';
 import { SetLeftFeature } from 'ag-grid-community';
 
 
@@ -152,18 +161,27 @@ IconCellType2.prototype.paint = function (ctx, value, x, y, w, h, style, context
     templateUrl: './rosters.html'
 })
 
-export class RostersAdmin implements AfterViewInit  {
+export class RostersAdmin implements OnChanges,
+OnInit,
+DoCheck,
+AfterContentInit,
+AfterContentChecked,
+AfterViewInit,
+AfterViewChecked,
+OnDestroy  {
     spreadBackColor = "white";  
     sheetName = "Staff Rosters";  
+
     hostStyle = {
         width: 'calc(100% - 50px)',
-        height: '1000px',
+        height: '500px',
         overflow: 'hidden',
         float: 'left'
     };
+
+
     hostStyle2 = {  
-      width: '100%',     
-      height: '1000px',
+      width: '100%',    
       overflow: 'auto',
       float: 'left'
     };  
@@ -177,6 +195,7 @@ defaultActivity: any = null;
 selectedActivity: any = null;
 defaultCategory: any = null;
 Timesheet_label:any="Add Timesheet";
+personList:Array<any>=[];
 payTotal:any;
 HighlightRow!: number;
 HighlightRow2!: number;
@@ -225,6 +244,7 @@ searchAvaibleModal:boolean=false;
   recipientDetailsModal:boolean=false;
   operation:string="";
   columnWidth = 100;
+  view:number=0;
   i:number=0;
   eventLog: string;
   token:any;
@@ -295,7 +315,8 @@ searchAvaibleModal:boolean=false;
     master:boolean=false;
     Master_Roster_label="Current Roster";
     tval:number;
- 
+    screenHeight:number;
+    screenWidth:number;
     sample: any;
     searchStaffModal:boolean=false;
     ViewStaffDetail:boolean=false;
@@ -335,7 +356,7 @@ searchAvaibleModal:boolean=false;
              this.timeList.push(this.numStr(h) + ":"+ this.numStr(t))
     }
     changeHeight() {
-        this.hostStyle.height = this.hostStyle.height === "50%" ? "100%" : "50%";
+        // this.hostStyle.height = this.hostStyle.height === "50%" ? "100%" : "50%";
         setTimeout(() => {
         this.spreadsheet.refresh();
         });
@@ -1053,7 +1074,7 @@ showViews(){
     this.load_rosters();
 }
 show_MoreOptions(){
-    this.show_More=true;
+    this.show_More=!this.show_More;
 }
 
 
@@ -1205,19 +1226,20 @@ ClearMultishift(){
     workbookInit(args) {  
         console.log("workbookInit called");
       
-      let spread = args.spread;
+      let spread: GC.Spread.Sheets.Workbook = args.spread;
      // this.MainSpread=args.spread;
-      this.spreadsheet = GC.Spread.Sheets.Workbook = args.spread;  
-      spread= GC.Spread.Sheets.Workbook = args.spread;  
+      this.spreadsheet = args.spread;  
+      spread = args.spread;  
       let sheet = spread.getActiveSheet();  
+      
       sheet.setRowCount(this.time_slot, GC.Spread.Sheets.SheetArea.viewport);
       sheet.setColumnCount(31,GC.Spread.Sheets.SheetArea.viewport);
 
-          spread.suspendPaint();
-          let spreadNS = GC.Spread.Sheets;
-          let self = this;
-        
-     
+
+        spread.suspendPaint();
+        let spreadNS = GC.Spread.Sheets;
+        let self = this;
+
       //sheet.getCell(0, 0).text("Fruits wallet").foreColor("blue"); 
       spread.options.columnResizeMode = GC.Spread.Sheets.ResizeMode.split;
       spread.options.rowResizeMode = GC.Spread.Sheets.ResizeMode.split;
@@ -1226,44 +1248,57 @@ ClearMultishift(){
       spread.options.scrollPixel = 5;
       sheet.options.selectionBorderColor = 'blue';
       sheet.options.selectionBackColor = '#BDCED1';
-
-    //   var si = new spread.Data.StyleInfo();  
-    //    si.Foreground = 'white';
-    //    si.BackGround = '#e0e0de'; 
-    //    spread.ActiveSheet.ColumnHeader.DefaultStyle = si;  
-      //sheet.options.selectionBorderColor = 'blue';
-      //sheet.options.selectionBackColor = '#e0e0de';
+      spread.options.newTabVisible = false;
      
-     // spread.options.setColumnResizable(0,true, GC.Spread.Sheets.SheetArea.colHeader);
-    //  spread.options.resizeZeroIndicator = GC.Spread.Sheets.SheetArea.Enhanced
+      
+        spread.bind(GC.Spread.Sheets.Events.SheetTabClick, function (sender, args) {
+            if (args.sheet === null && args.sheetName === null) {
+                console.log("New button Clicked, new sheet added");
+                self.personList.push(this.data);
+                sheet = spread.getActiveSheet();  
+                self.prepare_Sheet();
+            }
+            else {
+                console.log(args.sheetName + " clicked");
+                sheet = spread.getActiveSheet();  
+            }
+        });
 
+        spread.bind(GC.Spread.Sheets.Events.SheetChanged, function (sender, args) {
+
+            this.data=  self.personList[args.sheetIndex ]
+          
+                self.load_rosters();
+        });
             sheet.bind(GC.Spread.Sheets.Events.LeaveCell, function (event, infos) {
                var res:string = sheet.getCell(0, infos.col,GC.Spread.Sheets.SheetArea.colHeader).value()
                // Reset the backcolor of cell before moving
+             
                spread.suspendPaint();
-                    
-                if ( res.endsWith("Sat") || res.endsWith("Sun")){
-                    
-                  
-                    
-                    infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).backColor("#CDE0E3");
+                
+                if ( res.endsWith("Sat") || res.endsWith("Sun") || res.endsWith("Saturday") || res.endsWith("Sunday")){                    
+                    infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).backColor("#FFDEDB");
                     infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).foreColor("#000000");
                  } else{
-                    infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).backColor("#002060");
-                    infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).foreColor("#ffffff");
+                    infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).backColor("#F6F6F6");
+                    infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).foreColor("#000000");
                     
                 }
+                
+               
+                
                     spread.resumePaint();
                 });
 
               
             
     sheet.bind(GC.Spread.Sheets.Events.EnterCell, function (event, infos) {
-        spread.suspendPaint(); 
-        var active_row = sheet.getRange(0, -1, 1, -1, GC.Spread.Sheets.SheetArea.colHeader);
-        active_row.backColor("Red");
-        active_row.foreColor("White");          
-        
+     
+       // infos.sheet.getCell(0, infos.col).backColor("pink");
+        infos.sheet.getCell(1, infos.col, GC.Spread.Sheets.SheetArea.colHeader).backColor("pink");
+        if(1==1) return;
+      
+
         var res:string = sheet.getCell(0, infos.col,GC.Spread.Sheets.SheetArea.colHeader).value()
         
         if ( res.endsWith("Sat") || res.endsWith("Sun")){
@@ -1292,7 +1327,7 @@ ClearMultishift(){
 
               }
               sheet.options.isProtected = true;                
-
+              
               self.eventLog =
                   'SpreadEvent: ' + GC.Spread.Sheets.Events.CellClick + ' event called' + '\n' +
                   'sheetArea: ' + sheetArea + '\n' +
@@ -1388,6 +1423,10 @@ ClearMultishift(){
 
             self.cell_value=sheet.getTag(row,col,GC.Spread.Sheets.SheetArea.viewport)
            
+            if(self.cell_value == null){
+                return;
+            }
+            
             let data:any = self.find_roster(self.cell_value.recordNo);
            
             if (data!=null)
@@ -2038,15 +2077,39 @@ ClearMultishift(){
                     }
                 }
             });
-           // sheet.options.isProtected = true;
-            spread.options.allowContextMenu = true;
-               
-         
+
+            // sheet.options.isProtected = true;
+        spread.options.allowContextMenu = true;
+
+        
+        // //--------------------------Setting Border of Active Cell----------------------------------
+       
+     
+        // sheet.options.selectionBorderColor = "blue";
+        // sheet.options.selectionBackColor = "rgba(155, 225, 230, 0.2)";
+        // sheet.options.selectedBorderColor = "blue";
+
+        // var style = new GC.Spread.Sheets.Style();
+        // style.font = "bold 22px Arial";
+        // style.foreColor = "red";
+        // style.backColor = "#D3F0E0";
+        // style.hAlign = GC.Spread.Sheets.HorizontalAlign.center;
+        // style.vAlign = GC.Spread.Sheets.VerticalAlign.center;
+
+        // for (var i = 0; i < 7; i++) {
+        //     sheet.setStyle(1, i, style, GC.Spread.Sheets.SheetArea.colHeader);
+        //     sheet.setStyle(2, i, style, GC.Spread.Sheets.SheetArea.colHeader);
+        //     sheet.setStyle(3, i, style, GC.Spread.Sheets.SheetArea.colHeader);
+        // }
+        
+        // sheet.options.style=style;
+ 
   
           spread.resumePaint();
       
           self.prepare_Sheet();
-     
+
+         
           
   }  
   
@@ -2058,6 +2121,7 @@ ClearMultishift(){
     }
 
    let sheet:any=this.spreadsheet.getActiveSheet(); 
+   
 
    //this.changeHeight()
    this.spreadsheet.suspendPaint();
@@ -2066,9 +2130,15 @@ ClearMultishift(){
      var defaultStyle = new GC.Spread.Sheets.Style();
      defaultStyle.font = "Segoe UI";
      defaultStyle.themeFont = "Segoe UI";
-     
+     this.spreadsheet.getHost().style.width = (this.screenWidth - 260) + 'px';
+     this.spreadsheet.getHost().style.height = (this.screenHeight - 170) + 'px';
+      
+ 
+
      sheet.clearSelection();
      sheet.setDefaultStyle(defaultStyle, GC.Spread.Sheets.SheetArea.viewport);
+
+     
      let date:Date = new Date(this.date);
 
     if (this.startRoster==null){
@@ -2082,7 +2152,7 @@ ClearMultishift(){
     let m = date.getMonth()+1;
     let y=date.getFullYear();
   
-    
+     
    //
     
     let days:number =this.getDaysInMonth(m,y);
@@ -2093,67 +2163,57 @@ ClearMultishift(){
     sheet.setColumnCount(this.Days_View, GC.Spread.Sheets.SheetArea.viewport);
     sheet.setRowCount(this.time_slot, GC.Spread.Sheets.SheetArea.viewport);
     sheet.setColumnResizable(0,true, GC.Spread.Sheets.SheetArea.colHeader);
-    // if (this.Days_View==31) {this.Days_View==days}
-    
-    // sheet.setColumnCount(this.Days_View, GC.Spread.Sheets.SheetArea.viewport);
-    
+
     for (let i=0; i<=this.Days_View ; i++)   
-        
-        {
-                
-     // sheet.setValue(0, i, date.getDate() + " " + this.DayOfWeek( date.getDay()), GC.Spread.Sheets.SheetArea.colHeader);
+    {
      
       var head_txt=date.getDate() + " " + this.DayOfWeek( date.getDay());
       if (this.Days_View>=30)
-        sheet.setValue(0, i, { richText: [{ style: { font: '12px Segoe UI ', foreColor: 'white' }, text: head_txt   }] }, GC.Spread.Sheets.SheetArea.colHeader);        
+         sheet.setValue(0, i, { richText: [{ style: { font: '12px Segoe UI ', foreColor: 'white' }, text: head_txt   }] }, GC.Spread.Sheets.SheetArea.colHeader);        
       else
-        sheet.setValue(0, i, { richText: [{ style: { font: '10px Segoe UI ', foreColor: 'white' }, text: head_txt   }] }, GC.Spread.Sheets.SheetArea.colHeader);        
+         sheet.setValue(0, i, { richText: [{ style: { font: '10px Segoe UI ', foreColor: 'white' }, text: head_txt   }] }, GC.Spread.Sheets.SheetArea.colHeader);        
 
-      var row_header = sheet.getRange(i, -1, 1, -1, GC.Spread.Sheets.SheetArea.colHeader);
-       row_header.backColor("#002060");
+      var col_header = sheet.getRange(i, -1, 1, -1, GC.Spread.Sheets.SheetArea.colHeader);
+      //col_header.backColor("#002060");
       //row_header.foreColor("#ffffff");
-      
+      //col_header.setBorder(new GC.Spread.Sheets.LineBorder("#000000", GC.Spread.Sheets.LineStyle.double), {all:true}); 
+      col_header.borderTop(new GC.Spread.Sheets.LineBorder("#000000", GC.Spread.Sheets.LineStyle.double));
+  
       sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).tag(date);
 
      var new_width = 100 / this.Days_View;
      
-     //sheet.setColumnWidth(i, new_width,GC.Spread.Sheets.SheetArea.viewport);
-     
+     //setting column height
+     sheet.setRowHeight(0, 40.0,GC.Spread.Sheets.SheetArea.colHeader);
+    //setting column width
      sheet.setColumnWidth(i, new_width +"*",GC.Spread.Sheets.SheetArea.viewport);
+     sheet.setColumnResizable(i,true, GC.Spread.Sheets.SheetArea.colHeader);
+    
+      if ((this.DayOfWeek( date.getDay())=="Saturday") || (this.DayOfWeek( date.getDay())=="Sunday") || ((this.DayOfWeek( date.getDay())=="Sat") || (this.DayOfWeek( date.getDay())=="Sun")))
+      {
+            sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).backColor("#FFDEDB");
+            if (this.Days_View>=30)
+                sheet.setValue(0, i, { richText: [{ style: { font: '10px Tahoma ', foreColor: '#000000' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
+            else
+                sheet.setValue(0, i, { richText: [{ style: { font: '14px Tahoma ', foreColor: '#000000' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
+        }else
+        {
+            sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).backColor("#F6F6F6");
+            if (this.Days_View>=28)
+                //sheet.setValue(0, i, { richText: [{ style: { font: '10px Segoe UI ',foreColor: '#FFFFFF' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
+                sheet.setValue(0, i, { richText: [{ style: { font: '10px Tahoma ',foreColor: '#000000' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
+            else
+                //sheet.setValue(0, i, { richText: [{ style: { font: '12px Segoe UI ',foreColor: '#FFFFFF' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
+                sheet.setValue(0, i, { richText: [{ style: { font: '14px Tahoma ',foreColor: '#000000' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
+        }
+            date.setDate(date.getDate()+1);
 
-      
-        sheet.setColumnResizable(i,true, GC.Spread.Sheets.SheetArea.colHeader);
-        
-        //        
-       // sheet.autoFitColumn(i)            
-
-      if ((this.DayOfWeek( date.getDay())=="Sat") || (this.DayOfWeek( date.getDay())=="Sun")){
-          //sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).backColor("#85B9D5");
-         sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).backColor("#CDE0E3");
-         //CDE0E3,HB5BCE0
-          if (this.Days_View>=30)
-            sheet.setValue(0, i, { richText: [{ style: { font: 'bold 10px Segoe UI ', foreColor: '#000000' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
-        else
-            sheet.setValue(0, i, { richText: [{ style: { font: 'bold 12px Segoe UI ', foreColor: '#000000' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
-          
-      //row_header.backColor("#D1A6BC");
-     
-      }else{
-        sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).backColor("#002060");
-        if (this.Days_View>=30)
-            sheet.setValue(0, i, { richText: [{ style: { font: '10px Segoe UI ',foreColor: '#ffffff' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
-        else
-            sheet.setValue(0, i, { richText: [{ style: { font: '12px Segoe UI ',foreColor: '#ffffff' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
-            
-      }
-      date.setDate(date.getDate()+1); 
     }
 
     let time:Time;
     time={hours:0,
         minutes:0}
-      
-    
+        
 
     for (let j=0; j<this.time_slot; j++)   {      
    
@@ -2165,18 +2225,23 @@ ClearMultishift(){
             row_txt = "     "+this.numStr(time.minutes)  ;
         else
             row_txt= "";
-
-         sheet.setValue(j, 0, { richText: [{ style: { font: '12px Segoe UI ', foreColor: 'white' }, text: row_txt   }] }, GC.Spread.Sheets.SheetArea.rowHeader);        
-       
-       // sheet.getRange(j, 0, 1, 1).tag(this.numStr(time.hours)  + ":" + this.numStr(time.minutes));
+            sheet.setValue(j, 0, { richText: [{ style: { font: '14px Tahoma ', foreColor: 'black' }, text: row_txt   }] }, GC.Spread.Sheets.SheetArea.rowHeader);
+           
+         //sheet.setValue(j, 0, { richText: [{ style: { font: '12px Segoe UI ', foreColor: 'white' }, text: row_txt   }] }, GC.Spread.Sheets.SheetArea.rowHeader);        
+        // sheet.getRange(j, 0, 1, 1).tag(this.numStr(time.hours)  + ":" + this.numStr(time.minutes));
         sheet.getCell(j, 0, GC.Spread.Sheets.SheetArea.rowHeader).tag(this.numStr(time.hours)  + ":" + this.numStr(time.minutes));
 
         this.time_map.set(j,this.numStr(time.hours)  + ":" + this.numStr(time.minutes))
-        sheet.getCell(j, 0, GC.Spread.Sheets.SheetArea.rowHeader).backColor("#92B0E1");
-        sheet.getCell(j, 0, GC.Spread.Sheets.SheetArea.rowHeader).foreColor("#ffffff");
+        sheet.getCell(j, 0, GC.Spread.Sheets.SheetArea.rowHeader).backColor("#ffffff");
+        sheet.getCell(j, 0, GC.Spread.Sheets.SheetArea.rowHeader).foreColor("#000000");
+        //setting row height
+       // sheet.setRowHeight(j, 40.0,GC.Spread.Sheets.SheetArea.viewport);
+        //setting row width
         sheet.setColumnWidth(0, 60.0,GC.Spread.Sheets.SheetArea.rowHeader);
-        
         sheet.setRowResizable(j,true, GC.Spread.Sheets.SheetArea.rowHeader);
+        var row_header = sheet.getRange(j, -1, 1, -1, GC.Spread.Sheets.SheetArea.rowHeader);      
+        //row_header.setBorder(new GC.Spread.Sheets.LineBorder("#000000", GC.Spread.Sheets.LineStyle.thin), {all:true}); 
+        row_header.borderLeft(new GC.Spread.Sheets.LineBorder("#000000", GC.Spread.Sheets.LineStyle.double));
 
         if (this.time_slot==288)
             time.minutes+=5;
@@ -2190,9 +2255,6 @@ ClearMultishift(){
           time.hours+=1;
         }
 
-         
-     
-        
         
   }
 
@@ -2216,15 +2278,10 @@ ClearMultishift(){
         sheet.options.protectionOptions.allowDragInsertColumns = false;        
         sheet.options.resizeZeroIndicator = GC.Spread.Sheets.ResizeZeroIndicator.enhanced;
 
-        sheet.options.selectionBorderColor = "blue";
-        sheet.options.selectionBackColor = "rgba(155, 225, 230, 0.2)";
-        sheet.options.selectedBorderColor = "blue";
-
+     
   this.Already_loaded=true;
   this.spreadsheet.resumePaint();
   
-
-      
   }
 
   set_Time_Interval(t:number)
@@ -2886,6 +2943,7 @@ return rst;
         private listS: ListService,
         public datepipe: DatePipe,
         private sharedS: ShareService,
+        private route: ActivatedRoute
       
     ) {
         this.router.routeReuseStrategy.shouldReuseRoute = function () {        
@@ -3076,49 +3134,99 @@ return rst;
         }, 100);
     }
 
+    
+    @HostListener('window:resize', ['$event'])
+    getScreenSize(event?) {
+          this.screenHeight = window.innerHeight;
+          this.screenWidth = window.innerWidth;
+          console.log(this.screenHeight, this.screenWidth);
+          this.prepare_Sheet();
+    }
+
+
     ngOnInit(): void {
+
+
+     
         GC.Spread.Sheets.LicenseKey = license;
+
+        this.screenHeight = window.innerHeight;
+        this.screenWidth = window.innerWidth;
+
+        this.hostStyle = {
+            width: '100%',
+            height: `${this.screenHeight- 170}px`,
+            overflow: 'hidden',
+            float: 'left'
+        };
         
+        if (this.spreadsheet!=null){
+            this.spreadsheet.getHost().style.width = "100%";
+            this.spreadsheet.getHost().style.height = window.innerHeight;
+              
+          }else{
+           // this.reloadComponent();
+           // return;
+          }
+       
+      
         this.date = moment();
         this.AddTime();
         this.buildForm(); 
          this.token = this.globalS.decode();    
          this.tval=96;
          this.dval=14;
-        if (this.info.StaffCode!='' && this.info.StaffCode!=null){
-            this.defaultCode=this.info.StaffCode
-            this.viewType=this.info.ViewType
-            this.master=this.info.IsMaster
-            let data ={data:this.defaultCode}
-            this.picked(data);
-        }
-
+     
       
       
 }
 ngOnChange(change:OnChanges) {
-   // console.log("ngOnChanges"+change);
+    console.log("ngOnChanges"+change);
     
 }
 ngAfterContentInit() {
-   // console.log("ngAfterContentInit");
+    console.log("ngAfterContentInit");
     
 }
 ngAfterViewChecked(){
-   /// console.log("ngAfterViewChecked");
+    console.log("ngAfterViewChecked");
  
 }
-ngAfterViewInit(){
+ngAfterContentChecked(){
 
+}
+ngAfterViewInit(){
   this.formloading=true;
     console.log("ngAfterViewInit");   
+    
+    if (this.info.StaffCode!='' && this.info.StaffCode!=null){
+        this.defaultCode=this.info.StaffCode
+        this.viewType=this.info.ViewType
+        this.master=this.info.IsMaster
+        let data ={data:this.defaultCode, option:this.viewType}   
+       
+        if (this.viewType=='Recipient'){
+            data.option="1"
+            this.view=1;
+        }else{
+            data.option="0"
+            this.view=0;
+        }
+            
+         this.picked(data);
+         //this.searchRoster(this.date);
+    }
    
 }
+ngOnChanges() {}
 
+ngDoCheck() {}
+   
 ngOnDestroy(){
     console.log("ngDestroy");
-  
+    window.location.reload();  
 }
+
 refreshPage() {
     //this._document.defaultView.location.reload();
     window.location.reload();
@@ -3141,7 +3249,7 @@ reload(reload: boolean){
         // ALLOWANCE NON CHARGEABLE 
         if(serviceType == 9 && debtor == '!INTERNAL'){
             return 'ALLOWANCE NON-CHARGEABLE';
-            return this.modalTimesheetValues[2];
+            //return this.modalTimesheetValues[2];
         }
 
         // ALLOWANCE CHARGEANLE 
@@ -3218,10 +3326,8 @@ reload(reload: boolean){
                  
      }
 
-  
 
-
-    picked(data: any) {
+picked(data: any) {
         console.log(data);
         this.userStream.next(data);
 
@@ -3231,10 +3337,7 @@ reload(reload: boolean){
             this.enable_buttons=false;
             return;
         }
-
-       
         //this.prepare_Sheet(this.spreadsheet);
-     
 
         this.selected = data;
         if (this.master){
@@ -3255,7 +3358,7 @@ reload(reload: boolean){
         }
 
         if(this.viewType == 'Recipient'){
-            this.rosterForm.patchValue ({recipientCode:data.data});
+         //   this.rosterForm.patchValue ({recipientCode:data.data});
             this.bookingForm.patchValue ({recipientCode:data.data});
 
             this.clientS.getagencydefinedgroup(this.selected.data)
@@ -3300,14 +3403,14 @@ reload(reload: boolean){
                         recipientCode: x.recipient_staff.accountNo,
                         debtor: x.billedTo.accountNo,
                         serviceActivity: x.activity.name,
-                        serviceSetting: x.recipientLocation,
-                        analysisCode: x.anal,
+                        serviceSetting: x.recipientLocation,                        
                         type:x.type,
                         bill:x.bill,
                         pay:x.pay,
                         dayNo: x.dayNo,
                         monthNo: x.monthNo,
-                        yearNo: x.yearNo
+                        yearNo: x.yearNo,
+                        analysisCode: x.anal
 
                     }
                    
@@ -4168,6 +4271,7 @@ isServiceTypeMultipleRecipient(type: string): boolean {
     }   
     buildForm() {
 
+        
      //--------------------------an other booking form-------------------------------- 
         this.bookingForm = this.formBuilder.group({
             recordNo: [''],

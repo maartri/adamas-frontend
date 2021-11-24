@@ -1,4 +1,13 @@
-import { Component, OnInit, OnDestroy, Input, ViewChild, AfterViewInit,ChangeDetectorRef,ElementRef,ViewEncapsulation, OnChanges, HostListener } from '@angular/core'
+import { Component, Input, ViewChild, ChangeDetectorRef,ElementRef,ViewEncapsulation, 
+    OnChanges,
+    AfterContentChecked,
+    AfterContentInit,
+    AfterViewChecked,
+    AfterViewInit,
+    DoCheck,
+    OnDestroy,
+    OnInit, 
+    HostListener} from '@angular/core'
 import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { getLocaleDateFormat, getLocaleFirstDayOfWeek, Time,DatePipe } from '@angular/common';
 //import { FullCalendarComponent, CalendarOptions } from '@fullcalendar/angular';
@@ -41,7 +50,7 @@ import { NZ_ICONS, NZ_ICON_DEFAULT_TWOTONE_COLOR } from 'ng-zorro-antd';
 import './styles.css';
 import { ElementSchemaRegistry } from '@angular/compiler';
 import { NzTableModule  } from 'ng-zorro-antd/table';
-import { Router } from '@angular/router';
+import { Router,ActivatedRoute } from '@angular/router';
 import { SetLeftFeature } from 'ag-grid-community';
 
 
@@ -152,14 +161,24 @@ IconCellType2.prototype.paint = function (ctx, value, x, y, w, h, style, context
     templateUrl: './rosters.html'
 })
 
-export class RostersAdmin implements AfterViewInit  {
+export class RostersAdmin implements OnChanges,
+OnInit,
+DoCheck,
+AfterContentInit,
+AfterContentChecked,
+AfterViewInit,
+AfterViewChecked,
+OnDestroy  {
     spreadBackColor = "white";  
     sheetName = "Staff Rosters";  
 
-    screenHeight: number;
-    screenWidth: number;
+    hostStyle = {
+        width: 'calc(100% - 50px)',
+        height: '500px',
+        overflow: 'hidden',
+        float: 'left'
+    };
 
-    hostStyle: any;
 
     hostStyle2 = {  
       width: '100%',    
@@ -176,6 +195,7 @@ defaultActivity: any = null;
 selectedActivity: any = null;
 defaultCategory: any = null;
 Timesheet_label:any="Add Timesheet";
+personList:Array<any>=[];
 payTotal:any;
 HighlightRow!: number;
 HighlightRow2!: number;
@@ -224,6 +244,7 @@ searchAvaibleModal:boolean=false;
   recipientDetailsModal:boolean=false;
   operation:string="";
   columnWidth = 100;
+  view:number=0;
   i:number=0;
   eventLog: string;
   token:any;
@@ -294,7 +315,8 @@ searchAvaibleModal:boolean=false;
     master:boolean=false;
     Master_Roster_label="Current Roster";
     tval:number;
- 
+    screenHeight:number;
+    screenWidth:number;
     sample: any;
     searchStaffModal:boolean=false;
     ViewStaffDetail:boolean=false;
@@ -1213,11 +1235,11 @@ ClearMultishift(){
       sheet.setRowCount(this.time_slot, GC.Spread.Sheets.SheetArea.viewport);
       sheet.setColumnCount(31,GC.Spread.Sheets.SheetArea.viewport);
 
+
         spread.suspendPaint();
         let spreadNS = GC.Spread.Sheets;
         let self = this;
-        
-     
+
       //sheet.getCell(0, 0).text("Fruits wallet").foreColor("blue"); 
       spread.options.columnResizeMode = GC.Spread.Sheets.ResizeMode.split;
       spread.options.rowResizeMode = GC.Spread.Sheets.ResizeMode.split;
@@ -1226,8 +1248,28 @@ ClearMultishift(){
       spread.options.scrollPixel = 5;
       sheet.options.selectionBorderColor = 'blue';
       sheet.options.selectionBackColor = '#BDCED1';
+      spread.options.newTabVisible = false;
+     
+      
+        spread.bind(GC.Spread.Sheets.Events.SheetTabClick, function (sender, args) {
+            if (args.sheet === null && args.sheetName === null) {
+                console.log("New button Clicked, new sheet added");
+                self.personList.push(this.data);
+                sheet = spread.getActiveSheet();  
+                self.prepare_Sheet();
+            }
+            else {
+                console.log(args.sheetName + " clicked");
+                sheet = spread.getActiveSheet();  
+            }
+        });
 
+        spread.bind(GC.Spread.Sheets.Events.SheetChanged, function (sender, args) {
 
+            this.data=  self.personList[args.sheetIndex ]
+          
+                self.load_rosters();
+        });
             sheet.bind(GC.Spread.Sheets.Events.LeaveCell, function (event, infos) {
                var res:string = sheet.getCell(0, infos.col,GC.Spread.Sheets.SheetArea.colHeader).value()
                // Reset the backcolor of cell before moving
@@ -1285,7 +1327,7 @@ ClearMultishift(){
 
               }
               sheet.options.isProtected = true;                
-
+              
               self.eventLog =
                   'SpreadEvent: ' + GC.Spread.Sheets.Events.CellClick + ' event called' + '\n' +
                   'sheetArea: ' + sheetArea + '\n' +
@@ -2035,9 +2077,11 @@ ClearMultishift(){
                     }
                 }
             });
-           // sheet.options.isProtected = true;
+
+            // sheet.options.isProtected = true;
         spread.options.allowContextMenu = true;
-               
+
+        
         // //--------------------------Setting Border of Active Cell----------------------------------
        
      
@@ -2188,8 +2232,8 @@ ClearMultishift(){
         sheet.getCell(j, 0, GC.Spread.Sheets.SheetArea.rowHeader).tag(this.numStr(time.hours)  + ":" + this.numStr(time.minutes));
 
         this.time_map.set(j,this.numStr(time.hours)  + ":" + this.numStr(time.minutes))
-        sheet.getCell(j, 0, GC.Spread.Sheets.SheetArea.rowHeader).backColor("#92B0E1");
-        sheet.getCell(j, 0, GC.Spread.Sheets.SheetArea.rowHeader).foreColor("#ffffff");
+        sheet.getCell(j, 0, GC.Spread.Sheets.SheetArea.rowHeader).backColor("#ffffff");
+        sheet.getCell(j, 0, GC.Spread.Sheets.SheetArea.rowHeader).foreColor("#000000");
         //setting row height
        // sheet.setRowHeight(j, 40.0,GC.Spread.Sheets.SheetArea.viewport);
         //setting row width
@@ -2899,6 +2943,7 @@ return rst;
         private listS: ListService,
         public datepipe: DatePipe,
         private sharedS: ShareService,
+        private route: ActivatedRoute
       
     ) {
         this.router.routeReuseStrategy.shouldReuseRoute = function () {        
@@ -3089,7 +3134,7 @@ return rst;
         }, 100);
     }
 
-
+    
     @HostListener('window:resize', ['$event'])
     getScreenSize(event?) {
           this.screenHeight = window.innerHeight;
@@ -3100,6 +3145,9 @@ return rst;
 
 
     ngOnInit(): void {
+
+
+     
         GC.Spread.Sheets.LicenseKey = license;
 
         this.screenHeight = window.innerHeight;
@@ -3112,46 +3160,73 @@ return rst;
             float: 'left'
         };
         
+        if (this.spreadsheet!=null){
+            this.spreadsheet.getHost().style.width = "100%";
+            this.spreadsheet.getHost().style.height = window.innerHeight;
+              
+          }else{
+           // this.reloadComponent();
+           // return;
+          }
+       
+      
         this.date = moment();
         this.AddTime();
         this.buildForm(); 
          this.token = this.globalS.decode();    
          this.tval=96;
          this.dval=14;
-        if (this.info.StaffCode!='' && this.info.StaffCode!=null){
-            this.defaultCode=this.info.StaffCode
-            this.viewType=this.info.ViewType
-            this.master=this.info.IsMaster
-            let data ={data:this.defaultCode}
-            this.picked(data);
-        }
-
+     
       
       
 }
 ngOnChange(change:OnChanges) {
-   // console.log("ngOnChanges"+change);
+    console.log("ngOnChanges"+change);
     
 }
 ngAfterContentInit() {
-   // console.log("ngAfterContentInit");
+    console.log("ngAfterContentInit");
     
 }
 ngAfterViewChecked(){
-   /// console.log("ngAfterViewChecked");
+    console.log("ngAfterViewChecked");
  
+}
+ngAfterContentChecked(){
+
 }
 ngAfterViewInit(){
   this.formloading=true;
-  this.screenHeight = window.innerHeight;
-  this.screenWidth = window.innerWidth;
-  this.prepare_Sheet();
+    console.log("ngAfterViewInit");   
+    
+    if (this.info.StaffCode!='' && this.info.StaffCode!=null){
+        this.defaultCode=this.info.StaffCode
+        this.viewType=this.info.ViewType
+        this.master=this.info.IsMaster
+        let data ={data:this.defaultCode, option:this.viewType}   
+       
+        if (this.viewType=='Recipient'){
+            data.option="1"
+            this.view=1;
+        }else{
+            data.option="0"
+            this.view=0;
+        }
+            
+         this.picked(data);
+         //this.searchRoster(this.date);
+    }
+   
 }
+ngOnChanges() {}
 
+ngDoCheck() {}
+   
 ngOnDestroy(){
     console.log("ngDestroy");
-  
+    window.location.reload();  
 }
+
 refreshPage() {
     //this._document.defaultView.location.reload();
     window.location.reload();
@@ -3174,7 +3249,7 @@ reload(reload: boolean){
         // ALLOWANCE NON CHARGEABLE 
         if(serviceType == 9 && debtor == '!INTERNAL'){
             return 'ALLOWANCE NON-CHARGEABLE';
-            return this.modalTimesheetValues[2];
+            //return this.modalTimesheetValues[2];
         }
 
         // ALLOWANCE CHARGEANLE 
@@ -3251,10 +3326,8 @@ reload(reload: boolean){
                  
      }
 
-  
 
-
-    picked(data: any) {
+picked(data: any) {
         console.log(data);
         this.userStream.next(data);
 
@@ -3264,10 +3337,7 @@ reload(reload: boolean){
             this.enable_buttons=false;
             return;
         }
-
-       
         //this.prepare_Sheet(this.spreadsheet);
-     
 
         this.selected = data;
         if (this.master){
@@ -3288,7 +3358,7 @@ reload(reload: boolean){
         }
 
         if(this.viewType == 'Recipient'){
-            this.rosterForm.patchValue ({recipientCode:data.data});
+         //   this.rosterForm.patchValue ({recipientCode:data.data});
             this.bookingForm.patchValue ({recipientCode:data.data});
 
             this.clientS.getagencydefinedgroup(this.selected.data)
@@ -3333,14 +3403,14 @@ reload(reload: boolean){
                         recipientCode: x.recipient_staff.accountNo,
                         debtor: x.billedTo.accountNo,
                         serviceActivity: x.activity.name,
-                        serviceSetting: x.recipientLocation,
-                        analysisCode: x.anal,
+                        serviceSetting: x.recipientLocation,                        
                         type:x.type,
                         bill:x.bill,
                         pay:x.pay,
                         dayNo: x.dayNo,
                         monthNo: x.monthNo,
-                        yearNo: x.yearNo
+                        yearNo: x.yearNo,
+                        analysisCode: x.anal
 
                     }
                    
@@ -4201,6 +4271,7 @@ isServiceTypeMultipleRecipient(type: string): boolean {
     }   
     buildForm() {
 
+        
      //--------------------------an other booking form-------------------------------- 
         this.bookingForm = this.formBuilder.group({
             recordNo: [''],

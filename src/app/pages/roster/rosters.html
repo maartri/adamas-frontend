@@ -10,7 +10,7 @@
           
             <div nz-col nzSpan="8" style=" margin-left: 10px; margin-top: 10px; background-color: white;">
                 <div class="calendar-title">            
-                    <app-search-timesheet [defautValue]="defaultCode" [view]="0" (selected)="picked($event)"></app-search-timesheet>
+                    <app-search-timesheet [defautValue]="defaultCode" [view]="view" (selected)="picked($event)"></app-search-timesheet>
                 </div>
             </div>
             <div nz-col nzSpan="14" *ngIf="!recurrenceView" >
@@ -53,9 +53,8 @@
             </div>
             
         </div>
-        <div nz-row nz-col nzSpan="23" *ngIf="recurrenceView" calss="form-group" style="  border-radius: 5px; padding:4px; margin-left: 10px; margin-top: 10px; margin-bottom: 10px; color:white; background-color: #002060;">
-                         
-            
+        <div nz-row nz-col nzSpan="24" *ngIf="recurrenceView" calss="form-group" style="  border-radius: 5px; padding:4px; margin-left: 10px; margin-top: 10px; margin-bottom: 10px; color:white; background-color: #002060;">
+                 
             <div nz-col nzSpan="6" >
                 
                 <label for="">Date: {{recurrentStartDate | date: 'dd/MM/yyyy'}} - {{recurrentEndDate | date: 'dd/MM/yyyy'}}</label> 

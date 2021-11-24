@@ -1126,7 +1126,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
         fQuery = fQuery + " ) t group by [client code], [service type]  ORDER BY [Client Code], [Service Type]"
 
 
-        //console.log(fQuery)
+        console.log(fQuery)
 
         this.drawerVisible = true;
 
@@ -1160,7 +1160,11 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
     NDIAUnClaimedItems(startdate, enddate,branch,manager,recipient) {
 
 
-        var fQuery = "SELECT * FROM (SELECT ro.Recordno as [Shift#],ro.Date, ro.[Client Code] AS Client, ro.[Carer Code] AS Staff, ro.[Program], r.BRANCH, r.RECIPIENT_CoOrdinator, ro.[Service type] AS [Item/Activity], ISNULL([Unit Bill Rate], 0) * ro.BillQty AS ClaimAmount, ro.Duration / 12 AS ClaimHours, CASE WHEN ro.Status = 1 AND ro.[Type] = 1 THEN '1 - UNASSIGNED BOOKINGS'      WHEN ro.Status = 1 AND ro.[Type] <> 1 THEN '2 - UNAPPROVED SERVICES'      WHEN ro.Status IN (2, 5) AND ISNULL(ro.NDIABatch, 0) = 0 THEN '3 - APPROVED NOT CLAIMED OR BILLED'      WHEN ro.Status IN (2, 5) AND ISNULL(ro.NDIABatch, 0) <> 0 THEN '4 - APPROVED, CLAIMED NOT BILLED' END AS [Type] FROM ROSTER ro INNER JOIN HumanResourceTypes pr ON ro.[Program] = pr.[Name] INNER JOIN ItemTypes it ON ro.[Service Type] = it.[Title] LEFT JOIN Recipients r ON r.AccountNo = ro.[Client Code] WHERE pr.[Type] = 'NDIA' AND it.it_dataset = 'NDIS' AND ro.status IN (1, 2, 5) AND NOT (ro.[Type] = 8 and ro.[Start Time] = '00:00') "
+        var fQuery = " SELECT * FROM (SELECT ro.Recordno as [Shift#],ro.Date, ro.[Client Code] AS Client, ro.[Carer Code] AS Staff, ro.[Program], r.BRANCH, r.RECIPIENT_CoOrdinator, ro.[Service type] AS [Item/Activity], ISNULL([Unit Bill Rate], 0) * ro.BillQty AS ClaimAmount, ro.Duration / 12 AS ClaimHours, CASE WHEN ro.Status = 1 AND ro.[Type] = 1 THEN '1 - UNASSIGNED BOOKINGS'      WHEN ro.Status = 1 AND ro.[Type] <> 1 THEN '2 - UNAPPROVED SERVICES'      WHEN ro.Status IN (2, 5) AND ISNULL(ro.NDIABatch, 0) = 0 THEN '3 - APPROVED NOT CLAIMED OR BILLED'      WHEN ro.Status IN (2, 5) AND ISNULL(ro.NDIABatch, 0) <> 0 THEN '4 - APPROVED, CLAIMED NOT BILLED' END AS [Type] FROM ROSTER ro INNER JOIN HumanResourceTypes pr ON ro.[Program] = pr.[Name] INNER JOIN ItemTypes it ON ro.[Service Type] = it.[Title] LEFT JOIN Recipients r ON r.AccountNo = ro.[Client Code] WHERE pr.[Type] = 'NDIA' AND it.it_dataset = 'NDIS' AND ro.status IN (1, 2, 5) AND NOT (ro.[Type] = 8 and ro.[Start Time] = '00:00') "   
+        //AND (ro.Date BETWEEN '2021/11/01' AND '2021/11/30')  
+        //AND (r.BRANCH BETWEEN 'ADELAIDE' AND 'BRISBANE')  
+        //AND (r.[RECIPIENT_COOrdinator] BETWEEN 'ALLA KASPARSKI' AND 'AMARGO PENNYCORD') 
+        // "
         var lblcriteria,tempsdate,tempedate;
         tempsdate = format(this.startdate, 'yyyy/MM/dd')
         tempedate = format(this.enddate, 'yyyy/MM/dd')
@@ -1171,15 +1175,15 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
             if (this.s_DateSQL != "") { fQuery = fQuery + " AND " + this.s_DateSQL };
         }
         if (branch != "") {
-            this.s_BranchSQL = " ( in ('" + branch.join("','") + "'))";
+            this.s_BranchSQL = " (r.BRANCH  in ('" + branch.join("','") + "'))";
             if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
         }
         if (manager != "") {
-            this.s_ManagersSQL = " ( in ('" + manager.join("','") + "'))";
+            this.s_ManagersSQL = " ( r.[RECIPIENT_COOrdinator] in ('" + manager.join("','") + "'))";
             if (this.s_ManagersSQL != "") { fQuery = fQuery + " AND " + this.s_ManagersSQL }
         }
         if (recipient != "") {
-            this.s_RecipientSQL = " ( in ('" + recipient.join("','") + "'))";
+            this.s_RecipientSQL = " (ro.[Client Code] in ('" + recipient.join("','") + "'))";
             if (this.s_RecipientSQL != "") { fQuery = fQuery + " AND " + this.s_RecipientSQL }
         }
 
@@ -1202,7 +1206,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
         fQuery = fQuery + " ) t ORDER BY [Type], [Client], [Date] "
 
 
-        //console.log(fQuery)
+        console.log(fQuery)
 
         this.drawerVisible = true;
 
@@ -2215,7 +2219,7 @@ InvoiceBatchRegister(BatchNO){
 }
 
 AccountStatement(branch,recipient,startdate,enddate){
-    var fQuery = " SELECT  (RE.Title + ' ' +RE.FirstName+ ' ' +RE.MiddleNames+ ' ' +RE.[Surname/Organisation] ) as Name,RE.AccountNo AS Debtor, IH.[Traccs Processing Date] AS [Date], IH.[Patient Code] AS Recipient, IH.[Invoice Number] AS [Number], CONVERT(money, IH.[Invoice Amount]) AS Amount, CASE WHEN IH.HType = 'R' THEN 0 ELSE CONVERT(money, IH.[Invoice Tax]) END AS GST, CONVERT(money, ISNULL(IH.[Invoice Amount], 0) - ISNULL(IH.Paid, 0)) AS [O/S] , CASE WHEN IH.HType = 'R' THEN 'PAYMENT' WHEN IH.Htype = 'A' THEN 'ADUST' WHEN IH.Htype = 'C' THEN 'CREDIT' ELSE 'INVOICE' END AS [Type], IH.Notes FROM Recipients RE LEFT JOIN InvoiceHeader IH ON RE.AccountNo = IH.[Client Code] WHERE ((ISNULL([Invoice Amount], 0) - ISNULL(Paid, 0) <> 0) "
+    var fQuery = " SELECT  NA.Address1,NA.Suburb,NA.Postcode,(RE.Title + ' ' +RE.FirstName+ ' ' +RE.MiddleNames+ ' ' +RE.[Surname/Organisation] ) as Name,RE.AccountNo AS Debtor, IH.[Traccs Processing Date] AS [Date], IH.[Patient Code] AS Recipient, IH.[Invoice Number] AS [Number], CONVERT(money, IH.[Invoice Amount]) AS Amount, CASE WHEN IH.HType = 'R' THEN 0 ELSE CONVERT(money, IH.[Invoice Tax]) END AS GST, CONVERT(money, ISNULL(IH.[Invoice Amount], 0) - ISNULL(IH.Paid, 0)) AS [O/S] , CASE WHEN IH.HType = 'R' THEN 'PAYMENT' WHEN IH.Htype = 'A' THEN 'ADUST' WHEN IH.Htype = 'C' THEN 'CREDIT' ELSE 'INVOICE' END AS [Type], IH.Notes FROM Recipients RE LEFT JOIN InvoiceHeader IH ON RE.AccountNo = IH.[Client Code] join NamesAndAddresses NA ON RE.UniqueID = NA.PersonID WHERE ((ISNULL([Invoice Amount], 0) - ISNULL(Paid, 0) <> 0) "
     
     //[Client Code] IN ('AA BB (M) 19560721', 'AAA B C (F)') 
     //AND [Branch] IN ('ADELAIDE', 'MELBOURNE') 
@@ -2223,7 +2227,12 @@ AccountStatement(branch,recipient,startdate,enddate){
     var lblcriteria;
 
         var  tempsdate = format(this.startdate, 'yyyy/MM/dd')
-        var  tempedate = format(this.enddate, 'yyyy/MM/dd')
+    //    var  tempedate = format(this.enddate, 'yyyy/MM/dd')
+        
+        
+        var  tempedate = format(new Date(this.startdate.getFullYear(), this.startdate.getMonth() , this.startdate.getDay()+ this.inputForm.value.AgingCycles), 'yyyy/MM/dd');
+        
+    //    console.log(tempedate)
         
 
         if (startdate != null || enddate != null) {
@@ -2243,7 +2252,7 @@ AccountStatement(branch,recipient,startdate,enddate){
     
         fQuery = fQuery + " ORDER BY [traccs processing date], [vision processing date]  ";
 
-    //console.log(fQuery)
+    console.log(fQuery)
 
     const data = {
         "template": { "_id": "l3JDWlh6zzEvz8Do" },
@@ -2258,7 +2267,7 @@ AccountStatement(branch,recipient,startdate,enddate){
         }
     }
     this.loading = true;
-    this.drawerVisible = true;
+    //this.drawerVisible = true;
     
 
     this.printS.print(data).subscribe((blob: any) => {

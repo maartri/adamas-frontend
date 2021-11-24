@@ -221,7 +221,7 @@
                             <div>
                                 <label class="highlight"><i class="material-icons "> location_on </i>Address </label>
                                 <i nz-icon nzType="plus" nzTooltipTitle="Add Address" (click)="addAddressOpen()" nz-tooltip nzTooltipPlacement="top" nzTheme="outline"
-                                    class="good add"></i>
+                                    class="color-powder-blue add"></i>
                             </div>                           
                             <ul>
                                 <li *ngFor="let data of user?.addresses">
@@ -253,7 +253,7 @@
                             <div>
                                 <label class="highlight"><i class="material-icons"> phone </i>Contacts</label>
                                 <i nz-icon nzType="plus" nzTooltipTitle="Add Contact" (click)="addContactOpen()" nz-tooltip nzTooltipPlacement="top" nzTheme="outline"
-                                    class="good add"></i>
+                                    class="color-powder-blue add"></i>
                             </div>
                             <ul>
                                 <li *ngFor="let data of user?.contacts">
@@ -387,7 +387,7 @@
                             <div>
                                 <label class="highlight"><i class="material-icons"> location_on </i>Address</label>
                                 <i nz-icon nzType="plus" nzTooltipTitle="Add Address" (click)="addAddressOpen()" nz-tooltip nzTooltipPlacement="top"
-                                    nzTheme="outline" class="good add"></i>
+                                    nzTheme="outline" class="color-powder-blue add"></i>
                             </div>
                             <ul>
                                 <li *ngFor="let data of user?.addresses">
@@ -428,7 +428,7 @@
                             <div>
                                 <label class="highlight"><i class="material-icons"> phone </i>Contacts</label>
                                 <i nz-icon nzType="plus" nzTooltipTitle="Add Contact" (click)="addContactOpen()" nz-tooltip nzTooltipPlacement="top"
-                                    nzTheme="outline" class="good add"></i>
+                                    nzTheme="outline" class="color-powder-blue add"></i>
                             </div>
                             <ul>
                                 <li *ngFor="let data of user?.contacts">
@@ -487,7 +487,7 @@
                 </div>
 
                 <div nz-row class="divider sec-highlight">
-                    <button class="botton success" (click)="saveTab()">Save</button>
+                    <button class="botton recordHeaderMainButtons" (click)="saveTab()">Save</button>
                     <nz-tabset (nzSelectedIndexChange)="tabChange($event)" [nzSelectedIndex]="tabIndex">
                         <nz-tab nzTitle="Contact Issues" [formGroup]="contactIssueGroup">
                             <textarea rows="4" nz-input type="text" formControlName="contactIssues"></textarea>
@@ -502,7 +502,7 @@
                 </div>
 
                 <div nz-row class="divider">
-                    <button class="botton success" (click)="addCaseStaffModal =  true;POPULATE_CASE_STAFF()">Add Case Staff</button>
+                    <button class="botton recordHeaderMainButtons" (click)="addCaseStaffModal =  true;POPULATE_CASE_STAFF()">Add Case Staff</button>
                 
                     <div nz-row>
                         <div nz-col nzSpan="24">

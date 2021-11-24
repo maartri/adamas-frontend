@@ -24,9 +24,9 @@
                 </div>
                 <div  nz-col nzSpan="6" nzvisible="!master" style="margin-top: 10px; background-color: white;">
                     <nz-button-group >
-                        <button  nz-button nzType="primary" (click)="prev_date()" ><i nz-icon nzType="left"></i></button>
-                        <button  nz-button nzType="primary" (click)="next_date()" ><i nz-icon nzType="right"></i></button>
-                        <button  nz-button nzType="primary" (click)="show_views=true"  style="font-size:small; text-align:center; vertical-align: top; width:70px" >Views</button> 
+                        <button  nz-button class="color-powder-blue" (click)="prev_date()" ><i nz-icon nzType="left"></i></button>
+                        <button  nz-button class="color-powder-blue" (click)="next_date()" ><i nz-icon nzType="right"></i></button>
+                        <button  nz-button class="color-powder-blue" (click)="show_views=true"  style="font-size:small; text-align:center; vertical-align: top; width:70px" >Views</button> 
                          <!-- <label nz-box style=" padding:2px; height:32px; background-color: #1E91E8; color:white ">Views</label>         -->
                         
                     </nz-button-group> 
@@ -34,17 +34,16 @@
                 </div>
                 <div  nz-col nzSpan="6"  style="margin-top: 10px;">        
                     
-                    <button nz-button nzType="primary" (click)="show_MoreOptions()">More ...</button >
+                    <button nz-button class="color-powder-blue"  (click)="show_MoreOptions()">More ...</button >
                     
                         <nz-checkbox-wrapper *ngIf="show_More">
                             <label nz-checkbox style="margin-left: 8px;" [ngModel]="include_fee" (ngModelChange)="hide_MoreOptions(0)"  nzValue="c1">Include Fees</label>
-                            <label nz-checkbox style="margin-left: 8px;" [ngModel]="include_item" (ngModelChange)="hide_MoreOptions(1)" nzValue="c2">Include Item</label>             
-                        
+                            <label nz-checkbox style="margin-left: 8px;" [ngModel]="include_item" (ngModelChange)="hide_MoreOptions(1)" nzValue="c2">Include Item</label>
                         </nz-checkbox-wrapper>     
                         
                 </div>
                     
-                <div id="divMaster" nz-col nzSpan="6" [ngStyle]="{'background-color':master === true ? '#D94436' : '#1E91E8' }" style=" background-color: #1E91E8; vertical-align: middle; height: 32px; width:200px;  border-radius: 3px; margin-top: 10px;  color: grey; padding-left: 2px; text-align: center;">
+                <div id="divMaster" nz-col nzSpan="6" [ngStyle]="{'background-color':master === true ? '#D94436' : '#85B9D5' }" style=" background-color: #1E91E8; vertical-align: middle; height: 32px; width:200px;  border-radius: 3px; margin-top: 10px;  color: grey; padding-left: 2px; text-align: center;">
     
                     <nz-label style="padding:4px; background-color: transparent; color: white; vertical-align: middle"> {{ Master_Roster_label }}  </nz-label>
                         <nz-switch  [class.master-class]="master" [(ngModel)]="master" style="padding:4px;  vertical-align: middle" (ngModelChange)="setMasterRoster($event)"></nz-switch>

@@ -4,7 +4,7 @@ import format from 'date-fns/format';
 import { FormGroup, FormBuilder } from '@angular/forms';
 // import { ListService, MenuService } from '@services/index';
 import { BillingService, TimeSheetService, GlobalService, ListService, MenuService } from '@services/index';
-import { timeout } from 'rxjs/operators';
+import { debounceTime, timeout } from 'rxjs/operators';
 import { setDate, toDate } from 'date-fns';
 import { FormsModule } from '@angular/forms';
 import { formatDate } from '@angular/common';
@@ -36,6 +36,7 @@ export class DebtorComponent implements OnInit {
   programList: Array<any>;
   categoriesList: Array<any>;
   batchHistoryList: Array<any>;
+  debtorRecordList: Array<any>;
   tableData: Array<any>;
   PayPeriodLength: number;
   PayPeriodEndDate: any;
@@ -63,7 +64,7 @@ export class DebtorComponent implements OnInit {
   temp_title: any;
   settingForm: FormGroup;
   userRole: string = "userrole";
-  whereString: string = "Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+  // whereString: string = "Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
   dtpEndDate: any;
   dtpStartDate: any;
   id: string;
@@ -101,6 +102,7 @@ export class DebtorComponent implements OnInit {
     this.loadCategories();
     this.populateDropdowns();
     this.loadBatchHistory();
+    this.loadDebtorRecords();
     this.loading = false;
     this.modalOpen = true;
   }
@@ -243,6 +245,26 @@ export class DebtorComponent implements OnInit {
       this.checkAll(3);
     });
   }
+
+  // loadDebtorRecords() {
+  //   let sql = "SELECT [Recordno], [Type], [Anal], [Client Code], [BillTo], [Date], [Start Time], [Dayno], [Monthno], [Yearno], [Service type], [Carer code], [Service Description], [Program], [Duration],  [Unit Bill Rate], [Taxamount] FROM Roster where [Service Type] = 'SCA WD'";
+  //   this.loading = true;
+  //     this.listS.getlist(sql).subscribe(data => {
+  //       this.debtorRecordList = data;
+  //       console.log(this.debtorRecordList);
+  //       this.loading = false;
+  //     });
+  // }  getDebtorRecords
+  
+  
+  loadDebtorRecords() {
+    this.loading = true;
+    this.billingS.getDebtorRecords(null).subscribe(data => {
+        this.debtorRecordList = data;
+        console.log(this.debtorRecordList);
+        this.loading = false;
+      });
+  }  
 
   loadBatchHistory() {
     let sql = "Select pay_bill_batch.RecordNumber, pay_bill_batch.OperatorID, pay_bill_batch.BatchDate, pay_bill_batch.BatchNumber, pay_bill_batch.BatchDetail, pay_bill_batch.BatchType, pay_bill_batch.CDCBilled, pay_bill_batch.Date1, pay_bill_batch.Date2, pay_bill_batch.BillBatch# as BillBatch, pay_bill_batch.xDeletedRecord, pay_bill_batch.xEndDate FROM pay_bill_batch INNER JOIN batch_record on batchnumber = batch_record.BCH_NUM WHERE batch_record.bch_type in ('B','S') ORDER BY convert(int, batchnumber) DESC";

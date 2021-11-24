@@ -70,7 +70,7 @@ export class PhonefaxComponent implements OnInit, OnDestroy ,ControlValueAccesso
         this.select(this.innerValue);        
         return;
       }
-      this.error = true;
+      // this.error = true;
       this.select('');
       return;
     }

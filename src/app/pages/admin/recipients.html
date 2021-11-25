@@ -14,7 +14,9 @@
           <button class="headers-botton recordHeaderMainButtons" (click)="openFindModal()"><i nz-icon nzType="search" nzTheme="outline"></i> Find</button>
         </div> 
     </div>
+
     <div nz-row>
+        
         <div nz-col nzSpan="6" style="margin-top: 10px;">
             <div *ngIf="recipientType" class="status-program" ><i (click)="programModalOpen = true;loadPrograms()" style="font-size:2.3rem;" nz-icon nzType="dollar" nzTheme="outline"></i></div>
             <app-search-list [view]="0" [(ngModel)]="sample" (ngModelChange)="listChange($event)"></app-search-list>           
@@ -70,6 +72,7 @@
                 <nz-tab nzTitle="Other" (nzClick)="view(13)"> </nz-tab>
                 <nz-tab nzTitle="Accounting" (nzClick)="view(14)"> </nz-tab>
                 <nz-tab nzTitle="Media" (nzClick)="view(15)"> </nz-tab>
+                <nz-tab nzTitle="Clinical" (nzClick)="view(16)"> </nz-tab>
             </nz-tabset>
         </div>
         

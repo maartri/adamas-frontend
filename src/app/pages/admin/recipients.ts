@@ -727,6 +727,9 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
       if (index == 15) {
         this.router.navigate(['/admin/recipient/media'])        
       }
+      if (index == 16) {
+        this.router.navigate(['/admin/recipient/clinical'])
+      }
     }
     
     handleCancel() {

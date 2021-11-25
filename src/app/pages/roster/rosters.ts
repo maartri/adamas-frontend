@@ -133,6 +133,101 @@ IconCellType2.prototype.paint = function (ctx, value, x, y, w, h, style, context
     ctx.restore();
 };
 
+
+ //-------------------------hover and active cell style code----------------
+ let BaseCellType = GC.Spread.Sheets.CellTypes.Base;
+let _oldPaint = BaseCellType.prototype.paint;
+BaseCellType.prototype.paint = function(
+  ctx,
+  value,
+  x,
+  y,
+  w,
+  h,
+  style,
+  context
+) {
+  let self = this;
+  let tag = context.sheet.getTag(context.row, context.col, context.sheetArea);
+  if (
+    tag &&
+    tag.hoverColor &&
+    self["_hovering"] &&
+    self["_hovering"].row === context.row &&
+    self["_hovering"].col === context.col &&
+    self["_hovering"].area === context.sheetArea
+  ) {
+    style.backColor = tag.hoverColor;
+  }
+
+  _oldPaint.call(this, ctx, value, x, y, w, h, style, context);
+};
+
+function enableHoverColor(spread) {
+    let currentCell = null;
+    spread.getHost().addEventListener("mousemove", function(e) {
+      let y = e.pageY - this.offsetTop;
+      let x = e.pageX - this.offsetLeft;
+  
+      let htInfo = spread.hitTest(x, y);
+      if (htInfo && htInfo.worksheetHitInfo) {
+        if (
+          !currentCell ||
+          currentCell.row !== htInfo.worksheetHitInfo.row ||
+          currentCell.col !== htInfo.worksheetHitInfo.col ||
+          currentCell.area !== htInfo.worksheetHitInfo.hitTestType ||
+          currentCell.colViewportIndex !==
+            htInfo.worksheetHitInfo.colViewportIndex ||
+          currentCell.rowViewportIndex !==
+            htInfo.worksheetHitInfo.rowViewportIndex
+        ) {
+          currentCell && clearhoverColor(spread, currentCell);
+          currentCell = {
+            row: htInfo.worksheetHitInfo.row,
+            col: htInfo.worksheetHitInfo.col,
+            area: htInfo.worksheetHitInfo.hitTestType,
+            colViewportIndex: htInfo.worksheetHitInfo.colViewportIndex,
+            rowViewportIndex: htInfo.worksheetHitInfo.rowViewportIndex
+          };
+  
+          paintHoverColor(spread, currentCell);
+        }
+      } else if (currentCell) {
+        clearhoverColor(spread, currentCell);
+        currentCell = null;
+      }
+    });
+  }
+  
+  function paintHoverColor(spread, currentCell) {
+    let sheet = spread.getActiveSheet();
+  
+    let tag = sheet.getTag(currentCell.row, currentCell.col, currentCell.area);
+    if (tag && tag.hoverColor) {
+      paintHelper(spread, currentCell,false);
+    }
+    paintHelper(spread, currentCell,false);
+  }
+  
+  function paintHelper(spread, currentCell, isClear) {
+    spread.suspendPaint(); 
+    let sheet = spread.getActiveSheet(),
+      cellType = sheet.getCellType(
+        currentCell.row,
+        currentCell.col,
+        currentCell.area
+      );
+    if (cellType) {
+      cellType["_hovering"] = isClear ? null : currentCell;
+      spread.repaint();
+    }
+    spread.resumePaint(); 
+  }
+  
+  function clearhoverColor(spread, currentCell) {
+    paintHelper(spread, currentCell, true);
+  }
+  
 @Component({
     selector: 'roster-component',
     styles: [`
@@ -1247,9 +1342,83 @@ ClearMultishift(){
       spread.options.scrollByPixel = true;
       spread.options.scrollPixel = 5;
       sheet.options.selectionBorderColor = 'blue';
-      sheet.options.selectionBackColor = '#BDCED1';
+     // sheet.options.selectionBackColor = '#BDCED1';
+     //sheet.options.selectionBackColor = 'transparent';
+     
       spread.options.newTabVisible = false;
      
+      ///----------code for active cell and hove color----------------
+    //     sheet.setValue(0, 0, "Hover over cell B2 & C3");
+    //     sheet.setValue(1, 1, "seagreen");
+    //     sheet.setValue(2, 2, "pink");
+    //     sheet.setTag(1, 1, { hoverColor: "seagreen" });
+    //     sheet.setTag(2, 2, { hoverColor: "pink" });
+
+
+    //     let BaseCellType = GC.Spread.Sheets.CellTypes.Base;
+    //     let _oldPaint = BaseCellType.prototype.paint;
+    //     BaseCellType.prototype.paint = function(
+    //       ctx,
+    //       value,
+    //       x,
+    //       y,
+    //       w,
+    //       h,
+    //       style,
+    //       context
+    //     ) {
+    //       let self = this;
+    //       let tag = context.sheet.getTag(context.row, context.col, context.sheetArea);
+    //       if (
+    //         tag &&
+    //         tag.hoverColor &&
+    //         self["_hovering"] &&
+    //         self["_hovering"].row === context.row &&
+    //         self["_hovering"].col === context.col &&
+    //         self["_hovering"].area === context.sheetArea
+    //       ) {
+    //         style.backColor = tag.hoverColor;
+            
+    //       }
+          
+    //       _oldPaint.call(this, ctx, value, x, y, w, h, style, context);
+    //     };
+        
+    //     //enableHoverColor(spread);
+    //     let currentCell = null;
+    // spread.getHost().addEventListener("mousemove", function(e) {
+    //   let y = e.pageY - this.offsetTop;
+    //   let x = e.pageX - this.offsetLeft;
+  
+    //   let htInfo = spread.hitTest(x, y);
+    //   if (htInfo && htInfo.worksheetHitInfo) {
+    //     if (
+    //       !currentCell ||
+    //       currentCell.row !== htInfo.worksheetHitInfo.row ||
+    //       currentCell.col !== htInfo.worksheetHitInfo.col ||
+    //       currentCell.area !== htInfo.worksheetHitInfo.hitTestType ||
+    //       currentCell.colViewportIndex !==
+    //         htInfo.worksheetHitInfo.colViewportIndex ||
+    //       currentCell.rowViewportIndex !==
+    //         htInfo.worksheetHitInfo.rowViewportIndex
+    //     ) {
+    //       currentCell && clearhoverColor(spread, currentCell);
+    //       currentCell = {
+    //         row: htInfo.worksheetHitInfo.row,
+    //         col: htInfo.worksheetHitInfo.col,
+    //         area: htInfo.worksheetHitInfo.hitTestType,
+    //         colViewportIndex: htInfo.worksheetHitInfo.colViewportIndex,
+    //         rowViewportIndex: htInfo.worksheetHitInfo.rowViewportIndex
+    //       };
+  
+    //       paintHoverColor(spread, currentCell);
+    //     }
+    //   } else if (currentCell) {
+    //     clearhoverColor(spread, currentCell);
+    //     currentCell = null;
+    //   }
+    // });
+
       
         spread.bind(GC.Spread.Sheets.Events.SheetTabClick, function (sender, args) {
             if (args.sheet === null && args.sheetName === null) {
@@ -1273,7 +1442,7 @@ ClearMultishift(){
             sheet.bind(GC.Spread.Sheets.Events.LeaveCell, function (event, infos) {
                var res:string = sheet.getCell(0, infos.col,GC.Spread.Sheets.SheetArea.colHeader).value()
                // Reset the backcolor of cell before moving
-             
+               if(1==1) return;
                spread.suspendPaint();
                 
                 if ( res.endsWith("Sat") || res.endsWith("Sun") || res.endsWith("Saturday") || res.endsWith("Sunday")){                    
@@ -1285,17 +1454,17 @@ ClearMultishift(){
                     
                 }
                 
-               
-                
                     spread.resumePaint();
                 });
 
-              
-            
+                
     sheet.bind(GC.Spread.Sheets.Events.EnterCell, function (event, infos) {
      
-       // infos.sheet.getCell(0, infos.col).backColor("pink");
-        infos.sheet.getCell(1, infos.col, GC.Spread.Sheets.SheetArea.colHeader).backColor("pink");
+            
+        // infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).backColor("#002060");
+        //  infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).foreColor("#ffffff");
+        // infos.sheet.getCell(infos.row, infos.col).backColor("#002060");
+        
         if(1==1) return;
       
 
@@ -1487,14 +1656,14 @@ ClearMultishift(){
                 
                 // Set the backcolor and forecolor for the entire column header.
                 var columns = sheet.getRange(0,col, len, cols, GC.Spread.Sheets.SheetArea.colHeader);
-                columns.backColor("#002060");
-                columns.foreColor("White");
+                //columns.backColor("#002060");
+                //columns.foreColor("White");
 
                 // Set the backcolor of second row header.
                 //sheet.getCell(row, 0, GC.Spread.Sheets.SheetArea.rowHeader).backColor("Yellow");
                 var rows = sheet.getRange(row,0, len, 0, GC.Spread.Sheets.SheetArea.rowHeader);
-                rows.backColor("#002060");
-                rows.foreColor("White");
+              //  rows.backColor("#002060");
+               // rows.foreColor("White");
 
       
                     spread.resumePaint();

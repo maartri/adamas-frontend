@@ -930,7 +930,6 @@ export class AddQuoteComponent implements OnInit {
           this.goalsAndStratergiesForm.patchValue({
             PersonID: this.tableDocumentId
           });
-
           this.timeS.postGoalsAndStratergies(this.goalsAndStratergiesForm.value).pipe(
               takeUntil(this.unsubscribe))
               .subscribe(data => {

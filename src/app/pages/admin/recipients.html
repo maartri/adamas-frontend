@@ -14,23 +14,19 @@
           <button class="headers-botton recordHeaderMainButtons" (click)="openFindModal()"><i nz-icon nzType="search" nzTheme="outline"></i> Find</button>
         </div> 
     </div>
-    <!-- //s -->
     <div nz-row>
-        <div *ngIf="recipientType" nz-col nzSpan="24" style="margin-top:10px;">
-            <span class="status active" *ngIf="recipientStatus && recipientStatus == 'active'"><i nz-icon nzType="user" nzTheme="outline"></i> ACTIVE</span>
-            <span class="status inactive" *ngIf="recipientStatus && recipientStatus == 'inactive'"><i nz-icon nzType="user" nzTheme="outline"></i> INACTIVE</span>
-            
-            <span class="status type"><i nz-icon nzType="user" nzTheme="outline"></i> {{ recipientType }}</span>
-            <div class="status-program"><i (click)="programModalOpen = true;loadPrograms()" nz-icon nzType="dollar" nzTheme="outline"></i></div>
-        </div>
-    </div>
-    <div nz-row>
-        
         <div nz-col nzSpan="6" style="margin-top: 10px;">
+            <div *ngIf="recipientType" class="status-program" ><i (click)="programModalOpen = true;loadPrograms()" style="font-size:2.3rem;" nz-icon nzType="dollar" nzTheme="outline"></i></div>
             <app-search-list [view]="0" [(ngModel)]="sample" (ngModelChange)="listChange($event)"></app-search-list>           
         </div>
-        
-        <div nz-col nzSpan="18">
+        <div nz-col nzSpan="4">
+            <div *ngIf="recipientType" nz-col nzSpan="24" style="margin-top:10px;font-size:1.4rem;font-weight: 700;margin-left: 10px;">
+                <span class="status active" *ngIf="recipientStatus && recipientStatus == 'active'"> ACTIVE </span>
+                <span class="status inactive" *ngIf="recipientStatus && recipientStatus == 'inactive'"> INACTIVE </span>
+                <span class="status type">{{ recipientType }} </span>
+            </div>
+        </div>
+        <div nz-col nzSpan="14">
             <ul class="options">
                 <li><button (click)="clicky(0)" [disabled]="status?.b_IsDead || status == null"><div><i class="fas fa-file"></i></div>Refer In</button></li>
                 <li><button (click)="clicky(1)" [disabled]="status?.b_IsDead  || status == null"><div><i class="fas fa-file-alt"></i></div>Refer On</button></li>

@@ -120,6 +120,7 @@ import {
   RecipientHistoryAdmin,
   RecipientIncidentAdmin,
   RecipientIntakeAdmin,
+  RecipientClinicalAdmin,
   RecipientOpnoteAdmin,
   RecipientPensionAdmin,
   RecipientPermrosterAdmin,
@@ -1122,6 +1123,41 @@ const routes: Routes = [
             ]
           },
           {
+            path: 'clinical',
+            component: RecipientClinicalAdmin,
+            children: [
+              {
+                path: '',
+                redirectTo: 'branches',
+                pathMatch: 'full'
+              },
+              {
+                path: 'alerts',
+                component: IntakeAlerts
+              },
+              {
+                path: 'branches',
+                component: IntakeBranches
+              },
+              {
+                path: 'consents',
+                component: IntakeConsents
+              },
+              {
+                path: 'funding',
+                component: IntakeFunding
+              },
+              {
+                path: 'goals',
+                component: IntakeGoals
+              },
+              {
+                path: 'groups',
+                component: IntakeGroups
+              }
+            ]
+          },
+          {
             path: 'reminders',
             component: RecipientRemindersAdmin
           },
@@ -1378,6 +1414,7 @@ export const PAGE_COMPONENTS = [
   RecipientHistoryAdmin,
   RecipientIncidentAdmin,
   RecipientIntakeAdmin,
+  RecipientClinicalAdmin,
   RecipientOpnoteAdmin,
   RecipientPensionAdmin,
   RecipientPermrosterAdmin,

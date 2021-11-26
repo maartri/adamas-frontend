@@ -152,6 +152,10 @@ import {
   IntakeStaff
 } from '@intakes/index';
 
+// import {
+//   ClinicalDiagnoses
+// } from './pages/admin/recipient-views/clinical-views/index';
+
 import {
   ProfileAccounting,
   AccountingHistory
@@ -1128,33 +1132,9 @@ const routes: Routes = [
             children: [
               {
                 path: '',
-                redirectTo: 'branches',
+                redirectTo: 'diagnoses',
                 pathMatch: 'full'
               },
-              {
-                path: 'alerts',
-                component: IntakeAlerts
-              },
-              {
-                path: 'branches',
-                component: IntakeBranches
-              },
-              {
-                path: 'consents',
-                component: IntakeConsents
-              },
-              {
-                path: 'funding',
-                component: IntakeFunding
-              },
-              {
-                path: 'goals',
-                component: IntakeGoals
-              },
-              {
-                path: 'groups',
-                component: IntakeGroups
-              }
             ]
           },
           {

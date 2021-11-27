@@ -34,7 +34,7 @@
               "./node_modules/ng-zorro-antd/ng-zorro-antd.min.css",
               "src/styles.css",
               "src/sass/styles.scss",        
-              
+              "src/gc.spread.sheets.excel2016darkGray.css",
                "node_modules/@jorgeinv/font-awesome-5.7.2/css/all.min.css"          
             ],
             "stylePreprocessorOptions": {

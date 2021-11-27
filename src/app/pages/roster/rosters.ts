@@ -52,6 +52,8 @@ import { ElementSchemaRegistry } from '@angular/compiler';
 import { NzTableModule  } from 'ng-zorro-antd/table';
 import { Router,ActivatedRoute } from '@angular/router';
 import { SetLeftFeature } from 'ag-grid-community';
+import { style } from '@angular/animations';
+import { forEach } from 'lodash';
 
 
 
@@ -133,6 +135,8 @@ IconCellType2.prototype.paint = function (ctx, value, x, y, w, h, style, context
     ctx.restore();
 };
 
+
+  
 @Component({
     selector: 'roster-component',
     styles: [`
@@ -155,8 +159,9 @@ IconCellType2.prototype.paint = function (ctx, value, x, y, w, h, style, context
             height: 100%;
             overflow-y: scroll;
             
-          }
-        
+          }   
+          
+      
     `],
     templateUrl: './rosters.html'
 })
@@ -169,6 +174,7 @@ AfterContentChecked,
 AfterViewInit,
 AfterViewChecked,
 OnDestroy  {
+
     spreadBackColor = "white";  
     sheetName = "Staff Rosters";  
 
@@ -231,6 +237,7 @@ searchAvaibleModal:boolean=false;
 
   rosters: Array<any> = [];
   current_roster:any;
+  selected_data:any;
   time_map = new Map();
   Already_loaded:boolean=false;
   prev_cell:any = {row:0,col:0,duration:0, type:0, recordNo:0, service:""} 
@@ -377,7 +384,22 @@ searchAvaibleModal:boolean=false;
   
   }
   
+  FullDayOfWeek(n:number): String{
 
+    let day:String="";
+    switch(n){
+    case 1 : day="Monday"; break;
+    case 2 : day="Tuesday" ; break;
+    case 3 : day="Wednesday" ; break;
+    case 4 : day="Thursday" ; break;
+    case 5 : day="Friday" ; break;
+    case 6 : day="Saturday" ; break;
+    case 0 : day="Sunday" ; break;
+    }
+    return day;
+  
+  }
+ 
   listChange(event: any) {
 
     if (event == null) {
@@ -1234,20 +1256,22 @@ ClearMultishift(){
       
       sheet.setRowCount(this.time_slot, GC.Spread.Sheets.SheetArea.viewport);
       sheet.setColumnCount(31,GC.Spread.Sheets.SheetArea.viewport);
-
+     
 
         spread.suspendPaint();
         let spreadNS = GC.Spread.Sheets;
         let self = this;
 
-      //sheet.getCell(0, 0).text("Fruits wallet").foreColor("blue"); 
+      
       spread.options.columnResizeMode = GC.Spread.Sheets.ResizeMode.split;
       spread.options.rowResizeMode = GC.Spread.Sheets.ResizeMode.split;
       spread.options.scrollbarAppearance = GC.Spread.Sheets.ScrollbarAppearance.mobile;
       spread.options.scrollByPixel = true;
       spread.options.scrollPixel = 5;
       sheet.options.selectionBorderColor = 'blue';
-      sheet.options.selectionBackColor = '#BDCED1';
+     // sheet.options.selectionBackColor = '#BDCED1';
+     //sheet.options.selectionBackColor = 'transparent';
+     
       spread.options.newTabVisible = false;
      
       
@@ -1273,7 +1297,7 @@ ClearMultishift(){
             sheet.bind(GC.Spread.Sheets.Events.LeaveCell, function (event, infos) {
                var res:string = sheet.getCell(0, infos.col,GC.Spread.Sheets.SheetArea.colHeader).value()
                // Reset the backcolor of cell before moving
-             
+               if(1==1) return;
                spread.suspendPaint();
                 
                 if ( res.endsWith("Sat") || res.endsWith("Sun") || res.endsWith("Saturday") || res.endsWith("Sunday")){                    
@@ -1285,17 +1309,20 @@ ClearMultishift(){
                     
                 }
                 
-               
-                
                     spread.resumePaint();
                 });
 
-              
-            
+                
     sheet.bind(GC.Spread.Sheets.Events.EnterCell, function (event, infos) {
-     
-       // infos.sheet.getCell(0, infos.col).backColor("pink");
-        infos.sheet.getCell(1, infos.col, GC.Spread.Sheets.SheetArea.colHeader).backColor("pink");
+       
+         //infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).backColor("#002060");
+        //  infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).foreColor("#ffffff");
+        // infos.sheet.getCell(infos.row, infos.col).backColor("#002060");
+        var row= infos.row;
+        var col= infos.col;
+        if (sheet.getTag(row,col,GC.Spread.Sheets.SheetArea.viewport)!=null) {
+            self.cell_value=sheet.getTag(row,col,GC.Spread.Sheets.SheetArea.viewport)
+        }
         if(1==1) return;
       
 
@@ -1326,6 +1353,8 @@ ClearMultishift(){
                 return;
 
               }
+
+             
               sheet.options.isProtected = true;                
               
               self.eventLog =
@@ -1337,8 +1366,9 @@ ClearMultishift(){
                   console.log(self.eventLog );
                   row=args.row;
                   col=args.col;
-                  
-                  if (row<=0) return;
+                  let selection:any =sheet.getSelections();
+
+                  if (row<=0 || selection[0].colCount>1) return;
                   
                   spread.suspendPaint();
 
@@ -1487,14 +1517,14 @@ ClearMultishift(){
                 
                 // Set the backcolor and forecolor for the entire column header.
                 var columns = sheet.getRange(0,col, len, cols, GC.Spread.Sheets.SheetArea.colHeader);
-                columns.backColor("#002060");
-                columns.foreColor("White");
+                //columns.backColor("#002060");
+                //columns.foreColor("White");
 
                 // Set the backcolor of second row header.
                 //sheet.getCell(row, 0, GC.Spread.Sheets.SheetArea.rowHeader).backColor("Yellow");
                 var rows = sheet.getRange(row,0, len, 0, GC.Spread.Sheets.SheetArea.rowHeader);
-                rows.backColor("#002060");
-                rows.foreColor("White");
+              //  rows.backColor("#002060");
+               // rows.foreColor("White");
 
       
                     spread.resumePaint();
@@ -1623,13 +1653,21 @@ ClearMultishift(){
           newMenuData.push(sperator);
           
           var viewStaff = {
-            text: 'View Staff Detail',
+            text:    'View Staff Detail',
             name: 'ViewStaffDetail',
-            command: "ViewStaffDetail",
+            command:   "ViewStaffDetail",
             workArea: 'viewport'
         };        
            newMenuData.push(viewStaff);
   
+           var viewRecipient = {
+            text:    'View Recipient Detail',
+            name: 'ViewRecipientDetail',
+            command:   "ViewRecipientDetail",
+            workArea: 'viewport'
+        };        
+           newMenuData.push(viewRecipient);
+
            var viewService= {
             text: 'View Service Detail',
             name: 'ViewServiceDetail',
@@ -1750,17 +1788,19 @@ ClearMultishift(){
                         var row = sel.row;
                         console.log(selected_Cell);     
                         
-                        
                         let selected_columns = selected_Cell.col + selected_Cell.colCount;
                         let dt= new Date(self.date);        
                         let data_row=0;
                         let row_iterator=0;
                         let recdNo=0;
+                   
                         col=col-1;
-                        for (let i=selected_Cell.col; i<selected_columns; i++)
+                       for (let i=selected_Cell.col; i<selected_columns; i++)                     
                         {
                             data_row=selected_Cell.row;
+                            
                             col=col+1;
+                         
                             for ( row_iterator=0; row_iterator<=selected_Cell.rowCount; row_iterator++){
                                if (sheet.getTag(data_row,i,GC.Spread.Sheets.SheetArea.viewport)==null ){
                                 data_row=data_row+1;
@@ -1774,7 +1814,11 @@ ClearMultishift(){
                                 continue;
                             
                             recdNo=self.copy_value.recordNo;
-                            let rdate = dt.getFullYear() + "/" + self.numStr(dt.getMonth()+1) + "/" + self.numStr(col);
+                            var cell_col_text=sheet.getValue(0,col,GC.Spread.Sheets.SheetArea.colHeader);
+                            console.log(cell_col_text);
+                            var col_date= cell_col_text.substring(cell_col_text.length-2,cell_col_text.length);
+                        
+                            let rdate = dt.getFullYear() + "/" + self.numStr(dt.getMonth()+1) + "/" + self.numStr(col_date.trim());
                       
                             if (self.copy_value==null || self.copy_value.recordNo==null || self.copy_value.recordNo==0){
                                 continue;
@@ -1794,6 +1838,7 @@ ClearMultishift(){
                             }// rows loop
                             
                         }
+
                        // sheet.setValue(row,col,sheet.getCell(selected_Cell.row, selected_Cell.col));
   
                        //sheet.getCell(row,col).backColor(sheet.getCell(selected_Cell.row, selected_Cell.col).backColor);
@@ -1986,6 +2031,8 @@ ClearMultishift(){
                     }
                 }
             });
+            
+
             spread.commandManager().register("ViewStaffDetail",
             {
                 canUndo: true,
@@ -1999,9 +2046,51 @@ ClearMultishift(){
                     } else {
                         Commands.startTransaction(context, options);
                         var sheet = spread.getActiveSheet();
-                        self.ViewStaffDetail=true;
-                        
+                        //self.ViewStaffDetail=true;
+                        if (self.viewType=='Recipient'){
+                            let ss:any= self.selected;
+                            self.current_roster = self.find_roster(self.cell_value.recordNo);
+                             self.selected_data ={ data:self.current_roster.staffCode, option:0}
+                          
+                           // self.router.navigate(['/roster/recipient-external',  {AccountNo: data}]);
+                           self.staffexternal=true;
+                       }else{
+                        self.showRecipientStaffDetail();
+                       }
+                      
   
+                        Commands.endTransaction(context, options);
+                        return true;
+                    }
+                }
+            });
+            
+            spread.commandManager().register("ViewRecipientDetail",
+            {
+                canUndo: true,
+                execute: function (context, options, isUndo) {
+                    var Commands = GC.Spread.Sheets.Commands;
+                                 // add cmd here
+                    options.cmd = "ViewRecipientDetail";
+                    if (isUndo) {
+                        Commands.undoTransaction(context, options);
+                        return true;
+                    } else {
+                        Commands.startTransaction(context, options);
+                        var sheet = spread.getActiveSheet();
+                        //self.ViewStaffDetail=true;
+                       // self.showRecipientStaffDetail();
+                       if (self.viewType=='Staff'){
+                            let ss:any= self.selected;
+                            self.current_roster = self.find_roster(self.cell_value.recordNo);
+                             self.selected_data ={ data:self.current_roster.recipientCode, option:1}
+                          
+                           // self.router.navigate(['/roster/recipient-external', {AccountNo: self.selected_data}]);
+                            self.recipientexternal=true;
+                       }else{
+                        self.showRecipientStaffDetail();
+                       }
+
                         Commands.endTransaction(context, options);
                         return true;
                     }
@@ -2126,17 +2215,36 @@ ClearMultishift(){
    //this.changeHeight()
    this.spreadsheet.suspendPaint();
   
-     // Set the default styles.
+     // Set the default size.
+     this.spreadsheet.getHost().style.width = (this.screenWidth - 260) + 'px';
+     this.spreadsheet.getHost().style.height = (this.screenHeight - 170) + 'px';
+
+     //Set the default styles.
      var defaultStyle = new GC.Spread.Sheets.Style();
      defaultStyle.font = "Segoe UI";
      defaultStyle.themeFont = "Segoe UI";
-     this.spreadsheet.getHost().style.width = (this.screenWidth - 260) + 'px';
-     this.spreadsheet.getHost().style.height = (this.screenHeight - 170) + 'px';
-      
- 
+     
+    // defaultStyle.hAlign = GC.Spread.Sheets.HorizontalAlign.center;
+    // defaultStyle.borderLeft = new GC.Spread.Sheets.LineBorder("Green",GC.Spread.Sheets.LineStyle.medium);
+    // defaultStyle.borderTop = new GC.Spread.Sheets.LineBorder("Green",GC.Spread.Sheets.LineStyle.medium);
+    // defaultStyle.borderRight = new GC.Spread.Sheets.LineBorder("Green",GC.Spread.Sheets.LineStyle.medium);
+    // defaultStyle.borderBottom = new GC.Spread.Sheets.LineBorder("Green",GC.Spread.Sheets.LineStyle.medium);
+    sheet.setDefaultStyle(defaultStyle, GC.Spread.Sheets.SheetArea.viewport);
 
-     sheet.clearSelection();
-     sheet.setDefaultStyle(defaultStyle, GC.Spread.Sheets.SheetArea.viewport);
+    sheet.clearSelection();
+
+    var style = new GC.Spread.Sheets.Style();
+    style.backColor = "red";
+    style.borderLeft = new GC.Spread.Sheets.LineBorder("blue",GC.Spread.Sheets.LineStyle.medium);
+    style.borderTop = new GC.Spread.Sheets.LineBorder("blue",GC.Spread.Sheets.LineStyle.medium);
+    style.borderRight = new GC.Spread.Sheets.LineBorder("blue",GC.Spread.Sheets.LineStyle.medium);
+    style.borderBottom = new GC.Spread.Sheets.LineBorder("blue",GC.Spread.Sheets.LineStyle.medium);
+    style.watermark="#3334455";
+    // sheet.setStyle(1,1,style,GC.Spread.Sheets.SheetArea.viewport);
+    // //row
+    // sheet.setStyle(1,-1,style,GC.Spread.Sheets.SheetArea.viewport);
+    // //column
+    // sheet.setStyle(-1,2,style,GC.Spread.Sheets.SheetArea.viewport);
 
      
      let date:Date = new Date(this.date);
@@ -2164,21 +2272,28 @@ ClearMultishift(){
     sheet.setRowCount(this.time_slot, GC.Spread.Sheets.SheetArea.viewport);
     sheet.setColumnResizable(0,true, GC.Spread.Sheets.SheetArea.colHeader);
 
+    //This example uses the highlightStyle method.
+
+
     for (let i=0; i<=this.Days_View ; i++)   
     {
-     
-      var head_txt=date.getDate() + " " + this.DayOfWeek( date.getDay());
-      if (this.Days_View>=30)
-         sheet.setValue(0, i, { richText: [{ style: { font: '12px Segoe UI ', foreColor: 'white' }, text: head_txt   }] }, GC.Spread.Sheets.SheetArea.colHeader);        
-      else
-         sheet.setValue(0, i, { richText: [{ style: { font: '10px Segoe UI ', foreColor: 'white' }, text: head_txt   }] }, GC.Spread.Sheets.SheetArea.colHeader);        
+   
+        
+      var head_txt="";
+      if (this.Days_View>=30){
+            head_txt=this.DayOfWeek( date.getDay())  + " "  + date.getDate() ;   
+            //sheet.setValue(0, i, { richText: [{ style: { font: '10px Tahoma ', foreColor: 'white' }, text: head_txt   }] }, GC.Spread.Sheets.SheetArea.colHeader);        
+    }else{
+         head_txt=this.FullDayOfWeek( date.getDay())  + " "  + date.getDate() ;   
+         //sheet.setValue(0, i, { richText: [{ style: { font: '10px Tahoma ', foreColor: 'white' }, text: head_txt   }] }, GC.Spread.Sheets.SheetArea.colHeader);        
 
+      }
       var col_header = sheet.getRange(i, -1, 1, -1, GC.Spread.Sheets.SheetArea.colHeader);
       //col_header.backColor("#002060");
       //row_header.foreColor("#ffffff");
       //col_header.setBorder(new GC.Spread.Sheets.LineBorder("#000000", GC.Spread.Sheets.LineStyle.double), {all:true}); 
       col_header.borderTop(new GC.Spread.Sheets.LineBorder("#000000", GC.Spread.Sheets.LineStyle.double));
-  
+      
       sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).tag(date);
 
      var new_width = 100 / this.Days_View;
@@ -2188,14 +2303,18 @@ ClearMultishift(){
     //setting column width
      sheet.setColumnWidth(i, new_width +"*",GC.Spread.Sheets.SheetArea.viewport);
      sheet.setColumnResizable(i,true, GC.Spread.Sheets.SheetArea.colHeader);
+
+     if (this.DayOfWeek( date.getDay())=="Wed" ){
+        sheet.setColumnWidth(i, (new_width+1) +"*",GC.Spread.Sheets.SheetArea.viewport);
+     }
     
-      if ((this.DayOfWeek( date.getDay())=="Saturday") || (this.DayOfWeek( date.getDay())=="Sunday") || ((this.DayOfWeek( date.getDay())=="Sat") || (this.DayOfWeek( date.getDay())=="Sun")))
+      if (this.DayOfWeek( date.getDay())=="Sat" || this.DayOfWeek( date.getDay())=="Sun")
       {
             sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).backColor("#FFDEDB");
             if (this.Days_View>=30)
                 sheet.setValue(0, i, { richText: [{ style: { font: '10px Tahoma ', foreColor: '#000000' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
             else
-                sheet.setValue(0, i, { richText: [{ style: { font: '14px Tahoma ', foreColor: '#000000' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
+                sheet.setValue(0, i, { richText: [{ style: { font: '12px Tahoma ', foreColor: '#000000' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
         }else
         {
             sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).backColor("#F6F6F6");
@@ -2204,11 +2323,13 @@ ClearMultishift(){
                 sheet.setValue(0, i, { richText: [{ style: { font: '10px Tahoma ',foreColor: '#000000' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
             else
                 //sheet.setValue(0, i, { richText: [{ style: { font: '12px Segoe UI ',foreColor: '#FFFFFF' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
-                sheet.setValue(0, i, { richText: [{ style: { font: '14px Tahoma ',foreColor: '#000000' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
+                sheet.setValue(0, i, { richText: [{ style: { font: '12px Tahoma ',foreColor: '#000000' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
         }
             date.setDate(date.getDate()+1);
 
+            //sheet.getCell(0,i,style,GC.Spread.Sheets.SheetArea.colHeader).set
     }
+ 
 
     let time:Time;
     time={hours:0,
@@ -2222,7 +2343,7 @@ ClearMultishift(){
         if (time.minutes==0){
             row_txt = this.numStr(time.hours)  + ":" + this.numStr(time.minutes) 
         }else if (time.minutes%15==0)
-            row_txt = "     "+this.numStr(time.minutes)  ;
+            row_txt= "";// row_txt = "     "+this.numStr(time.minutes)  ;
         else
             row_txt= "";
             sheet.setValue(j, 0, { richText: [{ style: { font: '14px Tahoma ', foreColor: 'black' }, text: row_txt   }] }, GC.Spread.Sheets.SheetArea.rowHeader);
@@ -2256,7 +2377,7 @@ ClearMultishift(){
         }
 
         
-  }
+    }
 
         if (this.time_slot==288){
             sheet.setActiveCell(96,0)
@@ -2279,9 +2400,9 @@ ClearMultishift(){
         sheet.options.resizeZeroIndicator = GC.Spread.Sheets.ResizeZeroIndicator.enhanced;
 
      
-  this.Already_loaded=true;
-  this.spreadsheet.resumePaint();
-  
+        this.Already_loaded=true;
+        this.spreadsheet.resumePaint();
+        
   }
 
   set_Time_Interval(t:number)
@@ -2652,6 +2773,9 @@ ClearMultishift(){
   }
 
   showRecipientStaffDetail(){
+
+    this.selected_data = this.selected;
+                          
       //this.router.navigate(['/roster/recipient-external']);
       //this.router.navigate(['/admin/recipient/intake'])
       if (this.viewType=='Staff')

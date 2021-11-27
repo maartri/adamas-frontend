@@ -930,7 +930,6 @@ export class AddQuoteComponent implements OnInit {
           this.goalsAndStratergiesForm.patchValue({
             PersonID: this.tableDocumentId
           });
-
           this.timeS.postGoalsAndStratergies(this.goalsAndStratergiesForm.value).pipe(
               takeUntil(this.unsubscribe))
               .subscribe(data => {
@@ -943,7 +942,7 @@ export class AddQuoteComponent implements OnInit {
           this.timeS.updateGoalsAndStratergies(this.goalsAndStratergiesForm.value).pipe(
               takeUntil(this.unsubscribe))
               .subscribe(data => {
-                  this.globalS.sToast('Success', 'Data Inserted');
+                  this.globalS.sToast('Success', 'Data Updated');
                   this.goalAndStrategiesmodal = false;
                   this.listCarePlanAndGolas(this.tableDocumentId);
                   this.isUpdateGoal = false;

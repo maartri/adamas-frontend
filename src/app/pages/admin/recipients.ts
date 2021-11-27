@@ -63,32 +63,31 @@ import { FormBuilder, Validators } from '@angular/forms';
     background: #ffffff00;
     float: left;
   }
-  .status{
-    font-size: 11px;
-    padding: 3px 5px;
-    border-radius: 11px;
-    color: #fff;
+  // .status{
+  //   font-size: 11px;
+  //   padding: 3px 5px;
+  //   border-radius: 11px;
+  //   color: #fff;
     
-    margin-right: 10px;
-  }
-  .status.active{            
-    background: #42ca46;
-  }
-  .status.inactive{            
-    background: #c70000;
-  }
-  .status.type{
-    background:#c8f2ff;
-    color: black;
-  }
+  //   margin-right: 10px;
+  // }
+  // .status.active{            
+  //   background: #42ca46;
+  // }
+  // .status.inactive{            
+  //   background: #c70000;
+  // }
+  // .status.type{
+  //   background:#c8f2ff;
+  //   color: black;
+  // }
   .status-program{
     display: inline-block;
     float: left;
-    margin-right:1rem;
   }
   .status-program i{
     font-size: 1.4rem;
-    color: #bfbfbf;
+    color: #000;
     margin-right:10px;
     cursor:pointer;
   }
@@ -727,6 +726,9 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
       }
       if (index == 15) {
         this.router.navigate(['/admin/recipient/media'])        
+      }
+      if (index == 16) {
+        this.router.navigate(['/admin/recipient/clinical'])
       }
     }
     

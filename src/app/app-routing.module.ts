@@ -120,6 +120,7 @@ import {
   RecipientHistoryAdmin,
   RecipientIncidentAdmin,
   RecipientIntakeAdmin,
+  RecipientClinicalAdmin,
   RecipientOpnoteAdmin,
   RecipientPensionAdmin,
   RecipientPermrosterAdmin,
@@ -150,6 +151,10 @@ import {
   IntakeServices,
   IntakeStaff
 } from '@intakes/index';
+
+// import {
+//   ClinicalDiagnoses
+// } from './pages/admin/recipient-views/clinical-views/index';
 
 import {
   ProfileAccounting,
@@ -1122,6 +1127,17 @@ const routes: Routes = [
             ]
           },
           {
+            path: 'clinical',
+            component: RecipientClinicalAdmin,
+            children: [
+              {
+                path: '',
+                redirectTo: 'diagnoses',
+                pathMatch: 'full'
+              },
+            ]
+          },
+          {
             path: 'reminders',
             component: RecipientRemindersAdmin
           },
@@ -1378,6 +1394,7 @@ export const PAGE_COMPONENTS = [
   RecipientHistoryAdmin,
   RecipientIncidentAdmin,
   RecipientIntakeAdmin,
+  RecipientClinicalAdmin,
   RecipientOpnoteAdmin,
   RecipientPensionAdmin,
   RecipientPermrosterAdmin,

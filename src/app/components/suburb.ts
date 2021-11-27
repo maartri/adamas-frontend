@@ -97,7 +97,9 @@ export class SuburbComponent implements OnInit, OnDestroy, ControlValueAccessor 
 
     searchListIndex(address: any, lists: Array<any>): number{
         if(!this.lists || this.lists.length == 0)   return 0;        
+        if(address == null) return 0;
         let suburb = /(\D+)/g.test(address) ? address.match(/(\D+)/g)[0].trim() : "";
+        console.log(suburb)
         if(suburb != "")    return lists.findIndex(x => x.suburb == suburb);        
         return 0;
     }
@@ -123,19 +125,17 @@ export class SuburbComponent implements OnInit, OnDestroy, ControlValueAccessor 
     //From ControlValueAccessor interface
     writeValue(value: any) {
 
-        console.log("here inside" + value);
-
         let _value = value ? value.trim() : '';
-        
+  
         if (this.globalS.isEmpty(_value)) {
             this.lists = [];
-            this.innerValue = '';
-            this.select('');            
+            this.innerValue = null;
         } else {
             this.lists.push(this.innerValue);
             this.innerValue = value;
             this.loadComponent = true;          
             this.searchStream.next(value);
+            console.log('suburb') 
         }
 
         this.cd.markForCheck();

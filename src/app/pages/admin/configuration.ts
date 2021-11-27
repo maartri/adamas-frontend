@@ -932,6 +932,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
     reportRender(idbtn) {
         console.log(idbtn)
         var strdate, endate;
+        let allbrnch, allClients;
 
         var date = new Date();
         
@@ -964,7 +965,11 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
         var s_Vehicles = this.inputForm.value.vehiclesArr;
         var s_Staff = this.inputForm.value.staffArr;
         var s_OutLetID = this.inputForm.value.outletsArr;
-        
+
+        if (this.inputForm.value.allBranches == true){  allbrnch = this.branchesArr }
+        if (this.inputForm.value.allRecipients == true){  allClients = this.recipientArr}
+
+       
 
         switch (this.btnid) {
             case "ndia-package-statement":
@@ -1043,6 +1048,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
 
                 break;
             case "print-aged-debtors":
+                this.ageddebtor(s_Branches,s_Recipient,this.inputForm.value.AgingCycles,allbrnch ,allClients)
                 
                 break;
             case "invoice-verification":
@@ -2319,6 +2325,71 @@ AccountStatement(branch,recipient,startdate,enddate){
             console.log(err);
         });
 
+}
+ageddebtor(branch,recipient,AgingDays,allBranches,allClients){
+
+    var lblcriteria;
+    var fQuery = " SELECT Debtor, [Type] , P0, P1, P2, P3, P4, P0 + P1 + P2 + P3 + P4 as pTotal FROM (SELECT Debtor, [Type] , SUM(isnull(P0_Amount, 0)) AS P0, SUM(isnull(P1_Amount, 0)) AS P1, SUM(isnull(P2_Amount, 0)) AS P2, SUM(isnull(P3_Amount, 0)) AS P3, SUM(isnull(P4_Amount, 0)) As p4 FROM(SELECT Debtor, [Type] ,CASE WHEN iAGE = 0 THEN [O/S] END AS P0_Amount, CASE WHEN iAGE = 1 THEN [O/S] END AS P1_Amount, CASE WHEN iAGE = 2 THEN [O/S] END AS P2_Amount, CASE WHEN iAGE = 3 THEN [O/S] END AS P3_Amount, CASE WHEN iAGE = 4 THEN [O/S] END AS P4_Amount FROM (SELECT  R.[Branch], IH.[Client Code] AS Debtor, IH.[Traccs Processing Date] AS [Date], IH.[Patient Code] AS Recipient, IH.[Invoice Number] AS [Number], "
+    var  tempsdate = format(this.startdate, 'yyyy-MM-dd')
+    
+    fQuery = fQuery + " DATEADD(day,-"+AgingDays+", '"+tempsdate+"') as TESTDATE, "     
+    fQuery = fQuery + " DATEDIFF(DAY, IH.[Traccs Processing Date], '"+tempsdate+"') AS TestAge, "
+    fQuery = fQuery + " CASE WHEN IH.[Traccs Processing Date] > '"+tempsdate+"' THEN 0  ELSE  "   
+    fQuery = fQuery + " CASE WHEN DATEDIFF(DAY, IH.[Traccs Processing Date], '"+tempsdate+"') BETWEEN 0 AND 30 THEN 1 "
+    fQuery = fQuery + " WHEN DATEDIFF(DAY, IH.[Traccs Processing Date], '"+tempsdate+"') BETWEEN 31 AND 60 THEN 2  "
+    fQuery = fQuery + " WHEN DATEDIFF(DAY, IH.[Traccs Processing Date], '"+tempsdate+"') BETWEEN 61 AND 90 THEN 3   "
+    fQuery = fQuery + " WHEN DATEDIFF(DAY, IH.[Traccs Processing Date], '"+tempsdate+"') > 90 THEN 4 ELSE 4 END END AS iAge,"
+    fQuery = fQuery + " CONVERT(money, ISNULL(IH.[Invoice Amount], 0) - ISNULL(IH.Paid, 0)) AS [O/S] , CASE WHEN IH.HType = 'R' THEN 'PAYMENT' WHEN IH.Htype = 'A' THEN 'ADUST' WHEN IH.Htype = 'C' THEN 'CREDIT' ELSE 'INVOICE' END AS [Type] FROM InvoiceHeader IH INNER JOIN Recipients R ON IH.[Patient Code] = R.AccountNo "
+        
+    
+                                                      
+        if (recipient != "") {
+            this.s_RecipientSQL = " (IH.[Client Code] in ('" + recipient.join("','") + "'))";
+            if (this.s_RecipientSQL != "") { fQuery = fQuery + " where " + this.s_RecipientSQL }
+        }else{
+            this.s_RecipientSQL = " (IH.[Client Code] in ('" + allClients.join("','") + "'))";
+            if (this.s_RecipientSQL != "") { fQuery = fQuery + " where " + this.s_RecipientSQL }      
+        }
+        if (branch != "") {
+            this.s_BranchSQL = "R.Branch in ('" + branch.join("','") + "')";
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL };
+        }else{
+            this.s_BranchSQL = "R.Branch in ('" + allBranches.join("','") + "')";
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL };
+        }
+    
+        fQuery = fQuery + " )  t ) t1 GROUP BY DEBTOR , [Type] ) t2 WHERE (p1 + p2 + p3 + p4) <> 0   ";
+        fQuery = fQuery + " ORDER BY DEBTOR , [Type] "
+
+    //console.log(fQuery)
+
+    const data = {
+        "template": { "_id": "hzronJngUay5Cro7" },
+        "options": {
+            "reports": { "save": false },
+
+            "sql": fQuery,
+            "Criteria": lblcriteria,
+            "userid": this.tocken.user,
+
+
+        }
+    }
+    this.loading = true;
+    //this.drawerVisible = true;
+    
+
+    this.printS.print(data).subscribe((blob: any) => {
+        this.pdfTitle = "Aged Debtors Report.pdf"
+        this.drawerVisible = true;                   
+        let _blob: Blob = blob;
+        let fileURL = URL.createObjectURL(_blob);
+        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+        this.loading = false;
+        this.cd.detectChanges();
+    }, err => {
+            console.log(err);
+        });
 }
 
     

@@ -6,6 +6,7 @@ import {  NzModalService } from 'ng-zorro-antd/modal';
 import { ListService,PrintService,GlobalService} from '@services/index';
 import { DomSanitizer } from '@angular/platform-browser';
 import { HttpClient, HttpHeaders, HttpParams, } from '@angular/common/http';
+import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
 
 //Sets defaults of Criteria Model
 const inputFormDefault = {
@@ -178,6 +179,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
     staffteamArr : Array<any> = [];
     staffgroupsArr: Array<any> = [];
     staffArr: Array<any> = [];
+    batchclientsArr : Array<any> = [];
     
     
 
@@ -1070,19 +1072,54 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
           },
 
           nzOnCancel: () => {
-            this.ModalName = "BRANCH SELECTION";
-           
-            this.frm_Branches = true;
-           
+            this.ModalName = "BRANCH SELECTION";           
+            this.frm_Branches = true;           
             this.isVisibleTop = true;
-
           }
         });
       }
       NDIAPackageStatement(batch,branch,packages) {
-
-
-        var fQuery = "select [Client Code], [Service Type], SUM(ClientCharge) AS [Client Charge], Round(SUM(UnitCost), 0) as [Unit Cost]  FROM  (  select [Client Code], it.DatasetGroup AS [Service Type], billqty, billqty * [unit bill rate] as ClientCharge, billqty * it.unitcost as UnitCost from roster  inner join itemtypes it on [service type] = title  inner join humanresourcetypes pr on [name] = program  WHERE pr.type = 'DSS' and it.it_dataset = 'DEX' and [client code] > '!z' "
+        console.log(batch); 
+//GetBatchClients
+        let temp = forkJoin([           
+            this.listS.GetBatchClients(295)
+        ]) 
+        temp.subscribe(data => {       
+            this.batchclientsArr = data;   
+            console.log(data);         
+            console.log(this.batchclientsArr.join("','")); 
+        });                
+        var fQuery = " SELECT RTRIM([Client Code]) + '-' + RTRIM([Program]) AS StatementID, CASE WHEN ItemGroup = 'DIRECT SERVICE' THEN 4 WHEN Itemgroup = 'CASE MANAGEMENT' THEN 6 WHEN ItemGroup = 'GOODS/EQUIPMENT' THEN 5 WHEN ItemGroup = 'PACKAGE ADMIN' THEN 7 ELSE 4 END AS iSort, [Carer Code], [Type], [Date],[Start Time],[Service Type], 'ADMIN' AS [Service Description],[Billunit],[Duration],Sum([Billqty]) AS BillQty,[Unit Bill Rate], ISNULL([Taxpercent], 0) AS TaxPercent, ISNULL([Taxamount], 0) AS TaxAmount,[BillTo],[Client Code],[ServiceSetting], [Program],[BillDesc],Notes ,  ItemGroup, [MinorGroup],[BillText],Sum(ServiceCharge) as ServiceCharge, GSTAmount , Sum([AMTIncTax]) AS AmtIncTax, CONVERT(nVarchar, [InvoiceNumber]) AS InvoiceNumber FROM ( SELECT CASE WHEN ISNULL(BillDesc1, '') = '' THEN  [BillText] ELSE BillDesc1 END  AS BillDesc, * FROM (SELECT '!INTERNAL' AS [Carer Code],r.[Type], "
+        " '2021/10/31' AS Date,'00:00' AS [Start Time],  "
+        fQuery = fQuery + "  r.[Service Type], 'ADMIN' AS [Service Description],    r.[Billunit], r.[Duration], r.[Billqty], r.[Unit Bill Rate], ISNULL(r.[Taxpercent], 0) AS TaxPercent, ISNULL(r.[Taxamount], 0) AS TaxAmount,r.[Client Code] AS [BillTo],r.[Client Code],'' AS [ServiceSetting], r.[Program],r.[BillDesc] AS BillDesc1,'' AS Notes ,it.[MainGroup] AS ItemGroup, it.[MinorGroup],it.[BillText],Round(r.[BillQty] * r.[Unit Bill Rate], 2) AS ServiceCharge, Round((ISNULL(r.[TaxPercent], 0) /100) * Round(r.[BillQty] * r.[Unit Bill Rate], 2), 2) As GSTAmount, Round(r.[BillQty] * r.[Unit Bill Rate], 2) + Round((ISNULL(r.[TaxPercent], 0) /100) * Round(r.[BillQty] * r.[Unit Bill Rate], 2), 2) As AMTIncTax, '0' AS [InvoiceNumber]   FROM Roster r  LEFT  JOIN ItemTypes  it ON [Service Type] = [Title]  INNER JOIN Recipients re ON [Client Code] = [Accountno]  WHERE "
+        " r.[Client Code] IN ('BARBROOK ALDUS')  "
+        var temp1 = " AND r.[Client Code] IN (' "+ this.batchclientsArr.join("','") + "')"
+        console.log(temp1)
+        //AAAA AAABB (M) 19560516', 'AARDERN BMY (M) 19561001', 'ABERKIRDO TYBI', 'ABRAHIM NORMIE', 'AIKETT SPENSE', 'AMBROZ SPIKE', 'AMISS KRISTEN', 'LEIGHFIELD CHEN', 'MCKERRON SELLE', 'SOUTHCOAT DARN', 'VOGT M (F)', 'WALLIS TOM (M) 19561013', 'WATTS TIM (M) 19561009', 'WILSON JAMES (M) 19560902', 'WILSON NANCY (F) 19560516', 'WILSON ROSE (F) 19490913', 'WILSON S', 'WILSON TIM (M) 19560902', 'YURMANOVEV NESSI', 'ZZZ XXX (M) 19560815')  "
+        " AND r.[Program] IN ('NDIA BARBROOK A')  "
+        fQuery = fQuery + " AND NOT (r.[Type] = 9 "
+        fQuery = fQuery + " AND r.[Service Description] = 'CONTRIBUTION')  "
+        fQuery = fQuery + " AND r.[Date] > '2000/01/01'  "
+        " AND (r.[Date] BETWEEN '2021/10/01' AND '2021/10/31') "
+        fQuery = fQuery + " AND r.Status > 1  "
+        fQuery = fQuery + " AND IsNull(r.[Unit Bill Rate], 0) > 0  "
+        fQuery = fQuery + " AND it.MinorGroup = 'FEE' "
+        fQuery = fQuery + " AND [Date] > '2000/01/01' "
+        fQuery = fQuery + " AND isnull(ExcludeFromUsageStatements, 0) = 0 "
+        fQuery = fQuery + "  ) t ) T1 GROUP BY [Carer Code],[Type],[Date],[Start Time],[Service Type], [Service Description],[Billunit],[Duration],BillQty,[Unit Bill Rate], Taxpercent, Taxamount,[BillTo] , [Client Code], [ServiceSetting], [Program], [BillDesc], Notes, ItemGroup, [MinorGroup], [BillText], ServiceCharge, GSTAmount, AMTIncTax, InvoiceNumber UNION SELECT RTRIM(r.[Client code]) + '-' + RTRIM(r.[program]) AS StatementID, CASE WHEN it.[MainGroup] = 'DIRECT SERVICE' THEN 4 WHEN it.[MainGroup] = 'CASE MANAGEMENT' THEN 6 WHEN it.[MainGroup] = 'GOODS/EQUIPMENT' THEN 5 ELSE 4 END AS iSort, r.[Carer Code], r.[Type],r.[Date],r.[Start Time],r.[Service Type],'ADMIN' AS [Service Description],r.[Billunit],r.[Duration],r.[Billqty],r.[Unit Bill Rate],ISNULL(r.[Taxpercent], 0) AS Taxpercent, ISNULL(r.[Taxamount], 0) AS Taxamount,r.[BillTo],r.[Client Code],r.[ServiceSetting],r.[Program],r.[BillDesc],   r.[RecordNo] AS Notes ,it.[MainGroup] AS ItemGroup,it.[MinorGroup],it.[BillText],Round(Convert(Numeric (10, 4), [BillQty] * [Unit Bill Rate]), 2) AS ServiceCharge, Round(Convert(Numeric (10, 4), (ISNULL(r.[TaxPercent], 0)/100) * [BillQty] * [Unit Bill Rate]), 2) As GSTAmount, Round(Convert(Numeric (10, 4), (r.[BillQty] * r.[Unit Bill Rate])), 2) + Round(Convert(Numeric (10, 4), ISNULL(r.[TaxPercent],0) /100 * r.[BillQty] * r.[Unit Bill Rate]), 2) As AMTIncTax, CONVERT(nVarchar, r.[InvoiceNumber]) AS InvoiceNumber  FROM Roster r  LEFT  JOIN ItemTypes  it ON [Service Type] = [Title]  INNER JOIN Recipients re ON [Client Code] = [Accountno]  WHERE "
+        " r.[Client Code] IN ('BARBROOK ALDUS')  "
+        " AND r.[Client Code] IN ('AAAA AAABB (M) 19560516', 'AARDERN BMY (M) 19561001', 'ABERKIRDO TYBI', 'ABRAHIM NORMIE', 'AIKETT SPENSE', 'AMBROZ SPIKE', 'AMISS KRISTEN', 'LEIGHFIELD CHEN', 'MCKERRON SELLE', 'SOUTHCOAT DARN', 'VOGT M (F)', 'WALLIS TOM (M) 19561013', 'WATTS TIM (M) 19561009', 'WILSON JAMES (M) 19560902', 'WILSON NANCY (F) 19560516', 'WILSON ROSE (F) 19490913', 'WILSON S', 'WILSON TIM (M) 19560902', 'YURMANOVEV NESSI', 'ZZZ XXX (M) 19560815')  "
+        " AND r.[Program] IN ('NDIA BARBROOK A')  "
+        fQuery = fQuery + " AND NOT (r.[Type] = 9 "
+        fQuery = fQuery + " AND r.[Service Description] = 'CONTRIBUTION')  "
+        fQuery = fQuery + " AND r.[Date] > '2000/01/01'  "
+        " AND (r.[Date] BETWEEN '2021/10/01' AND '2021/10/31') "
+        fQuery = fQuery + " AND r.Status > 1  "
+        fQuery = fQuery + " AND IsNull(r.[Unit Bill Rate], 0) > 0  "
+        fQuery = fQuery + " AND it.MinorGroup <> 'FEE' "
+        fQuery = fQuery + " AND r.[Date] > '2000/01/01' "
+        fQuery = fQuery +  " AND isnull(it.ExcludeFromUsageStatements, 0) = 0  "
+        fQuery = fQuery + " UNION SELECT RTRIM([Patient Code]) + '-' + RTRIM([Package]) AS StatementID, CASE WHEN hType = 'R' AND Type1 = 'GOVMT' THEN 2  WHEN hType = 'R' AND Type1 = 'PRSNL' THEN 3  WHEN hType = 'R' AND Type1 = 'OTHER' THEN 1 WHEN hType = 'R' AND ISNULL(Type1, '') = '' THEN 0 END  AS iSort , '' AS [Carer Code], 100 AS [Type], [Traccs Processing Date] AS [Date], '' AS [Start Time], '' AS [Service Type], '' AS [Service Description], '' AS [Bill Unit], 1  AS [Duration], 1  AS [BillQty], [Invoice Amount] AS Amount, 0  AS [Taxpercent], 0  AS [Taxamount], '' AS [BillTo], [Patient Code],'' AS [ServiceSetting],Package AS [Program],'' AS [tmpBilLDesc],'' AS [tmpNotes],CASE WHEN hType = 'R' AND Type1 = 'GOVMT' THEN 'PAYMENT - Govt Contribution'  WHEN hType = 'R' AND Type1 = 'PRSNL' THEN 'PAYMENT - Personal Contribution'  WHEN hType = 'R' AND Type1 = 'OTHER' THEN 'PAYMENT - 3rd Party Contribution' WHEN hType IN ('R', 'A') AND ISNULL(Type1, '') = '' THEN 'ADJUSTMENT' END  AS ItemGroup ,hType AS [MinorGroup],CASE WHEN hType = 'R' AND Type1 = 'GOVMT' THEN 'PAYMENT - Federal Contribution'  WHEN hType = 'R' AND Type1 = 'PRSNL' THEN 'PAYMENT - Personal Contribution'  WHEN hType = 'R' AND Type1 = 'OTHER' THEN 'PAYMENT - 3rd Party Contribution' WHEN hType IN ('R', 'A') AND ISNULL(Type1, '') = '' THEN 'ADJ: ' + ISNULL(Notes, '')  END AS StText , Convert(Float, -1 * [Invoice Amount]) AS ServiceCharge, Cast(0 as float) as GSTAmount, Convert(Float, -1 * [Invoice Amount]) AS AMTIncTax, COnvert(nVarchar, [Invoice Number]) AS [Invoice Number] FROM InvoiceHeader WHERE [Patient Code] IN ('BARBROOK ALDUS') AND [Patient Code] IN ('AAAA AAABB (M) 19560516', 'AARDERN BMY (M) 19561001', 'ABERKIRDO TYBI', 'ABRAHIM NORMIE', 'AIKETT SPENSE', 'AMBROZ SPIKE', 'AMISS KRISTEN', 'LEIGHFIELD CHEN', 'MCKERRON SELLE', 'SOUTHCOAT DARN', 'VOGT M (F)', 'WALLIS TOM (M) 19561013', 'WATTS TIM (M) 19561009', 'WILSON JAMES (M) 19560902', 'WILSON NANCY (F) 19560516', 'WILSON ROSE (F) 19490913', 'WILSON S', 'WILSON TIM (M) 19560902', 'YURMANOVEV NESSI', 'ZZZ XXX (M) 19560815') AND hType IN ('R', 'C', 'A') AND Package IN ('NDIA BARBROOK A') AND [Traccs Processing Date] BETWEEN '2021/10/01' AND '2021/10/31'   "
         var lblcriteria;
 
 
@@ -1101,7 +1138,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
             if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
         }
         if (packages != "") {
-            this.s_PackageSQL = " ( in ('" + packages.join("','") + "'))";
+            this.s_PackageSQL = " (package in ('" + packages.join("','") + "'))";
             if (this.s_PackageSQL != "") { fQuery = fQuery + " AND " + this.s_PackageSQL }
         }
 
@@ -1123,7 +1160,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
         else { lblcriteria = lblcriteria + " All Packages " }
 
 
-        fQuery = fQuery + " ) t group by [client code], [service type]  ORDER BY [Client Code], [Service Type]"
+        fQuery = fQuery + " ORDER BY RTRIM([Client Code]) + '-' + RTRIM([Program]), [iSort], Date "
 
 
         console.log(fQuery)
@@ -1131,7 +1168,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
         this.drawerVisible = true;
 
         const data = {
-            "template": { "_id": "" },
+            "template": { "_id": "q6UDawfEPuZTYe56" },
             "options": {
                 "reports": { "save": false },
 
@@ -1206,7 +1243,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
         fQuery = fQuery + " ) t ORDER BY [Type], [Client], [Date] "
 
 
-        console.log(fQuery)
+    //    console.log(fQuery)
 
         this.drawerVisible = true;
 

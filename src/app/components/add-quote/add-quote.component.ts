@@ -1078,7 +1078,7 @@ export class AddQuoteComponent implements OnInit {
 
   showEditCarePlanModal(data:any){
       console.log(data);
-      
+
       this.tabFinderIndexbtn = 0;
       this.goalAndStrategiesmodal = true;
       this.isUpdateGoal = true;
@@ -1176,8 +1176,13 @@ export class AddQuoteComponent implements OnInit {
   }
 
   tabFinderIndexbtn:number = 0;
+
   tabFindChangeStrategies(index: number){
       this.tabFinderIndexbtn = index;
+
+      if(index == 1 && this.globalS.isEmpty(this.personIdForStrategy)){
+        this.saveCarePlan();
+      }
   }
 
   tabFindChange(index: number){
@@ -1602,9 +1607,12 @@ export class AddQuoteComponent implements OnInit {
    
     const quoteForm = this.quoteForm.getRawValue();
 
-    // this.goalsAndStratergies.forEach(e => {
-    //     goals.push(e.goal);
-    // });    
+    this.goalsAndStratergies.forEach(e => {
+        goals.push(e.goal);
+    });    
+
+    console.log(this.goalsAndStratergies)
+    // return;
 
     this.quoteLines.forEach(x => {
         let da: QuoteLineDTO = {

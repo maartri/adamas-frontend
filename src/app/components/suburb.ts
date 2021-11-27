@@ -54,8 +54,6 @@ export class SuburbComponent implements OnInit, OnDestroy, ControlValueAccessor 
         // @SkipSelf() @Optional() private control: NgControl
     ) {
 
-        // this.control.valueAccessor = this;
-
         this.searchResult$ = this.searchStream.pipe(
             debounceTime(200),
             switchMap(data => {
@@ -75,7 +73,6 @@ export class SuburbComponent implements OnInit, OnDestroy, ControlValueAccessor 
         );
 
         this._subscription$ = this.searchResult$.pipe(debounceTime(500)).subscribe(data => {
-
             this.lists = data;
             var index = this.searchListIndex(this.innerValue, this.lists);
 
@@ -99,7 +96,6 @@ export class SuburbComponent implements OnInit, OnDestroy, ControlValueAccessor 
         if(!this.lists || this.lists.length == 0)   return 0;        
         if(address == null) return 0;
         let suburb = /(\D+)/g.test(address) ? address.match(/(\D+)/g)[0].trim() : "";
-        console.log(suburb)
         if(suburb != "")    return lists.findIndex(x => x.suburb == suburb);        
         return 0;
     }
@@ -111,7 +107,6 @@ export class SuburbComponent implements OnInit, OnDestroy, ControlValueAccessor 
     ngOnDestroy() {
         this.searchStream.next();
         this.searchStream.complete();
-
     }
 
     change() {

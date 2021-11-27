@@ -152,9 +152,9 @@ import {
   IntakeStaff
 } from '@intakes/index';
 
-// import {
-//   ClinicalDiagnoses
-// } from './pages/admin/recipient-views/clinical-views/index';
+import {
+  ClinicalDiagnose
+} from './pages/admin/recipient-views/clinical-views/index';
 
 import {
   ProfileAccounting,
@@ -1132,8 +1132,12 @@ const routes: Routes = [
             children: [
               {
                 path: '',
-                redirectTo: 'diagnoses',
+                redirectTo: 'diagnose',
                 pathMatch: 'full'
+              },
+              {
+                path: 'diagnose',
+                component: ClinicalDiagnose
               },
             ]
           },
@@ -1418,10 +1422,12 @@ export const PAGE_COMPONENTS = [
   IntakePlans,
   IntakeServices,
   IntakeStaff,
-  
+
   ExtraComponent,
   UnauthorizedComponent,
   
+  // Clinical Views
+
   // Client Manager
   HomeClientManager,
   ProfileClientManager,

@@ -602,6 +602,60 @@
                     </div>
                 </div>
             </nz-tab>
+            <nz-tab nzTitle="Debtor Records">
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="18">
+                        <h3 style="color:#1890FF;"> Debtor Records (for testing purpose) </h3>
+                    </div>
+                </div>
+                <nz-divider style="margin-top: 1px; margin-bottom: 1px;" nzText="" nzOrientation="left"></nz-divider>
+                <nz-table style="margin-top: 0px;" [nzScroll]="{ y: '500px', x: 'max-content' }" nzBordered
+                    [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading"
+                    [nzData]="tableData">
+                    <thead>
+                        <tr>
+                            <th style="width: 100px;" class="left">RecordNo</th>
+                            <th style="width: 80px;" class="left">Type</th>
+                            <th style="width: 100px;" class="left">Anal</th>
+                            <th style="width: 120px;" class="left">ClientCode</th>
+                            <th style="width: 110px;" class="left">BillTo</th>
+                            <th style="width: 110px;" class="left">Date</th>
+                            <th style="width: 100px;" class="left">StartTime</th>
+                            <th style="width: 80px;" class="left">DateNo</th>
+                            <th style="width: 80px;" class="left">MonthNo</th>
+                            <th style="width: 80px;" class="left">YearNo</th>
+                            <th style="width: 100px;" class="left">ServiceType</th>
+                            <th style="width: 110px;" class="left">CarerCode</th>
+                            <th style="width: 130px;" class="left">ServiceDescription</th>
+                            <th style="width: 130px;" class="left">Programe</th>
+                            <th style="width: 100px;" class="left">Duration</th>
+                            <th style="width: 100px;" class="left">UnitBillRate</th>
+                            <th style="width: 100px;" class="left">TaxAmount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let data of debtorRecordList;let i = index;">
+                            <td style="width: 100px;" class="left">{{ data.recordNo }} </td>
+                            <td style="width: 80px;" class="left">{{ data.type }} </td>
+                            <td style="width: 100px;" class="left">{{ data.anal }} </td>
+                            <td style="width: 120px;" class="left">{{ data.clientCode }} </td>
+                            <td style="width: 110px;" class="left">{{ data.billTo }} </td>
+                            <td style="width: 110px;" class="left">{{ data.date }} </td>
+                            <td style="width: 100px;" class="left">{{ data.startTime }} </td>
+                            <td style="width: 80px;" class="left">{{ data.dayno }} </td>
+                            <td style="width: 80px;" class="left">{{ data.monthno }} </td>
+                            <td style="width: 80px;" class="left">{{ data.yearno }} </td>
+                            <td style="width: 100px;" class="left">{{ data.servicetype }} </td>
+                            <td style="width: 110px;" class="left">{{ data.carercode }} </td>
+                            <td style="width: 130px;" class="left">{{ data.serviceDescription }} </td>
+                            <td style="width: 130px;" class="left">{{ data.program }} </td>
+                            <td style="width: 100px;" class="left">{{ data.duration }} </td>
+                            <td style="width: 100px;" class="left">{{ data.unitBillRate }} </td>
+                            <td style="width: 100px;" class="left">{{ data.taxamount }} </td>
+                        </tr>
+                    </tbody>
+                </nz-table>
+            </nz-tab>
             <nz-tab nzTitle="Update History">
                 <div nz-row nzJustify class="mrg-btm">
                     <div nz-col nzSpan="18">

@@ -26,6 +26,7 @@ const helper = new JwtHelperService();
 
 import { FormGroup} from '@angular/forms';
 
+export const topMarginStyle = { top: '20px' };
 
 export enum TYPE_MESSAGE {
     warning = 'warning',

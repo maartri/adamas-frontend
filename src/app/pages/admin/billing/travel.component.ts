@@ -109,7 +109,7 @@ export class TravelComponent implements OnInit {
   }
   handleCancel() {
     this.modalOpen = false;
-    this.router.navigate(['/admin/billing']);
+    this.router.navigate(['/admin/timesheet-processing']);
   }
   buildForm() {
     this.inputForm = this.formBuilder.group({

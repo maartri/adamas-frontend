@@ -900,7 +900,9 @@ export class AddReferralComponent implements OnInit, OnDestroy {
       address1: details.address,
       email: details.email,
       phone1: details.phone,
-      fax: details.fax
+      fax: details.fax,
+      mobile: details.mobile,
+      suburb: `${details.suburb} ${details.postcode}`
     });
   }
 

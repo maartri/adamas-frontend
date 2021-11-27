@@ -24,8 +24,8 @@
                 </div>
                 <div  nz-col nzSpan="6" nzvisible="!master" style="margin-top: 10px; background-color: white;">
                     <nz-button-group >
-                        <button  nz-button class="color-powder-blue" (click)="prev_date()" ><i nz-icon nzType="left"></i></button>
-                        <button  nz-button class="color-powder-blue" (click)="next_date()" ><i nz-icon nzType="right"></i></button>
+                        <button  nz-button class="color-powder-blue" [disabled]="!enable_buttons" (click)="prev_date()" ><i nz-icon nzType="left"></i></button>
+                        <button  nz-button class="color-powder-blue" [disabled]="!enable_buttons" (click)="next_date()" ><i nz-icon nzType="right"></i></button>
                         <button  nz-button class="color-powder-blue" (click)="show_views=true"  style="font-size:small; text-align:center; vertical-align: top; width:70px" >Views</button> 
                          <!-- <label nz-box style=" padding:2px; height:32px; background-color: #1E91E8; color:white ">Views</label>         -->
                         
@@ -113,13 +113,14 @@
             
             <button *ngIf="spreadsheet==null"  nz-button nzType="primary" (click)="refreshPage()"  >Reload Grid</button> 
                    
-        <gc-spread-sheets  id="#ss"
+        <gc-spread-sheets  id="#ss"        
         [backColor]="spreadBackColor"  
+        
         [hostStyle]="hostStyle"  
         (workbookInitialized)="workbookInit($event)"  
         >   
             <gc-worksheet [name]="sheetName" 
-           
+          
             ></gc-worksheet>
             
         </gc-spread-sheets>
@@ -948,9 +949,9 @@
         
     </nz-modal>
     
-    <recipientexternal [isVisible]="recipientexternal" [AccountNo]="selected" (recipientexternalDone)="cancelRecipientExternal($event)" *ngIf="recipientexternal"></recipientexternal>
+    <recipientexternal [isVisible]="recipientexternal" [AccountNo]="selected_data" (recipientexternalDone)="cancelRecipientExternal($event)" *ngIf="recipientexternal"></recipientexternal>
      
-    <staffexternal [isVisible]="staffexternal" [AccountNo]="selected" (staffexternalDone)="cancelStaffExternal($event)" *ngIf="staffexternal"></staffexternal>
+    <staffexternal [isVisible]="staffexternal" [AccountNo]="selected_data" (staffexternalDone)="cancelStaffExternal($event)" *ngIf="staffexternal"></staffexternal>
     <div>
         <img id="icon-1" style="display: none; background-color: transparent;"  src="/media/r1.png"/>
         <img id="icon-2" style="display: none; background-color: transparent;"  src="/media/r2.png"/>

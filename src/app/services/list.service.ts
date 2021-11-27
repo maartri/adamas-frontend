@@ -882,7 +882,10 @@ export class ListService {
     GetGroupMeals(): Observable<any>{        
         return this.auth.get(`${list}/group-meals-runsheet`)
     }
+    GetBatchClients(batch: number): Observable<any>{
+        return this.auth.get(`${list}/batch-clients/${batch}`);
+    }
 
 
 
-} //  
+} //  //GetBatchClients batch-clients

@@ -208,7 +208,7 @@ export class AddQuoteComponent implements OnInit {
     drawerVisible: boolean =  false;  
     goalsAndStratergiesForm: FormGroup;
     reportDataParent:any;
-    stratergiesList: any;
+    stratergiesList: Array<any> = [];
     pdfdata:any;
     stratergiesForm: FormGroup;
     strategiesmodal: boolean;
@@ -926,15 +926,17 @@ export class AddQuoteComponent implements OnInit {
     saveCarePlan(){
 
       if(!this.isUpdateGoal){
-
           this.goalsAndStratergiesForm.patchValue({
             PersonID: this.tableDocumentId
           });
           this.timeS.postGoalsAndStratergies(this.goalsAndStratergiesForm.value).pipe(
               takeUntil(this.unsubscribe))
               .subscribe(data => {
+                  console.log(data);
                   this.globalS.sToast('Success', 'Data Inserted');
-                  this.goalAndStrategiesmodal = false;
+                  //this.goalAndStrategiesmodal = false;
+                  this.personIdForStrategy = data;
+
                   this.listCarePlanAndGolas(this.tableDocumentId);
                   this.cd.markForCheck();
               });
@@ -943,7 +945,7 @@ export class AddQuoteComponent implements OnInit {
               takeUntil(this.unsubscribe))
               .subscribe(data => {
                   this.globalS.sToast('Success', 'Data Updated');
-                  this.goalAndStrategiesmodal = false;
+                //   this.goalAndStrategiesmodal = false;
                   this.listCarePlanAndGolas(this.tableDocumentId);
                   this.isUpdateGoal = false;
                   this.cd.markForCheck();
@@ -956,7 +958,8 @@ export class AddQuoteComponent implements OnInit {
 
   saveStrategy(){
       this.stratergiesForm.controls.PersonID.setValue(this.personIdForStrategy);
-    //   console.log(this.personIdForStrategy)
+    //   console.log(this.personIdForStrategy);
+    //   console.log(this.stratergiesForm.value)
     //   return;
       if(!this.isUpdateStrategy){
           this.timeS.postplanStrategy(this.stratergiesForm.value).pipe(
@@ -1056,6 +1059,8 @@ export class AddQuoteComponent implements OnInit {
   showCarePlanStrategiesModal(){
       this.goalAndStrategiesmodal = true;
       this.goalsAndStratergiesForm.reset(goalsDefault);
+      this.tabFinderIndexbtn = 0;
+      this.stratergiesList = [];
 
       this.personIdForStrategy = '';
       this.listS.getgoalofcare().subscribe(data => this.goalOfCarelist = data);
@@ -1074,13 +1079,16 @@ export class AddQuoteComponent implements OnInit {
   showEditCarePlanModal(data:any){
       console.log(data);
 
+      this.tabFinderIndexbtn = 0;
       this.goalAndStrategiesmodal = true;
       this.isUpdateGoal = true;
+
       this.listStrtegies(data.recordnumber);
       this.personIdForStrategy = data.recordnumber;
+
       this.goalsAndStratergiesForm.patchValue({
-          title : "Goal Of Care : ",
-          goal  : data.goal,
+          title            : "Goal Of Care : ",
+          goal             : data.goal,
           achievementDate  : data.achievementDate,
           dateAchieved     : data.dateAchieved,
           lastReviewed     : data.lastReviewed,
@@ -1088,7 +1096,8 @@ export class AddQuoteComponent implements OnInit {
           achievement      : data.achievement,
           notes            : data.notes,
           recordnumber     : data.recordnumber,
-      })
+      });
+
   }
 
   showEditStrategyModal(data:any){      
@@ -1167,8 +1176,13 @@ export class AddQuoteComponent implements OnInit {
   }
 
   tabFinderIndexbtn:number = 0;
+
   tabFindChangeStrategies(index: number){
       this.tabFinderIndexbtn = index;
+
+      if(index == 1 && this.globalS.isEmpty(this.personIdForStrategy)){
+        this.saveCarePlan();
+      }
   }
 
   tabFindChange(index: number){
@@ -1593,9 +1607,12 @@ export class AddQuoteComponent implements OnInit {
    
     const quoteForm = this.quoteForm.getRawValue();
 
-    // this.goalsAndStratergies.forEach(e => {
-    //     goals.push(e.goal);
-    // });    
+    this.goalsAndStratergies.forEach(e => {
+        goals.push(e.goal);
+    });    
+
+    console.log(this.goalsAndStratergies)
+    // return;
 
     this.quoteLines.forEach(x => {
         let da: QuoteLineDTO = {

@@ -2597,7 +2597,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                         return true;
                     }
 
-                    if(this.selectedProgram){
+                    if(this.selectedProgram && this.isPackageNameAvailable == false){
                         return true;
                     }
                   }

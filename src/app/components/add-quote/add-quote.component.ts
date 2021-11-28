@@ -1608,7 +1608,10 @@ export class AddQuoteComponent implements OnInit {
     const quoteForm = this.quoteForm.getRawValue();
 
     this.goalsAndStratergies.forEach(e => {
-        goals.push(e.goal);
+        goals.push({
+            Goal: e.goal,
+            Strategies: e.strategies
+        });
     });    
 
     console.log(this.goalsAndStratergies)
@@ -1695,7 +1698,7 @@ export class AddQuoteComponent implements OnInit {
             this.quotesOpen = false;
         }, (err: any) => {
             this.loadingSaveQuote = false;
-            this.quotesOpen = false;
+            // this.quotesOpen = false;
             this.newFileNameOpen = false;
             this.detectChanges();
         });

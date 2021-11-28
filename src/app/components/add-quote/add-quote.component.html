@@ -699,7 +699,7 @@
 
 
 
-  <nz-modal [nzWidth]="1050"  [(nzVisible)]="goalAndStrategiesmodal" nzTitle="Add/Change Recipient Goals" (nzOnCancel)="handlegoalsStarCancel()">
+  <nz-modal [nzWidth]="1050"  [(nzVisible)]="goalAndStrategiesmodal" nzTitle="Add/Change Recipient Goals" (nzOnCancel)="handlegoalsStarCancel()" (nzAfterClose)="this.listCarePlanAndGolas(tableDocumentId)">
     <form nz-form [formGroup]="goalsAndStratergiesForm" >
         <div nz-row nzGutter="24">
             <!-- <div *ngIf="!isUpdateGoal" class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">

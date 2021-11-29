@@ -1,0 +1,41 @@
+<div nz-row nzGutter="16">
+    <div nz-col nzSpan="3">
+        <p routerLink="diagnose" routerLinkActive="active-tab">
+            <i nz-icon nzType="shop" nzTheme="outline"></i>
+            Diagnoses
+        </p>
+        <nz-divider></nz-divider>
+        <p routerLink="procedure" routerLinkActive="active-tab">
+            <i nz-icon nzType="dollar" nzTheme="outline"></i>
+            Procedures
+        </p>
+        <nz-divider></nz-divider>
+        <p routerLink="medication" routerLinkActive="active-tab">
+            <i nz-icon nzType="flag" nzTheme="outline"></i>
+            Medications
+        </p>
+        <nz-divider></nz-divider>
+        <p routerLink="plans" routerLinkActive="active-tab">
+            <i nz-icon nzType="audit" nzTheme="outline"></i>
+            Clinical Reminders
+        </p>
+        <nz-divider></nz-divider>
+        <p routerLink="services" routerLinkActive="active-tab">
+            <i nz-icon nzType="solution" nzTheme="outline"></i>
+            Clinical Alerts
+        </p>
+        <nz-divider></nz-divider>
+        <p routerLink="staff" routerLinkActive="active-tab">
+            <i nz-icon nzType="user-add" nzTheme="outline"></i>
+            Staff
+        </p>
+        <nz-divider></nz-divider>
+        <p routerLink="alerts" routerLinkActive="active-tab">
+            <i nz-icon nzType="alert" nzTheme="outline"></i>
+            Clinical Notes
+        </p>
+    </div>
+    <div nz-col nzSpan="18" nzOffset="1">
+        <router-outlet></router-outlet>
+    </div>
+</div>

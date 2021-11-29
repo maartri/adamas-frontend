@@ -50,16 +50,21 @@ export class PhonefaxComponent implements OnInit, OnDestroy ,ControlValueAccesso
   }
 
   ngOnInit() {
-    this.inputChange$.pipe(debounceTime(300)).subscribe(e => {
-      var contactNo = `+63${this.isMobileType() || ''}${this.firstFourNo || ''}${this.lastFourNo || ''}`
-      this.writeValue(contactNo);
+    this.inputChange$.pipe(debounceTime(100)).subscribe(e => {
+      var contactNo = `+61${this.isMobileType() || ''}${this.firstFourNo || ''}${this.lastFourNo || ''}`
+
+      this.error = this.validateLength(contactNo);
+      this.onChangeCallback(contactNo);
     });
+  }
+
+  validateLength(num: string): boolean {
+    return !(num.length == 13)
   }
 
   writeValue(value: any) {
     if (value) {
       this.innerValue = this.validateNumber(value);
-
       if (this.innerValue) {
         this.error = false;
         this.select(this.innerValue);        
@@ -145,20 +150,35 @@ export class PhonefaxComponent implements OnInit, OnDestroy ,ControlValueAccesso
   }
 
   validateNumber(data: string) {
-    // 13 is the length of phone/tel #
-    if (data.includes('+63') && data.length == 13 && !isNaN(+data.slice(1, 14))) {
-      this.areaCode = data.slice(4, 5);
-      this.firstFourNo = data.slice(5, 9);
-      this.lastFourNo = data.slice(9, 14);
+
+    // Remove Whitespace Before - After 
+    data = data.trim();
+
+    // Remove Whitespace In between
+    data = data.replace(/ +/g, "");
+
+    //Remove Non-Numeric values
+    data = data.replace(/\D/g,'');
+
+    if(data.startsWith('61') && data.length == 12){
+      data = data.slice(2,13);
+    }
+
+    if(data.startsWith('04') || data.startsWith('4')){
+      // this.isMobile = true;
+      this.firstFourNo = data.slice(2, 6);
+      this.lastFourNo = data.slice(6, 11);
       return data;
     }
 
-    if(data.length == 10 && data.slice(0,2) == '04'){
-      this.areaCode = data.slice(0, 2);
+    if(data.length == 10){
+      this.areaCode = data.slice(1, 2);
       this.firstFourNo = data.slice(2, 6);
-      this.lastFourNo = data.slice(6, 10);
+      this.lastFourNo = data.slice(6, 11);
       return data;
     }
+
+    
     
     return null;
   }

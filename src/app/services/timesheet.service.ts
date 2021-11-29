@@ -97,7 +97,7 @@ export class TimeSheetService {
     }
 
     getpayunits(payType: string): Observable<any>{
-        return this.auth.get(`${timesheet}/pay-units/${payType}`);
+        return this.auth.getstring(`${timesheet}/pay-units/${payType}`);
     }
 
     getbillingrate(data: any): Observable<any>{

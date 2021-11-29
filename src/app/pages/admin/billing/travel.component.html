@@ -12,10 +12,10 @@
                                 Timesheets:</p>
                         </div>
                         <div nz-col nzSpan="4">
-                            <!-- <nz-date-picker [nzPlaceHolder]="'Timesheet Date'" name="TImesheet_date"
+                            <nz-date-picker [nzPlaceHolder]="'Timesheet Date'" formControlName="timesheetDate"
                                 [nzFormat]="dateFormat">
-                            </nz-date-picker> -->
-                            <nz-date-picker formControlName="TimesheetDate"></nz-date-picker>
+                            </nz-date-picker>
+                            <!-- <nz-date-picker formControlName="TimesheetDate"></nz-date-picker> -->
                         </div>
                     </div>
 
@@ -208,14 +208,14 @@
                     </div>
                 </div>
             </nz-tab>
-            <nz-tab nzTitle="Selection Options">
+            <nz-tab nzTitle="Selection Option">
 
-                <div>
+                <div *ngIf="inputForm">
                     <div nz-row nzJustify class="mrg-btm">
                         <div nz-col nzSpan="6">
                             <h3 style="color:#1890FF;">Invoice Types</h3>
                         </div>
-                        <div nz-col nzSpan="8">
+                        <div nz-col nzSpan="8" [formGroup]="inputForm">
                             <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="invType" nzPlaceHolder=""
                                 nzShowSearch nzAllowClear style="width:100%;">
                                 <nz-option *ngFor="let etype of invType" [nzLabel]="etype" [nzValue]="etype">
@@ -227,7 +227,7 @@
                     <nz-divider style="margin-top: 6px; margin-bottom: 6px;" nzText="" nzOrientation="left">
                     </nz-divider>
 
-                    <div nz-row nzJustify class="mrg-btm">
+                    <div nz-row  nzJustify class="mrg-btm">
                         <div nz-col nzSpan="4">
                             <h3 style="color:#1890FF;"> Dates </h3>
                         </div>
@@ -237,21 +237,16 @@
                         <div nz-col nzSpan="1" style="text-align: center;">
                             <label nz-checkbox style="margin-top: 5px;"></label>
                         </div>
-                        <div nz-col nzSpan="1"></div>
-                        <div nz-col nzSpan="5">
-                            <!-- <nz-date-picker nzPlaceHolder="Start Date" formControlName="dtpStartDate"
-                                [nzFormat]="dateFormat">
-                            </nz-date-picker> -->
-                            <nz-date-picker formControlName="startDate"></nz-date-picker>
+                        <div nz-col nzSpan="5" [formGroup]="inputForm">
+                            <!-- <nz-date-picker formControlName="dtpStartDate" [nzFormat]="dateFormat"></nz-date-picker> -->
+                            <nz-date-picker nzPlaceHolder="Start Date" formControlName="dtpStartDate" [nzFormat]="dateFormat"></nz-date-picker>
                         </div>
                         <div nz-col nzSpan="2">
                             <p style="text-align: center; margin-top: 5px;"> TO </p>
                         </div>
-                        <div nz-col nzSpan="5">
-                            <!-- <nz-date-picker nzPlaceHolder="End Date" formControlName="dtpEndDate"
-                                [nzFormat]="dateFormat">
-                            </nz-date-picker> -->
-                            <nz-date-picker formControlName="endDate"></nz-date-picker>
+                        <div nz-col nzSpan="5" [formGroup]="inputForm">
+                            <!-- <nz-date-picker formControlName="dtpEndDate" [nzFormat]="dateFormat"></nz-date-picker> -->
+                            <nz-date-picker nzPlaceHolder="End Date" formControlName="dtpEndDate" [nzFormat]="dateFormat"></nz-date-picker>
                         </div>
                     </div>
 
@@ -265,14 +260,15 @@
                         <div nz-col nzSpan="3" class="text-right pad-r-5">
                             <label for="Name" style="margin-top: 5px; font-size: 11pt;"> Select All</label>
                             <div nz-col style="text-align: right;">
-                                <button nz-button nzType="primary"
+                                <button nz-button nzType="primary" (click)="uncheckAll(1)"
                                     style="font-size: 10pt; text-align: center; padding: 3px; height: 1.75pc; width: 5.5pc;">
                                     Un-Select All
                                 </button>
                             </div>
                         </div>
                         <div nz-col nzSpan="1" style="text-align: center;">
-                            <label nz-checkbox style="margin-top: 5px;"></label>
+                            <label nz-checkbox [(ngModel)]="allBranchesChecked" (ngModelChange)="checkAll(1)"
+                                [ngModelOptions]="{standalone: true}" style="margin-top: 5px;"></label>
                         </div>
                         <div>
                             <div nz-col nzSpan="16" class="mrg-btm">
@@ -282,11 +278,25 @@
                                             [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
                                             [nzLoading]="loading" [nzData]="tableData">
                                             <tbody>
-                                                <tr *ngFor="let data of branchList;let i = index;">
-                                                    <td style="width: 4px;" class="right">
-                                                        <label nz-checkbox></label>
+                                                <!-- <tr>
+                                                <td>
+                                                <nz-checkbox-wrapper style="width: 100%;" (nzOnChange)="log($event , null)">
+                                                    <div nz-row *ngFor="let list of branchList; let i = index">
+                                                        <label nz-checkbox [nzValue]="list.description" [(ngModel)]="list.checked" [ngModelOptions]="{standalone: true}">{{ list.description }}</label>
+                                                    </div>
+                                                </nz-checkbox-wrapper> -->
+                                                <tr>
+                                                    <td>
+                                                        <nz-checkbox-wrapper style="width: 100%;"
+                                                            (nzOnChange)="log($event,1)">
+                                                            <div nz-row *ngFor="let list of branchList; let i = index">
+                                                                <label nz-checkbox [nzValue]="list.description"
+                                                                    [(ngModel)]="list.checked"
+                                                                    [ngModelOptions]="{standalone: true}">{{
+                                                                    list.description }}</label>
+                                                            </div>
+                                                        </nz-checkbox-wrapper>
                                                     </td>
-                                                    <td class="left">{{ data.description }}</td>
                                                 </tr>
                                             </tbody>
                                         </nz-table>
@@ -297,7 +307,6 @@
                     </div>
                     <nz-divider style="margin-top: 1px; margin-bottom: 1px;" nzText="" nzOrientation="left">
                     </nz-divider>
-
                     <div nz-row nzJustify class="mrg-btm">
                         <div nz-col nzSpan="4">
                             <h3 style="color:#1890FF;"> Programs </h3>
@@ -305,14 +314,15 @@
                         <div nz-col nzSpan="3" class="text-right pad-r-5">
                             <label for="Name" style="margin-top: 5px; font-size: 11pt;"> Select All</label>
                             <div nz-col style="text-align: right;">
-                                <button nz-button nzType="primary"
+                                <button nz-button nzType="primary" (click)="uncheckAll(2)"
                                     style="font-size: 10pt; text-align: center; padding: 3px; height: 1.75pc; width: 5.5pc;">
                                     Un-Select All
                                 </button>
                             </div>
                         </div>
                         <div nz-col nzSpan="1" style="text-align: center;">
-                            <label nz-checkbox style="margin-top: 5px;"></label>
+                            <label nz-checkbox [(ngModel)]="allProgramsChecked" (ngModelChange)="checkAll(2)"
+                                [ngModelOptions]="{standalone: true}" style="margin-top: 5px;"></label>
                         </div>
                         <div>
                             <div nz-col nzSpan="16" class="mrg-btm">
@@ -322,11 +332,18 @@
                                             [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
                                             [nzLoading]="loading" [nzData]="tableData">
                                             <tbody>
-                                                <tr *ngFor="let data of programList;let i = index;">
-                                                    <td style="width: 4px;" class="right">
-                                                        <label nz-checkbox></label>
+                                                <tr>
+                                                    <td>
+                                                        <nz-checkbox-wrapper style="width: 100%;"
+                                                            (nzOnChange)="log($event,2)">
+                                                            <div nz-row *ngFor="let list of programList; let i = index">
+                                                                <label nz-checkbox [nzValue]="list.description"
+                                                                    [(ngModel)]="list.checked"
+                                                                    [ngModelOptions]="{standalone: true}">{{
+                                                                    list.title }}</label>
+                                                            </div>
+                                                        </nz-checkbox-wrapper>
                                                     </td>
-                                                    <td class="left">{{ data.name }}</td>
                                                 </tr>
                                             </tbody>
                                         </nz-table>
@@ -345,14 +362,15 @@
                         <div nz-col nzSpan="3" class="text-right pad-r-5">
                             <label for="Name" style="margin-top: 5px; font-size: 11pt;"> Select All</label>
                             <div nz-col style="text-align: right;">
-                                <button nz-button nzType="primary"
+                                <button nz-button nzType="primary" (click)="uncheckAll(3)"
                                     style="font-size: 10pt; text-align: center; padding: 3px; height: 1.75pc; width: 5.5pc;">
                                     Un-Select All
                                 </button>
                             </div>
                         </div>
                         <div nz-col nzSpan="1" style="text-align: center;">
-                            <label nz-checkbox style="margin-top: 5px;"></label>
+                            <label nz-checkbox [(ngModel)]="allCategoriesChecked" (ngModelChange)="checkAll(3)"
+                                [ngModelOptions]="{standalone: true}" style="margin-top: 5px;"></label>
                         </div>
                         <div>
                             <div nz-col nzSpan="16" class="mrg-btm">
@@ -362,13 +380,29 @@
                                             [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
                                             [nzLoading]="loading" [nzData]="tableData">
                                             <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <nz-checkbox-wrapper style="width: 100%;"
+                                                            (nzOnChange)="log($event,3)">
+                                                            <div nz-row
+                                                                *ngFor="let list of categoriesList; let i = index">
+                                                                <label nz-checkbox [nzValue]="list.description"
+                                                                    [(ngModel)]="list.checked"
+                                                                    [ngModelOptions]="{standalone: true}">{{
+                                                                    list.description }}</label>
+                                                            </div>
+                                                        </nz-checkbox-wrapper>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                            <!-- <tbody>
                                                 <tr *ngFor="let data of categoriesList;let i = index;">
                                                     <td style="width: 4px;" class="right">
                                                         <label nz-checkbox></label>
                                                     </td>
                                                     <td class="left">{{ data.description }}</td>
                                                 </tr>
-                                            </tbody>
+                                            </tbody> -->
                                         </nz-table>
                                     </div>
                                 </div>

@@ -3,4 +3,4 @@
     <nz-option *ngFor="let l of lists" [nzLabel]="l" [nzValue]="l"></nz-option>
 </nz-select>
 
-<button nz-button nzType="primary" nzShape="circle" nz-tooltip [nzTooltipTitle]="view == 0 ? 'Switch to Recipient' : 'Switch to Staff'" (click)="switch()"><i nz-icon nzType="swap"></i></button>
+<button nz-button nzType="primary" class="recordHeaderMainButtons" nzShape="circle" nz-tooltip [nzTooltipTitle]="view == 0 ? 'Switch to Recipient' : 'Switch to Staff'" (click)="switch()"><i nz-icon nzType="swap"></i></button>

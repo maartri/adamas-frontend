@@ -220,7 +220,7 @@
                                     <div nz-col nzSpan="24">
                                         <div class="form-group">
                                             <label for="">Address 2</label>
-                                            <input nz-input formControlName="address1" autocomplete="nofill" oninput="this.value = this.value.toUpperCase()" />
+                                            <input nz-input formControlName="address2" autocomplete="nofill" oninput="this.value = this.value.toUpperCase()" />
                                         </div>
                                     </div>
                                 </div>
@@ -307,7 +307,7 @@
                                         <div class="form-group">
                                             <label for="">Type</label>
 
-                                            <nz-select formControlName="type"  nzShowSearch nzAllowClear>
+                                            <nz-select formControlName="type" nzShowSearch nzAllowClear>
                                                 <nz-option *ngFor="let d of referralGroup.get('otherContacts')?.controls[i]?.get('contactList')?.value" [nzLabel]="d" [nzValue]="d"></nz-option>
                                             </nz-select>
                                         </div>
@@ -316,7 +316,14 @@
                                     <div nz-col nzSpan="15">
                                         <div class="form-group">
                                             <label for="">Name</label>
-                                            <input nz-input formControlName="name" autocomplete="nofill" oninput="this.value = this.value.toUpperCase()" />
+                                            <ng-container *ngIf="referralGroup.get('otherContacts')?.controls[i]?.get('type')?.value != 'DOCTORS'">
+                                                <input nz-input formControlName="name" autocomplete="nofill" oninput="this.value = this.value.toUpperCase()" />
+                                            </ng-container>
+                                            <ng-container *ngIf="referralGroup.get('otherContacts')?.controls[i]?.get('type')?.value == 'DOCTORS'">
+                                                <nz-select [nzDropdownMatchSelectWidth]="false" style="width:100%" formControlName="name" (ngModelChange)="doctorChange(referralGroup.get('otherContacts')['controls'],i, $event)" nzShowSearch nzAllowClear nzPlaceHolder="Select a Doctor">
+                                                    <nz-option *ngFor="let d of doctors" [nzLabel]="d.name" [nzValue]="d"></nz-option>
+                                                </nz-select>
+                                            </ng-container>
                                         </div>
                                     </div>
                                 </div>
@@ -419,39 +426,20 @@
                             <label for="">NDIA / MAC / DVA ID Number</label>
                             <input nz-input formControlName="ndisNumber" autocomplete="nofill" oninput="this.value = this.value.toUpperCase()" />
 
-                            <!-- <nz-select nzAllowClear nzPlaceHolder="NDIA / MAC / DVA ID Number" formControlName="ndisNumber">
-                                <nz-option *ngFor="let l of managers;let i = index" [nzLabel]="l.description" [nzValue]="l.description"></nz-option>
-                            </nz-select> -->
+  
                         </div>
 
                     </div>
                 </div>
 
-                <div nz-row *ngIf="current == 6">
+                <!-- <div nz-row *ngIf="current == 6">
                     <div [formGroup]="referralGroup">
                         <div class="form-group">  
                             <label for="">Notifications</label>
-                            <!-- <nz-select nzAllowClear nzPlaceHolder="Notifications" formControlName="notifications">
-                                <nz-option *ngFor="let l of notifications" [nzLabel]="l" [nzValue]="l"></nz-option>
-                            </nz-select> 
-                            <nz-checkbox-group [(ngModel)]="notifCheckBoxGroup" (ngModelChange)="log(notifCheckBoxGroup)" [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
-                            -->
+
                             
                             <nz-checkbox-group [(ngModel)]="notifCheckBoxes" (ngModelChange)="notif(notifCheckBoxes)"  [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
-                        
-                            <!--    <div class="staff-wrapper">
-                                <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event)">
-                                    <div nz-row>
-                                        <div nz-col nzSpan="24" *ngFor="let notify of notifCheckBoxes">
-                                            <label nz-checkbox [nzValue]="notify.label" [(ngModel)]="notify.disabled" [ngModelOptions]="{standalone: true}">{{ notify.label }}</label>
-                                        </div>
-                                        <div nz-col nzSpan="24" *ngFor="let notify of notifCheckBoxes">
-                                            <label nz-checkbox [nzValue]="notify.label" [(ngModel)]="notify.checked" [ngModelOptions]="{standalone: true}">{{ notify.label }}</label>
-                                        </div>
-                                    </div>
-                                </nz-checkbox-wrapper>
-                            </div> -->
-
+                   
                             
                         </div>
                         
@@ -462,9 +450,7 @@
                     <div [formGroup]="referralGroup">
                         <div class="form-group">
                             <label for="">Followup</label>
-                            <!-- <nz-select nzAllowClear nzPlaceHolder="Followup" formControlName="followup">
-                                <nz-option *ngFor="let l of followups" [nzLabel]="l" [nzValue]="l"></nz-option>
-                            </nz-select> -->
+                  
                             <nz-checkbox-group [(ngModel)]="notifFollowUpGroup" (ngModelChange)="followup(notifFollowUpGroup)" [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
                         </div>
                     </div>
@@ -474,9 +460,7 @@
                     <div [formGroup]="referralGroup">
                         <div class="form-group">
                             <label for="">Documents</label>
-                            <!-- <nz-select nzAllowClear formControlName="document">
-                                <nz-option *ngFor="let l of documentlist" [nzLabel]="l" [nzValue]="l"></nz-option>
-                            </nz-select> -->
+
                             <nz-checkbox-group [(ngModel)]="notifDocumentsGroup" (ngModelChange)="doc(notifDocumentsGroup)" [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
 
                         </div>
@@ -487,15 +471,13 @@
                     <div [formGroup]="referralGroup">
                         <div class="form-group">
                             <label for="">Data List</label>
-                            <!-- <nz-select nzAllowClear formControlName="dataList">
-                                <nz-option *ngFor="let l of datalist" [nzLabel]="l" [nzValue]="l"></nz-option>
-                            </nz-select> -->
+                      
                             <div *ngFor="let l of datalist"> 
                                 <a [href]="l.link" target="_blank">{{l.form}}</a>
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
 
             </div>
         </div>

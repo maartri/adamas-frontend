@@ -249,7 +249,8 @@ export class BookingClientManager implements OnInit, OnDestroy {
 
         this.listS.getrosterpublishedenddate()
             .subscribe(data => {
-                this.publishedEndDate = this.globalS.CONVERTSTRING_TO_DATETIME(data)
+                // this.publishedEndDate = this.globalS.CONVERTSTRING_TO_DATETIME(data)
+                this.publishedEndDate = new Date(2021,12,30);
             });
 
         this.listS.getpayperiod()

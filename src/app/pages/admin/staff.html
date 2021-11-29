@@ -2,9 +2,9 @@
   <div style="padding:8px">
     <div nz-row *ngIf="userview?.staff >= 951">
       <div nz-col nzSpan="3">
-        <button class="botton success" (click)="newStaffModal = !newStaffModal" ><i nz-icon nzType="plus" nzTheme="outline"></i> New Staff</button>
+        <button class="headers-botton recordHeaderMainButtons" (click)="newStaffModal = !newStaffModal" ><i nz-icon nzType="plus" nzTheme="outline"></i> New Staff</button>
       </div>
-      <button class="botton find" (click)="openFindModal()"><i nz-icon nzType="search" nzTheme="outline"></i> Find</button>
+      <button class="botton find color-powder-blue" (click)="openFindModal()"><i nz-icon nzType="search" nzTheme="outline"></i> Find</button>
     </div>
     <ng-container *ngIf="userview?.staff >= 951">
       <div nz-col nzSpan="6" style="margin-top: 10px;">
@@ -817,7 +817,7 @@
               </div>
             </div>
           </div>
-        </div> -->
+        </div>
         <div *ngIf="tabFindIndex == 4">
           <div nz-row [nzGutter]="8">
             <div nz-col class="gutter-row" [nzSpan]="5">

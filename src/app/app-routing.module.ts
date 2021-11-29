@@ -120,6 +120,7 @@ import {
   RecipientHistoryAdmin,
   RecipientIncidentAdmin,
   RecipientIntakeAdmin,
+  RecipientClinicalAdmin,
   RecipientOpnoteAdmin,
   RecipientPensionAdmin,
   RecipientPermrosterAdmin,
@@ -150,6 +151,10 @@ import {
   IntakeServices,
   IntakeStaff
 } from '@intakes/index';
+
+import {
+  ClinicalDiagnose
+} from './pages/admin/recipient-views/clinical-views/index';
 
 import {
   ProfileAccounting,
@@ -264,6 +269,7 @@ import { TravelComponent } from '@admin/billing/travel.component'; //AHSAN
 import { PayComponent } from '@admin/timesheet-processing-views/pay.Component'; //AHSAN 
 import { PayIntegrityComponent } from '@admin/billing/payIntegrity.component'; //AHSAN
 import { CloseRosterComponent } from '@admin/billing/closeRoster.component';
+import { MediaList } from '@admin/recipient-views/mediaList';
 
 const routes: Routes = [
   {
@@ -1121,6 +1127,21 @@ const routes: Routes = [
             ]
           },
           {
+            path: 'clinical',
+            component: RecipientClinicalAdmin,
+            children: [
+              {
+                path: '',
+                redirectTo: 'diagnose',
+                pathMatch: 'full'
+              },
+              {
+                path: 'diagnose',
+                component: ClinicalDiagnose
+              },
+            ]
+          },
+          {
             path: 'reminders',
             component: RecipientRemindersAdmin
           },
@@ -1169,6 +1190,10 @@ const routes: Routes = [
           {
             path: 'quotes',
             component: RecipientQuotesAdmin
+          },
+          {
+            path: 'media',
+            component: MediaList,
           }
         ]
       }
@@ -1373,11 +1398,13 @@ export const PAGE_COMPONENTS = [
   RecipientHistoryAdmin,
   RecipientIncidentAdmin,
   RecipientIntakeAdmin,
+  RecipientClinicalAdmin,
   RecipientOpnoteAdmin,
   RecipientPensionAdmin,
   RecipientPermrosterAdmin,
   RecipientPersonalAdmin,
   RecipientQuotesAdmin,
+  MediaList,
   RecipientRemindersAdmin,
   RecipientFormsAdmin,
   RecipientDocumentsAdmin,
@@ -1395,10 +1422,12 @@ export const PAGE_COMPONENTS = [
   IntakePlans,
   IntakeServices,
   IntakeStaff,
-  
+
   ExtraComponent,
   UnauthorizedComponent,
   
+  // Clinical Views
+
   // Client Manager
   HomeClientManager,
   ProfileClientManager,

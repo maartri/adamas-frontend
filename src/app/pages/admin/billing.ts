@@ -87,9 +87,6 @@ export class BillingAdmin implements OnInit, OnDestroy, AfterViewInit{
             if(index == 4){
                 this.router.navigate(['/admin/debtor-updates-exports']);
             }
-            if(index == 6){
-                this.router.navigate(['/admin/travel-update']);
-            }
         }
         ngOnDestroy(): void {
         }

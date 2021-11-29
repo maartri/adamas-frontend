@@ -793,7 +793,7 @@
                 <div nz-row *ngIf="current == 2" [formGroup]="dischargeGroup">
                     <div nz-row [nzGutter]="8" class="space-btm">
                         <div nz-col nzSpan="8">
-                            <nz-date-picker [nzFormat]="dateFormat" formControlName="dischargeDate" [nzPlaceHolder]="'Referral Date'"></nz-date-picker>
+                            <nz-date-picker [nzFormat]="dateFormat" formControlName="dischargeDate" [nzPlaceHolder]="'Discharge Date'"></nz-date-picker>
                         </div>                        
                     </div>
                     <div nz-row [nzGutter]="8">
@@ -1106,9 +1106,9 @@
 
                 <div nz-row *ngIf="current == 1">
                     <p>Admission Type</p>
-                    <div>
+                    <div [formGroup]="admitGroup">
                         <ng-container>
-                            <app-select-list-recipient [program]="admitGroup.get('programChecked').value" [option]="option"></app-select-list-recipient>
+                            <app-select-list-recipient formControlName="admissionType" [program]="admitGroup.get('programChecked')?.value" [option]="option"></app-select-list-recipient>
                         </ng-container>
                     </div>
                 </div>

@@ -4,9 +4,11 @@ import format from 'date-fns/format';
 import { FormGroup, FormBuilder } from '@angular/forms';
 // import { ListService, MenuService } from '@services/index';
 import { BillingService, TimeSheetService, GlobalService, ListService, MenuService } from '@services/index';
-import { timeout } from 'rxjs/operators';
-import { setDate } from 'date-fns';
+import { debounceTime, timeout } from 'rxjs/operators';
+import { setDate, toDate } from 'date-fns';
 import { FormsModule } from '@angular/forms';
+import { formatDate } from '@angular/common';
+import { first } from 'lodash';
 
 @Component({
   selector: 'app-billing',
@@ -34,6 +36,7 @@ export class DebtorComponent implements OnInit {
   programList: Array<any>;
   categoriesList: Array<any>;
   batchHistoryList: Array<any>;
+  debtorRecordList: Array<any>;
   tableData: Array<any>;
   PayPeriodLength: number;
   PayPeriodEndDate: any;
@@ -61,7 +64,7 @@ export class DebtorComponent implements OnInit {
   temp_title: any;
   settingForm: FormGroup;
   userRole: string = "userrole";
-  whereString: string = "Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+  // whereString: string = "Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
   dtpEndDate: any;
   dtpStartDate: any;
   id: string;
@@ -99,6 +102,7 @@ export class DebtorComponent implements OnInit {
     this.loadCategories();
     this.populateDropdowns();
     this.loadBatchHistory();
+    this.loadDebtorRecords();
     this.loading = false;
     this.modalOpen = true;
   }
@@ -119,10 +123,10 @@ export class DebtorComponent implements OnInit {
       billingMode: 'CONSOLIDATED BILLING',
       AccPackage: 'TEST 1',
       name: null,
-      invoiceDate: null,
+      invoiceDate: new Date(),
       invType: null,
-      startDate: null,
-      endDate: null
+      dtpEndDate: null,
+      dtpStartDate: null,
     });
   }
 
@@ -242,6 +246,26 @@ export class DebtorComponent implements OnInit {
     });
   }
 
+  // loadDebtorRecords() {
+  //   let sql = "SELECT [Recordno], [Type], [Anal], [Client Code], [BillTo], [Date], [Start Time], [Dayno], [Monthno], [Yearno], [Service type], [Carer code], [Service Description], [Program], [Duration],  [Unit Bill Rate], [Taxamount] FROM Roster where [Service Type] = 'SCA WD'";
+  //   this.loading = true;
+  //     this.listS.getlist(sql).subscribe(data => {
+  //       this.debtorRecordList = data;
+  //       console.log(this.debtorRecordList);
+  //       this.loading = false;
+  //     });
+  // }  getDebtorRecords
+  
+  
+  loadDebtorRecords() {
+    this.loading = true;
+    this.billingS.getDebtorRecords(null).subscribe(data => {
+        this.debtorRecordList = data;
+        console.log(this.debtorRecordList);
+        this.loading = false;
+      });
+  }  
+
   loadBatchHistory() {
     let sql = "Select pay_bill_batch.RecordNumber, pay_bill_batch.OperatorID, pay_bill_batch.BatchDate, pay_bill_batch.BatchNumber, pay_bill_batch.BatchDetail, pay_bill_batch.BatchType, pay_bill_batch.CDCBilled, pay_bill_batch.Date1, pay_bill_batch.Date2, pay_bill_batch.BillBatch# as BillBatch, pay_bill_batch.xDeletedRecord, pay_bill_batch.xEndDate FROM pay_bill_batch INNER JOIN batch_record on batchnumber = batch_record.BCH_NUM WHERE batch_record.bch_type in ('B','S') ORDER BY convert(int, batchnumber) DESC";
     this.loading = true;
@@ -272,17 +296,14 @@ export class DebtorComponent implements OnInit {
     });
   }
   GetPayPeriodEndDate() {
-    let sql = "SELECT convert(varchar, PayPeriodEndDate, 103) AS PayPeriodEndDate FROM SysTable"
+    let sql = "SELECT convert(varchar, PayPeriodEndDate, 101) AS PayPeriodEndDate FROM SysTable"
     this.loading = true;
     this.listS.getlist(sql).subscribe(data => {
-      // setTimeout(()=>{        
-      //  }, 50000);
       if (data[0].payPeriodEndDate != "") {
         this.dtpEndDate = data[0].payPeriodEndDate;
         this.inputForm.patchValue({
-          dtpEndDate: data[0].payPeriodEndDate,
-        });
-        console.log("Test 1 is: ", this.dtpEndDate)
+          dtpEndDate: this.dtpEndDate,
+        })
       }
       else {
         this.inputForm.patchValue({
@@ -296,22 +317,18 @@ export class DebtorComponent implements OnInit {
     let fsql = "SELECT DefaultPayPeriod as DefaultPayPeriod FROM Registration";
     this.listS.getlist(fsql).subscribe(fdata => {
       if (fdata[0].defaultPayPeriod != "") {
-        this.PayPeriodLength = fdata[0].defaultPayPeriod;
-
-        var firstDate = this.dtpEndDate;
-        console.log("Test 3.0 is: ", firstDate);
-        firstDate.setDate(firstDate.getDate() - 8);
-        this.dtpStartDate = firstDate;
-
-        console.log("Test 3.1 is: ", this.PayPeriodLength);
-        console.log("Test 3.2 is: ", firstDate);
-        console.log("Test 3.3 is: ", this.dtpStartDate);
+        this.PayPeriodLength = fdata[0].defaultPayPeriod
       }
       else {
-        this.PayPeriodLength = 14;
-        console.log("Test 3 ELSE is: ", this.PayPeriodLength);
-      }
+        this.PayPeriodLength = 14
+      }      
+      var firstDate = new Date(this.dtpEndDate);
+      firstDate.setDate(firstDate.getDate() - (this.PayPeriodLength - 1));
+      this.dtpStartDate = formatDate(firstDate, 'MM-dd-yyyy','en_US');
+      this.inputForm.patchValue({
+        dtpStartDate: this.dtpStartDate,
+      });
     });
-  };
+  }
 }
 

@@ -3,6 +3,7 @@ export * from './contacts';
 export * from './history';
 export * from './incident';
 export * from './intake';
+export * from './clinical';
 export * from './opnote';
 export * from './pension';
 export * from './perm-roster';

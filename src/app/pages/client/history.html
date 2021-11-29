@@ -8,10 +8,13 @@
             </nz-form-control>
         </nz-form-item>
     </div>
+    <div nz-row class="text-right">
+        <span style="font-weight:bold">{{ timesheets?.length }} total</span>
+    </div>
     <div nz-row>
         <nz-table #virtualTable nzVirtualScroll [nzSize]="'middle'" [nzVirtualItemSize]="20" [nzData]="timesheets"
             [nzLoading]="loading" [nzVirtualForTrackBy]="trackByIndex" [nzFrontPagination]="false" [nzSize]="'middle'"
-            [nzShowPagination]="false" [nzScroll]="{ x: '1700px', y: '350px' }">
+            [nzShowPagination]="false" [nzScroll]="{ x: '1700px', y: 'calc(100vh - 30vh)' }">
             <thead>
                 <tr>
                     <th nzWidth="100px" nzLeft="0px">Shift No</th>

@@ -27,6 +27,7 @@ export class AddReferralComponent implements OnInit, OnDestroy {
 
   private verifyAccount = new Subject<any>();
   private verifyAccountCustom = new Subject<any>();
+  doctors: Array<any> = []
 
   loadingGenerateAccount: boolean = false;
 
@@ -212,7 +213,43 @@ export class AddReferralComponent implements OnInit, OnDestroy {
     });
   }
 
+
+  doctorChange(group: FormGroup, index: number, data: any){
+
+    var specificGroup = (group[index] as FormGroup);
+
+
+    if(!data) {
+      specificGroup.patchValue({
+        address1: '',
+        address2: '',
+        email: '',
+        phone1: '',
+        phone2: '',
+        fax: '',
+        mobile: ''
+      });
+      return;
+    };
+
+   
+    specificGroup.patchValue({
+      address1: data.address1,
+      address2: data.address2,
+      email: data.email,
+      phone1: data.phone1,
+      phone2: data.phone2,
+      fax: data.fax,
+      mobile: data.mobile
+    });    
+  }
+
   resetGroup() {
+
+    this.listS.getdoctorinformation().subscribe(data => {
+      this.doctors = data;
+    })
+
     setTimeout(() => {
       this._lastname.nativeElement.focus();
     });
@@ -256,32 +293,30 @@ export class AddReferralComponent implements OnInit, OnDestroy {
 
     this.populateDropdowns();
 
-    combineLatest([
-      this.referralGroup.get('branch').valueChanges,
-      this.referralGroup.get('recipientCoordinator').valueChanges.pipe(startWith(false)),
-    ]).pipe(
-      switchMap(([x, x1]): any => {
-        let data = {
-          branch: x,
-          coordinator: x1
-        }
-        return this.listS.getnotifications(data);
-      })
-    ).subscribe((data: any) => {
-        // this.notifications = data;
-        //this.notifCheckBoxGroup = data.map(x => {
+    // combineLatest([
+    //   this.referralGroup.get('branch').valueChanges,
+    //   this.referralGroup.get('recipientCoordinator').valueChanges.pipe(startWith(false)),
+    // ]).pipe(
+    //   switchMap(([x, x1]): any => {
+    //     let data = {
+    //       branch: x,
+    //       coordinator: x1
+    //     }
+    //     return this.listS.getnotifications(data);
+    //   })
+    // ).subscribe((data: any) => {
 
-          console.log(data);
+    //       console.log(data);
           
-          this.notifCheckBoxes = data.map(x => {
-          return {
-            label: x.staffToNotify,
-            value: x.staffToNotify,
-            disabled: x.mandatory ? true : false,
-            check: x.mandatory ? true : false
-          }
-        })
-    });
+    //       this.notifCheckBoxes = data.map(x => {
+    //       return {
+    //         label: x.staffToNotify,
+    //         value: x.staffToNotify,
+    //         disabled: x.mandatory ? true : false,
+    //         check: x.mandatory ? true : false
+    //       }
+    //     })
+    // });
 
     // this.referralGroup.get('otherContacts').valueChanges.subscribe(data => console.log(data))
 
@@ -865,7 +900,9 @@ export class AddReferralComponent implements OnInit, OnDestroy {
       address1: details.address,
       email: details.email,
       phone1: details.phone,
-      fax: details.fax
+      fax: details.fax,
+      mobile: details.mobile,
+      suburb: `${details.suburb} ${details.postcode}`
     });
   }
 

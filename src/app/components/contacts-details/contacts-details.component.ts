@@ -31,6 +31,7 @@ const noop = () => {
 export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,ControlValueAccessor {
   private unsubscribe: Subject<void> = new Subject();
 
+  doctor: any;
   @Input() user: any;  
 
   private onTouchedCallback: () => void = noop;
@@ -51,6 +52,8 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
   current: number = 0;
   loading: boolean;
   tocken: any;
+
+  doctors: Array<any> = [];
 
   constructor(
     private globalS: GlobalService,
@@ -75,6 +78,43 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
         console.log('run contacts')
         this.searchKin(this.user);
     }
+  }
+
+  doctorChangeEvent(data: any){
+
+    var doc = this.doctors.filter(x => x.name == data).shift();
+
+    if(!doc){
+      this.inputForm.patchValue({
+        address1: '',
+        address2: '',
+        phone1: '',
+        phone2:'',
+        email: '',
+        mobile: '',
+        fax: '',
+        name: ''
+      })
+      return;
+    }
+
+    this.inputForm.patchValue({
+      address1: doc.address1,
+      address2: doc.address2,
+      phone1: doc.phone1,
+      phone2:doc.phone2,
+      email: doc.email,
+      mobile: doc.mobile,
+      fax: doc.fax,
+      name: doc.name
+    })
+  }
+
+  populate(){
+    this.listS.getdoctorinformation().subscribe(data => {
+      console.log(data);
+      this.doctors = data;
+    })
   }
 
   buildForm(): void {
@@ -335,12 +375,12 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
       this.inputForm.controls['ecode'].setValue('PERSON2')
     }
 
+   
     this.timeS.postcontactskinstaffdetails(
       this.inputForm.value,
       this.user.id
     ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
       this.globalS.sToast('Success', 'Contact Inserted');
-      console.log(this.user);
       this.handleCancel();
       this.searchKin(this.user);
       this.handleCancel();

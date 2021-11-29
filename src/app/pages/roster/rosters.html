@@ -10,7 +10,7 @@
           
             <div nz-col nzSpan="8" style=" margin-left: 10px; margin-top: 10px; background-color: white;">
                 <div class="calendar-title">            
-                    <app-search-timesheet [defautValue]="defaultCode" [view]="0" (selected)="picked($event)"></app-search-timesheet>
+                    <app-search-timesheet [defautValue]="defaultCode" [view]="view" (selected)="picked($event)"></app-search-timesheet>
                 </div>
             </div>
             <div nz-col nzSpan="14" *ngIf="!recurrenceView" >
@@ -24,9 +24,9 @@
                 </div>
                 <div  nz-col nzSpan="6" nzvisible="!master" style="margin-top: 10px; background-color: white;">
                     <nz-button-group >
-                        <button  nz-button nzType="primary" (click)="prev_date()" ><i nz-icon nzType="left"></i></button>
-                        <button  nz-button nzType="primary" (click)="next_date()" ><i nz-icon nzType="right"></i></button>
-                        <button  nz-button nzType="primary" (click)="show_views=true"  style="font-size:small; text-align:center; vertical-align: top; width:70px" >Views</button> 
+                        <button  nz-button class="color-powder-blue" [disabled]="!enable_buttons" (click)="prev_date()" ><i nz-icon nzType="left"></i></button>
+                        <button  nz-button class="color-powder-blue" [disabled]="!enable_buttons" (click)="next_date()" ><i nz-icon nzType="right"></i></button>
+                        <button  nz-button class="color-powder-blue" (click)="show_views=true"  style="font-size:small; text-align:center; vertical-align: top; width:70px" >Views</button> 
                          <!-- <label nz-box style=" padding:2px; height:32px; background-color: #1E91E8; color:white ">Views</label>         -->
                         
                     </nz-button-group> 
@@ -34,17 +34,15 @@
                 </div>
                 <div  nz-col nzSpan="6"  style="margin-top: 10px;">        
                     
-                    <button nz-button nzType="primary" (click)="show_MoreOptions()">More ...</button >
+                    <button nz-button class="color-powder-blue"  (click)="show_MoreOptions()">More ...</button >
                     
                         <nz-checkbox-wrapper *ngIf="show_More">
                             <label nz-checkbox style="margin-left: 8px;" [ngModel]="include_fee" (ngModelChange)="hide_MoreOptions(0)"  nzValue="c1">Include Fees</label>
-                            <label nz-checkbox style="margin-left: 8px;" [ngModel]="include_item" (ngModelChange)="hide_MoreOptions(1)" nzValue="c2">Include Item</label>             
-                        
-                        </nz-checkbox-wrapper>     
-                        
+                            <label nz-checkbox style="margin-left: 8px;" [ngModel]="include_item" (ngModelChange)="hide_MoreOptions(1)" nzValue="c2">Include Item</label>
+                        </nz-checkbox-wrapper>    
                 </div>
                     
-                <div id="divMaster" nz-col nzSpan="6" [ngStyle]="{'background-color':master === true ? '#D94436' : '#1E91E8' }" style=" background-color: #1E91E8; vertical-align: middle; height: 32px; width:200px;  border-radius: 3px; margin-top: 10px;  color: grey; padding-left: 2px; text-align: center;">
+                <div id="divMaster" nz-col nzSpan="6" [ngStyle]="{'background-color':master === true ? '#D94436' : '#85B9D5' }" style=" background-color: #1E91E8; vertical-align: middle; height: 32px; width:200px;  border-radius: 3px; margin-top: 10px;  color: grey; padding-left: 2px; text-align: center;">
     
                     <nz-label style="padding:4px; background-color: transparent; color: white; vertical-align: middle"> {{ Master_Roster_label }}  </nz-label>
                         <nz-switch  [class.master-class]="master" [(ngModel)]="master" style="padding:4px;  vertical-align: middle" (ngModelChange)="setMasterRoster($event)"></nz-switch>
@@ -53,9 +51,8 @@
             </div>
             
         </div>
-        <div nz-row nz-col nzSpan="23" *ngIf="recurrenceView" calss="form-group" style="  border-radius: 5px; padding:4px; margin-left: 10px; margin-top: 10px; margin-bottom: 10px; color:white; background-color: #002060;">
-                         
-            
+        <div nz-row nz-col nzSpan="24" *ngIf="recurrenceView" calss="form-group" style="  border-radius: 5px; padding:4px; margin-left: 10px; margin-top: 10px; margin-bottom: 10px; color:white; background-color: #002060;">
+                 
             <div nz-col nzSpan="6" >
                 
                 <label for="">Date: {{recurrentStartDate | date: 'dd/MM/yyyy'}} - {{recurrentEndDate | date: 'dd/MM/yyyy'}}</label> 
@@ -116,12 +113,15 @@
             
             <button *ngIf="spreadsheet==null"  nz-button nzType="primary" (click)="refreshPage()"  >Reload Grid</button> 
                    
-        <gc-spread-sheets  id="#ss"
+        <gc-spread-sheets  id="#ss"        
         [backColor]="spreadBackColor"  
+        
         [hostStyle]="hostStyle"  
         (workbookInitialized)="workbookInit($event)"  
         >   
-            <gc-worksheet [name]="sheetName" ></gc-worksheet>
+            <gc-worksheet [name]="sheetName" 
+          
+            ></gc-worksheet>
             
         </gc-spread-sheets>
             
@@ -838,11 +838,11 @@
                 <div nz-col nzSpan="12" >
                     <div class="form-group" style="padding-top: 5px;">
                         <label for="">Start Date</label>
-                        <nz-date-picker [(ngModel)]="recurrentStartDate" [nzFormat]="dateFormat" formControlName="startDate"></nz-date-picker>
+                        <nz-date-picker [nzFormat]="dateFormat" formControlName="startDate"></nz-date-picker>
                     </div>
                     <div class="form-group">
                         <label for="">End Date</label>
-                        <nz-date-picker [(ngModel)]="recurrentEndDate"  [nzFormat]="dateFormat" formControlName="endDate"></nz-date-picker>
+                        <nz-date-picker [nzFormat]="dateFormat" formControlName="endDate"></nz-date-picker>
                     </div>
             </div>
              <div nz-col nzSpan="12">
@@ -872,7 +872,7 @@
                 <div nz-col nzSpan="8" style="padding-top: 5px;">
                
                         
-                    <nz-checkbox-wrapper (nzOnChange)="selectedDays($event)">
+                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="selectedDays($event)">
                         <label nz-checkbox style="padding-left: 8px;"  nzValue="Sunday">Sunday</label>
                         <label nz-checkbox nzValue="Monday">Monday</label>
                         <label nz-checkbox nzValue="Tuesday">Tuesday</label>
@@ -886,7 +886,7 @@
                 </div>
                 <div nz-col nzSpan="8" style="margin-top: 5px;">
                   
-                    <nz-radio-group  [(ngModel)]="Frequency">
+                    <nz-radio-group [ngModelOptions]="{standalone: true}"  [(ngModel)]="Frequency">
                         <label nz-radio  (click)="setFrequency('Weekly')" nzValue="7">Weekly</label>
                         <label nz-radio  (click)="setFrequency('Fortnightly')" nzValue="Fortnightly">Fortnightly</label>
                         <label nz-radio  (click)="setFrequency('Monthly')" nzValue="Monthly">Monthly</label>
@@ -896,7 +896,7 @@
                 </div>
                 <div nz-col nzSpan="6" style="padding-top: 4px;">
                   
-                    <nz-radio-group [(ngModel)]="Pattern" *ngIf="Frequency!='Weekly'">
+                    <nz-radio-group [ngModelOptions]="{standalone: true}" [(ngModel)]="Pattern" *ngIf="Frequency!='Weekly'">
                         <label nz-radio (click)="setPattern('First')" nzValue="First">First</label>
                         <label nz-radio (click)="setPattern('Second')" nzValue="Second">Second</label>
                         <label nz-radio (click)="setPattern('Third')" nzValue="Third" *ngIf="Frequency=='Monthly'">Third</label>
@@ -949,9 +949,9 @@
         
     </nz-modal>
     
-    <recipientexternal [isVisible]="recipientexternal" [AccountNo]="selected" (recipientexternalDone)="cancelRecipientExternal($event)" *ngIf="recipientexternal"></recipientexternal>
+    <recipientexternal [isVisible]="recipientexternal" [AccountNo]="selected_data" (recipientexternalDone)="cancelRecipientExternal($event)" *ngIf="recipientexternal"></recipientexternal>
      
-    <staffexternal [isVisible]="staffexternal" [AccountNo]="selected" (staffexternalDone)="cancelStaffExternal($event)" *ngIf="staffexternal"></staffexternal>
+    <staffexternal [isVisible]="staffexternal" [AccountNo]="selected_data" (staffexternalDone)="cancelStaffExternal($event)" *ngIf="staffexternal"></staffexternal>
     <div>
         <img id="icon-1" style="display: none; background-color: transparent;"  src="/media/r1.png"/>
         <img id="icon-2" style="display: none; background-color: transparent;"  src="/media/r2.png"/>

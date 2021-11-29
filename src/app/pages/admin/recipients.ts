@@ -26,7 +26,7 @@ import { FormBuilder, Validators } from '@angular/forms';
     height: 25px;
   }
   nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-nav-scroll div.ant-tabs-nav div div.ant-tabs-tab.ant-tabs-tab-active{
-    background: #717e94;
+    background: #85B9D5;
     color: #fff;
   }
   ul{
@@ -63,32 +63,31 @@ import { FormBuilder, Validators } from '@angular/forms';
     background: #ffffff00;
     float: left;
   }
-  .status{
-    font-size: 11px;
-    padding: 3px 5px;
-    border-radius: 11px;
-    color: #fff;
+  // .status{
+  //   font-size: 11px;
+  //   padding: 3px 5px;
+  //   border-radius: 11px;
+  //   color: #fff;
     
-    margin-right: 10px;
-  }
-  .status.active{            
-    background: #42ca46;
-  }
-  .status.inactive{            
-    background: #c70000;
-  }
-  .status.type{
-    background:#c8f2ff;
-    color: black;
-  }
+  //   margin-right: 10px;
+  // }
+  // .status.active{            
+  //   background: #42ca46;
+  // }
+  // .status.inactive{            
+  //   background: #c70000;
+  // }
+  // .status.type{
+  //   background:#c8f2ff;
+  //   color: black;
+  // }
   .status-program{
     display: inline-block;
     float: left;
-    margin-right:1rem;
   }
   .status-program i{
     font-size: 1.4rem;
-    color: #bfbfbf;
+    color: #000;
     margin-right:10px;
     cursor:pointer;
   }
@@ -194,7 +193,9 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
   nodelist:Array<any> = [];
 
   checkOptionsOne = checkOptionsOne;
-
+  navigationExtras: { state: { StaffCode: string; ViewType: string; IsMaster: boolean; }; };
+  currentDate = new Date();
+  longMonth = this.currentDate.toLocaleString('en-us', { month: 'long' });
   sampleModel: any;
   
   columns: Array<any> = [
@@ -723,6 +724,12 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
       if (index == 14) {
         this.router.navigate(['/admin/recipient/accounting'])        
       }
+      if (index == 15) {
+        this.router.navigate(['/admin/recipient/media'])        
+      }
+      if (index == 16) {
+        this.router.navigate(['/admin/recipient/clinical'])
+      }
     }
     
     handleCancel() {
@@ -743,7 +750,16 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     closeProgram(){
       this.programModalOpen = false;
     }
-    
+    currentMonthRoster(){
+      console.log(this.user);
+      this.navigationExtras ={state : {StaffCode:this.user.code, ViewType:'Recipient',IsMaster:false }};
+          this.router.navigate(["/admin/rosters"],this.navigationExtras )
+   }
+    rosterMaster(){
+      console.log(this.user);
+        this.navigationExtras ={state : {StaffCode:this.user.code, ViewType:'Recipient',IsMaster:true }};
+            this.router.navigate(["/admin/rosters"],this.navigationExtras )
+    }
     loadPrograms(){
       if(!this.selectedRecipient){
         return;

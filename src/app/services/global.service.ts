@@ -26,6 +26,7 @@ const helper = new JwtHelperService();
 
 import { FormGroup} from '@angular/forms';
 
+export const topMarginStyle = { top: '20px' };
 
 export enum TYPE_MESSAGE {
     warning = 'warning',
@@ -1623,7 +1624,7 @@ admincharges :number = 0;
         if (!this.isVarNull(data)) {
             return "'"+data+"'";
         }
-        return null;
+        return "''";
     }
     isPackageLeaveTypeExists(tableData,username) {
         return tableData.some(function(el) {

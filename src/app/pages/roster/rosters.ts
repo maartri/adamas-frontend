@@ -10,11 +10,7 @@ import { Component, Input, ViewChild, ChangeDetectorRef,ElementRef,ViewEncapsula
     HostListener} from '@angular/core'
 import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { getLocaleDateFormat, getLocaleFirstDayOfWeek, Time,DatePipe } from '@angular/common';
-//import { FullCalendarComponent, CalendarOptions } from '@fullcalendar/angular';
-//import dayGridPlugin from '@fullcalendar/daygrid';
-//import timeGridPlugin from '@fullcalendar/timegrid';
-//import interactionPlugin from '@fullcalendar/interaction';ng build
-//import { forkJoin,  Subject ,  Observable, EMPTY } from 'rxjs';
+
 import { forkJoin, Subscription, Observable, Subject, EMPTY, of,fromEvent, } from 'rxjs';
 
 import {debounceTime, distinctUntilChanged, takeUntil,mergeMap, concatMap, switchMap,buffer,map, bufferTime, filter} from 'rxjs/operators';
@@ -309,8 +305,8 @@ searchAvaibleModal:boolean=false;
     AlertForm:FormGroup;
     
     viewType: any ;
-    start_date:string="";
-    end_date:string=""
+    // start_date:string="";
+    // end_date:string=""
     ForceAll:Boolean=true;
     subGroup:String="";
     RosterDate:String="";
@@ -918,7 +914,7 @@ addBooking(type:any){
        
         this.date = parseISO(this.datepipe.transform(date, 'yyyy-MM-dd'));
         let dt= new Date(this.date);
-        date = dt.getFullYear() + "-" + this.numStr(dt.getMonth()+1) + "-" + this.numStr(range[0].col+1);
+        date = dt.getFullYear() + "-" + this.numStr(dt.getMonth()+1) + "-" + this.numStr(dt.getDate());
         let f_row= range[0].row;
         let l_row=f_row+range[0].rowCount;
         let startTime =   sheet.getCell(f_row,0,GC.Spread.Sheets.SheetArea.rowHeader).tag()
@@ -3469,12 +3465,19 @@ picked(data: any) {
 
         this.selected = data;
         if (this.master){
-            this.start_date= "1900/01/01"
-            this.end_date= "1900/01/31"
+            this.startRoster= "1900/01/01"
+            this.endRoster= "1900/01/31"
         }else{
             
-            this.start_date= moment(this.date).startOf('month').format('YYYY/MM/DD')
-            this.end_date= moment(this.date).endOf('month').format('YYYY/MM/DD')
+            this.startRoster= moment(this.date).startOf('month').format('YYYY/MM/DD')
+            if (this.Days_View>=28)
+                this.endRoster= moment(this.date).endOf('month').format('YYYY/MM/DD')
+            else{
+                this.date = moment(this.startRoster).add('day', this.Days_View-1);
+                this.endRoster = moment(this.date).format('YYYY/MM/DD');
+                this.date= this.startRoster;
+             
+            }
         }  
         this.viewType = this.whatType(data.option);
         

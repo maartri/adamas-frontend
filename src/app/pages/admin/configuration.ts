@@ -918,7 +918,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
                 this.frm_Branches = true;
                 this.frm_Programs = true;                
                 this.frm_Categories = true;
-                this.frm_Managers = true;
+            //    this.frm_Managers = true;
 
                 this.isVisibleTop = true;
                 break;
@@ -1052,7 +1052,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
                 
                 break;
             case "invoice-verification":
-                
+                this.Invoiceverification(s_Branches,s_Programs,s_Categories,strdate, endate)
                 break;
         
             default:
@@ -2381,6 +2381,71 @@ ageddebtor(branch,recipient,AgingDays,allBranches,allClients){
 
     this.printS.print(data).subscribe((blob: any) => {
         this.pdfTitle = "Aged Debtors Report.pdf"
+        this.drawerVisible = true;                   
+        let _blob: Blob = blob;
+        let fileURL = URL.createObjectURL(_blob);
+        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+        this.loading = false;
+        this.cd.detectChanges();
+    }, err => {
+            console.log(err);
+        });
+}
+Invoiceverification(branch,program,region,startdate,enddate){
+
+    var lblcriteria;
+    var fQuery = " SELECT I.RecipientName, I.DebtorName, I.ActivityName, I.ActivityFee, I.ActivityDate, I.ActivityUnits, I.ActivityUnit, I.LineTotal, I.GST FROM (SELECT  RO.Date , RE.[Surname/Organisation] AS Surname,IsNull(RE.FirstName, '') + CASE WHEN IsNull(RE.FirstName, '') <> '' THEN ' ' + RE.[Surname/Organisation] ELSE RE.[Surname/Organisation] END AS RecipientName, (SELECT IsNull(D.FirstName, '') + CASE WHEN IsNull(D.FirstName, '') <> '' THEN ' ' + D.[Surname/Organisation] ELSE D.[Surname/Organisation] END AS DebtorName FROM Recipients D WHERE Accountno = RO.BillTo) AS DebtorName, Convert(nvarchar, convert(Date, [date]), 103) AS ActivityDate, RO.[Service Type] AS ActivityName, RO.[Unit Bill Rate] AS ActivityFee, RO.BillQty AS ActivityUnits, RO.[BillUnit] AS ActivityUnit, RO.BillQty * RO.[Unit Bill Rate] AS LineTotal, CASE WHEN IsNull(RO.TaxPercent, 0) = 0 THEN 'NOGST' ELSE 'GST' END AS GST FROM Roster RO INNER JOIN Recipients RE ON RO.[Client Code] = RE.AccountNo INNER JOIN HUmanResourceTypes PR ON RO.[Program] = PR.Name AND [GROUP] = 'PROGRAMS' WHERE [Client Code] > '!z'  AND IsNull(PR.UserYesNo1, 0) = 0 AND RO.Status IN (2, 5) "
+    //" AND RO.Date BETWEEN '2021/11/01' AND '2021/11/30'  "
+    //" AND RE.Branch IN ('ADELAIDE') "
+    //" AND RO.Program IN ('**DEMO TEMPLATE') "
+    //" AND RE.AgencyDefinedGroup IN ('BELLINGEN')  "
+
+
+    var  tempsdate = format(this.startdate, 'yyyy/MM/dd')
+    var  tempedate = format(this.enddate, 'yyyy/MM/dd')
+    
+    
+                                                      
+        if (startdate != null || enddate != null) {
+            this.s_DateSQL = "  (RO.Date BETWEEN '" + tempsdate + ("'AND'") + tempedate + "')";
+            if (this.s_DateSQL != "") { fQuery = fQuery + " AND " + this.s_DateSQL };
+        }
+        if (branch != "") {
+            this.s_BranchSQL = "RE.Branch in ('" + branch.join("','") + "')";
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL };
+        }        
+        if (program != "") {
+            this.s_ProgramSQL = " (RO.Program in ('" + program.join("','") + "'))";
+            if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+        }
+		 if (region != "") {
+            this.s_CategorySQL = "RE.AgencyDefinedGroup in ('" + region.join("','") + "')";
+            if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL };
+        }
+    
+        fQuery = fQuery + " ) I WHERE I.ActivityFee > 0 "
+        fQuery = fQuery + " ORDER BY I.Surname, I.RecipientName, I.Date , I.DebtorName "
+
+    console.log(fQuery)
+
+    const data = {
+        "template": { "_id": "kn46iSx7qr88QuLH" },
+        "options": {
+            "reports": { "save": false },
+
+            "sql": fQuery,
+            "Criteria": lblcriteria,
+            "userid": this.tocken.user,
+
+
+        }
+    }
+    this.loading = true;
+    //this.drawerVisible = true;
+    
+
+    this.printS.print(data).subscribe((blob: any) => {
+        this.pdfTitle = ".pdf"
         this.drawerVisible = true;                   
         let _blob: Blob = blob;
         let fileURL = URL.createObjectURL(_blob);

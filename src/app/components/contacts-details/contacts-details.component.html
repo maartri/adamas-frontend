@@ -1,6 +1,7 @@
 <div ng-row >
     <div nz-row>
         <button class="botton success" (click)="modalOpen = true;populate()">Add Contact</button>
+        <button  nz-button nzType="primary" (click)="searchKin(user)">Refresh</button>
     </div>
 
     <div nz-row nzGutter="16" style="padding-top:2rem">
@@ -14,8 +15,8 @@
                 <ul>
                     <li *ngFor="let list of kinsArray">
                         <div (click)="showDetails(list); selected = list" [class.active]="selected == list">
-                            <h4>{{ list.name | uppercase  }}</h4>
-                            <span>{{list.type || '-' | uppercase}}</span>
+                            <h4>{{ list.name || '--' | uppercase  }}</h4>
+                            <span>{{list.type || '--' | uppercase}}</span>
                             <i nz-icon nzType="right" nzTheme="outline"></i>
                         </div>
                     </li>

@@ -10,11 +10,7 @@ import { Component, Input, ViewChild, ChangeDetectorRef,ElementRef,ViewEncapsula
     HostListener} from '@angular/core'
 import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { getLocaleDateFormat, getLocaleFirstDayOfWeek, Time,DatePipe } from '@angular/common';
-//import { FullCalendarComponent, CalendarOptions } from '@fullcalendar/angular';
-//import dayGridPlugin from '@fullcalendar/daygrid';
-//import timeGridPlugin from '@fullcalendar/timegrid';
-//import interactionPlugin from '@fullcalendar/interaction';ng build
-//import { forkJoin,  Subject ,  Observable, EMPTY } from 'rxjs';
+
 import { forkJoin, Subscription, Observable, Subject, EMPTY, of,fromEvent, } from 'rxjs';
 
 import {debounceTime, distinctUntilChanged, takeUntil,mergeMap, concatMap, switchMap,buffer,map, bufferTime, filter} from 'rxjs/operators';
@@ -309,8 +305,8 @@ searchAvaibleModal:boolean=false;
     AlertForm:FormGroup;
     
     viewType: any ;
-    start_date:string="";
-    end_date:string=""
+    // start_date:string="";
+    // end_date:string=""
     ForceAll:Boolean=true;
     subGroup:String="";
     RosterDate:String="";
@@ -560,7 +556,7 @@ doneBooking(){
         let time = {startTime:this.defaultStartTime, endTime:this.defaultEndTime, duration:0};
         const tsheet =  this.bookingForm.value;
       
-        if (tsheet.serviceActivity==null || tsheet.serviceActivity==""){
+        if (this.type_to_add!=13  && (tsheet.serviceActivity==null || tsheet.serviceActivity=="")){
            
             this.globalS.eToast('Error', 'No Service type is selected');
             return;            
@@ -765,7 +761,7 @@ recordCancellation(){
     this.bookingForm.patchValue({
         staffCode:"!INTERNAL"
     });
-    this.addBooking(0);
+    this.addBooking(4);
 }
 setUnavailablity(){
     this.resetBookingFormModal();
@@ -778,6 +774,10 @@ setUnavailablity(){
             this.bookingForm.patchValue({
                 recipientCode:"!INTERNAL",
                 program:"!INTERNAL",
+                analysisCode:"!INTERNAL",
+                serviceType:13,
+                payType:"UNAVAILABLE",
+                staffCode:this.data.data,
                 serviceActivity: {
                     activity:"UNAVAILABLE",
                     service_Description:"UNAVAILABLE"
@@ -914,7 +914,7 @@ addBooking(type:any){
        
         this.date = parseISO(this.datepipe.transform(date, 'yyyy-MM-dd'));
         let dt= new Date(this.date);
-        date = dt.getFullYear() + "-" + this.numStr(dt.getMonth()+1) + "-" + this.numStr(range[0].col+1);
+        date = dt.getFullYear() + "-" + this.numStr(dt.getMonth()+1) + "-" + this.numStr(dt.getDate());
         let f_row= range[0].row;
         let l_row=f_row+range[0].rowCount;
         let startTime =   sheet.getCell(f_row,0,GC.Spread.Sheets.SheetArea.rowHeader).tag()
@@ -3465,12 +3465,19 @@ picked(data: any) {
 
         this.selected = data;
         if (this.master){
-            this.start_date= "1900/01/01"
-            this.end_date= "1900/01/31"
+            this.startRoster= "1900/01/01"
+            this.endRoster= "1900/01/31"
         }else{
             
-            this.start_date= moment(this.date).startOf('month').format('YYYY/MM/DD')
-            this.end_date= moment(this.date).endOf('month').format('YYYY/MM/DD')
+            this.startRoster= moment(this.date).startOf('month').format('YYYY/MM/DD')
+            if (this.Days_View>=28)
+                this.endRoster= moment(this.date).endOf('month').format('YYYY/MM/DD')
+            else{
+                this.date = moment(this.startRoster).add('day', this.Days_View-1);
+                this.endRoster = moment(this.date).format('YYYY/MM/DD');
+                this.date= this.startRoster;
+             
+            }
         }  
         this.viewType = this.whatType(data.option);
         
@@ -4002,12 +4009,57 @@ GETSERVICEACTIVITY(program: any): Observable<any> {
         });
     }
     else {
-        let sql = `SELECT DISTINCT [service type] AS activity FROM serviceoverview SO INNER JOIN humanresourcetypes HRT ON CONVERT(NVARCHAR, HRT.recordnumber) = SO.personid 
-            WHERE SO.serviceprogram = '${ program}' AND EXISTS (SELECT title FROM itemtypes ITM WHERE title = SO.[service type] AND ITM.[rostergroup] = 'ADMINISTRATION' AND processclassification = 'OUTPUT' AND ( ITM.enddate IS NULL OR ITM.enddate >= '${this.currentDate}' )) ORDER BY [service type]`;
-        
-        // let sql = `SELECT DISTINCT [Service Type] AS activity FROM ServiceOverview SO INNER JOIN HumanResourceTypes HRT ON CONVERT(nVarchar, HRT.RecordNumber) = SO.PersonID
-        //     WHERE SO.ServiceProgram = '${ program}' AND EXISTS (SELECT Title FROM ItemTypes ITM WHERE Title = SO.[Service Type] AND 
-        //     ProcessClassification = 'OUTPUT' AND (ITM.EndDate Is Null OR ITM.EndDate >= '${this.currentDate}')) ORDER BY [Service Type]`;
+        let  sql="";
+
+        // return this.timeS.getActivities({            
+        //     recipient: recipientCode,
+        //     program:program,  
+        //     forceAll: "1", //recipientCode=='!MULTIPLE' || recipientCode=='!INTERNAL' ? "1" : "0",   
+        //     mainGroup: this.IsGroupShift ? this.GroupShiftCategory : 'ALL',
+        //     subGroup: '-',           
+        //     viewType: this.viewType,
+        //     AllowedDays: "0",
+        //     duration: this.durationObject?.duration            
+        // });
+
+    //   ql =`  SELECT DISTINCT [Service Type] AS Activity,I.RosterGroup,
+    //     (CASE WHEN ISNULL(SO.ForceSpecialPrice,0) = 0 THEN
+    //     (CASE WHEN C.BillingMethod = 'LEVEL1' THEN I.PRICE2
+    //      WHEN C.BillingMethod = 'LEVEL2' THEN I.PRICE3
+    //      WHEN C.BillingMethod = 'LEVEL3' THEN I.PRICE4
+    //      WHEN C.BillingMethod = 'LEVEL4' THEN I.PRICE5
+    //      WHEN C.BillingMethod = 'LEVEL5' THEN I.PRICE6
+    //     ELSE I.Amount END )
+    //     ELSE SO.[UNIT BILL RATE] END ) AS BILLRATE,
+    //     isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate,hrt.GST,I.unit as UnitType,
+    //     (select case when UseAwards=1 then 'AWARD' ELSE '' END from registration) as Service_Description,
+    //     HACCType,c.AgencyDefinedGroup as Anal,(select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
+    //     FROM ServiceOverview SO INNER JOIN HumanResourceTypes HRT ON CONVERT(nVarchar, HRT.RecordNumber) = SO.PersonID
+    //     INNER JOIN Recipients C ON C.AccountNO = '${this.FetchCode}'
+    //     INNER JOIN ItemTypes I ON I.Title = SO.[Service Type]
+    //     WHERE SO.ServiceProgram = '${program}' AND [SO].[ServiceStatus] = 'ACTIVE' 
+    //     AND EXISTS
+    //     (SELECT Title
+    //     FROM ItemTypes ITM
+    //     WHERE Title = SO.[Service Type] 
+    //     AND ITM.[Status] = 'ATTRIBUTABLE' AND ProcessClassification = 'OUTPUT' AND (ITM.EndDate Is Null OR ITM.EndDate >= '${this.currentDate}'))
+    //     ORDER BY [Service Type]`; 
+    
+    sql =`  SELECT DISTINCT [Service Type] AS Activity,I.RosterGroup,         
+        I.AMOUNT AS BILLRATE,
+        isnull([Unit Pay Rate],0) as payrate,isnull(TaxRate,0) as TaxRate,0 as GST,I.unit as UnitType,
+        'N/A' as Service_Description,
+        HACCType,'' as Anal,(select top 1 convert(varchar,convert(datetime,PayPeriodEndDate),111) as PayPeriodEndDate from SysTable) as date_Timesheet
+        FROM ServiceOverview SO         
+        INNER JOIN ItemTypes I ON I.Title = SO.[Service Type]
+        WHERE SO.ServiceProgram = '${program}' 
+        AND EXISTS
+        (SELECT Title
+        FROM ItemTypes ITM
+        WHERE  RosterGroup = 'RECPTABSENCE' And Title = SO.[Service Type] And ProcessClassification = 'EVENT' 
+        AND ITM.[Status] = 'ATTRIBUTABLE' AND (ITM.EndDate Is Null OR ITM.EndDate >= '${this.currentDate}'))
+        ORDER BY [Service Type]`;
+    
         return this.listS.getlist(sql);
     }
 }

@@ -293,8 +293,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
         details,
         details.recordNumber
       ).subscribe(data => {
-
-          this.searchKin(this.user);
+          // this.searchKin(this.user);
           this.globalS.sToast('Success', 'Contact Updated');       
       });
     }
@@ -319,7 +318,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
       const details = this.kindetailsGroup.value;
       this.timeS.updatecontactskinrecipientdetails(details,details.recordNumber)
           .subscribe(data => {
-            this.searchKin(this.user);
+            // this.searchKin(this.user);
             this.handleCancel();
             this.globalS.sToast('Success', 'Contact Updated');       
           });

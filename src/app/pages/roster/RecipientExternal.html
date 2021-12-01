@@ -415,7 +415,7 @@
 
 <ng-template #modalFooter>
     
-    <button nz-button nzType="primary" >
+    <button nz-button nzType="primary" (click)="handleCancel()">
         <span>Done</span>
     </button>
      <button nz-button nzType="default" (click)="handleCancel()">Cancel</button> 

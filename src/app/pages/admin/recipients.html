@@ -56,21 +56,23 @@
         
         <div nz-col nzSpan="24">
             <nz-tabset *ngIf="user" [nzTabPosition]="'top'" [nzType]="'card'">
-                <nz-tab nzTitle="Personal" (nzClick)="view(0)"> </nz-tab>
-                <nz-tab nzTitle="Contacts" (nzClick)="view(1)"> </nz-tab>
-                <nz-tab nzTitle="Intake Details" (nzClick)="view(2)"></nz-tab>
-                <nz-tab nzTitle="Clinical" (nzClick)="view(16)"> </nz-tab>
-                <nz-tab nzTitle="Reminders" (nzClick)="view(3)"> </nz-tab>
-                <nz-tab nzTitle="OP Notes" (nzClick)="view(4)"> </nz-tab>
-                <nz-tab nzTitle="Case Notes" (nzClick)="view(5)"> </nz-tab>
-                <nz-tab nzTitle="Incidents" (nzClick)="view(6)"> </nz-tab>
-                <nz-tab nzTitle="Permanent Roster" (nzClick)="view(7)"> </nz-tab>
-                <nz-tab nzTitle="History" (nzClick)="view(8)"> </nz-tab>
-                <nz-tab nzTitle="Insurance & Pension" (nzClick)="view(9)"> </nz-tab>
-                <nz-tab nzTitle="Quotes" (nzClick)="view(10)"> </nz-tab>
-                <nz-tab nzTitle="Documents" (nzClick)="view(11)"> </nz-tab>
-                <nz-tab nzTitle="Time & Attendance" (nzClick)="view(12)"> </nz-tab>
-                <nz-tab nzTitle="Other" (nzClick)="view(13)"> </nz-tab>
+                <nz-tab *ngIf="getPermisson(100) == '1'" nzTitle="Personal" (nzClick)="view(0)"> </nz-tab>
+                <nz-tab *ngIf="getPermisson(101) == '1'" nzTitle="Contacts" (nzClick)="view(1)"> </nz-tab>
+                <nz-tab *ngIf="getPermisson(103) == '1'" nzTitle="Intake Details" (nzClick)="view(2)"></nz-tab>
+                <nz-tab *ngIf="getPermisson(113) == '1'" nzTitle="ONI" (nzClick)="view(17)"> </nz-tab>
+                <nz-tab *ngIf="getPermisson(113) == '1'" nzTitle="Clinical" (nzClick)="view(16)"> </nz-tab>
+                <nz-tab *ngIf="getPermisson(120) == '1'" nzTitle="Reminders" (nzClick)="view(3)"> </nz-tab>
+                <nz-tab *ngIf="getPermisson(121) == '1'" nzTitle="OP Notes" (nzClick)="view(4)"> </nz-tab>
+                <nz-tab *ngIf="getPermisson(122) == '1'" nzTitle="Case Notes" (nzClick)="view(5)"> </nz-tab>
+                <nz-tab *ngIf="getPermisson(133) == '1'" nzTitle="Incidents" (nzClick)="view(6)"> </nz-tab>
+                <nz-tab *ngIf="getPermisson(124) == '1'" nzTitle="Permanent Roster" (nzClick)="view(7)"> </nz-tab>
+                <nz-tab *ngIf="getPermisson(123) == '1'" nzTitle="History" (nzClick)="view(8)"> </nz-tab>
+                <nz-tab *ngIf="getPermisson(125) == '1'" nzTitle="Insurance & Pension" (nzClick)="view(9)"> </nz-tab>
+                <nz-tab *ngIf="getPermisson(100) == '1'" nzTitle="Quotes" (nzClick)="view(10)"> </nz-tab>
+                <nz-tab *ngIf="getPermisson(132) == '1'" nzTitle="Documents" (nzClick)="view(11)"> </nz-tab>
+                <nz-tab *ngIf="getPermisson(135) == '1'" nzTitle="Time & Attendance" (nzClick)="view(12)"> </nz-tab>
+                <nz-tab *ngIf="getPermisson(136) == '1'" nzTitle="Other" (nzClick)="view(13)"> </nz-tab>
+                <nz-tab *ngIf="getPermisson(127) == '1'" nzTitle="Datesets" (nzClick)="view(18)"> </nz-tab>
                 <nz-tab nzTitle="Accounting" (nzClick)="view(14)"> </nz-tab>
                 <nz-tab nzTitle="Media" (nzClick)="view(15)"> </nz-tab>
             </nz-tabset>

@@ -1044,7 +1044,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
                
                 break;
             case "print-deposit-slip":
-                
+                this.depositslip(s_Branches,strdate, endate)
 
                 break;
             case "print-aged-debtors":
@@ -1078,7 +1078,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
           },
 
           nzOnCancel: () => {
-            this.ModalName = "BRANCH SELECTION";           
+            this.ModalName = "Bank Deposit Slip";           
             this.frm_Branches = true;           
             this.isVisibleTop = true;
           }
@@ -2426,7 +2426,7 @@ Invoiceverification(branch,program,region,startdate,enddate){
         fQuery = fQuery + " ) I WHERE I.ActivityFee > 0 "
         fQuery = fQuery + " ORDER BY I.Surname, I.RecipientName, I.Date , I.DebtorName "
 
-    console.log(fQuery)
+    //console.log(fQuery)
 
     const data = {
         "template": { "_id": "kn46iSx7qr88QuLH" },
@@ -2446,6 +2446,69 @@ Invoiceverification(branch,program,region,startdate,enddate){
 
     this.printS.print(data).subscribe((blob: any) => {
         this.pdfTitle = "Invoice Verification.pdf"
+        this.drawerVisible = true;                   
+        let _blob: Blob = blob;
+        let fileURL = URL.createObjectURL(_blob);
+        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+        this.loading = false;
+        this.cd.detectChanges();
+    }, err => {
+            console.log(err);
+        });
+}
+depositslip(branch,startdate,enddate){
+
+    var lblcriteria;
+    var fQuery = " SELECT * FROM BankDeposit BD "
+        
+        
+    //" AND RO.Date BETWEEN '2021/11/01' AND '2021/11/30'  "
+    //" AND RE.Branch IN ('ADELAIDE') "
+    //" AND RO.Program IN ('**DEMO TEMPLATE') "
+    //" AND RE.AgencyDefinedGroup IN ('BELLINGEN')  "
+
+
+    var  tempsdate = format(this.startdate, 'yyyy/MM/dd')
+    var  tempedate = format(this.enddate, 'yyyy/MM/dd')
+    
+    
+        /*                                              
+        if (startdate != null || enddate != null) {
+            this.s_DateSQL = "  (RO.Date BETWEEN '" + tempsdate + ("'AND'") + tempedate + "')";
+            if (this.s_DateSQL != "") { fQuery = fQuery + " AND " + this.s_DateSQL };
+        } */
+        if (branch != "") {
+            fQuery = fQuery +" INNER JOIN DataDomains DD ON BD.BRID = DD.RecordNumber "
+            this.s_BranchSQL = "DD.Description in ('" + branch.join("','") + "')";
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " where " + this.s_BranchSQL };
+        }        
+        //" WHERE  = 'ADAMAS'  "
+    
+        fQuery = fQuery + " ORDER BY [Type] DESC "
+        var Query = " SELECT TOP 1 BankName, BankAccountName, BankBSB, BankAccountNumber FROM Registration WHERE CoName = (SELECT CoName from Registration) "
+        
+
+    //console.log(fQuery)
+
+    const data = {
+        "template": { "_id": "VF3MEfKwcKLDQrYy" },
+        "options": {
+            "reports": { "save": false },
+
+            "sql": fQuery,
+            "str_sql": Query ,
+            "Criteria": lblcriteria,
+            "userid": this.tocken.user,
+
+
+        }
+    }
+    this.loading = true;
+    this.drawerVisible = true;
+    
+
+    this.printS.print(data).subscribe((blob: any) => {
+        this.pdfTitle = "Bank Deposit Slip.pdf"
         this.drawerVisible = true;                   
         let _blob: Blob = blob;
         let fileURL = URL.createObjectURL(_blob);

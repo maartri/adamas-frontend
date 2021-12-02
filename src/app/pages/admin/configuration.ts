@@ -2394,7 +2394,7 @@ ageddebtor(branch,recipient,AgingDays,allBranches,allClients){
 Invoiceverification(branch,program,region,startdate,enddate){
 
     var lblcriteria;
-    var fQuery = " SELECT I.RecipientName, I.DebtorName, I.ActivityName, I.ActivityFee, I.ActivityDate, I.ActivityUnits, I.ActivityUnit, I.LineTotal, I.GST FROM (SELECT  RO.Date , RE.[Surname/Organisation] AS Surname,IsNull(RE.FirstName, '') + CASE WHEN IsNull(RE.FirstName, '') <> '' THEN ' ' + RE.[Surname/Organisation] ELSE RE.[Surname/Organisation] END AS RecipientName, (SELECT IsNull(D.FirstName, '') + CASE WHEN IsNull(D.FirstName, '') <> '' THEN ' ' + D.[Surname/Organisation] ELSE D.[Surname/Organisation] END AS DebtorName FROM Recipients D WHERE Accountno = RO.BillTo) AS DebtorName, Convert(nvarchar, convert(Date, [date]), 103) AS ActivityDate, RO.[Service Type] AS ActivityName, RO.[Unit Bill Rate] AS ActivityFee, RO.BillQty AS ActivityUnits, RO.[BillUnit] AS ActivityUnit, RO.BillQty * RO.[Unit Bill Rate] AS LineTotal, CASE WHEN IsNull(RO.TaxPercent, 0) = 0 THEN 'NOGST' ELSE 'GST' END AS GST FROM Roster RO INNER JOIN Recipients RE ON RO.[Client Code] = RE.AccountNo INNER JOIN HUmanResourceTypes PR ON RO.[Program] = PR.Name AND [GROUP] = 'PROGRAMS' WHERE [Client Code] > '!z'  AND IsNull(PR.UserYesNo1, 0) = 0 AND RO.Status IN (2, 5) "
+    var fQuery = " SELECT I.RecipientName, I.DebtorName, I.ActivityName, I.ActivityFee, I.ActivityDate, I.ActivityUnits, I.ActivityUnit, I.LineTotal, I.GST FROM (SELECT  RO.Date , RE.[Surname/Organisation] AS Surname,IsNull(RE.FirstName, '') + CASE WHEN IsNull(RE.FirstName, '') <> '' THEN ' ' + RE.[Surname/Organisation] ELSE RE.[Surname/Organisation] END AS RecipientName, (SELECT top 1 IsNull(D.FirstName, '') + CASE WHEN IsNull(D.FirstName, '') <> '' THEN ' ' + D.[Surname/Organisation] ELSE D.[Surname/Organisation] END AS DebtorName FROM Recipients D WHERE Accountno = RO.BillTo) AS DebtorName, Convert(nvarchar, convert(Date, [date]), 103) AS ActivityDate, RO.[Service Type] AS ActivityName, RO.[Unit Bill Rate] AS ActivityFee, RO.BillQty AS ActivityUnits, RO.[BillUnit] AS ActivityUnit, RO.BillQty * RO.[Unit Bill Rate] AS LineTotal, CASE WHEN IsNull(RO.TaxPercent, 0) = 0 THEN 'NOGST' ELSE 'GST' END AS GST FROM Roster RO INNER JOIN Recipients RE ON RO.[Client Code] = RE.AccountNo INNER JOIN HUmanResourceTypes PR ON RO.[Program] = PR.Name AND [GROUP] = 'PROGRAMS' WHERE [Client Code] > '!z'  AND IsNull(PR.UserYesNo1, 0) = 0 AND RO.Status IN (2, 5) "
     //" AND RO.Date BETWEEN '2021/11/01' AND '2021/11/30'  "
     //" AND RE.Branch IN ('ADELAIDE') "
     //" AND RO.Program IN ('**DEMO TEMPLATE') "
@@ -2441,11 +2441,11 @@ Invoiceverification(branch,program,region,startdate,enddate){
         }
     }
     this.loading = true;
-    //this.drawerVisible = true;
+    this.drawerVisible = true;
     
 
     this.printS.print(data).subscribe((blob: any) => {
-        this.pdfTitle = ".pdf"
+        this.pdfTitle = "Invoice Verification.pdf"
         this.drawerVisible = true;                   
         let _blob: Blob = blob;
         let fileURL = URL.createObjectURL(_blob);

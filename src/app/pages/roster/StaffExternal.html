@@ -196,19 +196,19 @@
                                 
                 <td >  
                     <tr *ngFor="let skill of skillsList, let i=index">
-                        <label *ngIf="14>i" nz-checkbox  (ngModelChange)="setSkillStatus(skill)" [nzValue]="skill.identifier" [(ngModel)]="skill.checked"  [ngModelOptions]="{standalone: true}">{{ skill.text }}</label>
+                        <label *ngIf="14>i" nz-checkbox  (ngModelChange)="setSkillStatus(i,skill)" [nzValue]="skill.identifier" [(ngModel)]="skill.checked"  [ngModelOptions]="{standalone: true}">{{ skill.text }}</label>
                     </tr> 
                       
                 </td>
                  <td >               
                     <tr  *ngFor="let skill of skillsList, let i=index">
-                        <label *ngIf="23>i && i>13" nz-checkbox  [nzValue]="skill.identifier" [(ngModel)]="skill.checked"  [ngModelOptions]="{standalone: true}">{{ skill.text }}</label>
+                        <label *ngIf="23>i && i>13" nz-checkbox  (ngModelChange)="setSkillStatus(i,skill)" [nzValue]="skill.identifier" [(ngModel)]="skill.checked"  [ngModelOptions]="{standalone: true}">{{ skill.text }}</label>
                     </tr>   
                               
                 </td>
                 <td >                           
                     <tr  *ngFor="let skill of skillsList, let i=index">
-                        <label *ngIf=" i>22" nz-checkbox  [nzValue]="skill.identifier" [(ngModel)]="skill.checked"  [ngModelOptions]="{standalone: true}">{{ skill.text }}</label>
+                        <label *ngIf=" i>22" nz-checkbox  (ngModelChange)="setSkillStatus(i,skill)" [nzValue]="skill.identifier" [(ngModel)]="skill.checked"  [ngModelOptions]="{standalone: true}">{{ skill.text }}</label>
                     </tr>     
                 </td>
                 </tr>

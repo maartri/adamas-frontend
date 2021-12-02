@@ -162,10 +162,17 @@ export class StaffExternal implements OnInit, OnDestroy {
         }
         }
     }
-    setSkillStatus(skill:any){
+    setSkillStatus(i:number,skill:any){
         console.log(skill);
-        let sql =" set SB"+skill.coid+  "=1 ";
+        let sql ="";
+        if (!skill.checked)
+            sql =" set SB"+skill.coid+  "=1 ";
+        else
+            sql =" set SB"+skill.coid+  "=0 ";
+
         this.updateSkill(sql);
+
+        this.skillsList[i].checked=!skill.checked;
 
     }
     handleCancel(){
@@ -266,10 +273,14 @@ export class StaffExternal implements OnInit, OnDestroy {
        sql.WhereClause=` WHERE AccountNo = '${this.StaffInfo.accountNo}' `;
    
            this.listS.updatelist(sql).subscribe(data=>{
-               console.log("Notes updated");                             
+               console.log("Notes updated");   
+               this.getQualificationSkills_Status(this.StaffInfo.uniqueID).subscribe(d=>{
+                this.skillsList_ticked=d;
+            })                          
          
            });
-   
+           
+          
        
 }
 editNotes(){

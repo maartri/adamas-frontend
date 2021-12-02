@@ -49,9 +49,15 @@ export class StaffExternal implements OnInit, OnDestroy {
     lstphones:Array<any>=[];
     lstNotes:Array<any>=[];
     lstCompetencies:Array<any>=[];
+    skillsList:Array<any>=[];
+    skillsList_ticked:Array<any>=[];
     HighlightRow:number;
     loading:boolean=true;
     fixedColumn :boolean=false;
+
+    ContactIssues:any;   
+    Notes:any;
+    editNote:boolean=false;
 
     private values$: Subscription;   
     private values2$: Subscription;
@@ -113,6 +119,23 @@ export class StaffExternal implements OnInit, OnDestroy {
        
         return this.listS.getlist(sql);
     }
+
+    getQualificationSkills_labels(): Observable<any> {
+        let sql;
+        
+            sql = `SELECT *, convert(bit,0) as checked FROM FieldNames WHERE Identifier like 'fStaffContainer9-Competencies%' order by coid`;
+               
+       
+        return this.listS.getlist(sql);
+    }
+    getQualificationSkills_Status(PersonId: string): Observable<any> {
+        let sql;
+        
+            sql = `SELECT * FROM Staff WHERE UNIQUEID = '${PersonId}'`;
+               
+       
+        return this.listS.getlist(sql);
+    }
     view(index: number) {
         this.nzSelectedIndex = index;
         console.log(this.AccountNo);
@@ -120,7 +143,37 @@ export class StaffExternal implements OnInit, OnDestroy {
           //this.router.navigate(['/admin/recipient/personal'])
         }else if (index==1){
             this.Person.noteType="OPNOTE"
+        }else  if (index==3){
+
+           let keys:any; 
+           let key='';
+           let obj:any;
+        for (let i=0; i< this.skillsList.length; i++){            
+         
+                keys=Object.keys(this.skillsList_ticked[0]);
+                obj=this.skillsList_ticked[0];
+                for (let j=1; j<100; j++){
+                    key=keys[j];
+                    if (key.toUpperCase()=='SB'+this.skillsList[i].coid)
+                        this.skillsList[i].checked=obj[key]==='True' ? true : false;;
+                   
+         
+            }
         }
+        }
+    }
+    setSkillStatus(i:number,skill:any){
+        console.log(skill);
+        let sql ="";
+        if (!skill.checked)
+            sql =" set SB"+skill.coid+  "=1 ";
+        else
+            sql =" set SB"+skill.coid+  "=0 ";
+
+        this.updateSkill(sql);
+
+        this.skillsList[i].checked=!skill.checked;
+
     }
     handleCancel(){
         this.isVisible=false;
@@ -148,16 +201,18 @@ export class StaffExternal implements OnInit, OnDestroy {
                 switchMap(output => 
                      forkJoin( 
                         this.getAddresses(output[0].uniqueID),
-                        this.getPhoneContacts(output[0].uniqueID),
-                   //     this.getNotes(output[0].uniqueID),
-                        this.getCompetencies(output[0].uniqueID)
+                        this.getPhoneContacts(output[0].uniqueID),                   
+                        this.getCompetencies(output[0].uniqueID),
+                        this.getQualificationSkills_labels(),
+                        this.getQualificationSkills_Status(output[0].uniqueID),
                     )) ,
                 tap(output2 => {
                     console.log(output2);
                     this.lstAddress = output2[0];
-                    this.lstphones = output2[1];
-                    //this.lstNotes = output2[2];
+                    this.lstphones = output2[1];                    
                     this.lstCompetencies = output2[2];
+                    this.skillsList = output2[3];
+                    this.skillsList_ticked = output2[4];
                 })
         
         ).subscribe(output2 => console.log( output2))
@@ -169,23 +224,7 @@ export class StaffExternal implements OnInit, OnDestroy {
             // this.StaffInfo=data;
            });
            this.loading=false;
-        //  this.observerable = new Observable(observer => {
         
-        //     setTimeout(() => {
-        //     return forkJoin(   
-        //         this.getAddresses(this.StaffInfo.uniqueID),
-        //         this.getPhoneContacts(this.StaffInfo.uniqueID)
-        //     )}, 3000);
-            
-        //  });
-         
-        //  this.values2$ = this.observerable.subscribe(data=>{   
-        //     this.lstAddress= data[0];
-        //     this.lstphones= data[1];
-        // }); 
-       
-  
-         
     }
 
     ngOnDestroy(): void {
@@ -194,7 +233,63 @@ export class StaffExternal implements OnInit, OnDestroy {
     }
     ngAfterViewInit():void {     
 
+        this.ContactIssues=this.StaffInfo.contactIssues       
+        this.Notes=this.StaffInfo.stF_Notes
+
+        
+      
 
 }
- 
+ updateNotes(){
+        
+            let sql :any= {TableName:'',Columns:'',ColumnValues:'',SetClause:'',WhereClause:''};
+            
+            sql.TableName='Staff ';
+          
+
+           sql.SetClause=`set ContactIssues='${this.ContactIssues}', 
+           STF_Notes='${this.Notes}'`;
+          
+
+           sql.WhereClause=` WHERE AccountNo = '${this.StaffInfo.accountNo}' `;
+       
+               this.listS.updatelist(sql).subscribe(data=>{
+                   console.log("Notes updated");                             
+             
+               });
+       
+           
+    }
+    updateSkill(setClause:any){
+        
+        let sql :any= {TableName:'',Columns:'',ColumnValues:'',SetClause:'',WhereClause:''};
+        
+        sql.TableName='Staff ';
+      
+
+       sql.SetClause=setClause;
+      
+
+       sql.WhereClause=` WHERE AccountNo = '${this.StaffInfo.accountNo}' `;
+   
+           this.listS.updatelist(sql).subscribe(data=>{
+               console.log("Notes updated");   
+               this.getQualificationSkills_Status(this.StaffInfo.uniqueID).subscribe(d=>{
+                this.skillsList_ticked=d;
+            })                          
+         
+           });
+           
+          
+       
+}
+editNotes(){
+    this.editNote=true;
+}
+doneUpdate(){
+    this.updateNotes();
+    this.editNote=false;
+   
+}
+
 }

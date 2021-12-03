@@ -131,6 +131,7 @@ IconCellType2.prototype.paint = function (ctx, value, x, y, w, h, style, context
     ctx.restore();
 };
 
+   
 
   
 @Component({
@@ -395,6 +396,7 @@ searchAvaibleModal:boolean=false;
     return day;
   
   }
+ 
  
   listChange(event: any) {
 
@@ -1274,6 +1276,21 @@ ClearMultishift(){
      
       spread.options.newTabVisible = false;
      
+      spread.commandManager().register('myCopy',
+      function AddRow() {                   
+          //Click on a cell and press the Enter key.      
+          console.log("ctrl+c");     
+          spread.commandManager().execute({cmd: "Copy", sheetName: self.sheetName, index: 3, count: 5});
+      }
+    );
+        spread.commandManager().register('myPast',
+        function AddRow() {                   
+           
+            spread.commandManager().execute({cmd: "Paste", sheetName: self.sheetName, index: 3, count: 5});
+        }
+        );
+    spread.commandManager().setShortcutKey('myCopy', GC.Spread.Commands.Key.c, true, false, false, false);
+    spread.commandManager().setShortcutKey('myPast', GC.Spread.Commands.Key.v, true, false, false, false);
       
         spread.bind(GC.Spread.Sheets.Events.SheetTabClick, function (sender, args) {
             if (args.sheet === null && args.sheetName === null) {

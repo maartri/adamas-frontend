@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 import { GlobalService, StaffService,nodes,checkOptionsOne,sampleList,ShareService, leaveTypes, ListService,TimeSheetService } from '@services/index';
 import {forkJoin,  of ,  Subject ,  Observable, observable, EMPTY } from 'rxjs';
-import { RECIPIENT_OPTION } from '../../modules/modules';
+import { RECIPIENT_OPTION, User } from '../../modules/modules';
 import { NzFormatEmitEvent } from 'ng-zorro-antd/core';
 import format from 'date-fns/format';
 import { filter } from 'rxjs/operators';
@@ -312,6 +312,8 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
   selectedPrograms: any;
   selectedCordinators: any;
   selectedCategories: any;
+  rights: any;
+  tocken: any;
   nzEvent(event: NzFormatEmitEvent): void {
     if (event.eventName === 'click') {
       var title = event.node.origin.title;
@@ -346,9 +348,21 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
       endText    : this.extendedSearch.value.to,
     })
   }
+  getRights(loginuser){
+    this.timeS.getbuttonstatusofwizard(loginuser)
+    .subscribe(data => {
+      this.rights = data[0];
+      this.detectChanges();
+    });
+  }
+  
+  getPermisson(index:number){
+    var permissoons = this.rights.recipientRecordView;
+    return permissoons.charAt(index-1);
+  }
+
 
   listChange(event: any) {
-    
     if (event == null) {
       this.user = null;
       this.isFirstLoad = false;
@@ -424,7 +438,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     }
     listOfData: Array<{ name: string; age: number; address: string }> = [];
     ngOnInit(): void {
-      
+      this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
       for (let i = 0; i < 100; i++) {
         this.listOfData.push({
           name: `Edward King`,
@@ -433,6 +447,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
         });
       } 
       this.nodelist = nodes;
+      this.getRights(this.tocken.user);
       this.getUserData();
       this.buildForm();
     }

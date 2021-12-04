@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input,Output,EventEmitter } from '@angular/core'
+import { Component, OnInit, OnDestroy, Input,Output,EventEmitter,AfterViewInit } from '@angular/core'
 
 import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
@@ -14,6 +14,7 @@ import format from 'date-fns/format';
 import * as moment from 'moment';
 
 import { SqlWizardService } from '@services/sqlwizard.service';
+import { analyzeAndValidateNgModules } from '@angular/compiler';
 
 interface CarePlan{planNumber:number,planName:string,planStartDate:Date,planEndDate:Date,planCoPayAmount:number,planDetail:any};
 
@@ -87,6 +88,10 @@ export class RecipientExternal implements OnInit, OnDestroy {
     planDetail:'';
     edit:boolean=false;
     editCache: { [key: string]: { edit: boolean; data: any } } = {};
+    ContactIssues:any;
+    SpecialConsiderations:any;
+    Notes:any;
+    editNote:boolean=false;
 
     private values$: Subscription;   
     private values2$: Subscription;
@@ -123,6 +128,27 @@ export class RecipientExternal implements OnInit, OnDestroy {
        //this.edit=true;
     }
     
+    
+    updateNotes(){
+        
+            let sql :any= {TableName:'',Columns:'',ColumnValues:'',SetClause:'',WhereClause:''};
+            
+            sql.TableName='Recipients ';
+          
+
+           sql.SetClause=`set ContactIssues='${this.ContactIssues}', 
+           SpecialConsiderations='${this.SpecialConsiderations}', Notes='${this.Notes}'`;
+          
+
+           sql.WhereClause=` WHERE AccountNo = '${this.Info.accountNo}' `;
+       
+               this.listS.updatelist(sql).subscribe(data=>{
+                   console.log("Notes updated");                             
+             
+               });
+       
+           
+    }
     updatePlan(){
         this.edit=false;
         this.isCarerPlanVisible=false;
@@ -399,7 +425,7 @@ export class RecipientExternal implements OnInit, OnDestroy {
             tap(output => {
                 console.log(output);
                 this.Info = output[0];   
-                
+                                
                 this.Person.id=output[0].uniqueID;
                 this.Person.code=output[0].accountNo;
                 this.Person.personType="Recipient";
@@ -437,6 +463,20 @@ export class RecipientExternal implements OnInit, OnDestroy {
         
 
     }
+    ngAfterViewInit():void{
 
- 
+        this.ContactIssues=this.Info.contactIssues
+        this.SpecialConsiderations=this.Info.specialConsiderations
+        this.Notes=this.Info.notes
+
+    }
+
+    editNotes(){
+        this.editNote=true;
+    }
+    doneUpdate(){
+        this.updateNotes();
+        this.editNote=false;
+       
+    }
 }

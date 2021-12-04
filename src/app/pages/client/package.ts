@@ -182,6 +182,7 @@ export class PackageClient implements OnInit, OnDestroy {
                 this.table = data.list;
                 
                 this.generateURL();
+                this.detectChanges();
             }));
     }
 
@@ -252,7 +253,7 @@ export class PackageClient implements OnInit, OnDestroy {
     }
 
     programChanges(program: any) {
-        this.loading = false;
+        this.loading = true;
         this.programStream.next(program);
     }
 

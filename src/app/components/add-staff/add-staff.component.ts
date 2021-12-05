@@ -393,6 +393,12 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
 
   next(): void {
       this.current += 1;
+
+      console.log(this.current);
+
+      if(this.current == 4){
+        this.populateNotificationDetails();
+      }
   }
 
   get nextRequired() {
@@ -519,7 +525,7 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
 
 
     this.listS.getnotifications({
-      branch: this.BRANCH_NAME,
+      branch: branch,
       coordinator: manager,
       listname: listname,
       fundingsource: this.FUNDING_TYPE
@@ -537,7 +543,7 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
     });
 
     this.listS.getfollowups({
-      branch: this.BRANCH_NAME,
+      branch: branch,
       fundingType: this.FUNDING_TYPE,
       type: activity,
       group: 'FOLLOWUP'
@@ -556,7 +562,7 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
 
 
     this.listS.getdocumentslist({
-      branch: this.BRANCH_NAME,
+      branch: branch,
       fundingType: this.FUNDING_TYPE,
       type: activity,
       group: 'DOCUMENTS'
@@ -573,7 +579,7 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
     });
 
     this.listS.getdatalist({
-      branch: this.BRANCH_NAME,
+      branch: branch,
       fundingType: this.FUNDING_TYPE,
       type: activity,
       group: 'XTRADATA'

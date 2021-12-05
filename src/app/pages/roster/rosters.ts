@@ -1289,17 +1289,24 @@ ClearMultishift(){
             spread.commandManager().execute({cmd: "Paste", sheetName: self.sheetName, index: 3, count: 5});
         }
         );
+        spread.commandManager().register('myCut',
+        function AddRow() {                   
+           
+            spread.commandManager().execute({cmd: "Cut", sheetName: self.sheetName, index: 3, count: 5});
+        }
+        );
         spread.commandManager().register('myDelete',
         function AddRow() {                   
            
             spread.commandManager().execute({cmd: "Delete", sheetName: self.sheetName, index: 3, count: 5});
         }
         );
-
         spread.commandManager().setShortcutKey('myCopy', GC.Spread.Commands.Key.c, true, false, false, false);
         spread.commandManager().setShortcutKey('myPast', GC.Spread.Commands.Key.v, true, false, false, false);
+        spread.commandManager().setShortcutKey('myCut', GC.Spread.Commands.Key.x, true, false, false, false);
         spread.commandManager().setShortcutKey('myDelete', GC.Spread.Commands.Key.del, true, false, false, false);
-      
+        
+          
         spread.bind(GC.Spread.Sheets.Events.SheetTabClick, function (sender, args) {
             if (args.sheet === null && args.sheetName === null) {
                 console.log("New button Clicked, new sheet added");
@@ -1607,7 +1614,7 @@ ClearMultishift(){
           var copy = {
             iconClass : "gc-spread-copy",
             name : "Copy",
-            text : "Copy",
+            text : "Copy    (Ctrl+C)",
             command : "Copy",
             workArea : "viewportcolHeaderrowHeadercorner"
         };       
@@ -1616,7 +1623,7 @@ ClearMultishift(){
           var cut = {
             iconClass : "gc-spread-cut",
             name : "Cut",
-            text : "Cut",
+            text : "Cut     (Ctrl+X)",
             command : "Cut",
             workArea : "viewportcolHeaderrowHeadercorner"
         };
@@ -1625,7 +1632,7 @@ ClearMultishift(){
           var paste = {
             iconClass : "gc-spread-pasteAll",
             name : "Paste",
-            text : "Paste",
+            text : "Paste   (Ctrl+V)",
             command : "Paste",
             workArea : "viewportcolHeaderrowHeadercorner"
         };       
@@ -1636,7 +1643,7 @@ ClearMultishift(){
           var del = {
             iconClass : "gc-spread-delete",
             name : "Delete",
-            text : "Delete",
+            text : "Delete  (Ctrl+Del)",
             command : "Delete",
             workArea : "viewportcolHeaderrowHeadercorner"
         };

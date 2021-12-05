@@ -88,14 +88,14 @@
                                 <label nz-checkbox
                                 [(ngModel)]="allProgarms"
                                 (ngModelChange)="updateAllCheckedFilters(2)"
-                                [nzIndeterminate]="allprogramIntermediate" [ngModelOptions]="{standalone: true}"><b>ALL Teams/Areas</b></label>
+                                [nzIndeterminate]="allprogramIntermediate" [ngModelOptions]="{standalone: true}"><b>ALL Programs</b></label>
                             </div>
                             <div nz-col>
                                 <div class="staff-wrapper" style="height: 30rem; width: 100%; overflow: auto; padding: .5rem 1rem;">
                                     <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event,2)">
                                         <div nz-row>
                                             <div nz-col nzSpan="24" *ngFor="let prog of diciplineList">
-                                                <label nz-checkbox  [nzValue]="prog.description" [(ngModel)]="prog.checked" (ngModelChange)="updateSingleCheckedFilters(2)" [ngModelOptions]="{standalone: true}">{{ prog.description }}</label>
+                                                <label nz-checkbox  [nzValue]="prog.name" [(ngModel)]="prog.checked" (ngModelChange)="updateSingleCheckedFilters(2)" [ngModelOptions]="{standalone: true}">{{ prog.name }}</label>
                                             </div>
                                         </div>
                                     </nz-checkbox-wrapper>
@@ -111,7 +111,7 @@
                             <label nz-checkbox
                             [(ngModel)]="allcat"
                             (ngModelChange)="updateAllCheckedFilters(4)"
-                            [nzIndeterminate]="allCatIntermediate" [ngModelOptions]="{standalone: true}"><b>ALL Job Categories</b></label>
+                            [nzIndeterminate]="allCatIntermediate" [ngModelOptions]="{standalone: true}"><b>ALL Categories</b></label>
                         </div>
                         <div nz-col>
                             <div class="staff-wrapper" style="height: 30rem; width: 100%; overflow: auto; padding: .5rem 1rem;">

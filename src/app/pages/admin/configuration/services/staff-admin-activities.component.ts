@@ -337,7 +337,7 @@ export class StaffAdminActivitiesComponent implements OnInit {
           
           this.emptyList      = [];
           this.mainGroupList  = ['STAFF ADMINISTRATION','TRAVEL TIME'];
-          this.subGroupList   = ['GAP','GENERAL','LEAVE','BREAK','OTHER','TRAINING','NOT APPLICABLE'];
+          this.subGroupList   = ['GAP','GENERAL','LEAVE','BREAK','OTHER','STAFF ONBOARDING','TRAINING','NOT APPLICABLE'];
           this.status         = ['ATTRIBUTABLE','NONATTRIBUTABLE'];
           this.units          = ['HOUR','SERVICE'];
           this.budgetUomList  = ['EACH/SERVICE','HOURS','PLACE','DOLLARS'];

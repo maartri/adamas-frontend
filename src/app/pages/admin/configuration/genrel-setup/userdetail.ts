@@ -27,7 +27,7 @@ export class UserDetail implements OnInit {
     modalVariables: any;
     dateFormat: string ='dd/MM/yyyy';
     inputVariables:any;
-    title :string = "Add CDC Target Groups";
+    title :string = "Add User Details";
     private unsubscribe: Subject<void> = new Subject();
     rpthttp = 'https://www.mark3nidad.com:5488/api/report'
     token:any;
@@ -94,7 +94,7 @@ export class UserDetail implements OnInit {
             return forkJoin([
                 this.listS.getlistbranchesObj(),
                 this.listS.getprogramsobj(),
-                this.listS.getstaffcategorylist(),
+                this.listS.getcategoriesobj(),
                 this.listS.casemanagerslist(),
             ]).subscribe(x => {
                 this.branchesList   = x[0];
@@ -248,7 +248,7 @@ export class UserDetail implements OnInit {
         }
         
         showEditModal(index: any) {
-            this.title = "Edit CDC Target Groups"
+            this.title = "Edit User Detail"
             this.isUpdate = true;
             this.current = 0;
             this.modalOpen = true;

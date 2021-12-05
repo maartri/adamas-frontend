@@ -566,7 +566,8 @@ export interface Reminders {
     notes: string,
     recurring: boolean,
     sameDate?:boolean,
-    sameDay?:boolean
+    sameDay?:boolean,
+    creator?:string,
 
 }
 

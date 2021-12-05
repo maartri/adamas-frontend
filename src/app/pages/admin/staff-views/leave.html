@@ -12,7 +12,7 @@
                             <label for="">Default Leave Activity &nbsp;</label>
                         </div>
                         <div nz-col nzSpan="12">
-                            <nz-select  nzAllowClear nzShowSearch [nzSize]="'small'" formControlName="defaultUnallocateLeaveActivity">
+                            <nz-select  nzAllowClear nzShowSearch [nzSize]="'small'" (ngModelChange)="leaveactivityChanged()" formControlName="defaultUnallocateLeaveActivity">
                                 <nz-option *ngFor="let paytype of leavepaytypes" [nzValue]="paytype" [nzLabel]="paytype"></nz-option>
                             </nz-select>
                         </div>
@@ -24,7 +24,7 @@
                             <label for="">Default Leave Type &nbsp;</label>
                         </div>
                         <div nz-col nzSpan="12">
-                            <nz-select  nzAllowClear nzShowSearch [nzSize]="'small'" formControlName="defaultUnallocateLeavePayType">
+                            <nz-select  nzAllowClear nzShowSearch [nzSize]="'small'" (ngModelChange)="leavepaytypechanged()" formControlName="defaultUnallocateLeavePayType">
                                 <nz-option *ngFor="let activity of leaveactivities;" [nzValue]="activity" [nzLabel]="activity"></nz-option>
                             </nz-select>
                         </div>

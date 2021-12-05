@@ -11,6 +11,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { Reminders } from '@modules/modules';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
+import { isSameDay } from 'date-fns';
 @Component({
     styles: [`
     nz-table{
@@ -175,7 +176,10 @@ export class StaffReminderAdmin implements OnInit, OnDestroy {
                 date2: dueDate,
                 state: remGroup.listOrder,
                 notes: remGroup.notes,
-                recurring: remGroup.recurring
+                recurring: remGroup.recurring,
+                sameDate:false,
+                sameDay:false,
+                creator:"",
             }
             
             

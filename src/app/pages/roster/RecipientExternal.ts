@@ -136,8 +136,8 @@ export class RecipientExternal implements OnInit, OnDestroy {
             sql.TableName='Recipients ';
           
 
-           sql.SetClause=`set ContactIssues='${this.ContactIssues}', 
-           SpecialConsiderations='${this.SpecialConsiderations}', Notes='${this.Notes}'`;
+           sql.SetClause=`set ContactIssues='${this.ContactIssues.replace("'","''")}', 
+           SpecialConsiderations='${this.SpecialConsiderations.replace("'","''")}', Notes='${this.Notes.replace("'","''")}'`;
           
 
            sql.WhereClause=` WHERE AccountNo = '${this.Info.accountNo}' `;

@@ -8105,11 +8105,11 @@ stafftypeArr: Array<any> = constants.types;
     StaffTraining(branch, manager, region, program, staffteam, trainingtype, stfgroup, startdate, enddate, tempsdate, tempedate) {
 
 
-        var fQuery = "SELECT FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date], [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], [Roster].[Carer Code], [Roster].[Service Type], [Roster].[Anal] AS ExpiryDate , [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Notes], [Roster].[Start Time], [Roster].[Duration], [Roster].[Duration] / 12 As [DecimalDuration],  [Roster].[CostQty], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate],[Roster].[Unit Pay Rate] as UnitPayRate ,[Roster].[Unit Pay Rate] as UnitPayRate , [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno], [Staff].[STF_DEPARTMENT], [Staff].[StaffGroup]  FROM Roster INNER JOIN STAFF on Roster.[Carer Code] = Staff.Accountno              INNER JOIN ITEMTYPES I ON Roster.[Service Type] = I.TITLE  WHERE  ([Carer Code] <> '!INTERNAL' AND [Carer Code] <> '!MULTIPLE') AND ([Carer Code] <> '!INTERNAL' AND [Carer Code] <> '!MULTIPLE') AND I.MINORGROUP = 'TRAINING'   "
+        var fQuery = "SELECT FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date], [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], [Roster].[Carer Code], [Roster].[Service Type], [Roster].[Anal] AS ExpiryDate , [Roster].[Service Description], [Roster].[Type], [Roster].[ServiceSetting], [Roster].[Notes], [Roster].[Start Time], [Roster].[Duration], [Roster].[Duration] / 12 As [DecimalDuration],  [Roster].[CostQty], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Roster].[Unit Pay Rate],[Roster].[Unit Pay Rate] as UnitPayRate , [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno], [Staff].[STF_DEPARTMENT], [Staff].[StaffGroup]  FROM Roster INNER JOIN STAFF on Roster.[Carer Code] = Staff.Accountno              INNER JOIN ITEMTYPES I ON Roster.[Service Type] = I.TITLE  WHERE  ([Carer Code] <> '!INTERNAL' AND [Carer Code] <> '!MULTIPLE')  AND I.MINORGROUP = 'TRAINING'   "
 
-        if(this.inputForm.value.incl_inactive == false){
+        /*if(this.inputForm.value.incl_inactive == false){
             fQuery = fQuery  + " AND ((R.AdmissionDate is NOT NULL) and (DischargeDate is NULL)) "
-        }
+        } */
 
         if (branch != "") {
             this.s_BranchSQL = "[STF_DEPARTMENT] in ('" + branch.join("','") + "')";
@@ -8189,11 +8189,12 @@ stafftypeArr: Array<any> = constants.types;
         else { lblcriteria = " All Staff, " }
 
         fQuery = fQuery + " ORDER BY [Carer Code], Date, [Start Time] "
-        /*   
-        console.log(s_BranchSQL)
+        
+        /*console.log(s_BranchSQL)
         console.log(s_CategorySQL)
         console.log(s_CoordinatorSQL)*/
-        ////console.log(fQuery)
+
+      //  console.log(fQuery)
 
         this.drawerVisible = true;
 

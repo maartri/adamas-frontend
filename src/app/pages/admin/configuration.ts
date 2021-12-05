@@ -921,7 +921,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
                 this.frm_Branches = true;
                 this.frm_Programs = true;                
                 this.frm_Categories = true;
-                this.frm_Managers = true;
+            //    this.frm_Managers = true;
 
                 this.isVisibleTop = true;
                 break;
@@ -935,6 +935,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
     reportRender(idbtn) {
         console.log(idbtn)
         var strdate, endate;
+        let allbrnch, allClients;
 
         var date = new Date();
         
@@ -967,7 +968,11 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
         var s_Vehicles = this.inputForm.value.vehiclesArr;
         var s_Staff = this.inputForm.value.staffArr;
         var s_OutLetID = this.inputForm.value.outletsArr;
-        
+
+        if (this.inputForm.value.allBranches == true){  allbrnch = this.branchesArr }
+        if (this.inputForm.value.allRecipients == true){  allClients = this.recipientArr}
+
+       
 
         switch (this.btnid) {
             case "ndia-package-statement":
@@ -1042,14 +1047,15 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
                
                 break;
             case "print-deposit-slip":
-                
+                this.depositslip(s_Branches,strdate, endate)
 
                 break;
             case "print-aged-debtors":
+                this.ageddebtor(s_Branches,s_Recipient,this.inputForm.value.AgingCycles,allbrnch ,allClients)
                 
                 break;
             case "invoice-verification":
-                
+                this.Invoiceverification(s_Branches,s_Programs,s_Categories,strdate, endate)
                 break;
         
             default:
@@ -1075,7 +1081,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
           },
 
           nzOnCancel: () => {
-            this.ModalName = "BRANCH SELECTION";           
+            this.ModalName = "Bank Deposit Slip";           
             this.frm_Branches = true;           
             this.isVisibleTop = true;
           }
@@ -2322,6 +2328,199 @@ AccountStatement(branch,recipient,startdate,enddate){
             console.log(err);
         });
 
+}
+ageddebtor(branch,recipient,AgingDays,allBranches,allClients){
+
+    var lblcriteria;
+    var fQuery = " SELECT Debtor, [Type] , P0, P1, P2, P3, P4, P0 + P1 + P2 + P3 + P4 as pTotal FROM (SELECT Debtor, [Type] , SUM(isnull(P0_Amount, 0)) AS P0, SUM(isnull(P1_Amount, 0)) AS P1, SUM(isnull(P2_Amount, 0)) AS P2, SUM(isnull(P3_Amount, 0)) AS P3, SUM(isnull(P4_Amount, 0)) As p4 FROM(SELECT Debtor, [Type] ,CASE WHEN iAGE = 0 THEN [O/S] END AS P0_Amount, CASE WHEN iAGE = 1 THEN [O/S] END AS P1_Amount, CASE WHEN iAGE = 2 THEN [O/S] END AS P2_Amount, CASE WHEN iAGE = 3 THEN [O/S] END AS P3_Amount, CASE WHEN iAGE = 4 THEN [O/S] END AS P4_Amount FROM (SELECT  R.[Branch], IH.[Client Code] AS Debtor, IH.[Traccs Processing Date] AS [Date], IH.[Patient Code] AS Recipient, IH.[Invoice Number] AS [Number], "
+    var  tempsdate = format(this.startdate, 'yyyy-MM-dd')
+    
+    fQuery = fQuery + " DATEADD(day,-"+AgingDays+", '"+tempsdate+"') as TESTDATE, "     
+    fQuery = fQuery + " DATEDIFF(DAY, IH.[Traccs Processing Date], '"+tempsdate+"') AS TestAge, "
+    fQuery = fQuery + " CASE WHEN IH.[Traccs Processing Date] > '"+tempsdate+"' THEN 0  ELSE  "   
+    fQuery = fQuery + " CASE WHEN DATEDIFF(DAY, IH.[Traccs Processing Date], '"+tempsdate+"') BETWEEN 0 AND 30 THEN 1 "
+    fQuery = fQuery + " WHEN DATEDIFF(DAY, IH.[Traccs Processing Date], '"+tempsdate+"') BETWEEN 31 AND 60 THEN 2  "
+    fQuery = fQuery + " WHEN DATEDIFF(DAY, IH.[Traccs Processing Date], '"+tempsdate+"') BETWEEN 61 AND 90 THEN 3   "
+    fQuery = fQuery + " WHEN DATEDIFF(DAY, IH.[Traccs Processing Date], '"+tempsdate+"') > 90 THEN 4 ELSE 4 END END AS iAge,"
+    fQuery = fQuery + " CONVERT(money, ISNULL(IH.[Invoice Amount], 0) - ISNULL(IH.Paid, 0)) AS [O/S] , CASE WHEN IH.HType = 'R' THEN 'PAYMENT' WHEN IH.Htype = 'A' THEN 'ADUST' WHEN IH.Htype = 'C' THEN 'CREDIT' ELSE 'INVOICE' END AS [Type] FROM InvoiceHeader IH INNER JOIN Recipients R ON IH.[Patient Code] = R.AccountNo "
+        
+    
+                                                      
+        if (recipient != "") {
+            this.s_RecipientSQL = " (IH.[Client Code] in ('" + recipient.join("','") + "'))";
+            if (this.s_RecipientSQL != "") { fQuery = fQuery + " where " + this.s_RecipientSQL }
+        }else{
+            this.s_RecipientSQL = " (IH.[Client Code] in ('" + allClients.join("','") + "'))";
+            if (this.s_RecipientSQL != "") { fQuery = fQuery + " where " + this.s_RecipientSQL }      
+        }
+        if (branch != "") {
+            this.s_BranchSQL = "R.Branch in ('" + branch.join("','") + "')";
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL };
+        }else{
+            this.s_BranchSQL = "R.Branch in ('" + allBranches.join("','") + "')";
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL };
+        }
+    
+        fQuery = fQuery + " )  t ) t1 GROUP BY DEBTOR , [Type] ) t2 WHERE (p1 + p2 + p3 + p4) <> 0   ";
+        fQuery = fQuery + " ORDER BY DEBTOR , [Type] "
+
+    //console.log(fQuery)
+
+    const data = {
+        "template": { "_id": "hzronJngUay5Cro7" },
+        "options": {
+            "reports": { "save": false },
+
+            "sql": fQuery,
+            "Criteria": lblcriteria,
+            "userid": this.tocken.user,
+
+
+        }
+    }
+    this.loading = true;
+    //this.drawerVisible = true;
+    
+
+    this.printS.print(data).subscribe((blob: any) => {
+        this.pdfTitle = "Aged Debtors Report.pdf"
+        this.drawerVisible = true;                   
+        let _blob: Blob = blob;
+        let fileURL = URL.createObjectURL(_blob);
+        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+        this.loading = false;
+        this.cd.detectChanges();
+    }, err => {
+            console.log(err);
+        });
+}
+Invoiceverification(branch,program,region,startdate,enddate){
+
+    var lblcriteria;
+    var fQuery = " SELECT I.RecipientName, I.DebtorName, I.ActivityName, I.ActivityFee, I.ActivityDate, I.ActivityUnits, I.ActivityUnit, I.LineTotal, I.GST FROM (SELECT  RO.Date , RE.[Surname/Organisation] AS Surname,IsNull(RE.FirstName, '') + CASE WHEN IsNull(RE.FirstName, '') <> '' THEN ' ' + RE.[Surname/Organisation] ELSE RE.[Surname/Organisation] END AS RecipientName, (SELECT top 1 IsNull(D.FirstName, '') + CASE WHEN IsNull(D.FirstName, '') <> '' THEN ' ' + D.[Surname/Organisation] ELSE D.[Surname/Organisation] END AS DebtorName FROM Recipients D WHERE Accountno = RO.BillTo) AS DebtorName, Convert(nvarchar, convert(Date, [date]), 103) AS ActivityDate, RO.[Service Type] AS ActivityName, RO.[Unit Bill Rate] AS ActivityFee, RO.BillQty AS ActivityUnits, RO.[BillUnit] AS ActivityUnit, RO.BillQty * RO.[Unit Bill Rate] AS LineTotal, CASE WHEN IsNull(RO.TaxPercent, 0) = 0 THEN 'NOGST' ELSE 'GST' END AS GST FROM Roster RO INNER JOIN Recipients RE ON RO.[Client Code] = RE.AccountNo INNER JOIN HUmanResourceTypes PR ON RO.[Program] = PR.Name AND [GROUP] = 'PROGRAMS' WHERE [Client Code] > '!z'  AND IsNull(PR.UserYesNo1, 0) = 0 AND RO.Status IN (2, 5) "
+    //" AND RO.Date BETWEEN '2021/11/01' AND '2021/11/30'  "
+    //" AND RE.Branch IN ('ADELAIDE') "
+    //" AND RO.Program IN ('**DEMO TEMPLATE') "
+    //" AND RE.AgencyDefinedGroup IN ('BELLINGEN')  "
+
+
+    var  tempsdate = format(this.startdate, 'yyyy/MM/dd')
+    var  tempedate = format(this.enddate, 'yyyy/MM/dd')
+    
+    
+                                                      
+        if (startdate != null || enddate != null) {
+            this.s_DateSQL = "  (RO.Date BETWEEN '" + tempsdate + ("'AND'") + tempedate + "')";
+            if (this.s_DateSQL != "") { fQuery = fQuery + " AND " + this.s_DateSQL };
+        }
+        if (branch != "") {
+            this.s_BranchSQL = "RE.Branch in ('" + branch.join("','") + "')";
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL };
+        }        
+        if (program != "") {
+            this.s_ProgramSQL = " (RO.Program in ('" + program.join("','") + "'))";
+            if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+        }
+		 if (region != "") {
+            this.s_CategorySQL = "RE.AgencyDefinedGroup in ('" + region.join("','") + "')";
+            if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL };
+        }
+    
+        fQuery = fQuery + " ) I WHERE I.ActivityFee > 0 "
+        fQuery = fQuery + " ORDER BY I.Surname, I.RecipientName, I.Date , I.DebtorName "
+
+    //console.log(fQuery)
+
+    const data = {
+        "template": { "_id": "kn46iSx7qr88QuLH" },
+        "options": {
+            "reports": { "save": false },
+
+            "sql": fQuery,
+            "Criteria": lblcriteria,
+            "userid": this.tocken.user,
+
+
+        }
+    }
+    this.loading = true;
+    this.drawerVisible = true;
+    
+
+    this.printS.print(data).subscribe((blob: any) => {
+        this.pdfTitle = "Invoice Verification.pdf"
+        this.drawerVisible = true;                   
+        let _blob: Blob = blob;
+        let fileURL = URL.createObjectURL(_blob);
+        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+        this.loading = false;
+        this.cd.detectChanges();
+    }, err => {
+            console.log(err);
+        });
+}
+depositslip(branch,startdate,enddate){
+
+    var lblcriteria;
+    var fQuery = " SELECT * FROM BankDeposit BD "
+        
+        
+    //" AND RO.Date BETWEEN '2021/11/01' AND '2021/11/30'  "
+    //" AND RE.Branch IN ('ADELAIDE') "
+    //" AND RO.Program IN ('**DEMO TEMPLATE') "
+    //" AND RE.AgencyDefinedGroup IN ('BELLINGEN')  "
+
+
+    var  tempsdate = format(this.startdate, 'yyyy/MM/dd')
+    var  tempedate = format(this.enddate, 'yyyy/MM/dd')
+    
+    
+        /*                                              
+        if (startdate != null || enddate != null) {
+            this.s_DateSQL = "  (RO.Date BETWEEN '" + tempsdate + ("'AND'") + tempedate + "')";
+            if (this.s_DateSQL != "") { fQuery = fQuery + " AND " + this.s_DateSQL };
+        } */
+        if (branch != "") {
+            fQuery = fQuery +" INNER JOIN DataDomains DD ON BD.BRID = DD.RecordNumber "
+            this.s_BranchSQL = "DD.Description in ('" + branch.join("','") + "')";
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " where " + this.s_BranchSQL };
+        }        
+        //" WHERE  = 'ADAMAS'  "
+    
+        fQuery = fQuery + " ORDER BY [Type] DESC "
+        var Query = " SELECT TOP 1 BankName, BankAccountName, BankBSB, BankAccountNumber FROM Registration WHERE CoName = (SELECT CoName from Registration) "
+        
+
+    //console.log(fQuery)
+
+    const data = {
+        "template": { "_id": "VF3MEfKwcKLDQrYy" },
+        "options": {
+            "reports": { "save": false },
+
+            "sql": fQuery,
+            "str_sql": Query ,
+            "Criteria": lblcriteria,
+            "userid": this.tocken.user,
+
+
+        }
+    }
+    this.loading = true;
+    this.drawerVisible = true;
+    
+
+    this.printS.print(data).subscribe((blob: any) => {
+        this.pdfTitle = "Bank Deposit Slip.pdf"
+        this.drawerVisible = true;                   
+        let _blob: Blob = blob;
+        let fileURL = URL.createObjectURL(_blob);
+        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+        this.loading = false;
+        this.cd.detectChanges();
+    }, err => {
+            console.log(err);
+        });
 }
 
     

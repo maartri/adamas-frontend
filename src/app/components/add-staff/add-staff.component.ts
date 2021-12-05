@@ -12,6 +12,10 @@ import * as moment from 'moment';
 
 const noop = () => {};
 
+const defaultTimeSpent = new Date().setHours(0, 15);
+const defaultDate = new Date().setHours(0,0);
+const defaultDateTime = new Date();
+
 @Component({
   selector: 'app-add-staff',
   templateUrl: './add-staff.component.html',
@@ -29,6 +33,8 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
   private onTouchedCallback: () => void = noop;
   private onChangeCallback: (_: any) => void = noop;
 
+  private destroy$ = new Subject();
+
   @Input() open: boolean = false;
   @Output() reload = new EventEmitter();
 
@@ -43,6 +49,10 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
   branchesArr: Array<string> = [];
   jobCategoryArr: Array<string> = [];
   managerArr: Array<string> = [];
+  activities: Array<string> = [];
+
+  FUNDING_TYPE: string = "!INTERNAL";
+  BRANCH_NAME: string;
   
   staffForm: FormGroup;
 
@@ -56,6 +66,13 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
     height: '30px',
     lineHeight: '30px'
   };
+
+  notifFollowUpGroup: any;
+  notifDocumentsGroup: any;
+  followups: Array<string>;
+
+  notifCheckBoxes: Array<string> = [];
+  datalist: Array<string>;
 
   private verifyAccount = new Subject<any>();
   private verifyAccountPerOrg = new Subject<any>();
@@ -107,6 +124,19 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
         branch:'',
         jobCategory: '',
         manager: '',
+
+        activity: null,
+
+        // date
+        date: new Date(),
+        time: new Date(),
+        timeSpent: new Date(defaultTimeSpent),
+
+        // note details
+        radioGroup: 'CASENOTE',
+        notes: null,
+
+
     });
 
     this.staffForm.get('accountNo').valueChanges
@@ -273,9 +303,10 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
         });
     });
 
-    this.listS.getlistbranches().subscribe(data => this.branchesArr = data)
-    this.listS.getliststaffgroup().subscribe(data => this.jobCategoryArr = data)
-    this.listS.getlistcasemanagers().subscribe(data => this.managerArr = data)
+    this.listS.getlistbranches().subscribe(data => this.branchesArr = data);
+    this.listS.getliststaffgroup().subscribe(data => this.jobCategoryArr = data);
+    this.listS.getlistcasemanagers().subscribe(data => this.managerArr = data);
+    this.listS.getstaffactivities().subscribe(data => this.activities = data)
   }
 
   ngOnInit(): void {
@@ -379,8 +410,29 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
     return data == 'FAX' || data == 'HOME' || data == 'WORK';
   }
 
+  notif(data: any){  
+    var temp1 = data.find(x => x.checked === true)
+    this.listS.getnotifyaddresses(temp1.label).subscribe(x => this.globalS.emailaddress = x)  
+  }
+
+  doc(data:any){
+                    
+    var temp = data.find(x => x.checked === true)
+    this.globalS.doc = temp.label.toString();
+    
+  }
+
+  followup(data: any){
+    var temp
+    temp = data.find(x => x.checked === true)
+    this.globalS.followups = temp
+  } 
+
   save(){
     
+    console.log('saved');
+    return;
+
     const {
           type,               //category
           accountNo,
@@ -458,5 +510,86 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
           }
       });
 
+  }
+
+  populateNotificationDetails(){
+
+   const { manager, branch, activity } = this.staffForm.value;
+   const listname = 'StaffOnBoard Notification';
+
+
+    this.listS.getnotifications({
+      branch: this.BRANCH_NAME,
+      coordinator: manager,
+      listname: listname,
+      fundingsource: this.FUNDING_TYPE
+    }).subscribe(data => {
+      this.notifCheckBoxes = data.map(x => {
+        return {
+          label: x.staffToNotify,
+          value: x.staffToNotify,
+          email: x.email,
+          disabled: x.mandatory ? true : false,
+          checked: x.mandatory ? true : false
+        }
+      });
+      this.changeDetection();
+    });
+
+    this.listS.getfollowups({
+      branch: this.BRANCH_NAME,
+      fundingType: this.FUNDING_TYPE,
+      type: activity,
+      group: 'FOLLOWUP'
+    }).pipe(takeUntil(this.destroy$)).subscribe(data => {
+      this.notifFollowUpGroup = data.map(x => {
+        return {
+          label: x.reminders,
+          value: x.reminders,
+          dateCounter: x.user1,
+          disabled: false,
+          checked: false
+        }
+      });
+      this.changeDetection();
+    })
+
+
+    this.listS.getdocumentslist({
+      branch: this.BRANCH_NAME,
+      fundingType: this.FUNDING_TYPE,
+      type: activity,
+      group: 'DOCUMENTS'
+    }).pipe(takeUntil(this.destroy$)).subscribe(data => {
+      this.notifDocumentsGroup = data.map(x => {
+        return {
+          label: x,
+          value: x,
+          disabled: false,
+          checked: false
+        }
+      })
+      this.changeDetection();
+    });
+
+    this.listS.getdatalist({
+      branch: this.BRANCH_NAME,
+      fundingType: this.FUNDING_TYPE,
+      type: activity,
+      group: 'XTRADATA'
+    }).pipe(takeUntil(this.destroy$)).subscribe(data =>  {
+      this.datalist = data.map(x =>{
+        return {
+          form: x.form,
+          link: (x.link).toLowerCase()
+        }
+      })
+      this.changeDetection();
+    }); 
+  }
+
+  changeDetection(){
+    this.cd.markForCheck();
+    this.cd.detectChanges();
   }
 }

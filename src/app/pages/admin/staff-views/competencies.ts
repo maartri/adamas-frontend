@@ -236,12 +236,11 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
         let formInputName = this.getName(skill);
         if(e.target.checked){
             this.updateString = " "+formInputName+" = 1 " ;
-            console.log("Ticked" + this.getName(skill));
         }else
         {
-            this.updateString = " '"+formInputName+"' = 0 " ;
-            console.log("Un Ticked" + this.getName(skill));
+            this.updateString = " "+formInputName+" = 0 " ;
         }
+
         this.timeS.updateStaffCompetenciesSkill(this.updateString,this.user.id).pipe(takeUntil(this.unsubscribe)).subscribe(data => {            
             this.globalS.sToast('Success', 'Competency saved');
         });
@@ -249,7 +248,6 @@ export class StaffCompetenciesAdmin implements OnInit, OnDestroy {
     }
     
     getName(skill){
-
         return this.sbFieldsSkill[skill.identifier];
     }
 

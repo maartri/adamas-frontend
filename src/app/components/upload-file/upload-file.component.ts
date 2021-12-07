@@ -137,8 +137,6 @@ export class UploadFileComponent implements OnInit, OnDestroy, ControlValueAcces
   downloadDocument(index: number) {
     const { docID, filename, type, originalLocation } = this.loadedFiles[index];
 
-    console.log(this.loadedFiles[index]);
-
     this.uploadS.downloadFileDocumentRemoteNetwork({
       PersonID: this.token.id,
       Extension: type,
@@ -146,11 +144,11 @@ export class UploadFileComponent implements OnInit, OnDestroy, ControlValueAcces
       SourceDocPath: originalLocation,
       DestinationDocPath: "\\\\sjcc-sydgw01\\portal$\\document"
     }).subscribe(blob => {
-      // console.log(blob);
+
       let data = window.URL.createObjectURL(blob);
       let link = document.createElement('a');
       link.href = data;
-      link.download = "64887.PDF";
+      link.download = filename;
       link.click();
 
       setTimeout(() => {

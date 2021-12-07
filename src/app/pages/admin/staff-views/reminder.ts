@@ -11,6 +11,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { Reminders } from '@modules/modules';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
+import { isSameDay } from 'date-fns';
 @Component({
     styles: [`
     nz-table{
@@ -111,7 +112,7 @@ export class StaffReminderAdmin implements OnInit, OnDestroy {
         
         buildForm() {
             this.inputForm = this.formBuilder.group({
-                recordNumber: '',
+                recordNumber: 0,
                 personID: '',
                 listOrder: '',
                 followUpEmail: ['', [Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$")]],
@@ -175,9 +176,13 @@ export class StaffReminderAdmin implements OnInit, OnDestroy {
                 date2: dueDate,
                 state: remGroup.listOrder,
                 notes: remGroup.notes,
-                recurring: remGroup.recurring
+                recurring: remGroup.recurring,
+                sameDate:false,
+                sameDay:false,
+                creator:"",
             }
-            
+
+            console.log(this.addOREdit)
             
             if(this.addOREdit == 1){
                 this.timeS.postreminders(reminder).pipe(
@@ -189,7 +194,7 @@ export class StaffReminderAdmin implements OnInit, OnDestroy {
                     })
                 }
                 
-                if (this.addOREdit == 2) {
+                if (this.addOREdit == 0) {
                     this.timeS.updatereminders(reminder).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
                         this.globalS.sToast('Success', 'Data updated');
                         this.search();

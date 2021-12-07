@@ -131,167 +131,157 @@ export class StaffLeaveAdmin implements OnInit, OnDestroy {
                 defaultUnallocateLeaveActivity:'',
                 defaultUnallocateLeavePayType:'',
             });
-            
-            this.defaultLeaveForm.get('defaultUnallocateLeaveActivity').valueChanges.pipe(
-                switchMap(x => {
-                    if(!x)
-                    return EMPTY;
-                    
-                    console.log("defaultUnallocateLeaveActivity");
-                    
-                    return this.listS.gettypeother(x) })
-                    ).subscribe(data => {
+        }
+        
+        search(user: any = this.user) {
+            this.cd.reattach();
+            this.loading = true;
+            this.timeS.getleaveapplication(user.code).subscribe(data => {
+                this.tableData = data;
+                this.loading = false;
+                this.cd.detectChanges();
             });
-                    this.defaultLeaveForm.get('defaultUnallocateLeavePayType').valueChanges.pipe(
-                        switchMap(x => {
-                            if(!x)
-                            return EMPTY;
-                            
-                            console.log("defaultUnallocateLeavePayType");
-                            
-                            return this.listS.gettypeother(x) })
-                            ).subscribe(data => {
-                            });
-                        }
-                        
-                        search(user: any = this.user) {
-                            this.cd.reattach();
-                            this.loading = true;
-                            this.timeS.getleaveapplication(user.code).subscribe(data => {
-                                this.tableData = data;
-                                this.loading = false;
-                                this.cd.detectChanges();
-                            });
-                        }
-                        populate(){
-                            forkJoin([
-                                this.listS.getleaveactivities(),
-                                this.listS.getleavepaytypes(),
-                            ]).subscribe(data => {
-                                this.leaveactivities = data[0];
-                                this.leavepaytypes   = data[1];
-                            });
-                            
-                            this.timeS.getstaffunallocatedefault(this.user.id).subscribe(data => {
-                                this.defaultLeave = data[0];
-                                 setTimeout(() => {                
-                                    this.defaultLeaveForm.patchValue({
-                                        defaultUnallocateLeaveActivity:this.defaultLeave.defaultLeaveActivity,
-                                        defaultUnallocateLeavePayType:this.defaultLeave.defaultLeavePayType,
-                                    });
-                                 },50); 
-                                this.cd.detectChanges();
-                            });
-                        }
-                        trackByFn(index, item) {
-                            return item.id;
-                        }
-                        
-                        showAddModal() {
-                            this.operation = {
-                                process: 'ADD'
-                            }
-                            console.log(JSON.stringify(this.user) + "user");
-                            this.putonLeaveModal = !this.putonLeaveModal;
-                        }
-                        
-                        showEditModal(data: any) {
-                            const {code, id, sysmgr, view } = this.user;
-                            
-                            var newPass = {
-                                code: code,
-                                id: id,
-                                sysmgr: sysmgr,
-                                view: view,
-                                operation: 'UPDATE',
-                                recordNo: data.recordNumber
-                            }
-                            this.operation = {
-                                process: 'UPDATE'
-                            }
-                            this.user = newPass;
-                            this.putonLeaveModal = !this.putonLeaveModal;
-                        }
-                        
-                        handleCancel() {
-                            this.modalOpen = false;
-                            this.search(this.user);
-                            return;
-                        }
-                        
-                        reset() {
-                            
-                        }
-                        updateStaffLeave(data :any){
-                            this.timeS.updateLeaveStatus(this.updateString,this.user.id).pipe(takeUntil(this.unsubscribe)).subscribe(data => {            
-                                this.globalS.sToast('Success', 'Competency saved');
-                            });
-                        }
-                        delete(data: any) {
-                            this.timeS
-                            .deleteleaveapplication(data.recordNumber)
-                            .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-                                if (data) {
-                                    this.globalS.sToast('Success', 'Data Deleted!');
-                                    this.search(this.user);
-                                    return;
-                                }
-                            });
-                        }
-                        handleOkTop() {
-                            this.generatePdf();
-                            this.tryDoctype = ""
-                            this.pdfTitle = ""
-                        }
-                        handleCancelTop(): void {
-                            this.drawerVisible = false;
-                            this.pdfTitle = ""
-                        }
-                        generatePdf(){
-                            this.drawerVisible = true;
-                            this.loadingPDF = true;
-                            
-                            var fQuery = "SELECT RECORDNUMBER, NAME AS Field1,CONVERT(varchar, [DATE1],105) as Field2,CONVERT(varchar, [DATE2],105) as Field3,NOTES as Field4,"+
-                            "CONVERT(varchar,[DATEINSTALLED],105) as Field5,COMPLETED AS Field6 FROM HUMANRESOURCES HR INNER JOIN Staff ST ON ST.[UniqueId] = HR.[PersonID]"+
-                            "WHERE ST.[AccountNo] ='"+this.user.code+"' AND HR.[DELETEDRECORD] = 0"+
-                            "AND HR.[GROUP] = 'LEAVEAPP'"+
-                            "ORDER BY  DATE1 DESC";
-                            
-                            const data = {
-                                "template": { "_id": "0RYYxAkMCftBE9jc" },
-                                "options": {
-                                    "reports": { "save": false },
-                                    "txtTitle": "LEAVE APPLICATION FOR '"+this.user.code+"' ",
-                                    "sql": fQuery,
-                                    "userid": this.tocken.user,
-                                    "head1" : "Leave Type",
-                                    "head2" : "Start",
-                                    "head3" : "End",
-                                    "head4" : "Notes",
-                                    "head5" : "REMINDER DATE",
-                                    "head6" : "Approved",
-                                }
-                            }
-                            this.printS.print(data).subscribe(blob => {  
-                                let _blob: Blob = blob;
-                                let fileURL = URL.createObjectURL(_blob);
-                                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                                this.loading = false;
-                                this.cd.detectChanges();
-                            }, err => {
-                                this.loading = false;
-                                this.cd.detectChanges();
-                                this.ModalS.error({
-                                    nzTitle: 'TRACCS',
-                                    nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                                    nzOnOk: () => {
-                                        this.drawerVisible = false;
-                                    },
-                                });
-                            });
-                            this.cd.detectChanges();
-                            this.loadingPDF = true;
-                            this.tryDoctype = "";
-                            this.pdfTitle = "";
-                        }
-                    }
+        }
+        leavepaytypechanged(){
+            if(!this.globalS.isEmpty(this.defaultLeaveForm.get('defaultUnallocateLeavePayType').value)){
+                this.updateString = "DefaultUnallocateLeavePayType='"+this.defaultLeaveForm.get('defaultUnallocateLeavePayType').value.toString()+"' Where";
+                this.timeS.updateLeaveStatus(this.updateString,this.user.id)
+                .subscribe(data => {
+                  });
+            }
+        }
+        leaveactivityChanged(){
+                if(!this.globalS.isEmpty(this.defaultLeaveForm.get('defaultUnallocateLeaveActivity').value)){
+                    this.updateString = "DefaultUnallocateLeaveActivity='"+this.defaultLeaveForm.get('defaultUnallocateLeaveActivity').value.toString()+"' Where";
+                        this.timeS.updateLeaveStatus(this.updateString,this.user.id)
+                        .subscribe(data => {
+                    });
+                }
+        }
+        populate(){
+            forkJoin([
+                this.listS.getleaveactivities(),
+                this.listS.getleavepaytypes(),
+            ]).subscribe(data => {
+                this.leaveactivities = data[0];
+                this.leavepaytypes   = data[1];
+            });
+            
+            this.timeS.getstaffunallocatedefault(this.user.id).subscribe(data => {
+                this.defaultLeave = data[0];
+                setTimeout(() => {                
+                    this.defaultLeaveForm.patchValue({
+                        defaultUnallocateLeaveActivity:this.defaultLeave.defaultLeaveActivity,
+                        defaultUnallocateLeavePayType:this.defaultLeave.defaultLeavePayType,
+                    });
+                },50); 
+                this.cd.detectChanges();
+            });
+        }
+        trackByFn(index, item) {
+            return item.id;
+        }
+        
+        showAddModal() {
+            this.operation = {
+                process: 'ADD'
+            }
+            console.log(JSON.stringify(this.user) + "user");
+            this.putonLeaveModal = !this.putonLeaveModal;
+        }
+        
+        showEditModal(data: any) {
+            const {code, id, sysmgr, view } = this.user;
+            
+            var newPass = {
+                code: code,
+                id: id,
+                sysmgr: sysmgr,
+                view: view,
+                operation: 'UPDATE',
+                recordNo: data.recordNumber
+            }
+            this.operation = {
+                process: 'UPDATE'
+            }
+            this.user = newPass;
+            this.putonLeaveModal = !this.putonLeaveModal;
+        }
+        
+        handleCancel() {
+            this.modalOpen = false;
+            this.search(this.user);
+            return;
+        }
+        
+        reset() {
+            
+        }
+        delete(data: any) {
+            this.timeS
+            .deleteleaveapplication(data.recordNumber)
+            .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+                if (data) {
+                    this.globalS.sToast('Success', 'Data Deleted!');
+                    this.search(this.user);
+                    return;
+                }
+            });
+        }
+        handleOkTop() {
+            this.generatePdf();
+            this.tryDoctype = ""
+            this.pdfTitle = ""
+        }
+        handleCancelTop(): void {
+            this.drawerVisible = false;
+            this.pdfTitle = ""
+        }
+        generatePdf(){
+            this.drawerVisible = true;
+            this.loadingPDF = true;
+            
+            var fQuery = "SELECT RECORDNUMBER, NAME AS Field1,CONVERT(varchar, [DATE1],105) as Field2,CONVERT(varchar, [DATE2],105) as Field3,NOTES as Field4,"+
+            "CONVERT(varchar,[DATEINSTALLED],105) as Field5,COMPLETED AS Field6 FROM HUMANRESOURCES HR INNER JOIN Staff ST ON ST.[UniqueId] = HR.[PersonID]"+
+            "WHERE ST.[AccountNo] ='"+this.user.code+"' AND HR.[DELETEDRECORD] = 0"+
+            "AND HR.[GROUP] = 'LEAVEAPP'"+
+            "ORDER BY  DATE1 DESC";
+            
+            const data = {
+                "template": { "_id": "0RYYxAkMCftBE9jc" },
+                "options": {
+                    "reports": { "save": false },
+                    "txtTitle": "LEAVE APPLICATION FOR '"+this.user.code+"' ",
+                    "sql": fQuery,
+                    "userid": this.tocken.user,
+                    "head1" : "Leave Type",
+                    "head2" : "Start",
+                    "head3" : "End",
+                    "head4" : "Notes",
+                    "head5" : "REMINDER DATE",
+                    "head6" : "Approved",
+                }
+            }
+            this.printS.print(data).subscribe(blob => {  
+                let _blob: Blob = blob;
+                let fileURL = URL.createObjectURL(_blob);
+                this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                this.loading = false;
+                this.cd.detectChanges();
+            }, err => {
+                this.loading = false;
+                this.cd.detectChanges();
+                this.ModalS.error({
+                    nzTitle: 'TRACCS',
+                    nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                    nzOnOk: () => {
+                        this.drawerVisible = false;
+                    },
+                });
+            });
+            this.cd.detectChanges();
+            this.loadingPDF = true;
+            this.tryDoctype = "";
+            this.pdfTitle = "";
+        }
+    }

@@ -112,7 +112,7 @@ export class StaffReminderAdmin implements OnInit, OnDestroy {
         
         buildForm() {
             this.inputForm = this.formBuilder.group({
-                recordNumber: '',
+                recordNumber: 0,
                 personID: '',
                 listOrder: '',
                 followUpEmail: ['', [Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$")]],
@@ -181,7 +181,8 @@ export class StaffReminderAdmin implements OnInit, OnDestroy {
                 sameDay:false,
                 creator:"",
             }
-            
+
+            console.log(this.addOREdit)
             
             if(this.addOREdit == 1){
                 this.timeS.postreminders(reminder).pipe(
@@ -193,7 +194,7 @@ export class StaffReminderAdmin implements OnInit, OnDestroy {
                     })
                 }
                 
-                if (this.addOREdit == 2) {
+                if (this.addOREdit == 0) {
                     this.timeS.updatereminders(reminder).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
                         this.globalS.sToast('Success', 'Data updated');
                         this.search();

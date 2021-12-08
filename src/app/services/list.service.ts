@@ -17,6 +17,10 @@ export class ListService {
         public auth: AuthService
     ) { }
 
+    getstaffactivities(): Observable<any>{
+        return this.auth.get(`${list}/staff/activities`);
+    }
+
     getfundingSourcePerProgram(program: string): Observable<any>{
         return this.auth.getstring(`${list}/funding-source-per-program/${program}`);
     }

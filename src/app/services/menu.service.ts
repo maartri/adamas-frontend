@@ -159,7 +159,9 @@ export class MenuService {
         /***************************************************************************/
         
         
-        
+        getUserList(is_where:boolean):Observable<any>{
+            return this.auth.get(`${menu}/getUserList`)
+        }
         Getlistequipments(is_where:boolean):Observable<any>{
             return this.auth.get(`${menu}/equipments/${is_where}`)
         }

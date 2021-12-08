@@ -153,7 +153,9 @@ import {
 } from '@intakes/index';
 
 import {
-  ClinicalDiagnose
+  ClinicalDiagnose,
+  ClinicalProcedure,
+  ClinicalMedication,
 } from './pages/admin/recipient-views/clinical-views/index';
 
 import {
@@ -270,6 +272,7 @@ import { PayComponent } from '@admin/timesheet-processing-views/pay.Component'; 
 import { PayIntegrityComponent } from '@admin/billing/payIntegrity.component'; //AHSAN
 import { CloseRosterComponent } from '@admin/billing/closeRoster.component';
 import { MediaList } from '@admin/recipient-views/mediaList';
+import { UserDetail } from '@admin/configuration/genrel-setup/userdetail';
 
 const routes: Routes = [
   {
@@ -613,6 +616,10 @@ const routes: Routes = [
       {
         path:"budgets",
         component:BudgetsComponent
+      },
+      {
+        path:"user-detail",
+        component:UserDetail
       },
       {
         path:"contact-groups",
@@ -1139,6 +1146,14 @@ const routes: Routes = [
                 path: 'diagnose',
                 component: ClinicalDiagnose
               },
+              {
+                path: 'procedure',
+                component: ClinicalProcedure
+              },
+              {
+                path: 'medication',
+                component: ClinicalMedication
+              },
             ]
           },
           {
@@ -1281,6 +1296,7 @@ export const PAGE_COMPONENTS = [
   FundingRegionsComponent,
   ClaimratesComponent,
   TargetgroupsComponent,
+  UserDetail,
   PurposestatementComponent,
   HCPComponent,
   DebtorComponent, //AHSAN 
@@ -1426,8 +1442,10 @@ export const PAGE_COMPONENTS = [
   ExtraComponent,
   UnauthorizedComponent,
   
-  // Clinical Views
-
+  // Clinical
+  ClinicalDiagnose,
+  ClinicalProcedure,
+  ClinicalMedication,
   // Client Manager
   HomeClientManager,
   ProfileClientManager,
@@ -1461,5 +1479,4 @@ export const PAGE_COMPONENTS = [
   StaffLoansAdminRedirect,
 
   ProfileAccounting,
-  ClinicalDiagnose
 ]

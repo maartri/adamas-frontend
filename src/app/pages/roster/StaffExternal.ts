@@ -247,10 +247,10 @@ export class StaffExternal implements OnInit, OnDestroy {
             sql.TableName='Staff ';
           
 
-           sql.SetClause=`set ContactIssues='${this.ContactIssues}', 
-           STF_Notes='${this.Notes}'`;
+           sql.SetClause=`set ContactIssues=N'${this.ContactIssues.replace("'","''")}', 
+           STF_Notes=N'${this.Notes.replace("'","''")}'`;
           
-
+         
            sql.WhereClause=` WHERE AccountNo = '${this.StaffInfo.accountNo}' `;
        
                this.listS.updatelist(sql).subscribe(data=>{

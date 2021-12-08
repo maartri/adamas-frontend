@@ -11,14 +11,14 @@
                 <label nz-checkbox formControlName="EmailCompetencyReminders" (change)="changeStatus($event,2)">Email Competency Reminder</label>
             </div>
         </div>
-        <nz-table #headerTable  [nzSize]="'small'" [nzScroll]="{ y: '240px' }" [nzFrontPagination]="false" [nzLoading]="loading"
+        <nz-table style="max-height:250px;overflow-y:auto;width:100%;" #headerTable  [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading"
         [nzData]="tableData">
         <thead>
             <tr>
-                <th class="left">Competency</th>
+                <th>Competency</th>
+                <th>Mandatory</th>
                 <th>Expiry Date</th>
                 <th>Reminder Date</th>
-                <th nzWidth="100px">Mandatory</th>
                 <th>Cert/Reg.No</th>
                 <th>Notes</th>
                 <th>Action</th>
@@ -26,12 +26,12 @@
         </thead>
         <tbody>
             <tr *ngFor="let data of headerTable.data;let i = index;trackBy: trackByFn">
-                <td class="left">{{ data.competency  }}</td>
-                <td>{{ data.expiryDate | date: 'dd/MM/yyyy' }}</td>
-                <td>{{ data.reminderDate | date: 'dd/MM/yyyy'  }}</td>
+                <td>{{ data.competency  }}</td>
                 <td>
                     <label nz-checkbox nzDisabled [ngModel]="data.mandatory" nzDisabled [ngModelOptions]="{standalone: true}"></label>
                 </td>
+                <td>{{ data.expiryDate | date: 'dd/MM/yyyy' }}</td>
+                <td>{{ data.reminderDate | date: 'dd/MM/yyyy'  }}</td>
                 <td>{{ data.certReg }}</td>
                 <td>{{ data.notes }}</td>
                 <td>
@@ -46,7 +46,7 @@
     <nz-card  nzTitle="SKILLS" [nzSize]="'small'" [formGroup]="skillsForm">
         <div nz-row nzGutter="24" class="mrg-btm-2" >
             <div nz-col nzSpan="6" class="text-right" *ngFor="let skill of skillsModified;let i = index" style="cursor: pointer;">
-                <span (click)="showUpdateModal(skill)">{{skill.text}} {{skill.title}}</span> : <label formControlName="SB{{skill.title}}" (change)="changeSbField($event,skill,i)" nz-checkbox> </label>
+                <span (click)="showUpdateModal(skill)">{{skill.text}}</span> : <label formControlName="SB{{skill.title}}" (change)="changeSbField($event,skill,i)" nz-checkbox> </label>
             </div>
         </div>
     </nz-card>

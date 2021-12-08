@@ -169,11 +169,11 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,Co
       switchMap(x => {
           if(!x)
               return EMPTY;
-        console.log(x);
-          return this.listS.gettypeother(x)      })
-  ).subscribe(data => {
-    this.contactTypes = data;
-  });
+              console.log(x);
+          return this.listS.gettypeother(x)  })
+    ).subscribe(data => {
+      this.contactTypes = data;
+    });
 
 
   }

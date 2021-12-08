@@ -4798,7 +4798,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Absent Client Status Report.pdf" 
             this.drawerVisible = true;                   
             let _blob: Blob = blob;

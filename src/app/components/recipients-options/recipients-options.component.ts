@@ -2368,7 +2368,6 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
               populateNotificationDetails(): void{
 
                 var type = this.GET_SERVICE_TYPE();
-                console.log(type);
 
                 this.listS.getnotifications({
                   branch: this.BRANCH_NAME,

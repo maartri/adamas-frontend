@@ -3,10 +3,18 @@
 
         <nz-steps [nzSize]="'small'" [nzCurrent]="current" nzDirection="vertical">
             <nz-step class="mini" nzTitle="Type & Personal Details" nzDescription=""></nz-step>
-            <!-- <nz-step class="mini" nzTitle="Personal Details" nzDescription=""></nz-step> -->
             <nz-step class="mini" nzTitle="Address Details" nzDescription=""></nz-step>
             <nz-step class="mini" nzTitle="Contact Details" nzDescription=""></nz-step>
-            <nz-step class="mini" nzTitle="Other Details" nzDescription=""></nz-step>
+            <nz-step class="mini" nzTitle="Other Details & Administration" nzDescription=""></nz-step>
+
+            <nz-step class="mini" nzTitle="Date Details" nzDescription=""></nz-step>
+            <nz-step class="mini" nzTitle="Note Details" nzDescription=""></nz-step>
+
+            <nz-step class="mini" nzTitle="Competencies" nzDescription=""></nz-step>
+            <nz-step class="mini" nzTitle="Notifications" nzDescription=""></nz-step>
+            <nz-step class="mini" nzTitle="Followups" nzDescription=""></nz-step>
+            <nz-step class="mini" nzTitle="Documents" nzDescription=""></nz-step>
+            <nz-step class="mini" nzTitle="Other Required Info" nzDescription=""></nz-step>
         </nz-steps>
 
         <nz-divider class="full-height" nzType="vertical"></nz-divider>
@@ -226,15 +234,83 @@
                             </div>
             
                             <div class="form-group">
-                                <label for="">Coordinator/Manager</label>
+                                <label for="">Staff Manager</label>
                                 <nz-select style="width:100%" formControlName="manager" [nzDropdownMatchSelectWidth]="false" nzShowSearch nzAllowClear nzPlaceHolder="Select a Coordinator/Manager " >
                                     <nz-option *ngFor="let d of managerArr" [nzLabel]="d" [nzValue]="d"></nz-option>
+                                </nz-select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="">Activity</label>
+                                <nz-select style="width:100%" formControlName="activity" [nzDropdownMatchSelectWidth]="false" nzShowSearch nzAllowClear nzPlaceHolder="Select Activity" >
+                                    <nz-option *ngFor="let d of activities" [nzLabel]="d" [nzValue]="d"></nz-option>
                                 </nz-select>
                             </div>
                      
                     </div>
                 </div>                
             </div>
+
+            <div *ngIf="current == 4" [formGroup]="staffForm" style="width:25rem">
+                <div nz-row [nzGutter]="8" class="space-btm">
+                    <div nz-col nzSpan="8">
+                        <nz-date-picker [nzFormat]="dateFormat" formControlName="date" [nzFormat]="dateFormat" [nzPlaceHolder]="'Referral Date'"></nz-date-picker>
+                    </div>                        
+                </div>
+                <div nz-row [nzGutter]="8">
+                    <div nz-col nzSpan="8">
+                        <nz-time-picker formControlName="time" [nzPlaceHolder]="'Time'" nzFormat="HH:mm"></nz-time-picker>
+                    </div>
+                    <div nz-col nzSpan="8">
+                        <nz-time-picker formControlName="timeSpent" [nzMinuteStep]="15" [nzPlaceHolder]="'Time Spent'" nzFormat="HH:mm"></nz-time-picker>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="current == 5" >
+                <div nz-col nzSpan="24">
+                    <div class="form-group" [formGroup]="staffForm">
+                        <nz-radio-group formControlName="radioGroup">
+                            <label nz-radio [nzValue]="'CASENOTE'">CASE NOTE</label>
+                            <label nz-radio [nzValue]="'OPNOTE'">OP NOTE</label>
+                            <label nz-radio [nzValue]="'CLINOTE'">CLINICAL NOTE</label>
+                        </nz-radio-group>
+                        
+                        <textarea rows="4" nz-input formControlName="notes" style="margin:15px 0"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="current == 6" [formGroup]="staffForm">
+
+            </div>
+
+            <div *ngIf="current == 7" [formGroup]="staffForm">
+                <label for="">Notifications</label>
+                <nz-checkbox-group [(ngModel)]="notifCheckBoxes" (ngModelChange)="notif(notifCheckBoxes)"  [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
+                <nz-alert nzType="warning" *ngIf="notifCheckBoxes?.length == 0" nzMessage="No Notifications"></nz-alert>
+            </div>
+
+            <div *ngIf="current == 8" [formGroup]="staffForm">
+                <label for="">Followups</label>
+                <nz-checkbox-group [(ngModel)]="notifFollowUpGroup" (ngModelChange)="followup(notifFollowUpGroup)" [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
+                <nz-alert nzType="warning" *ngIf="notifFollowUpGroup?.length == 0" nzMessage="No Followups"></nz-alert>
+            </div>
+
+            <div *ngIf="current == 9" [formGroup]="staffForm">
+                <label for="">Documents</label>
+                <nz-checkbox-group [(ngModel)]="notifDocumentsGroup" (ngModelChange)="notif(notifCheckBoxes)"  [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
+                <nz-alert nzType="warning" *ngIf="notifDocumentsGroup?.length == 0" nzMessage="No Documents"></nz-alert>
+            </div>
+
+            <div *ngIf="current == 10" [formGroup]="staffForm">
+                <label for="">Other Required Info</label>
+                <div *ngFor="let l of datalist"> 
+                    <a [href]="l.link" target="_blank">{{l.form}}</a>
+                </div>
+                <nz-alert nzType="warning" *ngIf="datalist?.length == 0" nzMessage="No Other Infos"></nz-alert>               
+            </div>
+
         </div>
 
     </div>
@@ -244,10 +320,10 @@
                 <span>Previous</span>
             </button>
             <!-- *ngIf="current < 3" [disabled]="!nextRequired" -->
-            <button nz-button nzType="default" (click)="next()" *ngIf="current < 3" [disabled]="!nextRequired">
+            <button nz-button nzType="default" (click)="next()" *ngIf="current < 10" [disabled]="!nextRequired">
                 <span>Next</span>
             </button>
-            <button nz-button nzType="primary" (click)="save()" *ngIf="current == 3" >
+            <button nz-button nzType="primary" (click)="save()" *ngIf="current == 10" >
                 <span>Done</span>
             </button>
         </ng-container>

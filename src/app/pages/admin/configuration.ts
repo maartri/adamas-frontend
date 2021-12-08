@@ -180,6 +180,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
     staffgroupsArr: Array<any> = [];
     staffArr: Array<any> = [];
     batchclientsArr : Array<any> = [];
+    RptFiltersArr : Array<any> = [];
     
     
 
@@ -631,10 +632,20 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
        
     }
     ngAfterViewInit(): void {
+        //testing 
         this.listS.getreportcriterialist({
             listType: 'BRANCHES',
             includeInactive: false
         }).subscribe(x => this.branchesArr = x);
+
+
+
+        //
+        this.listS.getreportcriterialist({
+            listType: 'BRANCHES',
+            includeInactive: false
+        }).subscribe(x => this.branchesArr = x);
+
 
         this.listS.getreportcriterialist({
             listType: 'MANAGERS',
@@ -657,7 +668,8 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
         this.listS.GetVehicles().subscribe(x => this.vehiclesArr = x);
         this.listS.GetTraccsStaffCodes().subscribe(x => this.staffArr = x) 
         this.listS.getcstdaoutlets().subscribe(x => this.outletsArr = x);
-   
+
+       
    
    
     }
@@ -909,6 +921,21 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
                 this.frm_Accounts = true;
                 this.frm_Date_AgeCycle = true;
                 this.frm_AgeCycle = true;
+                let testArr;
+                let filtertitle = forkJoin([
+                    //this.listS.GetRptFilters(this.tocken.user.toString()),                                              
+                    this.listS.GetRptFilters(),     
+                    ]);   
+                  filtertitle.subscribe(data => {           
+                    this.RptFiltersArr = data;  
+                    console.log(this.RptFiltersArr);
+                    console.log(data);
+                });
+                console.log(this.RptFiltersArr);
+                console.log(filtertitle);
+
+
+
                 break;
             case "invoice-verification":
                 this.ModalName = "Invoice Verification";
@@ -2182,8 +2209,6 @@ var id = "wE05f9PtCWLd67G8";
     medicareclaim(){
         var fQuery = " "
         var lblcriteria;
-
-
 
 
         const data = {

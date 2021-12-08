@@ -16,6 +16,10 @@ export class ListService {
         public http: HttpClient,
         public auth: AuthService
     ) { }
+    
+    GetRptFilters(): Observable<any>{
+        return this.auth.getstring(`${list}/rptfilters`);
+    }
 
     getfundingSourcePerProgram(program: string): Observable<any>{
         return this.auth.getstring(`${list}/funding-source-per-program/${program}`);

@@ -79,30 +79,38 @@
                         </div>
                     </div>
                 </div>
+                <div nz-col class="gutter-row" [nzSpan]="5">
+                    <div nz-row  style="border: 1px solid #e8e8e8;">
+                        <div nz-row style="background-color:#fafafa;color: black;padding:4px;">
+                            <label><b>Viewable Depts/Branches</b></label>
+                        </div>
+                    </div>
+                </div>
+
             </div>
             <div style="clear:both;"></div>
             <div *ngIf="tabFindIndexScope == 1">
-                    <div nz-col class="gutter-row" [nzSpan]="7">
-                        <div nz-row  style="border: 1px solid #e8e8e8;">
-                            <div nz-row style="background-color:#fafafa;color: white;padding:4px;">
-                                <label nz-checkbox
-                                [(ngModel)]="allProgarms"
-                                (ngModelChange)="updateAllCheckedFilters(2)"
-                                [nzIndeterminate]="allprogramIntermediate" [ngModelOptions]="{standalone: true}"><b>ALL Programs</b></label>
-                            </div>
-                            <div nz-col>
-                                <div class="staff-wrapper" style="height: 30rem; width: 100%; overflow: auto; padding: .5rem 1rem;">
-                                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event,2)">
-                                        <div nz-row>
-                                            <div nz-col nzSpan="24" *ngFor="let prog of diciplineList">
-                                                <label nz-checkbox  [nzValue]="prog.name" [(ngModel)]="prog.checked" (ngModelChange)="updateSingleCheckedFilters(2)" [ngModelOptions]="{standalone: true}">{{ prog.name }}</label>
-                                            </div>
+                <div nz-col class="gutter-row" [nzSpan]="7">
+                    <div nz-row  style="border: 1px solid #e8e8e8;">
+                        <div nz-row style="background-color:#fafafa;color: white;padding:4px;">
+                            <label nz-checkbox
+                            [(ngModel)]="allProgarms"
+                            (ngModelChange)="updateAllCheckedFilters(2)"
+                            [nzIndeterminate]="allprogramIntermediate" [ngModelOptions]="{standalone: true}"><b>ALL Programs</b></label>
+                        </div>
+                        <div nz-col>
+                            <div class="staff-wrapper" style="height: 30rem; width: 100%; overflow: auto; padding: .5rem 1rem;">
+                                <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event,2)">
+                                    <div nz-row>
+                                        <div nz-col nzSpan="24" *ngFor="let prog of diciplineList">
+                                            <label nz-checkbox  [nzValue]="prog.name" [(ngModel)]="prog.checked" (ngModelChange)="updateSingleCheckedFilters(2)" [ngModelOptions]="{standalone: true}">{{ prog.name }}</label>
                                         </div>
-                                    </nz-checkbox-wrapper>
-                                </div>
+                                    </div>
+                                </nz-checkbox-wrapper>
                             </div>
                         </div>
                     </div>
+                </div>
             </div>
             <div *ngIf="tabFindIndexScope == 2">
                 <div nz-col class="gutter-row" [nzSpan]="6">

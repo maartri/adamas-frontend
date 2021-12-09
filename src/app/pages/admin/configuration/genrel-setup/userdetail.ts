@@ -90,7 +90,6 @@ export class UserDetail implements OnInit {
             });
         }
         getUserData() {
-            this.tabFindIndex = 1;
             return forkJoin([
                 this.listS.getlistbranchesObj(),
                 this.listS.getprogramsobj(),
@@ -99,15 +98,16 @@ export class UserDetail implements OnInit {
             ]).subscribe(x => {
                 this.branchesList   = x[0];
                 this.diciplineList  = x[1];
-                this.categoriesList = x[3];
-                this.casemanagers   = x[2];
+                this.categoriesList = x[2];
+                this.casemanagers   = x[3];
+                this.updateAllCheckedFilters(-1);
             });
         }
         
         updateAllCheckedFilters(filter: any): void {
             
             if(filter == 1 || filter == -1){
-                if(this.testcheck == false){  // why its returing undefined 
+                if(this.testcheck == false){
                     if (this.allBranches) {
                         this.branchesList.forEach(x => {
                             x.checked = true;
@@ -133,7 +133,21 @@ export class UserDetail implements OnInit {
                     }
                 }
             }
+            
             if(filter == 3 || filter == -1){
+                if(this.testcheck == false){
+                    if (this.allcat) {
+                        this.categoriesList.forEach(x => {
+                            x.checked = true;
+                        });
+                    }else{
+                        this.categoriesList.forEach(x => {
+                            x.checked = false;
+                        });
+                    }
+                }
+            }
+            if(filter == 4 || filter == -1){
                 if(this.testcheck == false){
                     if (this.allCordinatore) {
                         this.casemanagers.forEach(x => {
@@ -147,19 +161,6 @@ export class UserDetail implements OnInit {
                 }
             }
             
-            if(filter == 4 || filter == -1){
-                if(this.testcheck == false){
-                    if (this.allcat) {
-                        this.categoriesList.forEach(x => {
-                            x.checked = true;
-                        });
-                    }else{
-                        this.categoriesList.forEach(x => {
-                            x.checked = false;
-                        });
-                    }
-                }
-            }
         }
         updateSingleCheckedFilters(index:number): void {
             if(index == 1){
@@ -238,6 +239,7 @@ export class UserDetail implements OnInit {
         
         showAddModal() {
             this.resetModal();
+            this.getUserData();
             this.modalOpen = true;
         }
         
@@ -267,12 +269,7 @@ export class UserDetail implements OnInit {
         
         tabFindIndex: number = 0;
         tabFindChange(index: number){
-            if(index == 1){
-                this.getUserData();
-            }else{
-                this.tabFindIndex = index;
-            }
-            
+                this.tabFindIndex = index;        
         }
         tabFindIndexScope: number = 0;
         tabFindChangeScopes(index: number){

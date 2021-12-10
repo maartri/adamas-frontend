@@ -729,6 +729,30 @@ export class ListService {
     getintakestaff(personID: string): Observable<any>{
         return this.auth.get(`${list}/intake/staff/${personID}`)
     }
+    //clinical 
+    getclinicalnursingdiagnose(personID: string): Observable<any>{
+        return this.auth.get(`${list}/clinical/nursingdiagnose/${personID}`)
+    }
+    getclinicalmedicationdiagnose(personID: string): Observable<any>{
+        return this.auth.get(`${list}/clinical/medicationdiagnose/${personID}`)
+    }
+    getclinicalprocedure(personID: string): Observable<any>{
+        return this.auth.get(`${list}/clinical/procedure/${personID}`)
+    }
+    getclinicalmedications(personID: string): Observable<any>{
+        return this.auth.get(`${list}/clinical/medications/${personID}`)
+    }
+    getclinicalreminder(personID: string): Observable<any>{
+        return this.auth.get(`${list}/clinical/reminder/${personID}`)
+    }
+    getclinicalalert(personID: string): Observable<any>{
+        return this.auth.get(`${list}/clinical/alert/${personID}`)
+    }
+    getclinicalnotes(personID: string): Observable<any>{
+        return this.auth.get(`${list}/clinical/notes/${personID}`)
+    }
+    //end clinical
+
     getcenterlocationstaff(): Observable<any>{
         return this.auth.get(`${list}/centerLocation/staff/`)
     }    

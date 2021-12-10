@@ -156,12 +156,16 @@ export class UserDetail implements OnInit {
                 }
             }
             if(filter == 4 || filter == -1){
+                console.log("cordinator");
+
                 if(this.testcheck == false){
                     if (this.allCordinatore) {
+                        console.log("cordinator");
                         this.casemanagers.forEach(x => {
                             x.checked = true;
                         });
                     }else{
+                        console.log("cordinator false");
                         this.casemanagers.forEach(x => {
                             x.checked = false;
                         });

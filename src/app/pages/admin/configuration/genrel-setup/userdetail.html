@@ -143,7 +143,7 @@
                         </div>
                         <div nz-col>
                             <div class="staff-wrapper" style="height: 30rem; width: 100%; overflow: auto; padding: .5rem 1rem;">
-                                <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event,4)">
+                                <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event,3)">
                                     <div nz-row>
                                         <div nz-col nzSpan="24" *ngFor="let manager of categoriesList">
                                             <label nz-checkbox  [nzValue]="manager.description" [(ngModel)]="manager.checked" (ngModelChange)="updateSingleCheckedFilters(4)" [ngModelOptions]="{standalone: true}">{{ manager.description }}</label>
@@ -220,7 +220,7 @@
                         </div>
                         <div nz-col>
                             <div class="staff-wrapper" style="height: 30rem; width: 100%; overflow: auto; padding: .5rem 1rem;">
-                                <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event,4)">
+                                <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event,6)">
                                     <div nz-row>
                                         <div nz-col nzSpan="24" *ngFor="let jobcat of staffjobcategories">
                                             <label nz-checkbox  [nzValue]="jobcat.description" [(ngModel)]="jobcat.checked" (ngModelChange)="updateSingleCheckedFilters(4)" [ngModelOptions]="{standalone: true}">{{ jobcat.description }}</label>

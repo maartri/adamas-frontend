@@ -27,7 +27,7 @@ export class UserDetail implements OnInit {
     modalVariables: any;
     dateFormat: string ='dd/MM/yyyy';
     inputVariables:any;
-    title :string = "Add CDC Target Groups";
+    title :string = "Add User Details";
     private unsubscribe: Subject<void> = new Subject();
     rpthttp = 'https://www.mark3nidad.com:5488/api/report'
     token:any;
@@ -48,6 +48,7 @@ export class UserDetail implements OnInit {
     selectedPrograms: any;
     selectedCordinators: any;
     selectedCategories: any;
+    selectedStaffCategories: any;
     allBranches:boolean = true;
     allBranchIntermediate:boolean = false;
     
@@ -59,6 +60,11 @@ export class UserDetail implements OnInit {
     
     allCordinatore:boolean = true;
     allCordinatorIntermediate:boolean = false;
+
+    allStaffCat:boolean = true;
+    allStaffCatIntermediate:boolean = false;
+
+    staffjobcategories: any;
     
     constructor(
         private globalS: GlobalService,
@@ -90,24 +96,26 @@ export class UserDetail implements OnInit {
             });
         }
         getUserData() {
-            this.tabFindIndex = 1;
             return forkJoin([
                 this.listS.getlistbranchesObj(),
                 this.listS.getprogramsobj(),
-                this.listS.getstaffcategorylist(),
+                this.listS.getcategoriesobj(),
                 this.listS.casemanagerslist(),
+                this.listS.getstaffcategorylist()
             ]).subscribe(x => {
-                this.branchesList   = x[0];
-                this.diciplineList  = x[1];
-                this.categoriesList = x[3];
-                this.casemanagers   = x[2];
+                this.branchesList       = x[0];
+                this.diciplineList      = x[1];
+                this.categoriesList     = x[2];
+                this.casemanagers       = x[3];
+                this.staffjobcategories = x[4];
+                this.updateAllCheckedFilters(-1);
             });
         }
         
         updateAllCheckedFilters(filter: any): void {
             
             if(filter == 1 || filter == -1){
-                if(this.testcheck == false){  // why its returing undefined 
+                if(this.testcheck == false){
                     if (this.allBranches) {
                         this.branchesList.forEach(x => {
                             x.checked = true;
@@ -133,21 +141,8 @@ export class UserDetail implements OnInit {
                     }
                 }
             }
-            if(filter == 3 || filter == -1){
-                if(this.testcheck == false){
-                    if (this.allCordinatore) {
-                        this.casemanagers.forEach(x => {
-                            x.checked = true;
-                        });
-                    }else{
-                        this.casemanagers.forEach(x => {
-                            x.checked = false;
-                        });
-                    }
-                }
-            }
             
-            if(filter == 4 || filter == -1){
+            if(filter == 3 || filter == -1){
                 if(this.testcheck == false){
                     if (this.allcat) {
                         this.categoriesList.forEach(x => {
@@ -155,6 +150,36 @@ export class UserDetail implements OnInit {
                         });
                     }else{
                         this.categoriesList.forEach(x => {
+                            x.checked = false;
+                        });
+                    }
+                }
+            }
+            if(filter == 4 || filter == -1){
+                console.log("cordinator");
+
+                if(this.testcheck == false){
+                    if (this.allCordinatore) {
+                        console.log("cordinator");
+                        this.casemanagers.forEach(x => {
+                            x.checked = true;
+                        });
+                    }else{
+                        console.log("cordinator false");
+                        this.casemanagers.forEach(x => {
+                            x.checked = false;
+                        });
+                    }
+                }
+            }
+            if(filter == 6 || filter == -1){
+                if(this.testcheck == false){
+                    if (this.allStaffCat) {
+                        this.staffjobcategories.forEach(x => {
+                            x.checked = true;
+                        });
+                    }else{
+                        this.staffjobcategories.forEach(x => {
                             x.checked = false;
                         });
                     }
@@ -186,19 +211,8 @@ export class UserDetail implements OnInit {
                     this.allProgarms = false;
                 }
             }
+            
             if(index == 3){
-                if (this.casemanagers.every(item => !item.checked)) {
-                    this.allCordinatore = false;
-                    this.allCordinatorIntermediate = false;
-                } else if (this.casemanagers.every(item => item.checked)) {
-                    this.allCordinatore = true;
-                    this.allCordinatorIntermediate = false;
-                } else {
-                    this.allCordinatorIntermediate = true;
-                    this.allCordinatore = false;
-                }
-            }
-            if(index == 4){
                 if (this.categoriesList.every(item => !item.checked)) {
                     this.allcat = false;
                     this.allCatIntermediate = false;
@@ -210,7 +224,32 @@ export class UserDetail implements OnInit {
                     this.allcat = false;
                 }
             }
+            if(index == 4){
+                if (this.casemanagers.every(item => !item.checked)) {
+                    this.allCordinatore = false;
+                    this.allCordinatorIntermediate = false;
+                } else if (this.casemanagers.every(item => item.checked)) {
+                    this.allCordinatore = true;
+                    this.allCordinatorIntermediate = false;
+                } else {
+                    this.allCordinatorIntermediate = true;
+                    this.allCordinatore = false;
+                }
+            }
+            if(index == 6){
+                if (this.staffjobcategories.every(item => !item.checked)) {
+                    this.allStaffCat = false;
+                    this.allStaffCatIntermediate = false;
+                } else if (this.staffjobcategories.every(item => item.checked)) {
+                    this.allStaffCat = true;
+                    this.allStaffCatIntermediate = false;
+                } else {
+                    this.allStaffCatIntermediate = true;
+                    this.allStaffCat = false;
+                }
+            }
         }
+
         log(event: any,index:number) {
             this.testcheck = true;   
             if(index == 1)
@@ -218,10 +257,13 @@ export class UserDetail implements OnInit {
             if(index == 2)
             this.selectedPrograms = event;
             if(index == 3)
-            this.selectedCordinators = event;
+            this.selectedCategories = event;
             if(index == 4)
-            this.selectedCategories = event;  
+            this.selectedCordinators = event;  
+            if(index == 6)
+            this.selectedStaffCategories = event;
         }
+
         loadTitle()
         {
             return this.title
@@ -238,6 +280,7 @@ export class UserDetail implements OnInit {
         
         showAddModal() {
             this.resetModal();
+            this.getUserData();
             this.modalOpen = true;
         }
         
@@ -248,7 +291,7 @@ export class UserDetail implements OnInit {
         }
         
         showEditModal(index: any) {
-            this.title = "Edit CDC Target Groups"
+            this.title = "Edit User Detail"
             this.isUpdate = true;
             this.current = 0;
             this.modalOpen = true;
@@ -267,12 +310,7 @@ export class UserDetail implements OnInit {
         
         tabFindIndex: number = 0;
         tabFindChange(index: number){
-            if(index == 1){
-                this.getUserData();
-            }else{
-                this.tabFindIndex = index;
-            }
-            
+                this.tabFindIndex = index;        
         }
         tabFindIndexScope: number = 0;
         tabFindChangeScopes(index: number){

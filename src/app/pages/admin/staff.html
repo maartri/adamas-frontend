@@ -1,10 +1,10 @@
 <div nz-row>
   <div style="padding:8px">
     <div nz-row *ngIf="userview?.staff >= 951">
-      <div nz-col nzSpan="3">
+      <div nz-col nzSpan="12">
         <button class="headers-botton recordHeaderMainButtons" (click)="newStaffModal = !newStaffModal" ><i nz-icon nzType="plus" nzTheme="outline"></i> New Staff</button>
+        <button class="botton color-powder-blue" (click)="openFindModal()" style="color: #fff;background-color: #85B9D5 !important; border-color: #85B9D5 !important;margin:0 1rem"><i nz-icon nzType="search" nzTheme="outline"></i> Find</button>
       </div>
-      <button class="botton find color-powder-blue" (click)="openFindModal()"><i nz-icon nzType="search" nzTheme="outline"></i> Find</button>
     </div>
     <ng-container *ngIf="userview?.staff >= 951">
       <div nz-col nzSpan="6" style="margin-top: 10px;">

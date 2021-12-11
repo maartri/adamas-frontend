@@ -11,9 +11,9 @@ import { Component, Input, ViewChild, ChangeDetectorRef,ElementRef,ViewEncapsula
 import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { getLocaleDateFormat, getLocaleFirstDayOfWeek, Time,DatePipe } from '@angular/common';
 
-import { forkJoin, Subscription, Observable, Subject, EMPTY, of,fromEvent, } from 'rxjs';
+import { forkJoin, Subscription, Observable, Subject, EMPTY, of,fromEvent, observable } from 'rxjs';
 
-import {debounceTime, distinctUntilChanged, takeUntil,mergeMap, concatMap, switchMap,buffer,map, bufferTime, filter} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged, takeUntil,mergeMap, concatMap, switchMap,buffer,map, bufferTime, filter, tap} from 'rxjs/operators';
 import { TimeSheetService, GlobalService, view, ClientService, StaffService,ShareService, ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles } from '@services/index';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzRadioModule  } from 'ng-zorro-antd/radio';
@@ -49,9 +49,6 @@ import { NzTableModule  } from 'ng-zorro-antd/table';
 import { Router,ActivatedRoute } from '@angular/router';
 import { SetLeftFeature } from 'ag-grid-community';
 import { style } from '@angular/animations';
-import { forEach } from 'lodash';
-
-
 
  
 interface AddTimesheetModalInterface {
@@ -132,7 +129,6 @@ IconCellType2.prototype.paint = function (ctx, value, x, y, w, h, style, context
 };
 
    
-
   
 @Component({
     selector: 'roster-component',
@@ -225,6 +221,8 @@ masterCycle:string="CYCLE 1";
 masterCycleNo:number=1;
 Days_View:number=14;
 dval:number=14;
+publicHolidayRegionData:any;
+lstPublicHolidays: Array<any> =[];
 
 data:any=[];  
 ActiveCellText:any;
@@ -349,6 +347,8 @@ searchAvaibleModal:boolean=false;
     isSleepOver: boolean = false;
     payUnits: any;
     addRecurrent:boolean=false
+    promise: any;
+
     parserPercent = (value: string) => value.replace(' %', '');
     parserDollar = (value: string) => value.replace('$ ', '');
     formatterDollar = (value: number) => `${value > -1 || !value ? `$ ${value}` : ''}`;
@@ -407,10 +407,12 @@ searchAvaibleModal:boolean=false;
         return;
     }
 
+   
       this.selectedCarer=event.accountNo;
       this.bookingForm.patchValue({
             staffCode:event.accountNo
       });
+
 
     this.user = {
         code: event.accountNo,
@@ -420,6 +422,11 @@ searchAvaibleModal:boolean=false;
         sysmgr: event.sysmgr
     }
 
+    
+    if (this.viewType=='Recipient'){
+        this.getPublicHolidyas(this.selectedCarer);
+
+    }
     this.sharedS.emitChange(this.user);
     this.cd.detectChanges();
 }
@@ -575,7 +582,7 @@ doneBooking(){
         }
         
         if (this.viewType=="Recipient"){
-            carerCode = tsheet.staffCode
+            carerCode = this.selectedCarer
             clientCode=this.recipient.data
         }
        
@@ -869,19 +876,35 @@ start_adding_Booking(bCase:any){
         if (this.booking_case==2){
             this.booking_case=3;          
         }
-        this.addBookingModel=true;
-        this.addBooking(0);
+        this.select_StaffModal=true;
+        //this.addBookingModel=true;
+        //this.addBooking(0);
     }
 
     
 }
 
-addBooking(type:any){
-    
+
+async  getStaffAllocation (startTime:string){
+  
+          
+        let res = await this.IsStaffAllocated(this.selectedCarer,this.date,startTime,this.durationObject.duration);
+       res.subscribe(data=>{
+           console.log(data);
+       })
+        if (status){
+            this.globalS.eToast('Booking', 'Staff is already allocated in this date and time slot');
+        }
+    }
+
+   
+addBooking(type:any){    
    
     this.select_StaffModal=false;
     this.select_RecipientModal=false;
     //this.ShowCentral_Location=false;
+    
+   
     this.current=0;
     
     this.type_to_add=type;
@@ -899,17 +922,15 @@ addBooking(type:any){
    
     let sheet = this.spreadsheet.getActiveSheet();
     var range=sheet.getSelections();
-    // console.log(range)
-   
+    let startTime="";
+    let endTime = "";
+
     //let dt = moment.utc(this.date).local();
     if ((range==null || range.length==0) && !this.recurrenceView){
         this.globalS.eToast('Booking', 'Please select some time range to proceed');
         return;
     }
     
-   // let  date = this.date;  // For recurrent cases
-  
-
     if (!this.recurrenceView){
         let col=range[0].col;
         let date = sheet.getCell(0,col,GC.Spread.Sheets.SheetArea.colHeader).tag();
@@ -919,18 +940,19 @@ addBooking(type:any){
         date = dt.getFullYear() + "-" + this.numStr(dt.getMonth()+1) + "-" + this.numStr(dt.getDate());
         let f_row= range[0].row;
         let l_row=f_row+range[0].rowCount;
-        let startTime =   sheet.getCell(f_row,0,GC.Spread.Sheets.SheetArea.rowHeader).tag()
-        let endTime =   sheet.getCell(l_row,0,GC.Spread.Sheets.SheetArea.rowHeader).tag();
+        startTime = sheet.getCell(f_row,0,GC.Spread.Sheets.SheetArea.rowHeader).tag()
+        endTime =   sheet.getCell(l_row,0,GC.Spread.Sheets.SheetArea.rowHeader).tag();
         //let endTime =sheet.getTag(l_row,0,GC.Spread.Sheets.SheetArea.viewport);
 
         this.defaultStartTime = parseISO(new Date(date + " " + startTime).toISOString());
         this.defaultEndTime = parseISO(new Date(date + " " + endTime).toISOString());
 
         this.date = parseISO(this.datepipe.transform(date, 'yyyy-MM-dd'));
+
+      
     }
 
     this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
-   
    
    // this.bookingForm.patchValue({date:date})
 
@@ -960,7 +982,6 @@ addBooking(type:any){
         this.programsList = this.programsList.filter((v, i, a) => a.indexOf(v) === i);
         //this.serviceActivityList = d.map(x => x.serviceType);
        // this.serviceActivityList = this.serviceActivityList.filter((v, i, a) => a.indexOf(v) === i);
-        
       
         if (this.programsList==null || this.programsList.length==0){
           // 
@@ -975,7 +996,24 @@ addBooking(type:any){
                 
                 this.current+=1;
             }
-            this.addBookingModel=true;
+            let status:boolean=false;
+            if (this.viewType=="Recipient"){  
+              
+               // this.getStaffAllocation(startTime);   
+                this.IsStaffAllocated(this.selectedCarer,this.date,startTime,this.durationObject.duration).subscribe(data=>{
+                   
+                    if (data.length>0){
+                        this.globalS.eToast('Booking', `Staff ${this.selectedCarer} is already allocated in this date and time slot`);
+                        status=true;
+                        this.addBookingModel=false;
+                        return;
+                    }else
+                    this.addBookingModel=true;
+                });
+               
+               
+            }else
+                this.addBookingModel=true;
                 
         }
     });
@@ -3533,8 +3571,8 @@ picked(data: any) {
                     this.agencyDefinedGroup = data.data;
                 });
         } 
-        
-       // return;
+        if(this.viewType == 'Staff')
+            this.getPublicHolidyas(data.data);
         
         this.picked$ = this.timeS.gettimesheets({
             AccountNo: data.data,            
@@ -3937,42 +3975,170 @@ picked(data: any) {
         return this.listS.getlist(sql);
     }
 
-    GetDayMask(b_SDay:boolean, s_EarliestDate:string, s_Staff:string)
-    {
-        let dCtr:number
-        let s_Date:string
-        let b_PublicHoliday : boolean
-        let s_PubHolState:string
-        let s_PubHolRegion:string;
-        let s_PubHolFilter:string;
-        let s_Weekday:string;
-        let ip : Array<string>;
+ GetStateFromPostcode(s_Postcode : string) 
+{
+    let StateFromPostcode = ""
+
+    switch(Number(s_Postcode.substring(0, 1))){
+    case 0 :
+        StateFromPostcode = "NT";
+        break;
+    case 2 :
+            var x = Number(s_Postcode);
+            switch(true){
+            case (x>=2600 && x<=2618): StateFromPostcode = "ACT";  break;
+            case (x>=2900 && x<=2999): StateFromPostcode = "ACT";  break;
+            default: StateFromPostcode = "NSW";  break;
+            }
+            break;
+    case 3:
+        StateFromPostcode = "VIC";
+        break;
+    case 4:
+        StateFromPostcode = "QLD";
+        break;
+    case 5 :
+        StateFromPostcode = "SA";
+        break;
+    case 6:
+        StateFromPostcode = "WA";
+        break;
+    case 7:
+        StateFromPostcode = "TAS";
+        break;
+    }
+    
+    return StateFromPostcode;
+}
+
+IsStaffAllocated(s_StaffCode:string, s_Date : string, s_time:string, duration:number) 
+{
+    let status:any;
+   
+
+    let sql=`SELECT [Client Code],[Start Time], LEFT(CONVERT(VARCHAR,DATEADD(Minute,[duration]*5,[Start Time]),108),5) as end_time FROM Roster 
+    where [date] = '${moment(s_Date).format('YYYY/MM/DD')}' AND [Carer code]= '${s_StaffCode}' and
+    ([start Time]  between  '${s_time}'  and  LEFT(CONVERT(VARCHAR,DATEADD(Minute,${duration}*5,'${s_time}'),108),5)
+     OR 
+     ('${s_time}' between [Start Time] and LEFT(CONVERT(VARCHAR,DATEADD(Minute,duration*5,[start time]),108),5))
+    )`
+   return  this.listS.getlist(sql);
+    // this.listS.getlist(sql).subscribe(data=>{
+    //     if (data.length>0)
+    //         return true;
+    //     else
+    //         return false;
+    //  });   
+    
+    //return  this.listS.getlist(sql).subscribe(data=>{})
+}
+  
+
+getPublicHolidyas(s_StaffCode:string){
+  
+    let s_PubHolState:string
+    let s_PubHolRegion:string;
+    let s_PubHolFilter:string;
+    let s_FilterMask:string
+
+       let sql=`SELECT st.PublicHolidayRegion, sta.Postcode FROM Staff st INNER JOIN NamesAndAddresses sta ON st.Uniqueid = sta.personid WHERE (ISNULL(sta.primaryAddress, 0) = 1 or sta.Type = '<USUAL>') AND st.AccountNo = '${s_StaffCode}'`
+
+      // this.listS.getlist(sql) 
+       let sql2="";
         
-        let s_FilterMask:string
+            new Observable(observer => {
+                this.listS.getlist(sql)          
+            .pipe(
+                tap(output => {
+                    console.log(output);
+                    this.publicHolidayRegionData=output[0];
+                    s_PubHolRegion = this.publicHolidayRegionData.publicHolidayRegion;
+                    s_PubHolState = this.GetStateFromPostcode(this.publicHolidayRegionData.postcode);//(N2S(!postcode))
+                 
+                    s_FilterMask = (s_PubHolState != ""? 1: 0)  + "" + (s_PubHolRegion != ""? 1: 0)
+                    s_PubHolFilter="";   
+                    switch(s_FilterMask){
+                    case "00" : ""; break;
+                    case "01": s_PubHolFilter = s_PubHolFilter + " AND ( (ISNULL(Stats, '') IN ('', 'ALL')) OR (PublicHolidayRegion = '" + s_PubHolRegion + "'))" ; break;
+                    case "10": s_PubHolFilter = s_PubHolFilter + " AND ( (ISNULL(Stats, '') IN ('', 'ALL')) OR (Stats = '" + s_PubHolState + "'))" ; break;
+                    case "11": s_PubHolFilter = s_PubHolFilter + " AND ( (ISNULL(Stats, '') IN ('', 'ALL')) OR ((Stats = '" + s_PubHolState + "') OR ( (Stats = '" + s_PubHolState + "') AND (PublicHolidayRegion = '" + s_PubHolRegion + "'))))" ; break;
+                    }
+                    let dd= new Date (this.date);
+                    sql2=`select [DATE] from PUBLIC_HOLIDAYS where month([DATE])=${dd.getMonth()+1} and year([DATE])=  ${dd.getFullYear()}  ${s_PubHolFilter} `
+        
+                }),
+                switchMap(output =>                     
+                    forkJoin( 
+                        this.listS.getlist(sql2)  
+                    )) ,
+                tap(output2 => {
+                    console.log(output2);
+                    this.lstPublicHolidays=output2[0];
+                })
+            
+
+            ).subscribe(output2 => console.log( output2))
+        
+        }).subscribe(data=>{
+            console.log(data);
+        });
+
+    
+}
+
+IsPublicHoliday1(s_Date : String) : boolean
+{
+    let status=false;
+   if (this.lstPublicHolidays!=null){
+        var target=this.lstPublicHolidays.find(tmp=>tmp.date==s_Date)
+        if(target!=null)
+            status=true;
+   }
+    return status;
+    
+}
+
+
+GetDayMask()
+{
+        let s_Date:string
+        let s_Weekday:string;
+        let b_PublicHoliday : any
+        
+        let ip : Array<string>=["0","0","0","0","0","0","0","0"];
+     
         let DayNo:number;
         let Yearno:number;
         let MonthNo:number;
-     //for (i% = 0 i<=7; i++)
-         //ip[i%] = "0";
-         var sels = this.spreadsheet.getSelections();
+        
+        var sheet=this.spreadsheet.getActiveSheet();
+
+         var sels = sheet.getSelections();
          var sel = sels[0];
          var row = sel.row;
          
          for (let i=sel.col; i<(sel.col+sels[0].colCount); i++)
         {
-            DayNo=i;                        
+           // DayNo=i;              
+            var cell_col_text=sheet.getValue(0,i,GC.Spread.Sheets.SheetArea.colHeader);
+            
+            var col_day= cell_col_text.substring(cell_col_text.length-2,cell_col_text.length);
+        
+            DayNo   = col_day.trim()    
             MonthNo = parseInt(format(this.date, 'M')),
             Yearno = parseInt(format(this.date, 'yyyy')),
 
        // If NullToStr(s_EarliestDate) = "" Then s_EarliestDate = Format$(Yearno & "/" & Monthno & "/" & IIf(b_SDay, DayNo, dCtr), "yyyy/mm/dd")
-         s_Date = Yearno + "/" + MonthNo + "/" + DayNo;
-         s_Date=format(this.date, 'yyyy/MM/dd'),
-         b_PublicHoliday = false;//this.IsPublicHoliday1(s_Date, s_Staff)
+          s_Date = Yearno + "/" + this.numStr(MonthNo) + "/" + this.numStr(DayNo);
+          b_PublicHoliday =   this.IsPublicHoliday1(s_Date);       
+     
+          
+         ip[7] = "0"
          if (b_PublicHoliday)
              ip[7] = "1"
          else {           
             s_Weekday = this.GetWeekday(s_Date);
-            switch (s_Date)
+            switch (s_Weekday.toUpperCase())
             {        
              case "MONDAY": 
                 ip[0] = "1" 
@@ -3996,13 +4162,14 @@ picked(data: any) {
                 ip[6] = "1";
                 break;
             }
-        
-         for( i = 0; i<7; i++)
-         ;
-            // GetDayMask = GetDayMask + ip[i%];
-        }       
+                        
+         }
     }
-    
+    var DaysString="";
+         for( let i = 0; i<=7; i++)
+            DaysString = DaysString + ip[i];
+        
+    return DaysString;
 }
 
 GetWeekday(date:string) : string {
@@ -4032,6 +4199,8 @@ GETSERVICEACTIVITY(program: any): Observable<any> {
             _date = parseISO(_date);
         }
 
+              
+        var s_DayMask= this.GetDayMask();
        // return this.listS.getserviceactivityall({
            return this.timeS.getActivities({            
             recipient: recipientCode,
@@ -4040,7 +4209,7 @@ GETSERVICEACTIVITY(program: any): Observable<any> {
             mainGroup: this.IsGroupShift ? this.GroupShiftCategory : 'ALL',
             subGroup: '-',           
             viewType: this.viewType,
-            AllowedDays: "0",
+            AllowedDays: s_DayMask,
             duration: this.durationObject?.duration            
         });
     }
@@ -4718,9 +4887,10 @@ this.bookingForm.get('program').valueChanges.pipe(
     resetBookingFormModal() {
         this.current = 0;
         this.rosterGroup = '';
-        this.selectedCarer="";
+      //  this.selectedCarer="";
         this.defaultProgram="";
         this.defaultActivity="";
+        //this.sample="";
         this.defaultStartTime = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 8, 0, 0);
         this.defaultEndTime = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 9, 0, 0);        
         this.IsClientCancellation=false;
@@ -4799,7 +4969,8 @@ this.bookingForm.get('program').valueChanges.pipe(
 
    pre_tab(): void {
         this.current -= 1;
-        if (this.viewType=="Staff" && this.current == 3 ){
+        //this.viewType=="Staff" &&
+        if ( this.current == 3 ){
             this.current -= 1;
         }
         if(this.current == 2 && !(this.activity_value==12 || this.ShowCentral_Location)){
@@ -4843,8 +5014,8 @@ this.bookingForm.get('program').valueChanges.pipe(
         }
         //console.log(this.current + ", " + this.ShowCentral_Location +", " + this.viewType + ", " + this.IsGroupShift )
                 
-        
-        if (this.viewType=="Staff" && this.current == 3 ){
+        //this.viewType=="Staff" &&
+        if ( this.current == 3 ){
      
             this.current += 1;
           

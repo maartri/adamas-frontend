@@ -7,7 +7,7 @@ import { GlobalService } from '@services/global.service';
 import { JsConfig } from '@modules/modules';
 
 const url: string = "https://www.mark3nidad.com:5488/api/report"
-
+const urlPrint: string = "api/print"
 @Injectable()
 export class PrintService {
     constructor(
@@ -27,5 +27,13 @@ export class PrintService {
             .append('Authorization',`Basic ${encoded}`);
 
         return this.http.post(`${url}`, JSON.stringify(data), { headers: _headers, responseType: 'blob' });
+    }
+
+    printControl(data): Observable<any>{
+        var _headers = new HttpHeaders()
+        .append('Content-Type','application/json')
+        .append('Accept','application/json');
+        
+        return this.http.post(`${urlPrint}`, data, { headers: _headers, responseType: 'blob' });
     }
 }

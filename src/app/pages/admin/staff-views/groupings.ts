@@ -346,8 +346,7 @@ export class StaffGroupingsAdmin implements OnInit, OnDestroy {
                 "head2" : "Notes",
             }
         }
-        this.printS.print(data)
-                        .subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
                             let _blob: Blob = blob;
                             let fileURL = URL.createObjectURL(_blob);
                             this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);

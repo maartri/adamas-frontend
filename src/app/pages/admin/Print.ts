@@ -591,7 +591,7 @@ export class PrintComponent implements OnInit , OnDestroy {
           this.loading = true;
           
   
-          this.printS.print(data).subscribe((blob: any) => {
+          this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = rptfile;
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -633,7 +633,7 @@ export class PrintComponent implements OnInit , OnDestroy {
           }
           this.loading = true;
   
-          this.printS.print(data).subscribe((blob: any) => {
+          this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = rptfile;
             this.drawerVisible = true;                   
             let _blob: Blob = blob;

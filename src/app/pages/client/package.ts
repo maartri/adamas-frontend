@@ -368,7 +368,7 @@ export class PackageClient implements OnInit, OnDestroy {
 
         return;
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.drawerVisible = true;
             let _blob: Blob = blob;
             let fileURL = URL.createObjectURL(_blob);

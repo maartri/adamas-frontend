@@ -4087,7 +4087,7 @@ this.sqlselect = "Select " + this.ColumnNameAdjuster(this.list)//.join(" as Fiel
       this.loading = true;
       
 
-      this.printS.print(data).subscribe((blob: any) => {
+      this.printS.printControl(data).subscribe((blob: any) => {
         this.pdfTitle = "User Defined Report.pdf";
         this.drawerVisible = true;                   
         let _blob: Blob = blob;

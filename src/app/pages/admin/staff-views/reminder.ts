@@ -278,7 +278,7 @@ export class StaffReminderAdmin implements OnInit, OnDestroy {
                             "head4" : "Notes",
                         }
                     }
-                    this.printS.print(data).subscribe(blob => {  
+                    this.printS.printControl(data).subscribe((blob: any) => { 
                         let _blob: Blob = blob;
                         let fileURL = URL.createObjectURL(_blob);
                         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);

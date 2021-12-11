@@ -1026,12 +1026,6 @@ ReportRender(){
     .filter(opt => opt.checked)
     .map(opt => this.sbFieldsSkill[opt.identifier])
     
-    console.log(this.selectedSkills.length);
-    // JSON.stringify(object)
-    // console.log(JSON.stringify(this.selectedSkills));
-    // console.log(this.sbFieldsSkill.get("fstaffContainer9-Competencies0022"))
-
-
     var postdata = {
       status:this.quicksearch.value.status,
       gender:this.quicksearch.value.gender,

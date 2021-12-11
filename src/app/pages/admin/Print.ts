@@ -273,7 +273,7 @@ export class PrintComponent implements OnInit , OnDestroy {
     //  this.ShowModal = false;
       this.drawerVisible = false;
       this.pdfTitle = ""
-    //  this.router.navigate(['/admin/recipient/personal'])
+      this.router.navigate(['/admin/recipient/personal'])
     }
     handleOk(){
       this.tryDoctype = "";
@@ -302,20 +302,23 @@ export class PrintComponent implements OnInit , OnDestroy {
             nzOkText:'ID Labels',
             nzCancelText:'Address Labels',
     
-            
+            //MUFEED commented below lines to avoid extra/unnecessary modal
             nzOnOk: () => {
+             
               this.IDlbl = true;
-              this.title = 'Print ID Label';
+              this.handleOk()
+            /*  this.title = 'Print ID Label';
               this.width = "500px";
-              this.ShowModal = true;
+              this.ShowModal = true;*/
                },
             nzOnCancel: () => {
               this.Addresslbl = true;
-              this.title = 'Print Address Label'
+              this.handleOk()
+            /*  this.title = 'Print Address Label'
               this.width = "500px";
               this.ShowModal = true; 
-                 
-            },
+                 */
+            }, //Mufeed 
             
     
           });

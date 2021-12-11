@@ -53,7 +53,7 @@
                             <div nz-col nzSpan="12">
                                 <div class="form-group">
                                     <label for="">Birthdate</label>
-                                    <nz-date-picker formControlName="birthDate" [nzFormat]="dateFormat"></nz-date-picker>
+                                    <nz-date-picker formControlName="birthDate" (nzOnOpenChange)="dateOpenChange($event)" [nzDefaultPickerValue]="defaultDate" [nzFormat]="dateFormat"></nz-date-picker>
                                 </div>
                             </div>
                         </div>

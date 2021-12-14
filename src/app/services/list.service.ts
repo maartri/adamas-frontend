@@ -16,7 +16,15 @@ export class ListService {
         public http: HttpClient,
         public auth: AuthService
     ) { }
+    
+    GetRptFilters(): Observable<any>{
+        return this.auth.getstring(`${list}/rptfilters`);
+    }
 
+    getlisttimeattendancefilter(field: string): Observable<any>{
+        return this.auth.get(`${list}/populate-time-attendance-field/${field}`);
+    }
+    
     getfundingSourcePerProgram(program: string): Observable<any>{
         return this.auth.getstring(`${list}/funding-source-per-program/${program}`);
     }

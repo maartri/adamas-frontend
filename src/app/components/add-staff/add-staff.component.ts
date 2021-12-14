@@ -76,6 +76,10 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
 
   private verifyAccount = new Subject<any>();
   private verifyAccountPerOrg = new Subject<any>();
+
+  defaultDate: string;
+  firstOpenChange: boolean = false;
+  
   
   constructor(
     private globalS: GlobalService,
@@ -597,5 +601,23 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
   changeDetection(){
     this.cd.markForCheck();
     this.cd.detectChanges();
+  }
+
+   getdefaultDate(){
+    this.defaultDate = this.globalS.getAgedCareDate()
+   }
+
+   defaultBirthDate(): Date{
+    var currDate = new Date();
+    currDate.setFullYear(currDate.getFullYear() - 65);
+    return currDate;
+  }
+
+   dateOpenChange(data: any){
+    if(this.firstOpenChange || !data) return;
+    this.firstOpenChange = true;
+    this.staffForm.patchValue({
+      birthDate: this.defaultBirthDate()
+    });
   }
 }

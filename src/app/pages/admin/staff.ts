@@ -900,7 +900,7 @@ ReportRender(){
         this.spinloading = true;
         
         
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
           this.pdfTitle = rptfile;
           this.SummarydrawerVisible = true;                   
           let _blob: Blob = blob;
@@ -949,7 +949,7 @@ ReportRender(){
         
         this.spinloading = true;
         
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
           this.pdfTitle = rptfile;
           this.SummarydrawerVisible = true;                   
           let _blob: Blob = blob;

@@ -2766,7 +2766,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.loading = true;
                
 
-                this.printS.print(data).subscribe((blob: any) => {
+                this.printS.printControl(data).subscribe((blob: any) => {
                     this.pdfTitle = "Referral list.pdf"
                     this.drawerVisible = true;                   
                     let _blob: Blob = blob;
@@ -2916,7 +2916,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
        
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Waiting list.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -3019,7 +3019,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Active Packages.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -3156,7 +3156,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Recipient Rosters.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -3256,7 +3256,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Suspended Recipients.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -3354,7 +3354,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Voucher Summary.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -3448,7 +3448,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Package Usage Report.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -3508,7 +3508,7 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Recipient Time Length Report.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -3604,7 +3604,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Unallocated Bookings.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -3704,7 +3704,7 @@ stafftypeArr: Array<any> = constants.types;
         }
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Transport Summary Report.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -3802,7 +3802,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
        
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Referral During Period.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -3916,7 +3916,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Recipients Master Roster.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -4036,7 +4036,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Master Rostered Hours Report.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -4148,7 +4148,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Active Recipient List.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -4265,7 +4265,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "InActive Recipient List.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -4377,7 +4377,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Carer list.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -4490,7 +4490,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Billing Clients.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -4591,7 +4591,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Billing Clients.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -4697,7 +4697,7 @@ stafftypeArr: Array<any> = constants.types;
         }
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Discharge During Period.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -4791,14 +4791,14 @@ stafftypeArr: Array<any> = constants.types;
 
                 "sql": fQuery,
                 "Criteria": lblcriteria,
-                "userid": this.tocken.user,
+                "userid": this.tocken.user,                
                 "count":sQl_Count,
             }
         }
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Absent Client Status Report.pdf" 
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -4893,7 +4893,7 @@ stafftypeArr: Array<any> = constants.types;
 
             this.reportid = "6dfbj72obyLi9qxJ"
             this.pdfTitle = "Associate Listing.pdf"
-            this.labelfilter(fQuery,this.reportid, this.pdfTitle,'',lblcriteria)
+            this.labelfilter(fQuery,this.reportid,this.pdfTitle,'',lblcriteria)
 
             //this.reportid = "6dfbj72obyLi9qxJ"
             //fQuery = "Select Distinct Title,RecipientName as AccountNo,Address1,Address2,Suburb,Postcode,FirstName from  (" + fQuery + " )cr Order by RecipientName"
@@ -4915,7 +4915,7 @@ stafftypeArr: Array<any> = constants.types;
             this.loading = true;
            
     
-            this.printS.print(data).subscribe((blob: any) => {
+            this.printS.printControl(data).subscribe((blob: any) => {
                 this.pdfTitle = "Associate Listing.pdf"
                 this.drawerVisible = true;                   
                 let _blob: Blob = blob;
@@ -5025,7 +5025,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Unserviced Recipient Report.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -5125,7 +5125,7 @@ stafftypeArr: Array<any> = constants.types;
                 "userid": this.tocken.user,
             }
         }
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Active Staff List.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -5221,7 +5221,7 @@ stafftypeArr: Array<any> = constants.types;
         }
         this.loading = true;
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "InActive Staff.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -5315,7 +5315,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Active Contractor List.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -5411,7 +5411,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "InActive Contractor List.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -5504,7 +5504,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Active Volunteers.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -5601,7 +5601,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "InActive Volunteers.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -5689,7 +5689,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Staff User Permissions.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -5752,7 +5752,7 @@ stafftypeArr: Array<any> = constants.types;
         }
         this.loading = true;
         
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Meal Order Report.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -5831,7 +5831,7 @@ stafftypeArr: Array<any> = constants.types;
         }
         this.loading = true;
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "HAS Report.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -5909,7 +5909,7 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "CDC Leave Register.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -5987,7 +5987,7 @@ stafftypeArr: Array<any> = constants.types;
         
 
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "CDC Package Balance.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -6089,7 +6089,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Incident Register.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -6202,7 +6202,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Loan Item Register.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -6263,7 +6263,7 @@ stafftypeArr: Array<any> = constants.types;
         
 
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Staff Leave Register.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -6365,7 +6365,7 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
         
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Staff Service Notes Register.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -6456,7 +6456,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Staff Not Worked Report.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -6638,7 +6638,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Staff Competency Renewal.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -6737,7 +6737,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Staff UnAvailability Report.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -6838,7 +6838,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Staff Roster.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -6938,7 +6938,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Staff Master Roster.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -7045,7 +7045,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Staff Loan Register.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -7175,7 +7175,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Recipient Case Notes Register.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -7290,7 +7290,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Service Notes Register.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -7406,7 +7406,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "OP Notes Register.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -7512,7 +7512,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Service Plan Register.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -7587,7 +7587,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Care Plan Status Report.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -7688,7 +7688,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Staff Availability.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -7774,7 +7774,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Time Attendance Comparison Report.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -7865,7 +7865,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "HR Notes Register.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -7979,7 +7979,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Staff OP Notes Register.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -8080,7 +8080,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Staff Incident Register.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -8211,7 +8211,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Staff Training Register.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -8296,7 +8296,7 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
         
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Audit Register.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -8361,7 +8361,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Program Activity Status Audit.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -8495,7 +8495,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "MTA Attendance Register.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -8597,7 +8597,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Roster OverLap Register.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -8730,7 +8730,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "MTA Attendance Verification Audit.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -8823,7 +8823,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Recipient Unused Funding Reprot.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -9297,7 +9297,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = Title + ".pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -9695,7 +9695,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = Title + ".pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -10094,7 +10094,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = Title + ".pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -10568,7 +10568,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = Title + ".pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -10966,7 +10966,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = Title + ".pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -11367,7 +11367,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = Title + ".pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -11438,7 +11438,7 @@ stafftypeArr: Array<any> = constants.types;
         
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Program Budget Audit.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -11536,7 +11536,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Program Summary Report.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -11949,7 +11949,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = Title + ".pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -12361,7 +12361,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = Title + ".pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -12769,7 +12769,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = Title + ".pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -13170,7 +13170,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = Title + ".pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -13574,7 +13574,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = Title + ".pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -13973,7 +13973,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = Title + ".pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -14365,7 +14365,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = Title + ".pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -14758,7 +14758,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = Title + ".pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -14820,7 +14820,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Funding Audit Report.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -15204,7 +15204,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = Title + ".pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -15603,7 +15603,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = Title + ".pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -15689,7 +15689,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "UnBilled Items Report.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -15774,7 +15774,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Billed Items Report.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -16184,7 +16184,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = Title + ".pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -16600,7 +16600,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = Title + ".pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -17008,7 +17008,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = Title + ".pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -17093,7 +17093,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Dataset Recipient Unit Cost Report.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -17505,7 +17505,7 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
         
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = Title + ".pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -17653,7 +17653,7 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Program Recipient Budget.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -17756,7 +17756,7 @@ CompetencyRegister(branch, Staff,stfgroup,competency) {
     this.loading = true;
     
 
-    this.printS.print(data).subscribe((blob: any) => {
+    this.printS.printControl(data).subscribe((blob: any) => {
         this.pdfTitle = "Staff Competency Register.pdf"
         this.drawerVisible = true;                   
         let _blob: Blob = blob;
@@ -18169,7 +18169,7 @@ CompetencyRegister(branch, Staff,stfgroup,competency) {
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = Title + ".pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -18646,7 +18646,7 @@ CompetencyRegister(branch, Staff,stfgroup,competency) {
                 this.loading = true;
                 
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = Title + ".pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -19063,7 +19063,7 @@ CompetencyRegister(branch, Staff,stfgroup,competency) {
                 this.loading = true;
                 
 
-                this.printS.print(data).subscribe((blob: any) => {
+                this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = Title + ".pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -19229,7 +19229,7 @@ CompetencyRegister(branch, Staff,stfgroup,competency) {
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Staff Service Notes Register.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -19286,7 +19286,7 @@ labelfilter(fQuery,rptid,RptTitle,inclusion,lblcriteria){
                     "userid": this.tocken.user,
                 }
             }
-            this.printS.print(data).subscribe((blob: any) => {
+            this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = RptTitle 
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -19333,7 +19333,7 @@ labelfilter(fQuery,rptid,RptTitle,inclusion,lblcriteria){
                 }
             }
             
-           this.printS.print(data).subscribe((blob: any) => {
+           this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = RptTitle 
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -19450,7 +19450,7 @@ RenderRunTimeReport(strSQL){
     this.loading = true;
     
 
-    this.printS.print(data).subscribe((blob: any) => {
+    this.printS.printControl(data).subscribe((blob: any) => {
         this.pdfTitle = "User Custom Report.pdf"
         this.drawerVisible = true;                   
         let _blob: Blob = blob;

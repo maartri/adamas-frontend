@@ -3898,16 +3898,23 @@ this.sqlselect = "Select " + this.ColumnNameAdjuster(this.list)//.join(" as Fiel
   
   
   if ((this.inputForm.value.radiofiletr).toString() == 'donotmeet') {
+    
+    if(this.sqlcondition != undefined){  
     this.sql =  this.sql + " where Not " +  this.sqlcondition  ;
     this.Saverptsql = this.Saverptsql +  "  where Not  " + this.Savesqlcondition ;
+    }
     
-  }else{
+  }else{   
+    
+    if(this.sqlcondition != undefined){              
     this.sql =  this.sql + ' where ' +  this.sqlcondition ;
     this.Saverptsql = this.Saverptsql +  " where " + this.Savesqlcondition ;
+    }
+    
   }
        
+    //console.log(this.sqlcondition)
   //  console.log(this.sql)
-  //  console.log(this.Saverptsql)
   
   
     
@@ -3918,10 +3925,11 @@ this.sqlselect = "Select " + this.ColumnNameAdjuster(this.list)//.join(" as Fiel
     this.QueryFormation();
     this.tryDoctype = "";
   //  console.log(this.sqlcondition)
-    if(this.sqlcondition != null || this.sqlcondition != undefined){
+  //  if(this.sqlcondition != null || this.sqlcondition != undefined){
     this.ReportRender(this.sql);
+  //  console.log(this.sql)
     
-    }
+  //  }
     
   }
   showprompt(){
@@ -3988,9 +3996,10 @@ this.sqlselect = "Select " + this.ColumnNameAdjuster(this.list)//.join(" as Fiel
   back2adminRpt(){
     this.router.navigate(['/admin/reports']); 
   }
-  QueryFinlization(sql:string){
+  QueryFinlization(s_sql:string){
   //  console.log(sql)
-    
+      var S_SQL,sql = " ";
+      
     if(this.includeConatctWhere != undefined && this.includeConatctWhere != ""){ sql = sql + " AND " + this.includeConatctWhere}
     if(this.includeGoalcareWhere != undefined && this.includeGoalcareWhere != ""){sql = sql + " AND " + this.includeGoalcareWhere}
     if(this.includeReminderWhere != undefined && this.includeReminderWhere != ""){sql = sql + " AND " + this.includeReminderWhere}
@@ -4007,12 +4016,17 @@ this.sqlselect = "Select " + this.ColumnNameAdjuster(this.list)//.join(" as Fiel
     if(this.includeRecipientCompetencyWhere != undefined && this.includeRecipientCompetencyWhere != ""){sql = sql + " AND " + this.includeRecipientCompetencyWhere}
     if(this.includeCareplanWhere != undefined && this.includeCareplanWhere != ""){sql = sql + " AND " + this.includeCareplanWhere}
     if(this.includeHRCaseStaffWhere != undefined && this.includeHRCaseStaffWhere != ""){sql = sql + " AND " + this.includeHRCaseStaffWhere}
-
-   
+      
+   if(this.sqlcondition == undefined){
+    S_SQL = s_sql + ' where ' + sql.substring(6,sql.length+1);
+  }else{
+     S_SQL = s_sql + ' ' + sql
+  }
+//  console.log(S_SQL)
     if(this.ReportPreview == true){
-      return this.sql = sql;
+      return this.sql = S_SQL;
     }else{
-      return this.Saverptsql = sql;
+      return this.Saverptsql = S_SQL;
       
     }
   }
@@ -4073,7 +4087,7 @@ this.sqlselect = "Select " + this.ColumnNameAdjuster(this.list)//.join(" as Fiel
       this.loading = true;
       
 
-      this.printS.print(data).subscribe((blob: any) => {
+      this.printS.printControl(data).subscribe((blob: any) => {
         this.pdfTitle = "User Defined Report.pdf";
         this.drawerVisible = true;                   
         let _blob: Blob = blob;
@@ -8215,8 +8229,7 @@ TablesSetting(arr){
   //console.log(arr)
   FromSql = " From Recipients R" 
   
-              
-              
+  
   if(arr.includes("Carer Last Name") || arr.includes("Carer Age") || arr.includes("Carer Gender") || arr.includes("Carer Indigenous Status") || arr.includes("Carer First Name") ){
     FromSql = FromSql + " INNER JOIN RECIPIENTS C ON R.DatasetCarer = C.AccountNo  "
   }         

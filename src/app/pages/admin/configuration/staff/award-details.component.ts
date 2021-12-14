@@ -209,7 +209,7 @@ export class AwardDetailsComponent implements OnInit {
           "head6" : "End Date",
         }
       }
-      this.printS.print(data).subscribe(blob => {  
+      this.printS.printControl(data).subscribe((blob: any) => { 
         let _blob: Blob = blob;
         let fileURL = URL.createObjectURL(_blob);
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);

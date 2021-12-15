@@ -16,6 +16,10 @@ export class ListService {
         public http: HttpClient,
         public auth: AuthService
     ) { }
+
+    postmtapending(data: any):Observable<any>{
+        return this.auth.post(`${list}/mtapending`, data);
+    }
     
     GetRptFilters(): Observable<any>{
         return this.auth.getstring(`${list}/rptfilters`);

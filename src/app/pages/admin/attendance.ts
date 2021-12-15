@@ -55,6 +55,8 @@ export class AttendanceAdmin implements OnInit, OnDestroy {
     allCheckedCategories: boolean = false;
     allCheckedCoordinators: boolean = false;
 
+    loadingPending: boolean = false;
+
     indeterminateBranch = true;
     indeterminateTeams = true;
     indeterminateCategories = true;
@@ -62,6 +64,9 @@ export class AttendanceAdmin implements OnInit, OnDestroy {
 
     date: Date = new Date();
     nzSelectedIndex: number = 0;
+
+    dataSet: Array<any> = [];
+
 
     checkOptionsOne = [
         { label: 'Apple', value: 'Apple', checked: true },
@@ -272,6 +277,25 @@ export class AttendanceAdmin implements OnInit, OnDestroy {
     // End Categories
 
 
+    
+    reload(){
+      this.loadingPending = true;
+      let data = {
+        Date: '2021/12/11',
+        LocalTimezoneOffset: 0,
+        Coordinators: this.coordinators.filter(item => item.checked).map(x => x.label).join(','),
+        Branches: this.branches.filter(item => item.checked).map(x => x.label).join(','),
+        Categories: this.categories.filter(item => item.checked).map(x => x.label).join(',')
+      };
+      
+      this.listS.postmtapending(data).subscribe(data => {
+        console.log(data)
+        this.dataSet = data;
+        this.loadingPending = false;
+      }, () => {
+        this.loadingPending = false;
+      });
+    }
     
     
 }

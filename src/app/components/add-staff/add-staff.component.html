@@ -282,24 +282,26 @@
             </div>
 
             <div *ngIf="current == 6" [formGroup]="staffForm">
-
+                <label for="">Competencies</label>
+                <nz-checkbox-group [(ngModel)]="notifCompetenciesGroup" (ngModelChange)="competencyChange(notifCheckBoxes)"  [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
+                <!-- {{ competencies | json }} -->
             </div>
 
             <div *ngIf="current == 7" [formGroup]="staffForm">
                 <label for="">Notifications</label>
-                <nz-checkbox-group [(ngModel)]="notifCheckBoxes" (ngModelChange)="notif(notifCheckBoxes)"  [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
+                <nz-checkbox-group [(ngModel)]="notifCheckBoxes" (ngModelChange)="notifChange(notifCheckBoxes)"  [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
                 <nz-alert nzType="warning" *ngIf="notifCheckBoxes?.length == 0" nzMessage="No Notifications"></nz-alert>
             </div>
 
             <div *ngIf="current == 8" [formGroup]="staffForm">
                 <label for="">Followups</label>
-                <nz-checkbox-group [(ngModel)]="notifFollowUpGroup" (ngModelChange)="followup(notifFollowUpGroup)" [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
+                <nz-checkbox-group [(ngModel)]="notifFollowUpGroup" (ngModelChange)="followupChange(notifFollowUpGroup)" [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
                 <nz-alert nzType="warning" *ngIf="notifFollowUpGroup?.length == 0" nzMessage="No Followups"></nz-alert>
             </div>
 
             <div *ngIf="current == 9" [formGroup]="staffForm">
                 <label for="">Documents</label>
-                <nz-checkbox-group [(ngModel)]="notifDocumentsGroup" (ngModelChange)="notif(notifCheckBoxes)"  [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
+                <nz-checkbox-group [(ngModel)]="notifDocumentsGroup" (ngModelChange)="docChange(notifCheckBoxes)"  [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
                 <nz-alert nzType="warning" *ngIf="notifDocumentsGroup?.length == 0" nzMessage="No Documents"></nz-alert>
             </div>
 

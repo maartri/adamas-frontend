@@ -3,6 +3,8 @@ import { Component, OnInit, OnDestroy, Input } from '@angular/core'
 import { ListService } from '@services/index';
 import { forkJoin } from 'rxjs';
 
+import { format } from 'date-fns';
+
 @Component({
     styles: [`
     nz-checkbox-group >>> label {
@@ -281,7 +283,7 @@ export class AttendanceAdmin implements OnInit, OnDestroy {
     reload(){
       this.loadingPending = true;
       let data = {
-        Date: '2021/12/11',
+        Date:  format(this.date,'yyyy/MM/dd'),
         LocalTimezoneOffset: 0,
         Coordinators: this.coordinators.filter(item => item.checked).map(x => x.label).join(','),
         Branches: this.branches.filter(item => item.checked).map(x => x.label).join(','),

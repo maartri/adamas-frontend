@@ -411,10 +411,35 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
       }
   }
 
+  specialPages: Array<number> = [0,3];
+
   get nextRequired() {
+    
+    const {
+      type,               //category
+      accountNo,
+
+      surnameOrg,         //lastname
+      firstName,          //firstname
+      gender,             //gender
+      birthDate,          //birthdate
+
+      jobCategory,        //job category
+      manager,            //manager
+      branch,             //branch
+      commencementDate,   //commencement date      
+      notes,
+      activity
+  } = this.staffForm.value;
+
     if(this.current == 0 && (!this.globalS.isEmpty(this.staffForm.get('surnameOrg').value)   && (!this.accountTaken) && (this.staffForm.get('orgType').value === 'Organisation'))) return true;
+   
     if(this.current == 0 && (this.staffForm.get('orgType').value === 'Individual') && this.checkIfPersonalDetailsHasNoValue()  && (!this.accountTaken) && !this.globalS.isEmpty(this.staffForm.get('accountNo').value)) return true;
-    if(this.current > 0) return true;
+
+    if(this.current == 3 && (!this.globalS.isEmpty(activity) && !this.globalS.isEmpty(manager) && !this.globalS.isEmpty(branch) && !this.globalS.isEmpty(jobCategory))) return true;
+
+    if(!this.specialPages.includes(this.current)) return true;
+
     return false;
   }
 
@@ -446,7 +471,7 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
 
   save(){
     
-    // console.log('saved');
+    console.log(this.notifCompetenciesGroup);
     // return;
 
     const {
@@ -517,7 +542,8 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
               pan_Manager: manager
           },
           NamesAndAddresses: addressList,
-          PhoneFaxOther: contactList
+          PhoneFaxOther: contactList,
+          Competencies: this.notifCompetenciesGroup.filter(x => x.checked).map(x => x.label)
       }).subscribe(data => {
           if(data){
               this.globalS.sToast('Success','Staff Added');
@@ -531,10 +557,7 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
                 this.emailnotify(); 
               }
 
-              this.reload.next(true);
-
-
-              
+              this.reload.next(true);              
           }
       });
   }

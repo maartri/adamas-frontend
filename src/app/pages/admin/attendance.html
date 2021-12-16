@@ -1,6 +1,6 @@
 <div>
     <div nz-row>
-        <div nz-col nzSpan="6" style="padding:15px;border-right: 1px solid #ededed;">
+        <div nz-col nzSpan="6" style="padding:15px;border-right: 1px solid #ededed;height: calc(100vh - 75px);overflow: auto;" >
             <div nz-row>
                 <nz-date-picker [(ngModel)]="date" ></nz-date-picker>
             </div>
@@ -60,7 +60,7 @@
            </div>
            <div nz-row>
 
-            <i nz-icon nzType="sync" nzTheme="outline"></i>
+            <i nz-icon nzType="sync" (click)="reload()" nzTheme="outline"></i>
             <i nz-icon nzType="printer" nzTheme="outline"></i>
             <i nz-icon nzType="issues-close" nzTheme="outline"></i>
             
@@ -74,7 +74,36 @@
 
                 <div>
                     <div *ngIf="nzSelectedIndex == 0">
-                        pending
+                        <nz-table #basicTable [nzData]="dataSet" [nzSize]="'small'" [nzLoading]="loadingPending">
+                            <thead>
+                              <tr>
+                                <th>Staff</th>
+                                <th>Recipient</th>
+                                <th>Service Type</th>
+                                <th>Roster Start</th>
+                                <th>Duration</th>
+                                <th>Roster End</th>
+                                <th>Status</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let data of basicTable.data">
+                                <td>{{data.staff}}</td>
+                                <td>{{data.recipient}}</td>
+                                <td>{{data.serviceType}}</td>
+
+                                <td>{{data.rosterStart}}</td>
+                                <td>{{data.duration}}</td>
+                                <td>{{data.rosterEnd}}</td>
+                                <td>{{data.taMultishift}}</td>
+                                <!-- <td>
+                                  <a>Action 一 {{data.name}}</a>
+                                  <nz-divider nzType="vertical"></nz-divider>
+                                  <a>Delete</a>
+                                </td> -->
+                              </tr>
+                            </tbody>
+                          </nz-table>
                     </div>
 
                     <div *ngIf="nzSelectedIndex == 1">

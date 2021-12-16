@@ -1177,6 +1177,7 @@ ReportRender(){
     } else {
       this.indeterminate = true;
       this.allChecked = false;
+      this.testcheck  = false;
     }
   }
   updateSingleCheckedFilters(index:number): void {

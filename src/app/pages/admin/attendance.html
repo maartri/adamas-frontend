@@ -74,34 +74,33 @@
 
                 <div>
                     <div *ngIf="nzSelectedIndex == 0">
-                        <nz-table #basicTable [nzData]="dataSet" [nzSize]="'small'" [nzLoading]="loadingPending">
+                        <nz-table #virtualTable nzVirtualScroll [nzData]="dataSet" [nzSize]="'small'" [nzLoading]="loadingPending" [nzBordered]="true"
+                        [nzVirtualForTrackBy]="trackByIndex" [nzVirtualForTrackBy]="trackByIndex" [nzFrontPagination]="false" [nzSize]="'middle'"
+                        [nzShowPagination]="false" [nzScroll]="{ x: '1000px', y: 'calc(100vh - 238px)' }">
                             <thead>
                               <tr>
-                                <th>Staff</th>
-                                <th>Recipient</th>
-                                <th>Service Type</th>
-                                <th>Roster Start</th>
-                                <th>Duration</th>
-                                <th>Roster End</th>
-                                <th>Status</th>
+                                <th style="width:200px">Staff</th>
+                                <th style="width:200px">Recipient</th>
+                                <th style="width:200px">Service Type</th>
+                                <th style="width:100px">Roster Start</th>
+                                <th style="width:100px">Duration</th>
+                                <th style="width:100px">Roster End</th>
+                                <th style="width:100px">Status</th>
                               </tr>
                             </thead>
                             <tbody>
-                              <tr *ngFor="let data of basicTable.data">
-                                <td>{{data.staff}}</td>
-                                <td>{{data.recipient}}</td>
-                                <td>{{data.serviceType}}</td>
-
-                                <td>{{data.rosterStart}}</td>
-                                <td>{{data.duration}}</td>
-                                <td>{{data.rosterEnd}}</td>
-                                <td>{{data.taMultishift}}</td>
-                                <!-- <td>
-                                  <a>Action 一 {{data.name}}</a>
-                                  <nz-divider nzType="vertical"></nz-divider>
-                                  <a>Delete</a>
-                                </td> -->
-                              </tr>
+                                <ng-template nz-virtual-scroll let-data let-index="index">
+                                    <tr>
+                                        <td style="width:200px">{{data.staff}}</td>
+                                        <td style="width:200px">{{data.recipient}}</td>
+                                        <td style="width:200px">{{data.serviceType}}</td>
+        
+                                        <td style="width:100px">{{data.rosterStart}}</td>
+                                        <td style="width:100px">{{data.duration}}</td>
+                                        <td style="width:100px">{{data.rosterEnd}}</td>
+                                        <td style="width:100px">{{data.taMultishift}}</td>
+                                      </tr>
+                                </ng-template>                       
                             </tbody>
                           </nz-table>
                     </div>

@@ -68,7 +68,8 @@
 </div>
 
 
-<app-leave-application *ngIf="user" [open]="putonLeaveModal" [operation]="operation" [user]="user"></app-leave-application>
+<app-leave-application *ngIf="user" [open]="putonLeaveModal" [operation]="operation" [user]="user" (refresh)="reload($event)"></app-leave-application>
+
 <nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
     <div class="col-md-12 spinner" *ngIf="loadingPDF">
         <nz-spin nzSimple [nzSize]="'large'"></nz-spin>

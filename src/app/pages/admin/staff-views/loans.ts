@@ -110,7 +110,7 @@ export class StaffLoansAdmin implements OnInit, OnDestroy {
     buildForm() {
         this.inputForm = this.formBuilder.group({
             personID: [this.user.id],
-            recordNumber:[''],
+            recordNumber: 0,
             group:['LOANITEMS'],
             type: [''],
             name: ['', Validators.required],
@@ -203,6 +203,9 @@ export class StaffLoansAdmin implements OnInit, OnDestroy {
 
         if (!this.inputForm.valid)
             return;
+
+        // console.log(this.inputForm.value);
+        // return;
         
         this.isLoading = true;
             this.timeS.postnotesloans(this.inputForm.value).pipe(takeUntil(this.unsubscribe))

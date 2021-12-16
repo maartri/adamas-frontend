@@ -273,5 +273,7 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
     this.searchModel = this.lists[this.lists.map(x => x.uniqueID).indexOf(selected.uniqueID)];
     // console.log(this.searchModel + "----");
     this.change(this.searchModel);
+    this.globalS.sToast('Success', 'Staff Display Sucessfully');
+    this.clearPhoneModal();
   }
 }

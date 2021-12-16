@@ -162,21 +162,7 @@
                                                     </div>    
                                                        
                                                      
-                                                </div> <!--   
-                                                <div>                                        
-                                                    <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal(this.id)" disabled >
-                                                    <i nz-icon nzType="printer"></i>
-                                                    Ashmore Client List
-                                                </button> 
-                                                </div>
-                                                
-                                                
-                                                <div>                                        
-                                                    <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal(this.id)" disabled >
-                                                    <i nz-icon nzType="printer"></i>
-                                                    Palm Beach Client List
-                                                </button> 
-                                                </div> -->                                           
+                                                </div> 
                                                                                                                                                                                          
                                             </li>                  
                                         </ul>
@@ -201,19 +187,7 @@
                                                         </button>
                                                     </div>                                                                                                                
                                                 </div>
-                                                <!--
-                                                <div>                                        
-                                                    <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal(this.id)" disabled >
-                                                    <i nz-icon nzType="printer"></i>
-                                                    Approved Service Coordinator
-                                                </button> 
-                                                </div>
-                                                <div>                                        
-                                                    <button nz-button nzType="default" id="btn-r-refferallist" (click)="showModal(this.id)" disabled >
-                                                    <i nz-icon nzType="printer"></i>
-                                                    UnApproved Service Coordinator
-                                                </button> 
-                                                </div>       -->                                                                                                                             
+                                                                                                                                                                             
                                             </li>                  
                                         </ul>
                                     </div>
@@ -251,12 +225,12 @@
                                             Incident Register
                                         </button> 
                                         </div>
-                                    <!--    <div>                                        
-                                            <button nz-button nzType="default" id="btn-r-LagTimeRegister" (click)="showModal(this.id)" disabled >
+                                    <div>                                        
+                                            <button nz-button nzType="default" id="btn-Regis-LagTimeRegister" (click)="showModal(this.id)" >
                                             <i nz-icon nzType="printer"></i>
                                             Lag Time Register
                                         </button> 
-                                        </div> -->
+                                        </div> 
                                         <div>                                        
                                             <button nz-button nzType="default" id="btn-Regis-loanregister" (click)="showModal(this.id)" >
                                             <i nz-icon nzType="printer"></i>
@@ -1706,13 +1680,13 @@
     </div>
     
     
-    
+    <!-- [nzScroll]="{ x:'1000px',y:'calc(100vh-238px)'}" [nzHeight]= "650" width="1224"  height="calc(100vh-300px)" -->
         
-    <nz-drawer [nzHeight]= "650" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="top" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
+    <nz-drawer  [nzClosable]="true"  class="drawer"  [nzVisible]="drawerVisible" nzPlacement="top" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()"  >
         <div class="col-md-12 spinner" *ngIf="loading">
             <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
         </div>
         <div nz-row>   
-            <iframe *ngIf="tryDoctype" [src]="tryDoctype" width="1224" height="650" ></iframe> 
+            <iframe *ngIf="tryDoctype" class="iframe" [src]="tryDoctype"   ></iframe> 
         </div>
     </nz-drawer>

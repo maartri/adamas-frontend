@@ -117,11 +117,15 @@ const inputFormDefault = {
     margin-left: 20px;
   }
   .tree_frame{
-    height: 500px;
+    height: 100vh;
     overflow-y: scroll;
   }
   .form-group label{
     font-weight: bold;
+}
+nz-layout[_ngcontent-dhj-c382] {
+  background: #85B9D5;
+  height: 109vh;
 }
   
     `],

@@ -9,6 +9,8 @@ import parseISO from 'date-fns/parseISO'
 import { RemoveFirstLast } from '../../pipes/pipes';
 import { mergeMap, debounceTime, distinctUntilChanged, first, take, takeUntil, switchMap, concatMap } from 'rxjs/operators';
 import * as moment from 'moment';
+import format from 'date-fns/format';
+import addDays from 'date-fns/addDays'
 
 const noop = () => {};
 
@@ -72,6 +74,10 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
   followups: Array<string>;
 
   notifCheckBoxes: Array<string> = [];
+  notifCompetenciesGroup: Array<any> = [];
+
+  competencies: Array<string> = [];
+
   datalist: Array<string>;
 
   private verifyAccount = new Subject<any>();
@@ -456,11 +462,11 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
           manager,            //manager
           branch,             //branch
           commencementDate,   //commencement date      
-          
+          notes
       } = this.staffForm.value;
 
       if(
-          this.globalS.isEmpty(commencementDate) || 
+          // this.globalS.isEmpty(commencementDate) || 
           this.globalS.isEmpty(manager) || 
           this.globalS.isEmpty(branch) || 
           this.globalS.isEmpty(jobCategory)
@@ -516,16 +522,102 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
           if(data){
               this.globalS.sToast('Success','Staff Added');
               this.handleCancel();
+
+              if (this.globalS.followups != null){
+                this.writereminder(data.uniqueId, notes, this.notifFollowUpGroup);
+              }
+              
+              if (this.globalS.emailaddress != null){
+                this.emailnotify(); 
+              }
+
               this.reload.next(true);
+
+
+              
           }
       });
-
   }
+
+  writereminder(personid: string, notes: string, followups: Array<any>){
+    var sql = '', temp = '';
+  
+    // console.log(this.notifFollowUpGroup);
+
+    for(var followup of followups)
+    {
+      var dateCounter = parseInt(followup.dateCounter);
+      var reminderDatePlusDateCounter = format(addDays(new Date(), dateCounter),'dd/MM/yyyy');
+
+      if(followup.checked){
+        sql = sql +"INSERT INTO HumanResources([PersonID], [Notes], [Group],[Type],[Name],[Date1],[Date2]) VALUES ('"+personid+"','"+ notes+"',"+"'RECIPIENTALERT','RECIPIENTALERT','" + followup.label + "','" + reminderDatePlusDateCounter +"','"+ reminderDatePlusDateCounter +"');";
+      }
+    }
+
+    // let Date1 : Date   = new Date();
+    // let Date2 : Date   = new Date(Date1);
+    
+    // temp = (this.globalS.followups.label).toString().substring(0,2);
+    
+    // switch (temp) {
+    //   case '10':
+    //   Date2.setDate(Date2.getDate() + 10)
+      
+    //   break;
+    //   case '30':
+    //   Date2.setDate(Date2.getDate() + 30)
+    //   break;
+      
+    //   default:
+    //   break;
+    // }
+
+    // sql = "INSERT INTO HumanResources([PersonID], [Notes], [Group],[Type],[Name],[Date1],[Date2]) VALUES ('"+this.globalS.id.toString()+"','"+ this.globalS.followups.label.toString()+"',"+"'RECIPIENTALERT','RECIPIENTALERT','FOLLOWUP REMINDER','" +format(Date1,'yyyy/MM/dd') +"','"+format(Date2,'yyyy/MM/dd') +"') ";
+    
+    this.clientS.addRefreminder(sql).subscribe(x => console.log(x) );                  
+    // this.globalS.followups = null;
+  }
+
+  emailnotify(){              
+              
+    const { notes } = this.staffForm.value;
+
+    let notifications =  this.notifCheckBoxes.filter((x:any) => x.checked == true);
+    let emails = notifications.map((x: any) => x.email).join(';')
+
+    // var emailTo = this.globalS.emailaddress; 
+    
+    var emailSubject = "ADAMAS NOTIFICATION";
+    var emailBody = notes;  
+
+    location.href = "mailto:" + emails + "?" +     
+    (emailSubject ? "subject=" + emailSubject : "") + 
+    (emailBody ? "&body=" + emailBody : "");
+    
+    this.globalS.emailaddress = null;              
+  }
+
 
   populateNotificationDetails(){
 
    const { manager, branch, activity } = this.staffForm.value;
    const listname = 'StaffOnBoard Notification';
+
+   this.listS.getstaffcompetencylist({
+    branch: branch,
+    type: activity,
+    fundingType: 'SW-CAS',
+    group: 'COMPETENCY'
+   }).subscribe(data =>{
+    this.notifCompetenciesGroup = data.map(x => {
+      return {
+        label: x,
+        value: x,
+        disabled: false,
+        checked: true
+      }
+    });
+   })
 
 
     this.listS.getnotifications({
@@ -619,5 +711,26 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
     this.staffForm.patchValue({
       birthDate: this.defaultBirthDate()
     });
+  }
+
+  notifChange(data: any){ 
+    var temp1 = data.filter(x => x.checked === true).map(x => x.email);
+    this.globalS.emailaddress = temp1;
+  }
+
+  followupChange(data: any){
+    var temp
+    temp = data.find(x => x.checked === true)
+    this.globalS.followups = temp
+  } 
+
+     
+  docChange(data:any){                    
+    var temp = data.find(x => x.checked === true)
+    this.globalS.doc = temp.label.toString();                    
+  }
+
+  competencyChange(data: any){
+    
   }
 }

@@ -157,7 +157,7 @@ export class StaffPositionAdmin implements OnInit, OnDestroy {
                     if (data) {
                         this.handleCancel();
                         this.success();
-                        this.globalS.sToast('Success', 'Data Deleted');
+                        this.globalS.sToast('Success', 'Position Successfully Added ');
                     }
                 })
         }
@@ -168,7 +168,7 @@ export class StaffPositionAdmin implements OnInit, OnDestroy {
                     if (data) {
                         this.handleCancel();
                         this.success();
-                        this.globalS.sToast('Success', 'Data Updated');
+                        this.globalS.sToast('Success', 'Position Successfully Updated');
                     }                    
                 })
         }
@@ -192,7 +192,7 @@ export class StaffPositionAdmin implements OnInit, OnDestroy {
                 if (data) {
                     this.handleCancel();
                     this.success();
-                    this.globalS.sToast('Success', 'Data Deleted');
+                    this.globalS.sToast('Success', 'Position Successfully Deleted');
                 }
             });
     }

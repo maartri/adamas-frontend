@@ -316,7 +316,13 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
     this.listS.getlistbranches().subscribe(data => this.branchesArr = data);
     this.listS.getliststaffgroup().subscribe(data => this.jobCategoryArr = data);
     this.listS.getlistcasemanagers().subscribe(data => this.managerArr = data);
-    this.listS.getstaffactivities().subscribe(data => this.activities = data)
+    this.listS.getstaffactivities().subscribe(data => {
+      this.activities = data;
+
+      if(this.activities.length  == 1 ){
+        this.staffForm.patchValue({ activity: this.activities[0] })
+      }
+    })
   }
 
   ngOnInit(): void {

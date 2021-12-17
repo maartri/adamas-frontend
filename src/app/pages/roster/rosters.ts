@@ -534,7 +534,242 @@ setPattern(d:string){
 setFrequency(d:string){
     this.Frequency=d;
 }
+
+Check_BreachedRosterRules(){
+
+    const tsheet= this.bookingForm.value;
+    let clientCode ='';
+    let carerCode = '';
+    if (this.viewType=="Staff"){
+        if (this.IsGroupShift)
+            clientCode="!MULTIPLE";
+        else
+            clientCode = tsheet.recipientCode;
+
+        carerCode= this.selected.data;
+    }
+    
+    if (this.viewType=="Recipient"){
+        carerCode = this.selectedCarer
+        clientCode=this.recipient.data
+    }
+    var durationObject = (this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime));        
+
+    let inputs_breach={
+        sMode : 'Edit', 
+        sStaffCode: carerCode, 
+        sClientCode: clientCode, 
+        sProgram: tsheet.program, 
+        sDate : format(this.date,'yyyy/MM/dd'), 
+        sStartTime :format(this.defaultStartTime,'HH:mm'), 
+        sDuration : durationObject.duration, 
+        sActivity : tsheet.serviceActivity.activity,
+        // sRORecordno : '-', 
+        // sState : '-', 
+        // bEnforceActivityLimits :0, 
+        // bUseAwards:0, 
+        // bDisallowOT :0, 
+        // bDisallowNoBreaks :0, 
+        // bDisallowConflicts :0, 
+        // bForceNote :0, 
+        // sOldDuration : '-', 
+        // sExcludeRecords : '-', 
+        // bSuppressErrorMessages  :0, 
+        // sStatusMsg : '-',
+        // PasteAction :'-'
+    };
+
+    this.timeS.Check_BreachedRosterRules(inputs_breach).subscribe(data=>{
+        let res=data[0]
+        if (res.errorValue>0){
+            this.globalS.eToast('Error', res.errorValue +", "+ res.msg);
+            return; 
+        }else{
+            this.AddRoster_Entry();
+        }
+
+    });
+}
 doneBooking(){
+
+    this.Check_BreachedRosterRules();
+    if (1==1) return;
+    this.addBookingModel=false;
+    this.add_UnAllocated=false;
+    this.select_StaffModal=false;
+    this.ShowCentral_Location=false
+    this.current = 0;
+    this.booking_case=0;
+ 
+    if (this.viewType=="Staff" &&  this.IsGroupShift && this.showGroupShiftRecipient==false){
+        this.addBookingModel=false;
+        this.get_group_Shift_Setting()    
+        return;        
+    }    
+    this.showGroupShiftRecipient=false;
+
+    if (this.type_to_add<=0){
+        if (this.rosterGroup=="")
+            this.rosterGroup= this.defaultActivity.rosterGroup;
+        this.serviceType=this.DETERMINE_SERVICE_TYPE_NUMBER(this.rosterGroup)
+    }else
+        this.serviceType=this.type_to_add;
+    //const { recipientCode, Program, serviceActivity, isMultipleRecipient } = this.bookingForm.value;
+
+    //this.fixStartTimeDefault();
+      
+
+        let date=this.date;
+        let time = {startTime:this.defaultStartTime, endTime:this.defaultEndTime, duration:0};
+        const tsheet =  this.bookingForm.value;
+      
+        if (this.type_to_add!=13  && (tsheet.serviceActivity==null || tsheet.serviceActivity=="")){
+           
+            this.globalS.eToast('Error', 'No Service type is selected');
+            return;            
+        }
+        let clientCode ='';
+        let carerCode = '';
+        if (this.viewType=="Staff"){
+            if (this.IsGroupShift)
+                clientCode="!MULTIPLE";
+            else
+                clientCode = tsheet.recipientCode;
+
+            carerCode= this.selected;
+        }
+        
+        if (this.viewType=="Recipient"){
+            carerCode = this.selectedCarer
+            clientCode=this.recipient.data
+        }
+       
+                
+        if ( this.serviceType==1)
+            carerCode = "BOOKED"
+
+        var durationObject = (this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime));        
+        this.date = parseISO(this.datepipe.transform(this.date, 'yyyy-MM-dd'));
+        tsheet.date=this.date;
+        if (this.create_Recurrent_Rosters){
+            tsheet.date= this.recurrentStartDate;
+            let stime=  parseISO(new Date(this.recurrentStartTime).toISOString());
+            let etime=  parseISO(new Date(this.recurrentEndTime).toISOString());
+            let dd=this.recurrentStartDate.getFullYear() + '/' +  this.numStr( this.recurrentStartDate.getMonth()+1) +'/' + this.numStr(this.recurrentStartDate.getDate());
+            this.defaultStartTime = parseISO(new Date(dd + " " + format(stime,'HH:mm')).toISOString());
+            this.defaultEndTime = parseISO(new Date(dd+ " " + format(etime,'HH:mm') ).toISOString());
+                      
+            time = {startTime:stime, endTime:etime, duration:0};
+            durationObject = (this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime));        
+           
+            //return;
+        }
+
+
+        tsheet.recordNo=0;
+        let inputs = {
+           
+            billQty: (tsheet.bill.quantity==null || tsheet.bill.quantity==0) ? (tsheet.bill.pay_Unit=='HOUR'? this.roundToTwo(durationObject.duration/12) : 1):0 || 0,
+            billTo: clientCode,
+            billUnit: tsheet.bill.pay_Unit || 0,
+            blockNo: durationObject.blockNo,
+            carerCode: this.selected.option == 0 ? this.selected.data : carerCode,
+            clientCode: this.selected.option == 0 ? clientCode : this.selected.data,
+            costQty: (tsheet.pay.quantity==null || tsheet.pay.quantity==0)? (tsheet.pay.pay_Unit=='HOUR'? this.roundToTwo(durationObject.duration/12) : 1 ):0 || 0,
+            costUnit: tsheet.pay.pay_Unit || 0,
+            date: format(tsheet.date,'yyyy/MM/dd'),
+            dayno: parseInt(format(tsheet.date, 'd')),
+            duration: durationObject.duration,
+            groupActivity: false,
+            haccType: tsheet.haccType || "",
+            monthNo: parseInt(format(tsheet.date, 'M')),
+            program: tsheet.program,
+            serviceDescription:  tsheet.payType==null || tsheet.payType=='' || this.GroupShiftCategory=='TRANSPORT' ? tsheet.serviceActivity.service_Description :  tsheet.payType,
+            serviceSetting: tsheet.serviceSetting || "",
+            serviceType: tsheet.serviceActivity.activity || "",
+            paytype: tsheet.payType,
+            anal: tsheet.analysisCode=='' ||  tsheet.analysisCode==null ? tsheet.serviceActivity.anal :  tsheet.analysisCode,
+            staffPosition: null || "",
+            startTime: format(time.startTime,'HH:mm'),
+            status: "1",
+            taxPercent: tsheet.bill.tax || 0,
+            transferred: 0,            
+            type: this.serviceType,
+            unitBillRate:( tsheet.bill.bill_Rate || 0),
+            unitPayRate: tsheet.pay.pay_Rate || 0,
+            yearNo: parseInt(format(tsheet.date, 'yyyy')),
+            serviceTypePortal: tsheet.serviceType,
+            recordNo: tsheet.recordNo,
+            date_Timesheet: this.date_Timesheet,
+            dischargeReasonType:this.haccCode,
+            creator: this.token.user
+            
+        };
+
+           
+    if (!this.isBookingValid(inputs)){
+        this.globalS.eToast('Error', 'There are some invalid entries');
+        return;
+        
+    }
+        var sheet = this.spreadsheet.getActiveSheet();
+        var sels = sheet.getSelections();
+        var sel = sels[0];
+        var row = sel.row;
+        
+        for (let i=0; i<sels[0].colCount; i++)
+         {   
+
+            this.timeS.posttimesheet(inputs).subscribe(data => {
+                this.NRecordNo=data;
+                if  (this.create_Recurrent_Rosters==false &&  this.add_multi_roster==false) {
+                   // this.globalS.sToast('Success', 'Roster has been added successfully');
+                    this.searchRoster(tsheet.date)
+                 }
+                  this.addTimesheetVisible = false;
+             
+     
+               // this.picked(this.selected);
+                this.IsGroupShift=false;
+               console.log(data)
+
+               if (this.add_multi_roster){
+
+                this.add_multi_roster=false;
+                this.AddMultiShiftRosters();
+                this.Transport_Form_Title=this.date + " " + this.defaultActivity
+                this.TransportForm.reset();
+                if (this.GroupShiftCategory=='TRANSPORT')
+                  this.showTransportModal=true;
+                this.searchRoster(tsheet.date)
+            }
+        
+
+            if (this.create_Recurrent_Rosters){
+                this.AddRecurrentRosters();
+            }
+
+            if (this.viewType=='Staff'){
+                    
+                this.txtAlertSubject= 'NEW SHIFT ADDED : ' ;
+                this.txtAlertMessage= 'NEW SHIFT ADDED : \n' + format(tsheet.date,'dd/MM/yyyy') + ' : \n' + inputs.clientCode + '\n'  ;
+                this.clientCodes=inputs.clientCode;
+
+                this.show_alert=true;
+            }
+               
+           });
+           tsheet.date=this.addDays(tsheet.date,1);
+           inputs.date=format(tsheet.date,'yyyy/MM/dd')
+           inputs.dayno= parseInt(format(tsheet.date, 'd'));
+        }
+            this.addRecurrent=false;
+            
+           // this.resetBookingFormModal()
+    
+}
+
+AddRoster_Entry(){
 
     this.addBookingModel=false;
     this.add_UnAllocated=false;
@@ -1003,10 +1238,10 @@ addBooking(type:any){
                 this.IsStaffAllocated(this.selectedCarer,this.date,startTime,this.durationObject.duration).subscribe(data=>{
                    
                     if (data.length>0){
-                        this.globalS.eToast('Booking', `Staff ${this.selectedCarer} is already allocated in this date and time slot`);
+                        this.globalS.wToast('Booking', `Staff ${this.selectedCarer} is already allocated in this date and time slot`);
                         status=true;
-                        this.addBookingModel=false;
-                        return;
+                        this.addBookingModel=true;
+                        //return;
                     }else
                     this.addBookingModel=true;
                 });

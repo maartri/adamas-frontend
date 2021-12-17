@@ -5,6 +5,18 @@ import { forkJoin } from 'rxjs';
 
 import { format } from 'date-fns';
 
+
+export interface VirtualDataInterface {
+  index: number;
+  staff: string;
+  recipient: string;
+  serviceType: string;
+  rosterStart: any;
+  duration: any;
+  rosterEnd: any;
+  taMultishift: any;
+}
+
 @Component({
     styles: [`
     nz-checkbox-group >>> label {
@@ -298,6 +310,10 @@ export class AttendanceAdmin implements OnInit, OnDestroy {
         this.loadingPending = false;
       });
     }
+
+    trackByIndex(_: number, data: VirtualDataInterface): number {
+      return data.index;
+  }
     
     
 }

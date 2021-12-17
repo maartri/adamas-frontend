@@ -544,10 +544,6 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
           }
       }).filter(x => x);
 
-      console.log(addressList);
-      console.log(contactList);
-
-      // return;
 
       this.staffS.poststaffprofile({
           Staff: {

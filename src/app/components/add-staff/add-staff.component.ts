@@ -353,7 +353,8 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
   createContact(): FormGroup{    
     return this.fb.group({
       contacttype: new FormControl(null),
-      contact: new FormControl('')
+      contact: new FormControl(''),
+      primary: new FormControl(false)
     });
   }
 
@@ -361,7 +362,8 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
     return this.fb.group({
       address1: new FormControl(''),
       type: new FormControl(null),
-      suburb: new FormControl('')
+      suburb: new FormControl(''),
+      primary: new FormControl(false)
     });
   }
 
@@ -370,10 +372,12 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
 
     groupArr =[ new FormGroup({
       contacttype: new FormControl('HOME'),
-      contact: new FormControl('')
+      contact: new FormControl(''),
+      primary: new FormControl(false)
     }),new FormGroup({
         contacttype: new FormControl('MOBILE'),
-        contact: new FormControl('')
+        contact: new FormControl(''),
+        primary: new FormControl(false)
     })]
     return groupArr;
   }
@@ -384,11 +388,13 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
     groupArr =[ new FormGroup({
         type: new FormControl('USUAL'),
         address1: new FormControl(''),
-        suburb: new FormControl('')
+        suburb: new FormControl(''),
+        primary: new FormControl(false)
     }),new FormGroup({
        type: new FormControl('POSTAL'),
         address1: new FormControl(''),
-        suburb: new FormControl('')
+        suburb: new FormControl(''),
+        primary: new FormControl(false)
     })]
     return groupArr;
   }
@@ -477,7 +483,7 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
 
   save(){
     
-    console.log(this.notifCompetenciesGroup);
+    // console.log(this.notifCompetenciesGroup);
     // return;
 
     const {
@@ -506,7 +512,8 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
           return;
         }
 
-
+      //  this.writereminder('asdas', notes, this.notifFollowUpGroup);
+      //  return;
 
       var addressList = (this.staffForm.value.addressForm).map(x => {
           let pcode = /(\d+)/g.test(x.suburb) ? x.suburb.match(/(\d+)/g)[0] : "";
@@ -518,10 +525,12 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
                   description: x.type,
                   address1: x.address1.trim(),
                   suburb: suburb.trim(),
-                  postcode: pcode.trim()
+                  postcode: pcode.trim(),
+                  primaryAddress: x.primary
               }
           }
-      }).filter(x => x)
+      }).filter(x => x);
+      
       
       var contactList = (this.staffForm.value.contactForm).map(x => {
           if( !_.isEmpty(x.contact) && !_.isEmpty(x.contacttype) )
@@ -529,10 +538,16 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
               return {
                   detail: x.contact,
                   type: x.contacttype,
-                  personID: ''
+                  personID: '',
+                  primaryPhone: x.primary
               }
           }
       }).filter(x => x);
+
+      console.log(addressList);
+      console.log(contactList);
+
+      // return;
 
       this.staffS.poststaffprofile({
           Staff: {
@@ -602,8 +617,8 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
     // }
 
     // sql = "INSERT INTO HumanResources([PersonID], [Notes], [Group],[Type],[Name],[Date1],[Date2]) VALUES ('"+this.globalS.id.toString()+"','"+ this.globalS.followups.label.toString()+"',"+"'RECIPIENTALERT','RECIPIENTALERT','FOLLOWUP REMINDER','" +format(Date1,'yyyy/MM/dd') +"','"+format(Date2,'yyyy/MM/dd') +"') ";
-    
-    this.clientS.addRefreminder(sql).subscribe(x => console.log(x) );                  
+    console.log(sql);
+    // this.clientS.addRefreminder(sql).subscribe(x => console.log(x) );                  
     // this.globalS.followups = null;
   }
 
@@ -762,4 +777,36 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
   competencyChange(data: any){
     
   }
+
+  addressIsPrimary(index: any){
+    this.uncheckPrimaryAddress();
+    var address = this.staffForm.get('addressForm') as FormArray;
+    var isPrimary = address.controls[index].get('primary').value
+    address.controls[index].get('primary').patchValue(!isPrimary);    
+  }
+
+  uncheckPrimaryAddress(){
+    var contact = this.staffForm.get('addressForm') as FormArray;
+    for(var c of contact.controls)
+    { 
+      c.get('primary').patchValue(false);
+    }
+  }
+
+  contactIsPrimary(index: any){
+    this.uncheckPrimaryContacts();
+    var contact = this.staffForm.get('contactForm') as FormArray;
+    var isPrimary = contact.controls[index].get('primary').value
+    contact.controls[index].get('primary').patchValue(!isPrimary);    
+  }
+
+  uncheckPrimaryContacts(){
+    var contact = this.staffForm.get('contactForm') as FormArray;
+    for(var c of contact.controls)
+    { 
+      c.get('primary').patchValue(false);
+    }
+  }
+
+
 }

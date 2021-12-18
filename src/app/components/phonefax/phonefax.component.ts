@@ -50,16 +50,21 @@ export class PhonefaxComponent implements OnInit, OnDestroy ,ControlValueAccesso
   }
 
   ngOnInit() {
-    this.inputChange$.pipe(debounceTime(300)).subscribe(e => {
-      var contactNo = `+63${this.isMobileType() || ''}${this.firstFourNo || ''}${this.lastFourNo || ''}`
-      this.writeValue(contactNo);
+    this.inputChange$.pipe(debounceTime(100)).subscribe(e => {
+      var contactNo = `+61${this.isMobileType() || ''}${this.firstFourNo || ''}${this.lastFourNo || ''}`
+
+      this.error = this.validateLength(contactNo);
+      this.onChangeCallback(contactNo);
     });
+  }
+
+  validateLength(num: string): boolean {
+    return !(num.length == 13)
   }
 
   writeValue(value: any) {
     if (value) {
       this.innerValue = this.validateNumber(value);
-
       if (this.innerValue) {
         this.error = false;
         this.select(this.innerValue);        
@@ -173,28 +178,7 @@ export class PhonefaxComponent implements OnInit, OnDestroy ,ControlValueAccesso
       return data;
     }
 
-    // if(data )
-    // // 13 is the length of phone/tel #
-    // if (data.includes('+63')&& data.length == 13 && !isNaN(+data.slice(1, 14))) {
-    //   this.areaCode = data.slice(4, 5);
-    //   this.firstFourNo = data.slice(5, 9);
-    //   this.lastFourNo = data.slice(9, 14);
-    //   return data;
-    // }
-
-    // if (data.includes('63')&& data.length == 12 && !isNaN(+data.slice(1, 13))) {
-    //   this.areaCode = data.slice(3, 4);
-    //   this.firstFourNo = data.slice(4, 8);
-    //   this.lastFourNo = data.slice(8, 13);
-    //   return data;
-    // }
-
-    // if(data.length == 10 && data.slice(0,2) == '04'){
-    //   this.areaCode = data.slice(0, 2);
-    //   this.firstFourNo = data.slice(2, 6);
-    //   this.lastFourNo = data.slice(6, 10);
-    //   return data;
-    // }
+    
     
     return null;
   }

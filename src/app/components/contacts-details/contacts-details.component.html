@@ -1,6 +1,7 @@
 <div ng-row >
     <div nz-row>
         <button class="botton success" (click)="modalOpen = true;populate()">Add Contact</button>
+        <button  nz-button nzType="primary" (click)="searchKin(user)">Refresh</button>
     </div>
 
     <div nz-row nzGutter="16" style="padding-top:2rem">
@@ -14,8 +15,8 @@
                 <ul>
                     <li *ngFor="let list of kinsArray">
                         <div (click)="showDetails(list); selected = list" [class.active]="selected == list">
-                            <h4>{{ list.name | uppercase  }}</h4>
-                            <span>{{list.type || '-' | uppercase}}</span>
+                            <h4>{{ list.name || '--' | uppercase  }}</h4>
+                            <span>{{list.type || '--' | uppercase}}</span>
                             <i nz-icon nzType="right" nzTheme="outline"></i>
                         </div>
                     </li>
@@ -95,12 +96,12 @@
                             </nz-form-control>
                         </nz-form-item>
             
-                        <nz-form-item>
+                        <!-- <nz-form-item>
                             <nz-form-label [nzSpan]="5">List Order</nz-form-label>
                             <nz-form-control [nzSpan]="5" >
                                 <input type="text" nz-input formControlName="listOrder" />
                             </nz-form-control>
-                        </nz-form-item>
+                        </nz-form-item> -->
             
                         <nz-form-item>
                             <nz-form-label [nzSpan]="5">Notes</nz-form-label>
@@ -167,14 +168,14 @@
                     </nz-select>
                 </div>
                 <div nz-row class="mrg-btm-2">
-                    <ng-container *ngIf="inputForm.get('type').value != 'DOCTORS' ">
+                    <ng-container *ngIf="inputForm?.get('type').value != 'DOCTORS' ">
                         <input type="text" class="uppercase" nz-input placeholder="Name" formControlName="name" />
                     </ng-container>
 
-                    <ng-container *ngIf="inputForm.get('type').value == 'DOCTORS' ">
-                        <nz-select [nzAutoClearSearchValue]="false" [nzServerSearch]="false" [nzDropdownMatchSelectWidth]="false" style="width:100%" formControlName="name" (ngModelChange)="doctorChange($event)" nzShowSearch nzAllowClear
+                    <ng-container *ngIf="inputForm?.get('type').value == 'DOCTORS' ">
+                        <nz-select [nzAutoClearSearchValue]="false" [ngModelOptions]="{standalone: true}" [nzServerSearch]="false" [nzDropdownMatchSelectWidth]="false" style="width:100%" [(ngModel)]="doctor" (ngModelChange)="doctorChangeEvent($event)" nzShowSearch nzAllowClear
                             nzPlaceHolder="Select a Doctor">
-                            <nz-option *ngFor="let d of doctors" [nzLabel]="d.name" [nzValue]="d"></nz-option>
+                            <nz-option *ngFor="let d of doctors" [nzLabel]="d.name" [nzValue]="d.name"></nz-option>
                         </nz-select>
                     </ng-container>
 
@@ -218,11 +219,11 @@
                         <input type="text" nz-input placeholder="Email" formControlName="email" />
                     </div>
                 </div>
-                <div nz-row nzSpan="12" class="mrg-btm">
+                <!-- <div nz-row nzSpan="12" class="mrg-btm">
                     <div nz-col nzSpan="10">
                         <input type="text" nz-input placeholder="List Order" formControlName="listOrder" />
                     </div>                    
-                </div>
+                </div> -->
             </div>
         </div>
 

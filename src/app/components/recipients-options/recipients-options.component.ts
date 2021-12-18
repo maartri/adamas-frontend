@@ -232,8 +232,6 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
     ngOnChanges(changes: SimpleChanges): void {
       for (let property in changes) {
         if (property == 'open' && !changes[property].firstChange && changes[property].currentValue != null) {
-          // console.log(this.user);
-          // console.log(this.from)
           // GETS Branch name or Gets it through database
           
           if('branch' in this.user){
@@ -245,7 +243,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     this.COORDINATOR = data.coordinator;
                   });
           }
-
+          console.log(this.user);
           if('docId' in this.user){
             this.DOCUMENTID = this.user.docId;
           }
@@ -414,6 +412,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
         radioGroup: 'CASENOTE',
         notes: null,
         programChecked:null,
+        
         caseCategory: 'ADMISSION',
         publishToApp: false,
         reminderDate: null,
@@ -586,6 +585,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
     }
     
     selectedProgram: any;
+    fundingSource: any;
 
     selectedProgramChange(name: any){
       this.selectedProgram = name;
@@ -1219,8 +1219,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
 
                   let data = {
                       docId: this.DOCUMENTID,
-                      program: programChecked.program,
-                      admissionType: programChecked,
+                      program: programChecked,
+                      admissionType: admissionType,
                       clientCode: this.user.code,
                       carerCode: this.token.code,
                       serviceType: 'referralType',
@@ -1257,7 +1257,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                           reminderTo: ''
                       }
                   }
-       
+
                   this.listS.postadmissionacceptquote(data).subscribe(data => {
                     this.globalS.sToast('Success', 'Data is saved');
                     this.handleCancel();
@@ -1354,6 +1354,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   radioGroup,
                   notes,
                   date,
+                  dischargeDate,
                   time,
                   timeSpent,
                   caseCategory,
@@ -1363,13 +1364,13 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 const blockNoTime = Math.floor(this.globalS.getMinutes(time)/5);
                 const timeInMinutes = this.globalS.getMinutes(timeSpent)
                 const timePercentage = (Math.floor(timeInMinutes/60 * 100) / 100).toString();
-                
+
                 let program: ProcedureRoster = {
                     clientCode: this.user.code,
                     carerCode: this.token.code,
                     
                     serviceType: referralType,
-                    date: format(date,'yyyy/MM/dd'),
+                    date: format(this.dischargeGroup.value.dischargeDate,'yyyy/MM/dd'),
                     time: format(time,'HH:mm'),
                     
                     creator: this.token.code,
@@ -2372,7 +2373,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                 this.listS.getnotifications({
                   branch: this.BRANCH_NAME,
                   coordinator: this.COORDINATOR,
-                  listname: this.GETLISTNAME(this.option)
+                  listname: this.GETLISTNAME(this.option),
+                  fundingsource: this.FUNDING_TYPE
                 }).subscribe(data => {
                   this.notifCheckBoxes = data.map(x => {
                     return {
@@ -2454,6 +2456,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
 
                   if(this.option == RECIPIENT_OPTION.REFER_IN)
                   { 
+
+                    this.listS.getfundingSourcePerProgram(this.selectedProgram).subscribe(data => this.fundingSource = data);
 
                     this.listS.getspecificemailmanager(this.COORDINATOR)
                         .subscribe(data => {
@@ -2593,7 +2597,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                         return true;
                     }
 
-                    if(this.selectedProgram){
+                    if(this.selectedProgram && this.isPackageNameAvailable == false){
                         return true;
                     }
                   }

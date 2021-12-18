@@ -221,7 +221,7 @@
                             <div>
                                 <label class="highlight"><i class="material-icons "> location_on </i>Address </label>
                                 <i nz-icon nzType="plus" nzTooltipTitle="Add Address" (click)="addAddressOpen()" nz-tooltip nzTooltipPlacement="top" nzTheme="outline"
-                                    class="good add"></i>
+                                    class="color-powder-blue add"></i>
                             </div>                           
                             <ul>
                                 <li *ngFor="let data of user?.addresses">
@@ -253,7 +253,7 @@
                             <div>
                                 <label class="highlight"><i class="material-icons"> phone </i>Contacts</label>
                                 <i nz-icon nzType="plus" nzTooltipTitle="Add Contact" (click)="addContactOpen()" nz-tooltip nzTooltipPlacement="top" nzTheme="outline"
-                                    class="good add"></i>
+                                    class="color-powder-blue add"></i>
                             </div>
                             <ul>
                                 <li *ngFor="let data of user?.contacts">
@@ -341,11 +341,9 @@
 
         <ng-container *ngIf="this.innerValue?.view == 'recipient' ">
             <div nz-col nzSpan="24">
-                <div nz-col nzSpan="4">
-                    <label for=""><b>Active In :</b></label>
-                </div>
-                <div nz-col nzSpan="20">
-                    <label for=""><b>{{ activePrograms[0] }}</b></label>
+                <div nz-col nzSpan="24">
+                   <b style="margin-right:1rem">Active In :</b>
+                   <span class="active-programs" *ngFor="let data of activePrograms">{{ data }}</span>
                 </div>
             </div>
             <div nz-col nzSpan="12">
@@ -389,7 +387,7 @@
                             <div>
                                 <label class="highlight"><i class="material-icons"> location_on </i>Address</label>
                                 <i nz-icon nzType="plus" nzTooltipTitle="Add Address" (click)="addAddressOpen()" nz-tooltip nzTooltipPlacement="top"
-                                    nzTheme="outline" class="good add"></i>
+                                    nzTheme="outline" class="color-powder-blue add"></i>
                             </div>
                             <ul>
                                 <li *ngFor="let data of user?.addresses">
@@ -430,7 +428,7 @@
                             <div>
                                 <label class="highlight"><i class="material-icons"> phone </i>Contacts</label>
                                 <i nz-icon nzType="plus" nzTooltipTitle="Add Contact" (click)="addContactOpen()" nz-tooltip nzTooltipPlacement="top"
-                                    nzTheme="outline" class="good add"></i>
+                                    nzTheme="outline" class="color-powder-blue add"></i>
                             </div>
                             <ul>
                                 <li *ngFor="let data of user?.contacts">
@@ -489,7 +487,7 @@
                 </div>
 
                 <div nz-row class="divider sec-highlight">
-                    <button class="botton success" (click)="saveTab()">Save</button>
+                    <button class="botton recordHeaderMainButtons" (click)="saveTab()">Save</button>
                     <nz-tabset (nzSelectedIndexChange)="tabChange($event)" [nzSelectedIndex]="tabIndex">
                         <nz-tab nzTitle="Contact Issues" [formGroup]="contactIssueGroup">
                             <textarea rows="4" nz-input type="text" formControlName="contactIssues"></textarea>
@@ -504,7 +502,7 @@
                 </div>
 
                 <div nz-row class="divider">
-                    <button class="botton success" (click)="addCaseStaffModal =  true;POPULATE_CASE_STAFF()">Add Case Staff</button>
+                    <button class="botton recordHeaderMainButtons" (click)="addCaseStaffModal =  true;POPULATE_CASE_STAFF()">Add Case Staff</button>
                 
                     <div nz-row>
                         <div nz-col nzSpan="24">
@@ -1089,10 +1087,18 @@
     <p class="title" style=" margin-bottom: 24px;">Add Address Information</p>
 
     <form nz-row nzGutter="16" nz-form [nzLayout]="'vertical'" [formGroup]="addressForm">
+        <div nz-col nzSpan="24">
+            <nz-form-item>
+                <nz-form-label>Primary Address</nz-form-label>
+                <nz-form-control>
+                    <label nz-checkbox formControlName="primaryAddress"></label>
+                </nz-form-control>
+            </nz-form-item>
+        </div>
         <div nz-col nzSpan="12">
             <nz-form-item>
                 <nz-form-label>Type</nz-form-label>
-                <nz-form-control nzErrorTip="Description is required!">
+                <nz-form-control nzErrorTip="Type is required!">
                     <nz-select formControlName="description" nzAllowClear nzPlaceHolder=""
                         [nzDropdownMatchSelectWidth]="false">
                         <nz-option *ngFor="let address of addressArray" [nzValue]="address" [nzLabel]="address">
@@ -1136,7 +1142,7 @@
         <div nz-col nzSpan="24">
             <nz-form-item>
                 <nz-form-label>Primary Phone</nz-form-label>
-                <nz-form-control nzErrorTip="Contact Type is required!">
+                <nz-form-control>
                     <label nz-checkbox formControlName="primaryPhone"></label>
                 </nz-form-control>
             </nz-form-item>
@@ -1161,7 +1167,6 @@
                     <input type="text" *ngIf="!isMobile(contactForm.get('type').value) && !isPhoneFax(contactForm.get('type').value)" formControlName="details" placeholder="Details" nz-input />
                     <app-phonefax *ngIf="isMobile(contactForm.get('type').value)" [isMobile]="true" formControlName="details"></app-phonefax>
                     <app-phonefax *ngIf="isPhoneFax(contactForm.get('type').value)" formControlName="details"></app-phonefax>
-
                 </nz-form-control>
             </nz-form-item>
         </div>

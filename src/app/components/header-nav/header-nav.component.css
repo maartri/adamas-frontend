@@ -51,3 +51,6 @@
         margin-right: 3rem;
         text-transform: uppercase;
     }
+    ul{
+        list-style:none;
+    }

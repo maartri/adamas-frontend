@@ -43,7 +43,7 @@ interface UserView{
             color: #fff;
         }
         nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-nav-scroll div.ant-tabs-nav div div.ant-tabs-tab{
-            border-radius: 0;
+          border-radius: 4px 4px 0 0;
         }
         ul{
             list-style:none;

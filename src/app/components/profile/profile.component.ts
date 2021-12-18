@@ -5,7 +5,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 import { TimeSheetService, GlobalService, view, ClientService, ShareService , StaffService, ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles, SettingsService } from '@services/index';
 import * as _ from 'lodash';
-import { mergeMap, takeUntil, concatMap, switchMap, map } from 'rxjs/operators';
+import { mergeMap, takeUntil, concatMap, switchMap, map, debounceTime } from 'rxjs/operators';
 import { forkJoin, Observable, EMPTY } from 'rxjs';
 
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -253,6 +253,8 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
     this.resetEmailCoordinator();
 
+    this.contactForm.get('type').valueChanges.pipe(debounceTime(100)).subscribe(x => this.contactForm.patchValue({ details: null }))
+
   }
 
   patchTheseValuesInForm(user = this.user) {
@@ -404,14 +406,11 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
           
           var arr111 = [];
           
-          this.activePrograms = (data[3] == null) ? arr111 : data[3],
-
-
+          this.activePrograms = (data[3] == null) ? arr111 : data[3];
 
           this.detectChanges();
 
           // this.globalS.userProfile = this.user;
-
           // this.addresses = data[0];
           // this.contacts = data[1];
 
@@ -650,6 +649,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
       PrimaryPhone: primaryPhone
     }
 
+ 
     temp.push(pf);
     return temp;
   }
@@ -907,6 +907,8 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
   addContactOpen() {
     this.addContactDrawer = true;
+    this.contactForm.markAsPristine();
+
     this.contactForm.reset({
       id: '',
       type: null,
@@ -918,6 +920,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   }
 
   addContact() {
+
     for (const i in this.contactForm.controls) {
       this.contactForm.controls[i].markAsDirty();
       this.contactForm.controls[i].updateValueAndValidity();
@@ -926,10 +929,12 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     if (!this.contactForm.valid)
       return;
 
+
     this.contactForm.patchValue({
       personId: this.user.uniqueID,
       id: -1
     });
+
 
     this.subscriptionArray.push(this.clientS.addcontact(this.formatContact(this.contactForm)));
     this.processSubscriptions();
@@ -954,7 +959,8 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
     this.addressForm.patchValue({
       personId: this.user.uniqueID,
-      id: -1
+      id: -1,
+      primaryAddress: false
     });
 
     this.subscriptionArray.push(this.clientS.addaddress(this.formatAddress(this.addressForm)));
@@ -1147,7 +1153,6 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
       uniqueId: uniqueID
     }).subscribe(data => this.globalS.sToast('Success', 'Contact Issues Updated'));
 
-    return;
 
     if (this.tabIndex == 0) {
 

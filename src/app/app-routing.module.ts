@@ -121,6 +121,7 @@ import {
   RecipientHistoryAdmin,
   RecipientIncidentAdmin,
   RecipientIntakeAdmin,
+  RecipientClinicalAdmin,
   RecipientOpnoteAdmin,
   RecipientPensionAdmin,
   RecipientPermrosterAdmin,
@@ -151,6 +152,12 @@ import {
   IntakeServices,
   IntakeStaff
 } from '@intakes/index';
+
+import {
+  ClinicalDiagnose,
+  ClinicalProcedure,
+  ClinicalMedication,
+} from './pages/admin/recipient-views/clinical-views/index';
 
 import {
   ProfileAccounting,
@@ -265,6 +272,8 @@ import { TravelComponent } from '@admin/billing/travel.component'; //AHSAN
 import { PayComponent } from '@admin/timesheet-processing-views/pay.Component'; //AHSAN 
 import { PayIntegrityComponent } from '@admin/billing/payIntegrity.component'; //AHSAN
 import { CloseRosterComponent } from '@admin/billing/closeRoster.component'; //AHSAN
+import { MediaList } from '@admin/recipient-views/mediaList';
+import { UserDetail } from '@admin/configuration/genrel-setup/userdetail';
 
 const routes: Routes = [
   {
@@ -612,6 +621,10 @@ const routes: Routes = [
       {
         path:"budgets",
         component:BudgetsComponent
+      },
+      {
+        path:"user-detail",
+        component:UserDetail
       },
       {
         path:"contact-groups",
@@ -1126,6 +1139,29 @@ const routes: Routes = [
             ]
           },
           {
+            path: 'clinical',
+            component: RecipientClinicalAdmin,
+            children: [
+              {
+                path: '',
+                redirectTo: 'diagnose',
+                pathMatch: 'full'
+              },
+              {
+                path: 'diagnose',
+                component: ClinicalDiagnose
+              },
+              {
+                path: 'procedure',
+                component: ClinicalProcedure
+              },
+              {
+                path: 'medication',
+                component: ClinicalMedication
+              },
+            ]
+          },
+          {
             path: 'reminders',
             component: RecipientRemindersAdmin
           },
@@ -1174,6 +1210,10 @@ const routes: Routes = [
           {
             path: 'quotes',
             component: RecipientQuotesAdmin
+          },
+          {
+            path: 'media',
+            component: MediaList,
           }
         ]
       }
@@ -1262,6 +1302,7 @@ export const PAGE_COMPONENTS = [
   FundingRegionsComponent,
   ClaimratesComponent,
   TargetgroupsComponent,
+  UserDetail,
   PurposestatementComponent,
   HCPComponent,
   DebtorComponent, //AHSAN 
@@ -1379,11 +1420,13 @@ export const PAGE_COMPONENTS = [
   RecipientHistoryAdmin,
   RecipientIncidentAdmin,
   RecipientIntakeAdmin,
+  RecipientClinicalAdmin,
   RecipientOpnoteAdmin,
   RecipientPensionAdmin,
   RecipientPermrosterAdmin,
   RecipientPersonalAdmin,
   RecipientQuotesAdmin,
+  MediaList,
   RecipientRemindersAdmin,
   RecipientFormsAdmin,
   RecipientDocumentsAdmin,
@@ -1401,10 +1444,14 @@ export const PAGE_COMPONENTS = [
   IntakePlans,
   IntakeServices,
   IntakeStaff,
-  
+
   ExtraComponent,
   UnauthorizedComponent,
   
+  // Clinical
+  ClinicalDiagnose,
+  ClinicalProcedure,
+  ClinicalMedication,
   // Client Manager
   HomeClientManager,
   ProfileClientManager,

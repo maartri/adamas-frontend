@@ -13,6 +13,7 @@
                         <th class="left">Location</th>
                         <th class="left">Program</th>
                         <th class="left">Staff</th>
+                        <th class="left">Funding</th>
                         <th class="left">Severity</th>
                         <th class="left">End Date</th>
                         <th>Action</th>
@@ -26,9 +27,10 @@
                         <td class="left">{{ data.location  }} </td>
                         <td class="left">{{ data.program  }} </td>
                         <td class="left">{{ data.staff  }} </td>
+                        <td class="left">{{ data.funding_source  }} </td>
                         <td class="left">{{ data.severity  }} </td>
-                        <td class="left">{{ data.end_date | date: 'dd/MM/y' }}</td>
-                        <td *ngIf="data.is_deleted == 'False' || data.is_deleted == 'false' || data.is_deleted == '' ">
+                        <td class="left">{{ data?.end_date | date: 'dd/MM/y' }}</td>
+                        <td *ngIf="data.is_deleted == 'False' || data.is_deleted == 'false' || data.is_deleted == '' || data.is_delete == null ">
                             <a (click)="showEditModal(i)">Update</a>
                             <nz-divider nzType="vertical"></nz-divider>
                             <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this from Distribution List?"
@@ -73,6 +75,18 @@
                             </nz-select>
                         </div>
                         <div nz-row nzGutter="24" class="">
+                            <label for="CDC Item" nzSpan="6" >Branches:</label>
+                            <nz-select nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="branch" nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-option *ngFor="let branch of branches;let i = index;" [nzValue]="branch.description" [nzLabel]="branch.description"></nz-option> 
+                            </nz-select>
+                        </div>
+                        <div nz-row nzGutter="24" class="">
+                            <label for="CDC Item" nzSpan="6" >Coordinator:</label>
+                            <nz-select nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="coordinator" nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-option *ngFor="let coord of coordinators;let i = index;" [nzValue]="coord.description" [nzLabel]="coord.description"></nz-option> 
+                            </nz-select>
+                        </div>
+                        <div nz-row nzGutter="24" class="">
                             <label for="CDC Item" nzSpan="6" >Program:</label>
                             <nz-select nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="prgm" nzShowSearch nzAllowClear style="width:100%;">
                                 <nz-option *ngFor="let pro of program" [nzValue]="pro.name" [nzLabel]="pro.name"></nz-option> 
@@ -88,6 +102,12 @@
                             <label for="CDC Item" nzSpan="6" >Recipient:</label>
                             <nz-select nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="recepient" nzShowSearch nzAllowClear style="width:100%;">
                                 <nz-option *ngFor="let recipi of recipients" [nzValue]="recipi.name" [nzLabel]="recipi.name"></nz-option> 
+                            </nz-select>
+                        </div>
+                        <div nz-row nzGutter="24" class="">
+                            <label for="Funding Source" nzSpan="6" >Funding Source:</label>
+                            <nz-select nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="funding_source" nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-option *ngFor="let funding of funding_source" [nzValue]="funding" [nzLabel]="funding"></nz-option> 
                             </nz-select>
                         </div>
                         <div nz-row nzGutter="24" class="" *ngIf="inputForm.get('ltype').value == 'INCIDENT'">

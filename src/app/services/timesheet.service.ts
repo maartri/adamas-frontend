@@ -97,7 +97,7 @@ export class TimeSheetService {
     }
 
     getpayunits(payType: string): Observable<any>{
-        return this.auth.get(`${timesheet}/pay-units/${payType}`);
+        return this.auth.getstring(`${timesheet}/pay-units/${payType}`);
     }
 
     getbillingrate(data: any): Observable<any>{
@@ -624,6 +624,11 @@ export class TimeSheetService {
     deleteCarePlanStrategy(recordNo: number): Observable<any> {
         return this.auth.delete(`${timesheet}/quote/careplanstrategy/${recordNo}`)
     }
+    
+    getbuttonstatusofwizard(personId: string): Observable<any>{
+        return this.auth.get(`${timesheet}/wizardButtonStatusRecipient/${personId}`)
+    }
+
     postGoalsAndStratergies(data: any): Observable<any> {
         return this.auth.post(`${timesheet}/quote/GoalsAndStratergies`, data)
     }

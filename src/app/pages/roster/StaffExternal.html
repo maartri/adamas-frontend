@@ -15,7 +15,8 @@
         <nz-tabset  [nzTabPosition]="'top'" [nzType]="'card'">
             <nz-tab nzTitle="General" (nzClick)="view(0)"> </nz-tab>           
             <nz-tab nzTitle="Operational Notes & History" (nzClick)="view(1)"> </nz-tab>
-            <nz-tab nzTitle="Competencies" (nzClick)="view(2)"> </nz-tab>        
+            <nz-tab nzTitle="Competencies" (nzClick)="view(2)"> </nz-tab>       
+            <nz-tab nzTitle="Skills & Achievements" (nzClick)="view(3)"> </nz-tab>         
             
         </nz-tabset>
        
@@ -90,8 +91,8 @@
                     <tbody>
                         <tr>
                             <td class="left" >
-                            <textarea *ngIf="StaffInfo.stF_Notes" rows="4" nz-input>{{StaffInfo.stF_Notes}}</textarea>                      
-                               
+                            <!-- <textarea *ngIf="StaffInfo.stF_Notes" rows="4" nz-input>{{StaffInfo.stF_Notes}}</textarea>                       -->
+                            <textarea style="background-color: white; color: black " [(ngModel)]="Notes"  [disabled]="!editNote" *ngIf="Notes" rows="4" nz-input></textarea>                        
                         </td>                     
                         
                         </tr>                
@@ -108,8 +109,8 @@
                      <tbody>
                          <tr>                     
                          <td class="left" >
-                            
-                            <textarea *ngIf="StaffInfo.contactIssues" rows="4" nz-input>{{StaffInfo.contactIssues}}</textarea>
+                            <textarea style="background-color: white; color: black " [(ngModel)]="ContactIssues"  [disabled]="!editNote" *ngIf="ContactIssues" rows="4" nz-input></textarea>                      
+                            <!-- <textarea *ngIf="StaffInfo.contactIssues" rows="4" nz-input>{{StaffInfo.contactIssues}}</textarea> -->
                          </td>                     
                         
                          </tr>                
@@ -121,35 +122,39 @@
             <gnotes [user]="Person"></gnotes>
 
         </div>
+        
         <div nz-row *ngIf="nzSelectedIndex==2" nzGutter="6">
             <!-- ,  y:'500px' -->
-            <label style="padding:10px;  background-color: #002060; color: #ffffff; margin-right: 10px; font-size: 16px;" class="left">Staff Competencies & Skills</label> 
-            <nz-table #fixedTable   [nzScroll]="{x:'1000px', y:'500px'}" [nzBordered]="true" [nzPageSize]="5" [nzShowPagination]="false"  [nzLoading]="loading" 
-                [nzData]="lstCompetencies" class="custum-header">
+            <label style="padding:10px;  background-color: #002060; color: #ffffff; margin-right: 10px; font-size: 16px;" class="left">Staff Competencies</label> 
+            <nz-table #basicTable [nzSize]="'small'"  [nzScroll]="{x:'1200px', y:'300px'}" [nzBordered]="true"  [nzShowPagination]="false"  [nzLoading]="loading" 
+                [nzData]="lstCompetencies" >
             <!-- [nzFrontPagination]="true" [nzShowSizeChanger]="true" [nzPaginationPosition]="'top'" [nzPageSizeOptions]="[5, 10, 20,25, 30]" -->
             <thead >
-                <tr>                        
-                    <th   nzWidth="200px" style="background-color: #d6d3d3;" >Competency</th> 
-                    <th   nzWidth="100px" style="background-color: #d6d3d3;" >Expiry Date</th> 
-                    <th   nzWidth="100px" style="background-color: #d6d3d3;" >Reminder Date</th> 
-                    <th   nzWidth="100px" style="background-color: #d6d3d3;" >Mandatory</th> 
-                    <th   nzWidth="100px" style="background-color: #d6d3d3;" >Cert./Reg. No.</th> 
-                    <th   nzWidth="100px" style="background-color: #d6d3d3;" >Compeletion Date</th> 
-                    <th   nzWidth="200px" style="background-color: #d6d3d3;" >Notes</th> 
+                <tr >                        
+                    <th   nzWidth="20%" style="background-color: #d7dbe4;" >Competency</th> 
+                    <th   nzWidth="10%" style="background-color: #d7dbe4;" >Expiry Date</th> 
+                    <th   nzWidth="10%" style="background-color: #d7dbe4;" >Reminder Date</th> 
+                    <th   nzWidth="10%" style="background-color: #d7dbe4;" >Mandatory</th> 
+                    <th   nzWidth="10%" style="background-color: #d7dbe4;" >Cert./Reg. No.</th> 
+                    <th   nzWidth="10%" style="background-color: #d7dbe4;" >Compeletion Date</th> 
+                    <th   nzWidth="30%" style="background-color: #d7dbe4;" >Notes</th> 
                 </tr>
             </thead>
-            <tbody style="overflow-y: auto; overflow-x: hidden;">
+            <tbody >
                 <tr *ngFor="let data of lstCompetencies;let i = index;"  
                 [style.background-color]="i == HighlightRow ? '#bbd7fa' : 'white'">
                                 
                 <td  >  
-                       {{data.competency}}                    
+                    {{data.competency}}
                 </td>
-                 <td   >                                         
-                    {{data.expiry_Date}}                   
+                 <td   >               
+                    <!-- {{data.expiry_Date | date: 'dd'}}/{{data.expiry_Date | date:'MM'}}/{{data.expiry_Date | date: 'yyyy'}}                            -->
+                    {{data.expiry_Date | date}}                   
                 </td>
-                <td   >                                         
-                    {{data.reminder_Date}}                   
+                <td   >                           
+                    {{data.reminder_Date | date}}                 
+                    <!-- {{data.reminder_Date | date: 'dd'}}/{{data.reminder_Date | date:'MM'}}/{{data.reminder_Date | date: 'yyyy'}}                            -->
+                                   
                 </td>
 
                 <td    [nzShowCheckbox]="true" [nzChecked]="data.mandatory=='True'" >                                         
@@ -172,14 +177,58 @@
            
 
         </div>
+
+        <div nz-row *ngIf="nzSelectedIndex==3" nzGutter="6">
+            <!-- ,  y:'500px' -->
+            <label style="padding:10px;  background-color: #002060; color: #ffffff; margin-right: 10px; font-size: 16px;" >Other Skills & Achievements</label> 
+            <nz-table #basicTable [nzSize]="'small'"   [nzBordered]="true"  [nzShowPagination]="false"  [nzLoading]="loading" 
+                [nzData]="lstCompetencies">
+            <!-- [nzScroll]="{x:'800px', y:'500px'}" -->
+            <thead >
+                <tr >                        
+                    <th   nzWidth="30%" style="background-color: #d7dbe4;" >Traning</th> 
+                    <th   nzWidth="30%" style="background-color: #d7dbe4;" >Skills</th> 
+                    <th   nzWidth="40%" style="background-color: #d7dbe4;" >Qualifications</th> 
+                </tr>
+            </thead>
+            <tbody >
+                <tr>
+                                
+                <td >  
+                    <tr *ngFor="let skill of skillsList, let i=index">
+                        <label *ngIf="14>i" nz-checkbox  (ngModelChange)="setSkillStatus(i,skill)" [nzValue]="skill.identifier" [(ngModel)]="skill.checked"  [ngModelOptions]="{standalone: true}">{{ skill.text }}</label>
+                    </tr> 
+                      
+                </td>
+                 <td >               
+                    <tr  *ngFor="let skill of skillsList, let i=index">
+                        <label *ngIf="23>i && i>13" nz-checkbox  (ngModelChange)="setSkillStatus(i,skill)" [nzValue]="skill.identifier" [(ngModel)]="skill.checked"  [ngModelOptions]="{standalone: true}">{{ skill.text }}</label>
+                    </tr>   
+                              
+                </td>
+                <td >                           
+                    <tr  *ngFor="let skill of skillsList, let i=index">
+                        <label *ngIf=" i>22" nz-checkbox  (ngModelChange)="setSkillStatus(i,skill)" [nzValue]="skill.identifier" [(ngModel)]="skill.checked"  [ngModelOptions]="{standalone: true}">{{ skill.text }}</label>
+                    </tr>     
+                </td>
+                </tr>
+            </tbody>
+            
+            </nz-table> 
+           
+
+        </div>
     </div>
 </div>
 </ng-template>
 
 <ng-template #modalFooter>
     
-    <button nz-button nzType="primary" >
-        <span>Done</span>
+    <button nz-button nzType="primary" (click)="doneUpdate()" *ngIf="editNote && nzSelectedIndex==0">
+        <span>Save Notes</span>
+    </button>
+    <button nz-button nzType="primary" (click)="editNotes()" *ngIf="!editNote && nzSelectedIndex==0">
+        <span>Edit Notes</span>
     </button>
      <button nz-button nzType="default" (click)="handleCancel()">Cancel</button> 
     

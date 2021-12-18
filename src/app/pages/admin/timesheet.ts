@@ -2,7 +2,7 @@ import { Component, OnInit, AfterViewInit, ChangeDetectionStrategy, ChangeDetect
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
 import { mergeMap, takeUntil, concatMap, switchMap, distinctUntilChanged } from 'rxjs/operators';
-import { TimeSheetService, GlobalService, view, ClientService, StaffService, ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles } from '@services/index';
+import { TimeSheetService, GlobalService, view, ClientService, StaffService, ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles, topMarginStyle } from '@services/index';
 import { forkJoin, Subscription, Observable, Subject, EMPTY, of } from 'rxjs';
 
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -134,6 +134,8 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
 
     timesheets: Array<any> = [];
     timesheetsGroup: Array<any> = [];   
+
+    topMarginStyle = topMarginStyle;
 
     index: number = 0;
     resultMapData: Array<any> = [];
@@ -887,6 +889,22 @@ export class TimesheetAdmin implements OnInit, OnDestroy, AfterViewInit {
                 nzContent: '<b></b>',
                 nzOnOk: () => this.process(index)
             });
+        }
+
+        if(index == 7){
+            // console.log(this.timesheets.filter(x => x.selected).length);
+            // return;
+            if(this.timesheets.filter(x => x.selected).length > 1){
+
+                this.modalService.warning({
+                    nzTitle: 'Select Warning',
+                    nzContent: 'You can only select one item on edit...'
+                  });
+            } 
+            
+            if(this.timesheets.filter(x => x.selected).length == 1){
+                this.details(this.timesheets.shift())
+            }
         }
     }
 

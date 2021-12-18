@@ -57,7 +57,7 @@
             <button class="print mrg-btm" [nzLoading]="generateReportBool" (click)="printPackage()" nz-button nzType="primary" [nzSize]="'default'"><i nz-icon nzType="printer"></i>{{ printGenStr }}</button>
 
         </div>
-        <nz-table #basicTable [nzData]="table" nzSize="small" [nzBordered]="false">
+        <nz-table #basicTable [nzData]="table" nzSize="small" [nzBordered]="false" [nzLoading]="loading">
             <thead>
                 <tr>
                     <th>Date</th>

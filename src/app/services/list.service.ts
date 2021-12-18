@@ -17,6 +17,10 @@ export class ListService {
         public auth: AuthService
     ) { }
 
+    getstaffcompetencylist(data: any): Observable<any>{
+        return this.auth.get(`${list}/staff-competency-list`, data);
+    }
+
     postmtapending(data: any):Observable<any>{
         return this.auth.post(`${list}/mtapending`, data);
     }

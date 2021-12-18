@@ -74,7 +74,6 @@ export class StaffLeaveAdmin implements OnInit, OnDestroy {
         private modalService: NzModalService,
         private cd: ChangeDetectorRef
         ) {
-            cd.detach();
             
             this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
                 if (data instanceof NavigationEnd) {
@@ -283,5 +282,9 @@ export class StaffLeaveAdmin implements OnInit, OnDestroy {
             this.loadingPDF = true;
             this.tryDoctype = "";
             this.pdfTitle = "";
+        }
+
+        reload(data: string){
+            this.search();
         }
     }

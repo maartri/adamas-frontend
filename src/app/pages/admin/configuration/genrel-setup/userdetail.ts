@@ -10,6 +10,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NzModalService } from 'ng-zorro-antd';
 import { PrintService } from '@services/print.service';
+import { TimeSheetService } from '@services/timesheet.service';
 
 @Component({
     templateUrl: './userdetail.html',
@@ -70,6 +71,7 @@ export class UserDetail implements OnInit {
         private globalS: GlobalService,
         private cd: ChangeDetectorRef,
         private listS:ListService,
+        private timeS:TimeSheetService,
         private menuS:MenuService,
         private switchS:SwitchService,
         private formBuilder: FormBuilder,
@@ -156,8 +158,6 @@ export class UserDetail implements OnInit {
                 }
             }
             if(filter == 4 || filter == -1){
-                console.log("cordinator");
-
                 if(this.testcheck == false){
                     if (this.allCordinatore) {
                         console.log("cordinator");
@@ -263,6 +263,54 @@ export class UserDetail implements OnInit {
             if(index == 6)
             this.selectedStaffCategories = event;
         }
+        updateUserDetailViewingTab() : void
+        {
+            this.loading = true;
+            // this.selectedPrograms = this.diciplineList
+            // .filter(opt => opt.checked)
+            // .map(opt => opt.description)
+            
+            // this.selectedCordinators = this.casemanagers
+            // .filter(opt => opt.checked)
+            // .map(opt => opt.uniqueID)
+            
+            // this.selectedCategories = this.categoriesList
+            // .filter(opt => opt.checked)
+            // .map(opt => opt.description)
+            
+            // this.selectedbranches = this.branchesList
+            // .filter(opt => opt.checked)
+            // .map(opt => opt.description)
+
+            // this.selectedbranches = this.branchesList
+            // .filter(opt => opt.checked)
+            // .map(opt => opt.description)
+
+            var postdata = {
+       
+            allTeamAreas      : this.allProgarms,
+            selectedTeamAreas : (this.allProgarms == false) ? this.selectedPrograms : '',
+        
+            allcat:this.allcat,
+            selectedCategories:(this.allcat == false) ? this.selectedCategories : '',
+        
+            allBranches:this.allBranches,
+            selectedbranches:(this.allBranches == false) ? this.selectedbranches : '',
+        
+            allCordinatore:this.allCordinatore,
+            selectedCordinators:(this.allCordinatore == false) ? this.selectedCordinators : '',
+
+            allStaffJobCat:this.allStaffCat,
+            selectedStaffJobCategories:(this.allCordinatore == false) ? this.selectedCordinators : '',
+
+            }
+            
+            this.timeS.postuserdetailviewingScopes(postdata,12).subscribe(data => {
+               console.log("added");
+              this.loading = false;
+              this.cd.detectChanges();
+            });
+        }
 
         loadTitle()
         {
@@ -295,6 +343,7 @@ export class UserDetail implements OnInit {
             this.isUpdate = true;
             this.current = 0;
             this.modalOpen = true;
+            
             const { 
                 name,
                 end_date,
@@ -306,6 +355,7 @@ export class UserDetail implements OnInit {
                 recordNumber:recordNumber
             });
             this.temp_title = name;
+
         }
         
         tabFindIndex: number = 0;

@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
-import { GlobalService, ListService, MenuService,PrintService,TimeSheetService,timeSteps } from '@services/index';
+import { GlobalService, ListService,dataSetDropDowns,MenuService,PrintService,TimeSheetService,timeSteps } from '@services/index';
 import { SwitchService } from '@services/switch.service';
 import { NzModalService } from 'ng-zorro-antd';
 import { Subject } from 'rxjs';
@@ -101,7 +101,8 @@ export class StaffAdminActivitiesComponent implements OnInit {
   addOrEdit: number = 0;
   isNewRecord: boolean =  false;
   insertOne: number = 0;
-  
+  dataSetDropDowns: { CACP: string[]; CTP: string[]; DEX: string[]; DFC: string[]; DVA: any[]; HACC: string[]; HAS: string[]; QCSS: string[]; ICTD: string[]; NDIS: any[]; NRCP: string[]; NRCPSAR: string[]; OTHER: string[]; };
+  dataset_group: any;
   constructor(
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
@@ -124,6 +125,7 @@ export class StaffAdminActivitiesComponent implements OnInit {
       this.inputForm = this.formBuilder.group(inputFormDefault);
       
       this.checkedList = new Array<string>();
+      this.dataSetDropDowns = dataSetDropDowns;
       this.loadData();
       this.buildForm();
       this.populateDropdowns();
@@ -534,7 +536,7 @@ export class StaffAdminActivitiesComponent implements OnInit {
             ndiA_LEVEL2:'',
             ndiA_LEVEL3:'',
             ndiA_LEVEL4:'',
-            recnum:'',
+            recnum:0,
           });
           this.competencyForm = this.formBuilder.group({
             competencyValue: '',
@@ -543,6 +545,12 @@ export class StaffAdminActivitiesComponent implements OnInit {
             personID: this.parent_person_id,
             recordNumber: 0
           });
+          
+          this.inputForm.get('iT_Dataset').valueChanges.subscribe(x => {
+            this.dataset_group = [];  
+            this.dataset_group = this.dataSetDropDowns[x];
+          });
+        
         }
         handleOkTop() {
           this.generatePdf();

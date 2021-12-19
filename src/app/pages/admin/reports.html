@@ -1682,11 +1682,11 @@
     
     <!-- [nzScroll]="{ x:'1000px',y:'calc(100vh-238px)'}" [nzHeight]= "650" width="1224"  height="calc(100vh-300px)" -->
         
-    <nz-drawer  [nzClosable]="true"  class="drawer"  [nzVisible]="drawerVisible" nzPlacement="top" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()"  >
+    <nz-drawer [nzHeight]= "1000"  [nzClosable]="true"  class="drawer"  [nzVisible]="drawerVisible" nzPlacement="top" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()"  >
         <div class="col-md-12 spinner" *ngIf="loading">
             <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
         </div>
         <div nz-row>   
-            <iframe *ngIf="tryDoctype" class="iframe" [src]="tryDoctype"   ></iframe> 
+            <iframe *ngIf="tryDoctype" class="iframe" [src]="tryDoctype" width="950" height="650"  ></iframe> 
         </div>
     </nz-drawer>

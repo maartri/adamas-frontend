@@ -172,7 +172,7 @@ export const dataSetDropDowns = {
   OTHER:['ADMISSION', 'ASSESMENT','DATA UPDATE','DISCHARGE','OTHER','STAFF ONBOARDING','REFERRAL - IN','REFERRAL - OUT','REVIEW']
 }
 
-export const notificationTypes = ['Referral Notification','Assessment Notification','Admission Notification','Refer On Notification','Not Proceed Notification','Discharge Notification','Suspend Notification','Reinstate Notification','Admin Notification','Lifecycle Event Notification']
+export const notificationTypes = ['Referral Notification','Assessment Notification','Admission Notification','Refer On Notification','Not Proceed Notification','Discharge Notification','Suspend Notification','Reinstate Notification','Admin Notification','Lifecycle Event Notification','Staff Onboard Notification','Staff Terminate Notification']
 export const othersType = ['REFERRAL','WAITING LIST','CARER','RECIPIENT','CARER/RECIPIENT','BILLING CLIENT ONLY','ASSOCIATE']
 export const attendance = ['NO ALERT','STAFF CASE MANAGER','RECIPIENT CASE MANAGER','BRANCH ROSTER EMAIL']
 export const dateFormat = "dd/MM/yyyy";

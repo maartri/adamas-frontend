@@ -180,6 +180,10 @@ export class TimeSheetService {
     ProcessRoster(data: any): Observable<any> {
         return this.auth.get(`${timesheet}/rosterOps`, data);
     }
+    Check_BreachedRosterRules(data: any): Observable<any> {
+        return this.auth.get(`${timesheet}/breachedRosterRules`, data);
+    }
+    
     getActivities(data: any): Observable<any> {
         return this.auth.get(`${timesheet}/getActivities`, data);
     }

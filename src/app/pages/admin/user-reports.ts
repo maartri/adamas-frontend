@@ -117,11 +117,15 @@ const inputFormDefault = {
     margin-left: 20px;
   }
   .tree_frame{
-    height: 500px;
+    height: 100vh;
     overflow-y: scroll;
   }
   .form-group label{
     font-weight: bold;
+}
+nz-layout[_ngcontent-dhj-c382] {
+  background: #85B9D5;
+  height: 109vh;
 }
   
     `],
@@ -151,6 +155,9 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
   functionsArr: Array<any> = ["EQUALS", "BETWEEN", "LESS THAN", "GREATER THAN", "NOT EQUAL TO", "IS NOTHING", "IS ANYTHING", "IS TRUE", "IS FALSE"];
  // Arr: Array<any>;
  // valArr: Array<any>;
+  nodes: Array<any>;
+
+ 
   Arr: string;
   valArr:string;
   RptTitle : string;
@@ -213,7 +220,58 @@ IncludeONIOtherIssues : boolean; IncludeONICurrentServices: boolean;  IncludeONI
 IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; IncludeRecipBranches : boolean; includeHRRecipAttribute: boolean;  IncludeRecipCompetencies : boolean; IncludeStaffLoanItems : boolean;  IncludeCarePlan : boolean; IncludeGoalsAndStrategies : boolean; IncludeMentalHealth: boolean;
 
 
-    nodes = [
+    
+
+
+  constructor(
+    private http: HttpClient,
+    private fb: FormBuilder,
+    private sanitizer: DomSanitizer,
+    private ModalS: NzModalService,
+    private GlobalS:GlobalService,
+    private ReportS:ReportService,
+    private ListS:ListService,
+    private MenuS:MenuService,
+    private printS: PrintService,
+    private router: Router,
+    private cd: ChangeDetectorRef,
+    
+    
+  ) {
+
+  }
+  //private unsubscribe: Subject<void> = new Subject();
+  ngOnInit(): void {    
+    this.inputForm = this.fb.group(inputFormDefault);    
+    this.tocken = this.GlobalS.pickedMember ? this.GlobalS.GETPICKEDMEMBERDATA(this.GlobalS.GETPICKEDMEMBERDATA):this.GlobalS.decode();
+    this.RptFormat = this.GlobalS.var2.toString();
+
+  //  console.log(this.tocken)
+  if(this.RptFormat == "AGENCYSTFLIST" || this.RptFormat == "USERSTFLIST"){
+
+this.nodes = [
+      { title: 'Name and Address', key: '056' },
+      { title: 'Contacts & Next of Kin', key: '005' },
+      { title: 'User Groups', key: '011' },
+      { title: 'Prefrences', key: '012' },
+      { title: 'Loan Items', key: '035' },
+      { title: 'Reminders', key: '010' },
+      
+      { title: 'Skills and Qualifications', key: '046' },      
+      { title: 'Leaves', key: '047' },
+      { title: 'General Info', key: '048' },
+      { title: 'Staff Attributes', key: '049' },
+      { title: 'Staff HR Notes', key: '050' },
+      { title: 'Staff OP Notes', key: '051' },
+      { title: 'Staff Incidents', key: '052' },      
+      { title: 'Work Hours', key: '053' },
+      { title: 'Staff Position', key: '054' },
+      { title: 'Service Information Fields', key: '055' },
+
+]
+
+  }else{
+    this.nodes = [
       { title: 'Name and Address', key: '000' },
       { title: 'General Demographics', key: '001' },
       { title: 'Admin Information', key: '002' },
@@ -261,32 +319,7 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
       { title: 'Recipient Placements', key: '044' },
       { title: 'Quote Goals and Stratagies', key: '045' },
     ];
-
-
-  constructor(
-    private http: HttpClient,
-    private fb: FormBuilder,
-    private sanitizer: DomSanitizer,
-    private ModalS: NzModalService,
-    private GlobalS:GlobalService,
-    private ReportS:ReportService,
-    private ListS:ListService,
-    private MenuS:MenuService,
-    private printS: PrintService,
-    private router: Router,
-    private cd: ChangeDetectorRef,
-    
-    
-  ) {
-
   }
-  //private unsubscribe: Subject<void> = new Subject();
-  ngOnInit(): void {    
-    this.inputForm = this.fb.group(inputFormDefault);    
-    this.tocken = this.GlobalS.pickedMember ? this.GlobalS.GETPICKEDMEMBERDATA(this.GlobalS.GETPICKEDMEMBERDATA):this.GlobalS.decode();
-    this.RptFormat = this.GlobalS.var2.toString();
-
-  //  console.log(this.tocken)
     
     
   }
@@ -1312,8 +1345,296 @@ IncludeDEX : boolean; IncludeCarerInfo : boolean; IncludeHACC : boolean; Include
           { "title": "Strategy DS Services", "key": "08", isLeaf: true },
         ]
         break;
-
-
+        case "46": //Skills & Qualification
+        this.data = [
+          { "title": "Aged", "key": "00", isLeaf: true },
+          { "title": "Child", "key": "01", isLeaf: true },
+          { "title": "Dementia", "key": "02", isLeaf: true },
+          { "title": "Disabilities", "key": "03", isLeaf: true },
+          { "title": "Host", "key": "04", isLeaf: true },
+          { "title": "Spinal", "key": "05", isLeaf: true },
+          { "title": "Mental Health", "key": "06", isLeaf: true },
+          { "title": "Palliative", "key": "07", isLeaf: true },
+          { "title": "Other", "key": "08", isLeaf: true },
+          { "title": "Domestic", "key": "09", isLeaf: true },
+          { "title": "Registered Nurse ", "key": "10", isLeaf: true },
+          { "title": "PCP/PCA", "key": "11", isLeaf: true },
+          { "title": "Enrolled Nurse", "key": "12", isLeaf: true },
+          { "title": "CACL1", "key": "13", isLeaf: true },
+          { "title": "CACL2", "key": "14", isLeaf: true },
+          { "title": "Other1", "key": "15", isLeaf: true },
+          { "title": "Other2", "key": "16", isLeaf: true },
+          { "title": "Other3", "key": "17", isLeaf: true },
+          { "title": "Other4", "key": "18", isLeaf: true },
+          { "title": "Other5", "key": "19", isLeaf: true },
+          { "title": "Other6", "key": "20", isLeaf: true },
+          { "title": "Assertiveness", "key": "21", isLeaf: true },
+          { "title": "BackCare", "key": "22", isLeaf: true },
+          { "title": "Confidentiality", "key": "23", isLeaf: true },
+          { "title": "Dementia", "key": "24", isLeaf: true },
+          { "title": "Disabilities", "key": "25", isLeaf: true },
+          { "title": "DisabilitiesCert", "key": "26", isLeaf: true },
+          { "title": "DutyOfCare", "key": "27", isLeaf: true },
+          
+                    
+        ]
+        break;
+        case "47": // leaves
+          this.data = [
+            { "title": "Name", "key": "00", isLeaf: true },
+            { "title": "Approved Status", "key": "01", isLeaf: true },
+            { "title": "Leave Reminder Date", "key": "02", isLeaf: true },
+            { "title": "Leave Start Date", "key": "03", isLeaf: true },
+            { "title": "Leave End Date", "key": "04", isLeaf: true },            
+                      
+          ]
+          
+        break;
+        case "48": // general info
+          this.data = [
+            { "title": "UniqueID", "key": "00", isLeaf: true },
+            { "title": "AcountNo", "key": "01", isLeaf: true },
+            { "title": "StaffID", "key": "02", isLeaf: true },
+            { "title": "Pin Number", "key": "03", isLeaf: true },
+            { "title": "Start Date", "key": "04", isLeaf: true },
+            { "title": "Termination Date", "key": "05", isLeaf: true },
+            { "title": "Type", "key": "06", isLeaf: true },
+            { "title": "Category", "key": "07", isLeaf: true },
+            { "title": "Department", "key": "08", isLeaf: true },
+            { "title": "Location", "key": "09", isLeaf: true },
+            { "title": "Team", "key": "10", isLeaf: true },
+            { "title": "Manager/Coordinto ", "key": "11", isLeaf: true },
+            { "title": "Service Region", "key": "12", isLeaf: true },
+            { "title": "Job Title", "key": "13", isLeaf: true },
+            { "title": "Job Status", "key": "14", isLeaf: true },
+            { "title": "Job Weighting", "key": "15", isLeaf: true },
+            { "title": "Job FTE ", "key": "16", isLeaf: true },
+            { "title": "Job Category", "key": "17", isLeaf: true },
+            { "title": "Email Timesheet", "key": "18", isLeaf: true },
+            { "title": "Award", "key": "19", isLeaf: true },
+            { "title": "Award Level", "key": "20", isLeaf: true },
+            { "title": "Pay Group", "key": "21", isLeaf: true },
+            { "title": "Super %", "key": "22", isLeaf: true },
+            { "title": "Super Fund", "key": "23", isLeaf: true },
+            { "title": "Vehile Registration", "key": "24", isLeaf: true },
+            { "title": "Drivers License", "key": "25", isLeaf: true },
+            { "title": "Nurse Registration", "key": "26", isLeaf: true },
+            { "title": "Gender", "key": "27", isLeaf: true },
+            { "title": "Date of Birth", "key": "28", isLeaf: true },
+            { "title": "Age", "key": "29", isLeaf: true },
+            { "title": "Ageband-Statistical", "key": "30", isLeaf: true },
+            { "title": "Ageband-5 Year", "key": "31", isLeaf: true },
+            { "title": "Ageband-10 Year", "key": "32", isLeaf: true },
+            { "title": "Age ATSI Status", "key": "33", isLeaf: true },
+            { "title": "Month of Birth", "key": "34", isLeaf: true },
+            { "title": "Month of Birth No", "key": "35", isLeaf: true },
+            { "title": "Leave Start Date", "key": "36", isLeaf: true },
+            { "title": "Leave Return Date", "key": "37", isLeaf: true },
+            { "title": "Sub Category", "key": "38", isLeaf: true },
+            { "title": "Panztel Pin", "key": "39", isLeaf: true },
+            { "title": "Daelibs Logger ID", "key": "40", isLeaf: true },
+            { "title": "Contact Issues", "key": "41", isLeaf: true },
+            { "title": "CALD Status", "key": "42", isLeaf: true },
+            { "title": "Indiginous Status", "key": "43", isLeaf: true },
+            { "title": "Visa Status", "key": "43", isLeaf: true },
+            
+                      
+          ]
+          break;
+        case "49"://staff attribute
+          this.data = [
+            { "title": "Competency", "key": "00", isLeaf: true },
+            { "title": "Competency Expiry Date", "key": "01", isLeaf: true },
+            { "title": "Competency Reminder Date", "key": "02", isLeaf: true },
+            { "title": "Competency Completion Date", "key": "03", isLeaf: true },
+            { "title": "Mandatory Status", "key": "04", isLeaf: true },
+            { "title": "Certificate Number", "key": "05", isLeaf: true },
+            { "title": "Competency Notes", "key": "06", isLeaf: true },
+            { "title": "Staff Position", "key": "07", isLeaf: true },
+            { "title": "Staff Admin Categories", "key": "08", isLeaf: true },
+            { "title": "NDIA Staff Level", "key": "09", isLeaf: true },
+                      
+          ]
+          break;
+        case "50":// hr notes
+          this.data = [
+            { "title": "HR Notes Date", "key": "00", isLeaf: true },
+            { "title": "HR Notes Detail", "key": "01", isLeaf: true },
+            { "title": "HR Notes Creator", "key": "02", isLeaf: true },
+            { "title": "HR Notes Alarm", "key": "03", isLeaf: true },
+            { "title": "HR Notes Categories", "key": "04", isLeaf: true },            
+                      
+          ]
+          break;
+        case "51"://op notes
+          this.data = [
+            { "title": "General Notes", "key": "00", isLeaf: true },
+            { "title": "OP Notes Date", "key": "01", isLeaf: true },
+            { "title": "OP Notes Detail", "key": "02", isLeaf: true },
+            { "title": "OP Notes Creator", "key": "03", isLeaf: true },
+            { "title": "OP Notes Alarm", "key": "04", isLeaf: true },
+            { "title": "OP Notes Category", "key": "05", isLeaf: true },
+               
+          ]
+          break;
+        case "52":// staff inident
+        this.data = [
+          { "title": "INCD_Status", "key": "00", isLeaf: true },
+          { "title": "INCD_Date", "key": "01", isLeaf: true },
+          { "title": "INCD_TYpe", "key": "02", isLeaf: true },
+          { "title": "INCD_Description", "key": "03", isLeaf: true },
+          { "title": "INCD_SubCategory", "key": "04", isLeaf: true },
+          { "title": "INCD_Assigned_To", "key": "05", isLeaf: true },
+          { "title": "INCD_Service", "key": "06", isLeaf: true },
+          { "title": "INCD_Severity", "key": "07", isLeaf: true },
+          { "title": "INCD_Time", "key": "08", isLeaf: true },
+          { "title": "INCD_Duration", "key": "09", isLeaf: true },
+          { "title": "INCD_Location", "key": "10", isLeaf: true },
+          { "title": "INCD_LocationNotes", "key": "11", isLeaf: true },
+          { "title": "INCD_ReportedBy", "key": "12", isLeaf: true },
+          { "title": "INCD_DateReported", "key": "13", isLeaf: true },
+          { "title": "INCD_Reported", "key": "14", isLeaf: true },
+          { "title": "INCD_FullDesc", "key": "15", isLeaf: true },
+          { "title": "INCD_Program", "key": "16", isLeaf: true },
+          { "title": "INCD_DSCServiceType", "key": "17", isLeaf: true },
+          { "title": "INCD_TriggerShort", "key": "18", isLeaf: true },
+          { "title": "INCD_level", "key": "19", isLeaf: true },
+          { "title": "INCD_Area", "key": "20", isLeaf: true },
+          { "title": "INCD_Region", "key": "21", isLeaf: true },
+          { "title": "INCD_Position", "key": "22", isLeaf: true },
+          { "title": "INCD_Phone", "key": "23", isLeaf: true },
+          { "title": "INCD_Verbal_Date", "key": "24", isLeaf: true },
+          { "title": "INCD_Verbal_Time", "key": "25", isLeaf: true },
+          { "title": "INCD_By_Whome", "key": "26", isLeaf: true },
+          { "title": "INCD_To_Whome", "key": "27", isLeaf: true },
+          { "title": "INCD_BriefSummary", "key": "28", isLeaf: true },
+          { "title": "INCD_ReleventBackground", "key": "29", isLeaf: true },
+          { "title": "INCD_SummaryOfAction", "key": "30", isLeaf: true },
+          { "title": "INCD_SummaryOfOtherAction", "key": "31", isLeaf: true },
+          { "title": "INCD_Triggers", "key": "32", isLeaf: true },
+          { "title": "INCD_InitialAtion", "key": "33", isLeaf: true },
+          { "title": "INCD_InitialNotes", "key": "34", isLeaf: true },
+          { "title": "INCD_InitialFupBy", "key": "35", isLeaf: true },
+          { "title": "INCD_Completed", "key": "36", isLeaf: true },
+          { "title": "INCD_OngoingAction", "key": "37", isLeaf: true },
+          { "title": "INCD_OngoingNotes", "key": "38", isLeaf: true },
+          { "title": "INCD_Background", "key": "39", isLeaf: true },
+          { "title": "INCD_Abuse", "key": "40", isLeaf: true },
+          { "title": "INCD_DOPwithDisability", "key": "41", isLeaf: true },
+          { "title": "INCD_SerousRisks", "key": "42", isLeaf: true },
+          { "title": "INCD_Complaints", "key": "43", isLeaf: true },
+          { "title": "INCD_Perpetrator", "key": "44", isLeaf: true },
+          { "title": "INCD_Notify", "key": "45", isLeaf: true },
+          { "title": "INCD_NoNotifyReason", "key": "46", isLeaf: true },
+          { "title": "INCD_Notes", "key": "47", isLeaf: true },
+          { "title": "INCD_Setting", "key": "48", isLeaf: true },                                        
+        ]
+        break;  
+        case "53":// work hours
+          this.data = [
+            { "title": "Min_Daily_HRS", "key": "00", isLeaf: true },
+            { "title": "Max_Daily_HRS", "key": "01", isLeaf: true },
+            { "title": "Min_Weekly_HRS", "key": "02", isLeaf: true },
+            { "title": "Max_Weekly_HRS", "key": "03", isLeaf: true },
+            { "title": "Min_Pay_Period_HRS", "key": "04", isLeaf: true },
+            { "title": "Max_Pay_Period_HRS", "key": "05", isLeaf: true },
+            { "title": "Week_1_Day_1", "key": "06", isLeaf: true },
+            { "title": "Week_1_Day_2", "key": "07", isLeaf: true },
+            { "title": "Week_1_Day_3", "key": "08", isLeaf: true },
+            { "title": "Week_1_Day_4", "key": "09", isLeaf: true },
+            { "title": "Week_1_Day_5", "key": "10", isLeaf: true },
+            { "title": "Week_1_Day_6", "key": "11", isLeaf: true },
+            { "title": "Week_1_Day_7", "key": "12", isLeaf: true },
+            { "title": "Week_2_Day_1", "key": "13", isLeaf: true },
+            { "title": "Week_2_Day_2", "key": "14", isLeaf: true },
+            { "title": "Week_2_Day_3", "key": "15", isLeaf: true },
+            { "title": "Week_2_Day_4", "key": "16", isLeaf: true },
+            { "title": "Week_2_Day_5", "key": "17", isLeaf: true },
+            { "title": "Week_2_Day_6", "key": "18", isLeaf: true },
+            { "title": "Week_2_Day_7", "key": "19", isLeaf: true },
+                      
+          ]
+          break;
+        case "54": // staff position
+          this.data = [
+            { "title": "Staff Position", "key": "00", isLeaf: true },
+            { "title": "Position Start Date", "key": "01", isLeaf: true },
+            { "title": "Position End Date", "key": "02", isLeaf: true },
+            { "title": "Position ID", "key": "03", isLeaf: true },
+            { "title": "Position Notes", "key": "04", isLeaf: true },
+                      
+          ]
+          break;
+        case "55": // service information fields
+          this.data = [
+            { "title": "Staff Code", "key": "00", isLeaf: true },
+            { "title": "Service Date", "key": "01", isLeaf: true },
+            { "title": "Service Start Time", "key": "02", isLeaf: true },
+            { "title": "Service Code", "key": "03", isLeaf: true },
+            { "title": "Service Hours", "key": "04", isLeaf: true },
+            { "title": "Service Pay Rate", "key": "05", isLeaf: true },
+            { "title": "Service Bill Rate", "key": "06", isLeaf: true },
+            { "title": "Service Bill Qty", "key": "07", isLeaf: true },
+            { "title": "Service Location/Activity Group", "key": "08", isLeaf: true },
+            { "title": "Service Progrm", "key": "09", isLeaf: true },
+            { "title": "Service Group", "key": "10", isLeaf: true },
+            { "title": "Service HACC Type ", "key": "11", isLeaf: true },
+            { "title": "Service Category", "key": "12", isLeaf: true },
+            { "title": "Service Status", "key": "13", isLeaf: true },
+            { "title": "Service Pay Type", "key": "14", isLeaf: true },
+            { "title": "Service Pay Qty", "key": "15", isLeaf: true },
+            { "title": "Service Bill Unit", "key": "16", isLeaf: true },
+            { "title": "Service End Time/Shift End Time", "key": "17", isLeaf: true },
+            { "title": "Service Funding Source", "key": "18", isLeaf: true },
+            { "title": "Service Notes", "key": "19", isLeaf: true },
+                      
+          ]
+          break;
+          case "56": //STAFF Name and Address
+          this.data = [
+            { "title": "Title", "key": "00", isLeaf: true },
+            { "title": "First Name", "key": "01", isLeaf: true },
+            { "title": "Middle Name", "key": "02", isLeaf: true },
+            { "title": "Surname/Orgnisation", "key": "03", isLeaf: true },
+            { "title": "Preferred Name", "key": "04", isLeaf: true },
+            { "title": "contact Address Line 1", "key": "05", isLeaf: true },
+            { "title": "contact Address Line 2", "key": "06", isLeaf: true },
+            { "title": "contact Address-Suburb", "key": "07", isLeaf: true },
+            { "title": "contact Address-Postcode", "key": "08", isLeaf: true },
+            { "title": "contact Address-state", "key": "09", isLeaf: true },
+            { "title": "contact Address-GoogleAddress", "key": "10", isLeaf: true },
+            { "title": "Usual Address Line 1", "key": "11", isLeaf: true },
+            { "title": "Usual Address Line 2", "key": "12", isLeaf: true },
+            { "title": "Usual Address-Suburb", "key": "13", isLeaf: true },
+            { "title": "Usual Address-Postcode", "key": "14", isLeaf: true },
+            { "title": "Usual Address-state", "key": "15", isLeaf: true },
+            { "title": "Usual Address-GoogleAddress", "key": "16", isLeaf: true },
+            { "title": "Billing Address Line 1", "key": "17", isLeaf: true },
+            { "title": "Billing Address Line 2", "key": "18", isLeaf: true },
+            { "title": "Billing Address-Suburb", "key": "19", isLeaf: true },
+            { "title": "Billing Address-Postcode", "key": "20", isLeaf: true },
+            { "title": "Billing Address-state", "key": "21", isLeaf: true },
+            { "title": "Billing Address-GoogleAddress ", "key": "22", isLeaf: true },
+            { "title": "Destination Address Line 1", "key": "23", isLeaf: true },
+            { "title": "Destination Address Line 2", "key": "24", isLeaf: true },
+            { "title": "Destination Address-Suburb", "key": "25", isLeaf: true },
+            { "title": "Destination Address-Postcode", "key": "26", isLeaf: true },
+            { "title": "Destination Address-state", "key": "27", isLeaf: true },
+            { "title": "Destination Address-GoogleAddress", "key": "28", isLeaf: true },
+            { "title": "Email", "key": "29", isLeaf: true },
+            { "title": "Email-SMS", "key": "30", isLeaf: true },
+            { "title": "FAX", "key": "31", isLeaf: true },
+            { "title": "Home Phone", "key": "32", isLeaf: true },
+            { "title": "Mobile Phone", "key": "33", isLeaf: true },
+            { "title": "Usual Phone", "key": "34", isLeaf: true },
+            { "title": "Work Phone", "key": "35", isLeaf: true },
+            { "title": "Current Phone Number", "key": "36", isLeaf: true },
+            { "title": "Other Phone Number", "key": "37", isLeaf: true },
+            
+                      
+          ]
+          break;
+              
 
 
       default:
@@ -3913,8 +4234,8 @@ this.sqlselect = "Select " + this.ColumnNameAdjuster(this.list)//.join(" as Fiel
     
   }
        
-    //console.log(this.sqlcondition)
-  //  console.log(this.sql)
+    //console.log(this.Saverptsql)
+    //console.log(this.sql)
   
   
     
@@ -3924,7 +4245,7 @@ this.sqlselect = "Select " + this.ColumnNameAdjuster(this.list)//.join(" as Fiel
     this.ReportPreview = true;
     this.QueryFormation();
     this.tryDoctype = "";
-  //  console.log(this.sqlcondition)
+    console.log(this.RptFormat.toString())
   //  if(this.sqlcondition != null || this.sqlcondition != undefined){
     this.ReportRender(this.sql);
   //  console.log(this.sql)
@@ -3943,6 +4264,8 @@ this.sqlselect = "Select " + this.ColumnNameAdjuster(this.list)//.join(" as Fiel
 //      var RptSQL  =  this.QueryFinlization(this.Saverptsql);
       var RptSQL  =  this.Saverptsql;
       this.RptTitle = (this.inputForm.value.RptTitle).toString();
+
+      console.log(this.RptFormat.toString())
 
       
       let filtertitle = forkJoin([
@@ -4077,9 +4400,9 @@ this.sqlselect = "Select " + this.ColumnNameAdjuster(this.list)//.join(" as Fiel
               "sql": fQuery,              
               "userid": this.tocken.user,
               "txtTitle": Title,
-              "headings" :this.list,
+            //  "headings" :this.list,
                
-              "Fields" :this.FieldsNo ,
+            //  "Fields" :this.FieldsNo ,
               
               
           }
@@ -4124,7 +4447,514 @@ ColumnNameAdjuster(fld){
    
   var columnNames:Array<any> = [];
   this.FieldsNo = fld.length;
-//  console.log(this.FieldsNo)
+//  console.log(this.FieldsNo) 
+if(this.RptFormat == "AGENCYSTFLIST" || this.RptFormat == "USERSTFLIST"){
+  for (var key of fld){
+    switch (key) {
+      //STAFF NAME AND ADDRESS      
+          case 'Title':
+                  if(columnNames != []){          
+          columnNames = columnNames.concat(['Staff.Title as Title'])
+        }else{
+          columnNames = (['Staff.Title as Title'])
+        }        
+          break;
+          case 'First Name':
+                  if(columnNames != []){          
+          columnNames = columnNames.concat(['Staff.FirstName as [First Name]'])
+        }else{          
+          columnNames = (['Staff.FirstName as [First Name]'])}
+
+        break;
+      case 'Middle Name':
+                  if(columnNames != ['']){
+          columnNames = columnNames.concat(['Staff.MiddleNames as [Middle Name]'])
+        }else{columnNames = (['Staff.MiddleNames as [Middle Name]'])}        
+          break;
+             
+   
+   
+        case 'Surname/Organisation':
+                  if(columnNames != []){
+          columnNames = columnNames.concat(['Staff.LastName as [Surname/Organisation] '])
+        }else{columnNames = (['Staff.LastName as  [Surname/Organisation]'])}        
+          break;
+          case 'Preferred Name':
+                  if(columnNames != []){
+          columnNames = columnNames.concat(['Staff.PreferredName as [Preferred Name] '])
+        }else{columnNames = (['Staff.PreferredName as [Preferred Name] '])}        
+          break; 
+          case 'contact Address Line 1':
+            var Address1 = "(SELECT TOP 1 address1 FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = '<CONTACT>')"
+                  if(columnNames != []){
+          columnNames = columnNames.concat([Address1 +'as [Address-Line1]'])
+        }else{columnNames = ([Address1 +'as Address-Line1'])}        
+          break;
+          case 'contact Address Line 2':
+            var Address2 = "(SELECT TOP 1 address2 FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = '<CONTACT>') "
+                  if(columnNames != []){
+          columnNames = columnNames.concat([Address2 +'as [ Address-Line2]'])
+        }else{columnNames = ([Address2 +'as [ Address-Line2]'])}        
+          break;
+          case 'contact Address-Suburb':
+            var contact_suburb = "(SELECT TOP 1 suburb FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = '<CONTACT>') "
+                  if(columnNames != []){
+          columnNames = columnNames.concat([contact_suburb +'AS [ Address-Suburb]'])
+        }else{columnNames = ([contact_suburb +'AS [ Address-Suburb]'])}        
+          break;
+          case 'contact Address-Postcode':
+            var AddressPostcode = "(SELECT TOP 1 postcode FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = '<CONTACT>') " 
+                  if(columnNames != []){
+          columnNames = columnNames.concat([AddressPostcode +'AS [ Address-Postcode]'])
+        }else{columnNames = ([AddressPostcode +'AS [ Address-Postcode]'])}        
+          break;
+          case 'contact Address-state':
+            var state = "(SELECT TOP 1 CASE WHEN LEFT(postcode, 1) = '0' THEN 'NT' WHEN LEFT(postcode, 1) = '2' THEN CASE WHEN postcode BETWEEN '2600' and '2618'OR     postcode BETWEEN '2900' AND    '2999' THEN 'ACT' ELSE 'NSW' END WHEN LEFT(postcode, 1) = '3' THEN 'VIC' WHEN LEFT(postcode, 1) = '4' THEN 'QLD' WHEN LEFT(postcode, 1) = '5' THEN 'SA' WHEN LEFT(postcode, 1) = '6' THEN 'WA' WHEN LEFT(postcode, 1) = '7' THEN 'TAS' END AS primarystate FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = '<CONTACT>') " 
+                  if(columnNames != []){
+          columnNames = columnNames.concat([state +'AS [ Address-State]'])
+        }else{columnNames = ([state +'AS [ Address-State]']) }      
+          break;
+          case 'contact Address-GoogleAddress':
+            var googleaddress = "(SELECT TOP 1 googleaddress FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = '<USUAL>') "
+                  if(columnNames != []){
+          columnNames = columnNames.concat([googleaddress+' AS [ Address-GoogleAddress]'])
+        }else{columnNames = ([googleaddress+' AS [ Address-GoogleAddress]'])}        
+          break;
+          case 'Usual Address Line 1 ':
+            var U_Address1 = "(SELECT TOP 1 address1 FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = '<USUAL>') "
+                  if(columnNames != []){
+          columnNames = columnNames.concat([U_Address1+'AS [ Address-Line1]'])
+        }else{columnNames = ([U_Address1+'AS [ Address-Line1]'])}        
+          break;
+          case 'Usual Address Line 2':
+            var U_Address2 = "(SELECT TOP 1 address2 FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = '<USUAL>') "
+                  if(columnNames != []){
+          columnNames = columnNames.concat([U_Address2+'AS [ Address-Line2]'])
+        }else{columnNames = ([U_Address2+'AS [ Address-Line2]'])}        
+          break;
+          case 'Usual Address-Suburb':
+            var U_Address_Suburb = "(SELECT TOP 1suburb FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = '<USUAL>') "
+                  if(columnNames != []){
+          columnNames = columnNames.concat([U_Address_Suburb+'AS [ Address-Suburb]'])
+        }else{columnNames = ([U_Address_Suburb+'AS [ Address-Suburb]'])}        
+          break;
+          case 'Usual Address-Postcode  ':
+            var U_Address_postode = "(SELECT TOP 1 postcode FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = '<USUAL>') "
+                  if(columnNames != []){
+          columnNames = columnNames.concat([U_Address_postode+'AS [ Address-Postcode]'])
+        }else{columnNames = ([U_Address_postode+'AS [ Address-Postcode]'])}        
+          break;
+          case 'Usual Address-state':
+            var U_Address_state = "(SELECT TOP 1 CASE WHEN LEFT(postcode, 1) = '0' THEN 'NT' WHEN LEFT(postcode, 1) = '2' THEN CASE WHEN postcode BETWEEN '2600' AND    '2618' OR     postcode BETWEEN '2900' AND    '2999' THEN 'ACT' ELSE 'NSW' END WHEN LEFT(postcode, 1) = '3' THEN 'VIC' WHEN LEFT(postcode, 1) = '4' THEN 'QLD' WHEN LEFT(postcode, 1) = '5' THEN 'SA' WHEN LEFT(postcode, 1) = '6' THEN 'WA' WHEN LEFT(postcode, 1) = '7' THEN 'TAS' END AS primarystate FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = '<USUAL>')"
+                  if(columnNames != []){
+          columnNames = columnNames.concat([U_Address_state+'AS [ Address-State]'])
+        }else{columnNames = ([U_Address_state+'AS [ Address-State]'])}        
+          break;
+          case 'Usual Address-GoogleAddress':
+            var U_Address_google = "(SELECT TOP 1 googleaddress FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = '<USUAL>') "
+                  if(columnNames != []){
+          columnNames = columnNames.concat([U_Address_google+'AS [ Address-GoogleAddress]'])
+        }else{columnNames = ([U_Address_google+'AS [ Address-GoogleAddress]'])}        
+          break;    
+      case 'Billing Address Line 1':
+        var B_Address1 = "(SELECT TOP 1 address1 FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = 'BILLING ADDRESS') "
+            if(columnNames != []){
+    columnNames = columnNames.concat([B_Address1+'AS [BILLING ADDRESS Address-Line1]'])
+        }else{columnNames = ([B_Address1+'AS [BILLING ADDRESS Address-Line1]'])}        
+    break;
+    case 'Billing Address Line 2':
+      var B_Address2 = "(SELECT TOP 1 address2 FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = 'BILLING ADDRESS') "
+      if(columnNames != []){
+      columnNames = columnNames.concat([B_Address2+'AS [BILLING ADDRESS Address-Line2]'])
+      }else{columnNames = ([B_Address2+'AS [BILLING ADDRESS Address-Line2]'])}        
+    break;
+    case 'Billing Address-Suburb':
+      var B_Address_Suburb = "(SELECT TOP 1 suburb FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = 'BILLING ADDRESS') "
+      if(columnNames != []){
+      columnNames = columnNames.concat([B_Address_Suburb+'AS [BILLING ADDRESS Address-Suburb]'])
+      }else{columnNames = ([B_Address_Suburb+'AS [BILLING ADDRESS Address-Suburb]'])}        
+    break;
+    case 'Billing Address-Postcode':
+      var B_Address_postcode = "(SELECT TOP 1 postcode FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = 'BILLING ADDRESS') "
+      if(columnNames != []){
+      columnNames = columnNames.concat([B_Address_postcode+'AS [BILLING ADDRESS Address-Postcode]'])
+      }else{columnNames = ([B_Address_postcode+'AS [BILLING ADDRESS Address-Postcode]'])}        
+    break;
+    case 'Billing Address-state':
+      var B_Address_State = "(SELECT TOP 1 CASE WHEN LEFT(postcode, 1) = '0' THEN 'NT' WHEN LEFT(postcode, 1) = '2' THEN CASE WHEN postcode BETWEEN '2600' AND    '2618' OR     postcode BETWEEN '2900' AND    '2999' THEN 'ACT' ELSE 'NSW' END WHEN LEFT(postcode, 1) = '3' THEN 'VIC' WHEN LEFT(postcode, 1) = '4' THEN 'QLD' WHEN LEFT(postcode, 1) = '5' THEN 'SA' WHEN LEFT(postcode, 1) = '6' THEN 'WA' WHEN LEFT(postcode, 1) = '7' THEN 'TAS' END AS primarystate FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = 'BILLING ADDRESS') "
+      if(columnNames != []){
+      columnNames = columnNames.concat([B_Address_State+'AS [BILLING ADDRESS Address-State]'])
+      }else{columnNames = ([B_Address_State+'AS [BILLING ADDRESS Address-State]'])}        
+    break;
+    case 'Billing Address-GoogleAddress':
+      var B_Address_Google = "(SELECT TOP 1 googleaddress FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = 'BILLING ADDRESS') "
+      if(columnNames != []){
+      columnNames = columnNames.concat([B_Address_Google+'AS [BILLING ADDRESS Address-GoogleAddress]'])
+      }else{columnNames = ([B_Address_Google+'AS [BILLING ADDRESS Address-GoogleAddress]'])}        
+    break;
+    case 'Destination Address Line 1':
+      var D_Address1 = "(SELECT TOP 1 address1 FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = 'DESTINATION') "
+      if(columnNames != []){
+      columnNames = columnNames.concat([D_Address1+'AS [DESTINATION Address-Line1]'])
+      }else{columnNames = ([D_Address1+'AS [DESTINATION Address-Line1]'])}        
+    break;
+    case 'Destination Address Line 2':
+      var D_Address2 = "(SELECT TOP 1 address2 FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = 'DESTINATION') "
+      if(columnNames != []){
+      columnNames = columnNames.concat([D_Address2+'AS [DESTINATION Address-Line2]'])
+      }else{columnNames = ([D_Address2+'AS [DESTINATION Address-Line2]'])}        
+    break;
+    case 'Destination Address-Suburb ':
+      var D_suburb = "(SELECT TOP 1 suburb FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = 'DESTINATION') "
+      if(columnNames != []){
+      columnNames = columnNames.concat([D_suburb+'AS [DESTINATION Address-Suburb]'])
+      }else{columnNames = ([D_suburb+'AS [DESTINATION Address-Suburb]'])}        
+    break;
+    case 'Destination Address-Postcode':
+      var D_Address_postcode = "(SELECT TOP 1 postcode FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = 'DESTINATION') "
+      if(columnNames != []){
+      columnNames = columnNames.concat([D_Address_postcode+'AS [DESTINATION Address-Postcode]'])
+      }else{columnNames = ([D_Address_postcode+'AS [DESTINATION Address-Postcode]'])}        
+    break;
+    case 'Destination Address-state':
+      var D_Address_State = "(SELECT TOP 1 CASE WHEN LEFT(postcode, 1) = '0' THEN 'NT' WHEN LEFT(postcode, 1) = '2' THEN CASE WHEN postcode BETWEEN '2600' AND    '2618' OR     postcode BETWEEN '2900' AND    '2999' THEN 'ACT' ELSE 'NSW' END WHEN LEFT(postcode, 1) = '3' THEN 'VIC' WHEN LEFT(postcode, 1) = '4' THEN 'QLD' WHEN LEFT(postcode, 1) = '5' THEN 'SA' WHEN LEFT(postcode, 1) = '6' THEN 'WA' WHEN LEFT(postcode, 1) = '7' THEN 'TAS' END AS primarystate FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = 'DESTINATION') "
+      if(columnNames != []){
+      columnNames = columnNames.concat([D_Address_State+'AS [DESTINATION Address-State]'])
+      }else{columnNames = ([D_Address_State+'AS [DESTINATION Address-State]'])}        
+    break;
+    case 'Destination Address-GoogleAddress':
+      var D_Address_google = "(SELECT TOP 1 googleaddress FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = 'DESTINATION') "
+      if(columnNames != []){
+      columnNames = columnNames.concat([D_Address_google+'AS [DESTINATION Address-GoogleAddress]'])
+      }else{columnNames = ([D_Address_google+'AS [DESTINATION Address-GoogleAddress]'])}        
+    break;
+    case 'Email':
+      var Email = "(SELECT TOP 1 phonefaxother.detail FROM   phonefaxother WHERE  personid = uniqueid AND    phonefaxother.type = '<EMAIL>') "
+      if(columnNames != []){
+      columnNames = columnNames.concat([Email+'AS [Email]'])
+      }else{columnNames = ([Email+'AS [Email]'])}        
+    break;      
+    case 'Email-SMS':
+      var Email_sms = "(SELECT TOP 1 phonefaxother.detail FROM   phonefaxother WHERE  personid = uniqueid AND    phonefaxother.type = '<EMAIL-SMS>') "
+      if(columnNames != []){
+      columnNames = columnNames.concat([Email_sms+'AS [Email-SMS]'])
+    }else{columnNames = ([Email_sms+'AS [Email-SMS]'])}        
+    break;
+    case 'FAX':
+      var fax = "(SELECT TOP 1 phonefaxother.detail FROM   phonefaxother WHERE  personid = uniqueid AND    phonefaxother.type = '<FAX>') "
+      if(columnNames != []){
+      columnNames = columnNames.concat([fax+'AS [FAX]'])
+      }else{columnNames = ([fax+'AS [FAX]'])}        
+    break;
+    case 'Home Phone':
+      var H_Phone = "(SELECT TOP 1 phonefaxother.detail FROM   phonefaxother WHERE  personid = uniqueid AND    phonefaxother.type = '<HOME>') "
+      if(columnNames != []){
+      columnNames = columnNames.concat([H_Phone+'AS [Home-Phone]'])
+      }else{columnNames = ([H_Phone+'AS [Home-Phone]'])}        
+    break;
+    case 'Mobile Phone':
+      var Mobile_Phone = "(SELECT TOP 1 phonefaxother.detail FROM   phonefaxother WHERE  personid = uniqueid AND    phonefaxother.type = '<MOBILE>') "
+      if(columnNames != []){
+      columnNames = columnNames.concat([Mobile_Phone+'AS [Mobile-Phone]'])
+      }else{columnNames = ([Mobile_Phone+'AS [Mobile-Phone]'])}        
+    break;
+    case 'Usual Phone':
+      var Usual_Phone = "(SELECT TOP 1 phonefaxother.detail FROM   phonefaxother WHERE  personid = uniqueid AND    phonefaxother.type = '<USUAL>') "
+      if(columnNames != []){
+      columnNames = columnNames.concat([Usual_Phone+'AS [Usual-Phone]'])
+      }else{columnNames = ([Usual_Phone+'AS [Usual-Phone]'])}        
+    break;
+    case 'Work Phone':
+      var Work_Phone = "(SELECT TOP 1 phonefaxother.detail FROM   phonefaxother WHERE  personid = uniqueid AND    phonefaxother.type = '<WORK>') "
+      if(columnNames != []){
+      columnNames = columnNames.concat([Work_Phone+'AS [Work-Phone]'])
+      }else{columnNames = ([Work_Phone+'AS [Work-Phone]'])}        
+    break;
+    case 'Current Phone Number':
+      var Current_phone = "(SELECT TOP 1 phonefaxother.detail FROM   phonefaxother WHERE  personid = uniqueid AND    phonefaxother.type = 'CURRENT PHONE NUMBER' ) "
+      if(columnNames != []){
+      columnNames = columnNames.concat([Current_phone+'AS [CURRENT PHONE NUMBER]'])
+      }else{columnNames = ([Current_phone+'AS [CURRENT PHONE NUMBER]'])}        
+    break;
+    case 'Other Phone Number':
+      var other_phone = "(SELECT TOP 1 phonefaxother.detail FROM   phonefaxother WHERE  personid = uniqueid AND    phonefaxother.type = 'OTHER PHONE NUMBER') "
+      if(columnNames != []){
+      columnNames = columnNames.concat([other_phone+'AS [OTHER PHONE NUMBER]'])
+      }else{columnNames = ([other_phone+'AS [OTHER PHONE NUMBER]'])}        
+    break;
+
+
+          //  Contacts & Next of Kin
+          case 'Contact Group':
+            this.IncludeContacts = true
+                  if(columnNames != []){
+              columnNames = columnNames.concat(['HR.[Group]   '])
+            }else{columnNames = (['HR.[Group]   '])}
+                break;
+          case 'Contact Type':
+            this.IncludeContacts = true
+                  if(columnNames != []){
+              columnNames = columnNames.concat(['HR.[Type]    '])
+            }else{columnNames = (['HR.[Type]   '])} 
+                break;
+          case 'Contact Sub Type':
+            this.IncludeContacts = true
+                  if(columnNames != []){
+              columnNames = columnNames.concat(['HR.[SubType]  '])
+            }else{columnNames = (['HR.[SubType]  '])}  
+                break;
+          case 'Contact User Flag':
+            this.IncludeContacts = true
+                  if(columnNames != []){
+              columnNames = columnNames.concat(['HR.[User1]  '])
+            }else{columnNames = (['HR.[User1]  '])}
+                break;                 
+          case 'Contact Person Type':
+            this.IncludeContacts = true
+                  if(columnNames != []){
+              columnNames = columnNames.concat(['HR.[EquipmentCode]  '])
+            }else{columnNames = (['HR.[EquipmentCode]  '])} 
+                break;
+          case 'Contact Name':
+            this.IncludeContacts = true
+                  if(columnNames != []){
+              columnNames = columnNames.concat(['HR.[Name]  '])
+            }else{columnNames = (['HR.[Name]  '])} 
+                break;
+          case 'Contact Address':
+            this.IncludeContacts = true
+                  if(columnNames != []){
+              columnNames = columnNames.concat(['HR.[Address1]  '])
+            }else{columnNames = (['HR.[Address1]  '])} 
+                break;
+          case 'Contact Suburb':
+            this.IncludeContacts = true
+                  if(columnNames != []){
+              columnNames = columnNames.concat(['HR.[Suburb]  '])
+            }else{columnNames = (['HR.[Suburb]  '])}
+                break;
+          case 'Contact Postcode':
+            this.IncludeContacts = true
+                  if(columnNames != []){
+              columnNames = columnNames.concat(['HR.[Postcode]  '])
+            }else{columnNames = (['HR.[Postcode]  '])} 
+                break;
+          case 'Contact Phone 1':
+            this.IncludeContacts = true
+                  if(columnNames != []){
+              columnNames = columnNames.concat(['HR.[Phone1] '])
+            }else{columnNames = (['HR.[Phone1] '])} 
+                break;
+          case 'Contact Phone 2':
+            this.IncludeContacts = true
+                  if(columnNames != []){
+              columnNames = columnNames.concat(['HR.[Phone2]  '])
+            }else{columnNames = (['HR.[Phone2]  '])} 
+                break;
+          case 'Contact Mobile': 
+            this.IncludeContacts = true
+                  if(columnNames != []){
+              columnNames = columnNames.concat(['HR.[Mobile]  '])
+            }else{columnNames = (['HR.[Mobile]  '])}
+                break;
+          case 'Contact FAX':
+            this.IncludeContacts = true
+                  if(columnNames != []){
+              columnNames = columnNames.concat(['HR.[FAX]  '])
+            }else{columnNames = (['HR.[FAX]  '])}
+                break;
+          case 'Contact Email':
+            this.IncludeContacts = true
+                  if(columnNames != []){
+              columnNames = columnNames.concat(['HR.[Email]  '])
+            }else{columnNames = (['HR.[Email]  '])}
+                break;
+            // USER GROUPS                     
+            case 'Group Name':
+              if(columnNames != []){
+              columnNames = columnNames.concat(['UserGroup.[Name]  '])
+            }else{columnNames = (['UserGroup.[Name]  '])}  
+                  break;
+          case 'Group Note':
+              if(columnNames != []){
+              columnNames = columnNames.concat(['UserGroup.[Notes]  '])
+            }else{columnNames = (['UserGroup.[Notes]  '])} 
+                  break; 
+          case 'Group Start Date':
+              if(columnNames != []){
+              columnNames = columnNames.concat(['UserGroup.[Date1]  '])
+            }else{columnNames = (['UserGroup.[Date1]  '])}  
+                  break;                      
+          case 'Group End Date':
+              if(columnNames != []){
+              columnNames = columnNames.concat(['UserGroup.[Date2]  '])
+            }else{columnNames = (['UserGroup.[Date2]  '])} 
+                  break;
+          case 'Group Email':
+              if(columnNames != []){
+              columnNames = columnNames.concat(['UserGroup.[Email]  '])
+            }else{columnNames = (['UserGroup.[Email]  '])} 
+                  break;
+                
+//Preferences                                        
+          case 'Preference Name':
+              if(columnNames != []){
+              columnNames = columnNames.concat(['Prefr.[Name]  '])
+            }else{columnNames = (['Prefr.[Name]  '])}  
+                  break;                      
+          case 'Preference Note':
+              if(columnNames != []){
+              columnNames = columnNames.concat(['Prefr.[Notes]  '])
+            }else{columnNames = (['Prefr.[Notes]  '])}  
+                  break;
+          //REMINDERS                      
+          case 'Reminder Detail':
+            if(columnNames != []){
+            columnNames = columnNames.concat(['Remind.[Name]  '])
+          }else{columnNames = (['Remind.[Name]  '])}
+                break;
+        case 'Event Date':
+            if(columnNames != []){
+            columnNames = columnNames.concat(['Remind.[Date2]  '])
+          }else{columnNames = (['Remind.[Date2]  '])}  
+                break;
+                
+        case 'Reminder Date':
+            if(columnNames != []){
+            columnNames = columnNames.concat(['Remind.[Date1]  '])
+          }else{columnNames = (['Remind.[Date1]  '])}  
+                break;
+        case 'Reminder Notes':
+            if(columnNames != []){
+            columnNames = columnNames.concat(['Remind.[Notes]  '])
+          }else{columnNames = (['Remind.[Notes]  '])}  
+                break;
+        //Loan Items                      
+        case 'Loan Item Type':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['HRLoan.[Type]  '])
+        }else{columnNames = (['HRLoan.[Type]  '])}
+              break;
+        case 'Loan Item Description':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['HRLoan.[Name]  '])
+        }else{columnNames = (['HRLoan.[Name]  '])}
+              break;
+        case 'Loan Item Date Loaned/Installed':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['HRLoan.[Date1]  '])
+        }else{columnNames = (['HRLoan.[Date1]  '])}
+              break;                      
+        case 'Loan Item Date Collected':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['HRLoan.[Date2]  '])
+        }else{columnNames = (['HRLoan.[Date2]  '])}
+              break;
+        //  service information Fields                      
+        case 'Staff Code':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['SvcDetail.[Carer Code]  '])
+        }else{columnNames = (['SvcDetail.[Carer Code]  '])}
+              break;
+        case 'Service Date':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['SvcDetail.Date  '])
+        }else{columnNames = (['SvcDetail.Date  '])}
+              break;
+        case 'Service Start Time':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['SvcDetail.[Start Time]  '])
+        }else{columnNames = (['SvcDetail.[Start Time]  '])}
+              break;
+        case 'Service Code':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['SvcDetail.[Service Type]  '])
+        }else{columnNames = (['SvcDetail.[Service Type]  '])}
+              break;                      
+        case 'Service Hours':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['(SvcDetail.[Duration]*5) / 60  '])
+        }else{columnNames = (['(SvcDetail.[Duration]*5) / 60  '])}
+              break;
+        case 'Service Pay Rate':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['SvcDetail.[Unit Pay Rate]  '])
+        }else{columnNames = (['SvcDetail.[Unit Pay Rate]  '])}
+              break;
+        case 'Service Bill Rate':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['SvcDetail.[Unit Bill Rate]  '])
+        }else{columnNames = (['SvcDetail.[Unit Bill Rate]  '])}
+              break;
+        case 'Service Bill Qty':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['SvcDetail.[BillQty]  '])
+        }else{columnNames = (['SvcDetail.[BillQty]  '])}
+              break;
+        case 'Service Location/Activity Group':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['SvcDetail.[ServiceSetting]  '])
+        }else{columnNames = (['SvcDetail.[ServiceSetting]  '])}
+              break;
+        case 'Service Program':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['SvcDetail.[Program]  '])
+        }else{columnNames = (['SvcDetail.[Program]  '])}
+              break;
+        case 'Service Group':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['SvcDetail.[Type]  '])
+        }else{columnNames = (['SvcDetail.[Type]  '])}
+              break;
+        case 'Service HACCType': 
+          if(columnNames != []){
+        columnNames = columnNames.concat(['SvcDetail.[HACCType]  '])
+        }else{columnNames = (['SvcDetail.[HACCType]  '])}
+              break;
+        case 'Service Category':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['SvcDetail.[Anal]  '])
+        }else{columnNames = (['SvcDetail.[Anal]  '])}
+              break;
+        case 'Service Status':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['SvcDetail.[Status]  '])
+        }else{columnNames = (['SvcDetail.[Status]  '])}
+              break;
+        case 'Service Pay Type':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['SvcDetail.[Service Description]  '])
+        }else{columnNames = (['SvcDetail.[Service Description]  '])}
+              break;
+        case 'Service Pay Qty':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['SvcDetail.[CostQty]  '])
+        }else{columnNames = (['SvcDetail.[CostQty]  '])}
+              break;
+        case 'Service End Time/ Shift End Time':
+        var endtime = " Convert(varchar,DATEADD(minute,(SvcDetail.[Duration]*5) ,SvcDetail.[Start Time]),108) "
+          if(columnNames != []){
+        columnNames = columnNames.concat([endtime+'  '])
+        }else{columnNames = ([endtime+'  '])}
+              break;
+        case 'Service Funding Source':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['Humanresourcetypes.[Type]  '])
+        }else{columnNames = (['Humanresourcetypes.[Type]  '])}
+              break;  
+        case 'Service Notes':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['CAST(History.Detail AS varchar(4000))  '])
+        }else{columnNames = (['CAST(History.Detail AS varchar(4000))  '])}
+              break;
+
+
+
+
+    }
+  }
+
+}else{
   for (var key of fld){
     switch (key) {
       //NAME AND ADDRESS
@@ -4498,7 +5328,6 @@ ColumnNameAdjuster(fld){
               }else{columnNames = (['  '])} 
                   break;
 //  Contacts & Next of Kin
-
             case 'Contact Group':
               this.IncludeContacts = true
                     if(columnNames != []){
@@ -8198,6 +9027,7 @@ R.[CarerRelationship] as [HACC-Carer Relationship]
     }
     
   }
+  }
   //console.log(columnNames)
 
   return columnNames;
@@ -8227,9 +9057,45 @@ Condition(fld){
 TablesSetting(arr){
   var FromSql ;
   //console.log(arr)
+  if(this.RptFormat == "AGENCYSTFLIST" || this.RptFormat == "USERSTFLIST"){
+    FromSql = " From Staff" 
+
+    if( arr.includes("Contact Group") || arr.includes("Contact Email") || arr.includes("Contact FAX") || arr.includes("Contact Mobile") || arr.includes("Contact Type") || arr.includes("Contact Phone 2") || arr.includes("Contact Phone 1") || arr.includes("Contact Postcode") || arr.includes("Contact Suburb") || arr.includes("Contact Name")   || arr.includes("Contact Address") || arr.includes("Contact Sub Type")  || arr.includes("Contact User Flag")  || arr.includes("Contact Person Type") ){ 
+      FromSql = FromSql + " left join HumanResources HR on Hr.PersonID = Staff.UniqueID "
+      this.includeConatctWhere = " HR.[Group] IN ('NEXTOFKIN',  'CONTACT', 'CARER',  '1-NEXT OF KIN',  '2-CARER',  '3-MEDICAL',  '4-ALLIED HEALTH',  '5-HEALTH INSURANCE',  '6-POWER OF ATTORNEY',  '7-LEGAL OTHER',  '8-OTHER','ALLIED HEALTH',  'PHARMACIST',  'HOSPITAL',  'HEALTHINSURER',  'POWERATTORNEY',  'OTHERLEGAL',  'OTHERCONTACT',  'MANAGER',  'HUMAN RESOURCES',  'ACCOUNTS',  'PAYROLL',  'SALES',  'PURCHASING',  'OTHERCONTACT') OR  HR.[Group] IN  (SELECT DESCRIPTION FROM DataDomains WHERE DOMAIN IN ('CONTACTGROUP', 'CARER RELATIONSHIP')AND DATASET = 'USER') "
+    }
+    if(arr.includes("Group Email") || arr.includes("Group End Date") || arr.includes("Group Start Date") || arr.includes("Group Note") || arr.includes("Group Name") ){
+      FromSql = FromSql + " left join HumanResources UserGroup on UserGroup.PersonID = Staff.UniqueID "    
+      this.includeUserGroupWhere = " UserGroup.[Group] = 'RECIPTYPE' "
+    }
+    if(arr.includes("Preference Note") || arr.includes("Preference Name")){
+      FromSql = FromSql + " left join HumanResources Prefr on Prefr.PersonID = Staff.UniqueID "    
+      this.includePrefrencesWhere = " Prefr.[Group] = 'STAFFPREF' "
+    }
+    if(arr.includes("Reminder Detail") || arr.includes("Event Date") || arr.includes("Reminder Date") || arr.includes("Reminder Notes") ){
+      FromSql = FromSql + " left join HumanResources Remind on Remind.PersonID = Staff.UniqueID "    
+      this.includeReminderWhere = " Remind.[Group] = 'RECIPIENTALERT' "
+    }
+    if(arr.includes("Loan Item Date Collected") || arr.includes("Loan Item Date Loaned/Installed")  || arr.includes("Loan Item Description") || arr.includes("Loan Item Type") ){
+      FromSql = FromSql + " left join HumanResources HRLoan on HRLoan.PersonID = Staff.UniqueID "    
+      this.includeLoanitemWhere = " HRLoan.[Group] = 'LOANITEMS'  "
+      }
+      if(arr.includes("Staff Code") || arr.includes("Service Date")  || arr.includes("Service Start Time") || arr.includes("Service Code") || arr.includes("Service Hours") || arr.includes("Service Pay Rate")  || arr.includes("Service Bill Rate") || arr.includes("Service Bill Qty") || arr.includes("Service Location/Activity Group") 
+    || arr.includes("Service Program")  || arr.includes("Service Group") || arr.includes("Service HACCType") || arr.includes("Service End Time/ Shift End Time")  || arr.includes("Service Pay Type") || arr.includes("Service Category") || arr.includes("Service Status") || arr.includes("Service Pay Qty") ){
+      FromSql = FromSql + " INNER JOIN Roster SvcDetail ON Staff.accountno = SvcDetail.[client code]   "          
+    }
+    if(arr.includes("Service Funding Source")    ){
+      FromSql = FromSql + " LEFT JOIN Humanresourcetypes ON SvcDetail.Program = HumanResourceTypes.Name  "
+      }
+    if(arr.includes("Service Notes")    ){
+      FromSql = FromSql + " LEFT JOIN History ON CONVERT(varchar,SvcDetail.RecordNo,100) = History.PersonID  "
+      this.includeSvnDetailNotesWhere = "   History.ExtraDetail1 = 'SVCNOTE'  "
+      }
+
+
+
+  }else{
   FromSql = " From Recipients R" 
-  
-  
   if(arr.includes("Carer Last Name") || arr.includes("Carer Age") || arr.includes("Carer Gender") || arr.includes("Carer Indigenous Status") || arr.includes("Carer First Name") ){
     FromSql = FromSql + " INNER JOIN RECIPIENTS C ON R.DatasetCarer = C.AccountNo  "
   }         
@@ -8477,6 +9343,10 @@ TablesSetting(arr){
     FromSql = FromSql + " INNER JOIN STAFF S ON HRCaseStaff.NAME = S.UNIQUEID "
     this.includeHRCaseStaffWhere = "  HRCaseStaff.[Group] = 'COORDINATOR'"
   }
+
+  }
+  
+  
 
 
 

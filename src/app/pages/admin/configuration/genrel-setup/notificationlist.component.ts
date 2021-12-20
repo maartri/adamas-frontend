@@ -82,26 +82,17 @@ export class NotificationlistComponent implements OnInit {
     }
     fetchAll(e){
       if(e.target.checked){
-        // this.whereString = " WHERE ListName IN ('Referral Notification','Assessment Notification','Admission Notification','Refer On Notification','Not Proceed Notification','Discharge Notification','Suspend Notification','Reinstate Notification','Admin Notification','Lifecycle Event Notification') ";
         this.loadData(true);
       }else{
-        // this.whereString = " WHERE ListName IN ('Referral Notification','Assessment Notification','Admission Notification','Refer On Notification','Not Proceed Notification','Discharge Notification','Suspend Notification','Reinstate Notification','Admin Notification','Lifecycle Event Notification') AND ISNULL(xDeletedRecord,0) = 0 AND (xEndDate Is Null OR xEndDate >= GETDATE()) ";
         this.loadData();
       }
     }
     loadData(isChecked: boolean = false){
-      // let sql ="SELECT RecordNo, Recipient,Activity,Location,Program,Staff,ListGroup as funding_source,Mandatory as mandatory,DefaultAssignee as assignee,ListName as ltype,Severity ,xDeletedRecord as is_deleted,xEndDate as end_date from IM_DistributionLists "+this.whereString+"order by Recipient";
       this.loading = true;
       this.listS.getnotificationslist(isChecked).subscribe(data => {
-        console.log(data)
         this.tableData = data;
         this.loading = false;
       })
-      // this.listS.getlist(sql).subscribe(data => {
-      //   console.log(data)
-      //   this.tableData = data;
-      //   this.loading = false;
-      // });
     }
     populateDropdowns(){
       this.listType = notificationTypes;

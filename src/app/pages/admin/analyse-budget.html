@@ -1,0 +1,950 @@
+<div nz-row [nzGutter]="8" *ngIf="inputForm" [formGroup]="inputForm">
+    <div nz-col nzSpan="3" style="margin-left: 3px;">
+        <div nz-col class="gutter-row" style="background: #002060;padding: 4px;">
+            <h3 class="text-center" style="margin-top: 8px; color:white">Saved Views</h3>
+        </div>
+        <div style="border: solid; border-color: black; border-width: 1px;">
+            <label>*AD HOC</label>
+            <label>*AD HOC 1</label>
+        </div>
+    </div>
+    <div nz-col nzSpan="4" style="margin-left: 3px;">
+        <div nz-col class="gutter-row" style="background: #002060;padding: 4px;">
+            <h3 class="text-center" style="margin-top: 8px; color:white">Data to Include</h3>
+        </div>
+        <div style="border: solid; border-color: black; border-width: 1px;">
+            <!-- <div nz-row>
+                <div nz-col>
+                    <nz-table style="margin-top: 0px;" [nzScroll]="{ y: '700px' }"
+                        [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
+                        [nzLoading]="loading" [nzData]="dataIncludedList">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}">
+                                        <div nz-row>
+                                            <div nz-col nzSpan="24"
+                                                *ngFor="let list of dataIncludedList">
+                                                <label style="font-weight: 400;" nz-checkbox>{{
+                                                    list }}</label>
+                                            </div>
+                                        </div>
+                                    </nz-checkbox-wrapper>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </div>
+            </div> -->
+            <div style="margin-left: 6px; margin-top: 6px; margin-bottom: 6px;">
+                <div>
+                    <p nz-checkbox formControlName="checkedMark">Branch</p>
+                </div>
+                <div>
+                    <p nz-checkbox formControlName="checkedMark">Care Domain</p>
+                </div>
+                <div>
+                    <p nz-checkbox formControlName="checkedMark">Cost Centre</p>
+                </div>
+                <div>
+                    <p nz-checkbox formControlName="checkedMark">DS Outlet</p>
+                </div>
+                <div>
+                    <p nz-checkbox formControlName="checkedMark">Environment</p>
+                </div>
+                <div>
+                    <p nz-checkbox formControlName="checkedMark">Funding Region</p>
+                </div>
+                <div>
+                    <p nz-checkbox formControlName="checkedMark">Funding Type</p>
+                </div>
+                <div>
+                    <p nz-checkbox formControlName="checkedMark">Program</p>
+                </div>
+                <div>
+                    <p nz-checkbox formControlName="checkedMark">Program Coordinator</p>
+                </div>
+                <div>
+                    <p nz-checkbox formControlName="checkedMark">Recipient</p>
+                </div>
+                <div>
+                    <p nz-checkbox formControlName="checkedMark">Service Budget Code</p>
+                </div>
+                <div>
+                    <p nz-checkbox formControlName="checkedMark">Service Discipline</p>
+                </div>
+                <div>
+                    <p nz-checkbox formControlName="checkedMark">Service Region</p>
+                </div>
+                <div>
+                    <p nz-checkbox formControlName="checkedMark"> Service Type</p>
+                </div>
+                <div>
+                    <p nz-checkbox formControlName="checkedMark">SPID</p>
+                </div>
+                <div>
+                    <p nz-checkbox formControlName="checkedMark">State</p>
+                </div>
+            </div>
+        </div>
+        <div style="border: solid; border-color: black; border-width: 1px;">
+            <div nz-col>
+                <label style="margin-top: 10px; font-style: italic;"> Selected Details </label>
+            </div>
+            <div nz-row>
+                <div nz-col>
+                    <nz-table style="margin-top: 0px;" [nzScroll]="{ y: '200px' }" [nzShowPagination]="false"
+                        [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading"
+                        [nzData]="dataIncludedList">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <!-- <nz-checkbox-wrapper style="width: 100%;">
+                                        <div nz-row *ngFor="let list of dataIncludedList; let i = index">
+                                            <label nz-checkbox [nzValue]="list.item"
+                                                [(ngModel)]="list.checked"
+                                                [ngModelOptions]="{standalone: true}">{{ list }}</label>
+                                        </div>
+                                    </nz-checkbox-wrapper> -->
+                                    <nz-list style="margin-left: 6px; line-height: 6px; font-size: 10pt;">
+                                        <nz-list-item *ngFor="let item of dataIncludedList">
+                                            <span></span>
+                                            {{ item }}
+                                        </nz-list-item>
+                                    </nz-list>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </div>
+            </div>
+        </div>
+        <div style="border: solid; border-color: black; border-width: 1px;">
+            <div nz-col style="margin-left: 10px;">
+                <div nz-col>
+                    <label nz-checkbox style="margin-top: 10px;"> Include NON MDS Hours </label>
+                </div>
+                <div nz-col>
+                    <p nz-checkbox style="font-style: normal;"> Include Older/Younger Split </p>
+                </div>
+                <div nz-col>
+                    <label> Budgets In : </label>
+                </div>
+                <div nz-col>
+                    <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="serviceDollar" nzPlaceHolder=""
+                        nzShowSearch nzAllowClear style="width:80%;">
+                        <nz-option *ngFor="let etype of dataServiceDollar" [nzLabel]="etype" [nzValue]="etype">
+                        </nz-option>
+                    </nz-select>
+                </div>
+                <div style="height: 4pc;" nz-row></div>
+            </div>
+        </div>
+    </div>
+    <div nz-col class="gutter-row" nzSpan="16">
+        <div nz-row class="mrg-btm" style="background: #002060;padding: 4px;">
+            <div nz-col nzSpan="3">
+                <h3 style="margin-top: 8px; margin-left: 20px; color:white"> Dates & Filters </h3>
+            </div>
+            <div nz-col nzSpan="4">
+                <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="inputOutput" nzPlaceHolder=""
+                    nzShowSearch nzAllowClear style="width:100%; margin-top: 6px;">
+                    <nz-option *ngFor="let etype of dataInputOutput" [nzLabel]="etype" [nzValue]="etype">
+                    </nz-option>
+                </nz-select>
+            </div>
+            <div nz-col nzSpan="4" style="margin-left: 10px;">
+                <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="approvedUnapproved" nzPlaceHolder=""
+                    nzShowSearch nzAllowClear style="width:100%; margin-top: 6px;">
+                    <nz-option *ngFor="let etype of dataApprovedUnapproved" [nzLabel]="etype" [nzValue]="etype">
+                    </nz-option>
+                </nz-select>
+            </div>
+            <div nz-col nzSpan="2">
+                <h3 style="margin-top: 8px; margin-left: 20px; color:white"> Between </h3>
+            </div>
+            <div nz-col nzSpan="3" [formGroup]="inputForm">
+                <nz-date-picker nzPlaceHolder="Start Date" formControlName="dtpStartDate" [nzFormat]="dateFormat">
+                </nz-date-picker>
+            </div>
+            <div nz-col nzSpan="1">
+                <h3 style="margin-top: 8px; text-align: center; color:white"> And </h3>
+            </div>
+            <div nz-col nzSpan="3" [formGroup]="inputForm">
+                <nz-date-picker nzPlaceHolder="End Date" formControlName="dtpEndDate" [nzFormat]="dateFormat">
+                </nz-date-picker>
+            </div>
+        </div>
+        <div nz-col class="mrg-btm">
+            <nz-tabset [nzTabPosition]="'top'" [nzType]="'card'">
+                <nz-tab nzTitle="Branches, Regions">
+                    <div nz-col nzSpan="6">
+                        <div nz-col>
+                            <label> States </label>
+                        </div>
+                        <div>
+                            <label nz-checkbox formControlName="checkedMark"> ALL </label>
+                        </div>
+                        <div style="border: solid; border-color: black; border-width: 1px;">
+                            <div style="margin-left: 8px; margin-top: 8px; margin-bottom: 8px;">
+                                <div>
+                                    <p nz-checkbox formControlName="checkedMark">ACT</p>
+                                </div>
+                                <div>
+                                    <p nz-checkbox formControlName="checkedMark">NSW</p>
+                                </div>
+                                <div>
+                                    <p nz-checkbox formControlName="checkedMark">NT</p>
+                                </div>
+                                <div>
+                                    <p nz-checkbox formControlName="checkedMark">QLD</p>
+                                </div>
+                                <div>
+                                    <p nz-checkbox formControlName="checkedMark">SA</p>
+                                </div>
+                                <div>
+                                    <p nz-checkbox formControlName="checkedMark">TAS</p>
+                                </div>
+                                <div>
+                                    <p nz-checkbox formControlName="checkedMark">VIC</p>
+                                </div>
+                                <div>
+                                    <p nz-checkbox formControlName="checkedMark">WA</p>
+                                </div>
+                            </div>
+                            <!-- <div nz-row>
+                                <div nz-col>
+                                    <nz-table style="margin-top: 0px;" [nzScroll]="{ y: '700px' }"
+                                        [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
+                                        [nzLoading]="loading" [nzData]="statesList">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}"
+                                                        (nzOnChange)="log($event,1)">
+                                                        <div nz-row>
+                                                            <div nz-col nzSpan="24" *ngFor="let list of statesList">
+                                                                <label style="font-weight: 400;" nz-checkbox >{{
+                                                                    list }}</label>
+                                                            </div>
+                                                        </div>
+                                                    </nz-checkbox-wrapper>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </nz-table>
+                                </div>
+                            </div> -->
+                        </div>
+                    </div>
+                    <div nz-col nzSpan="6">
+                        <div nz-col>
+                            <label> Branches </label>
+                        </div>
+                        <div>
+                            <label nz-checkbox [(ngModel)]="allBranches" (ngModelChange)="updateAllCheckedFilters(2)"
+                                [nzIndeterminate]="allBranchIntermediate" [ngModelOptions]="{standalone: true}"> ALL
+                            </label>
+                        </div>
+                        <div style="border: solid; border-color: black; border-width: 1px;">
+                            <div nz-row>
+                                <div nz-col>
+                                    <nz-table style="margin-top: 0px;" [nzScroll]="{ y: '700px' }"
+                                        [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
+                                        [nzLoading]="loading" [nzData]="branchList">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}"
+                                                        (nzOnChange)="log($event,2)">
+                                                        <div nz-row>
+                                                            <div nz-col nzSpan="24" *ngFor="let branch of branchList">
+                                                                <label style="font-weight: 400;" nz-checkbox
+                                                                    [nzValue]="branch.description"
+                                                                    [(ngModel)]="branch.checked"
+                                                                    (ngModelChange)="updateSingleCheckedFilters(2)"
+                                                                    [ngModelOptions]="{standalone: true}">{{
+                                                                    branch.description }}</label>
+                                                            </div>
+                                                        </div>
+                                                    </nz-checkbox-wrapper>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </nz-table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div nz-col nzSpan="6">
+                        <div nz-col>
+                            <label> Service Areas/Regions </label>
+                        </div>
+                        <div>
+                            <label nz-checkbox [(ngModel)]="allServiceAreas"
+                                (ngModelChange)="updateAllCheckedFilters(3)"
+                                [nzIndeterminate]="allServiceAreasIntermediate" [ngModelOptions]="{standalone: true}">
+                                ALL
+                            </label>
+                        </div>
+                        <div style="border: solid; border-color: black; border-width: 1px;">
+                            <div nz-row>
+                                <div nz-col>
+                                    <nz-table style="margin-top: 0px;" [nzScroll]="{ y: '700px' }"
+                                        [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
+                                        [nzLoading]="loading" [nzData]="serviceAreasList">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}"
+                                                        (nzOnChange)="log($event,3)">
+                                                        <div nz-row>
+                                                            <div nz-col nzSpan="24"
+                                                                *ngFor="let list of serviceAreasList">
+                                                                <label style="font-weight: 400;" nz-checkbox
+                                                                    [nzValue]="list.description"
+                                                                    [(ngModel)]="list.checked"
+                                                                    (ngModelChange)="updateSingleCheckedFilters(3)"
+                                                                    [ngModelOptions]="{standalone: true}">{{
+                                                                    list.description }}</label>
+                                                            </div>
+                                                        </div>
+                                                    </nz-checkbox-wrapper>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </nz-table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div nz-col nzSpan="6">
+                        <div nz-col>
+                            <label> Managers </label>
+                        </div>
+                        <div>
+                            <label nz-checkbox [(ngModel)]="allCaseManagers"
+                                (ngModelChange)="updateAllCheckedFilters(4)"
+                                [nzIndeterminate]="allCaseManagersIntermediate" [ngModelOptions]="{standalone: true}">
+                                ALL
+                            </label>
+                        </div>
+                        <div style="border: solid; border-color: black; border-width: 1px;">
+                            <div nz-row>
+                                <div nz-col>
+                                    <nz-table style="margin-top: 0px;" [nzScroll]="{ y: '700px' }"
+                                        [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
+                                        [nzLoading]="loading" [nzData]="caseManagersList">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}"
+                                                        (nzOnChange)="log($event,4)">
+                                                        <div nz-row>
+                                                            <div nz-col nzSpan="24"
+                                                                *ngFor="let list of caseManagersList">
+                                                                <label style="font-weight: 400;" nz-checkbox
+                                                                    [nzValue]="list.description"
+                                                                    [(ngModel)]="list.checked"
+                                                                    (ngModelChange)="updateSingleCheckedFilters(4)"
+                                                                    [ngModelOptions]="{standalone: true}">{{
+                                                                    list.description }}</label>
+                                                            </div>
+                                                        </div>
+                                                    </nz-checkbox-wrapper>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </nz-table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </nz-tab>
+                <nz-tab nzTitle="Funder, Provider ID's & Programs">
+                    <div nz-col nzSpan="5">
+                        <div nz-col>
+                            <label> Funders </label>
+                        </div>
+                        <div>
+                            <label nz-checkbox [(ngModel)]="allFunders" (ngModelChange)="updateAllCheckedFilters(11)"
+                                [nzIndeterminate]="allFundersIntermediate" [ngModelOptions]="{standalone: true}">
+                                ALL
+                            </label>
+                        </div>
+                        <div style="border: solid; border-color: black; border-width: 1px;">
+                            <div nz-row>
+                                <div nz-col>
+                                    <nz-table style="margin-top: 0px;" [nzScroll]="{ y: '700px' }"
+                                        [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
+                                        [nzLoading]="loading" [nzData]="fundersList">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}"
+                                                        (nzOnChange)="log($event,11)">
+                                                        <div nz-row>
+                                                            <div nz-col nzSpan="24" *ngFor="let list of fundersList">
+                                                                <label style="font-weight: 400;" nz-checkbox
+                                                                    [nzValue]="list.description"
+                                                                    [(ngModel)]="list.checked"
+                                                                    (ngModelChange)="updateSingleCheckedFilters(11)"
+                                                                    [ngModelOptions]="{standalone: true}">{{
+                                                                    list.description }}</label>
+                                                            </div>
+                                                        </div>
+                                                    </nz-checkbox-wrapper>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </nz-table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div nz-col nzSpan="4">
+                        <div nz-col>
+                            <label> Funding Regions </label>
+                        </div>
+                        <div>
+                            <label nz-checkbox [(ngModel)]="allFundingRegions"
+                                (ngModelChange)="updateAllCheckedFilters(12)"
+                                [nzIndeterminate]="allFundingRegionsIntermediate" [ngModelOptions]="{standalone: true}">
+                                ALL
+                            </label>
+                        </div>
+                        <div style="border: solid; border-color: black; border-width: 1px;">
+                            <div nz-row>
+                                <div nz-col>
+                                    <nz-table style="margin-top: 0px;" [nzScroll]="{ y: '700px' }"
+                                        [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
+                                        [nzLoading]="loading" [nzData]="fundingRegionsList">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}"
+                                                        (nzOnChange)="log($event,12)">
+                                                        <div nz-row>
+                                                            <div nz-col nzSpan="24"
+                                                                *ngFor="let list of fundingRegionsList">
+                                                                <label style="font-weight: 400;" nz-checkbox
+                                                                    [nzValue]="list.description"
+                                                                    [(ngModel)]="list.checked"
+                                                                    (ngModelChange)="updateSingleCheckedFilters(12)"
+                                                                    [ngModelOptions]="{standalone: true}">{{
+                                                                    list.description }}</label>
+                                                            </div>
+                                                        </div>
+                                                    </nz-checkbox-wrapper>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </nz-table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div nz-col nzSpan="4">
+                        <div nz-col>
+                            <label> SVC Prov. ID's </label>
+                        </div>
+                        <div>
+                            <label nz-checkbox [(ngModel)]="allAgencyID" (ngModelChange)="updateAllCheckedFilters(13)"
+                                [nzIndeterminate]="allAgencyIDIntermediate" [ngModelOptions]="{standalone: true}">
+                                ALL
+                            </label>
+                        </div>
+                        <div style="border: solid; border-color: black; border-width: 1px;">
+                            <div nz-row>
+                                <div nz-col>
+                                    <nz-table style="margin-top: 0px;" [nzScroll]="{ y: '700px' }"
+                                        [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
+                                        [nzLoading]="loading" [nzData]="agencyIDList">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}"
+                                                        (nzOnChange)="log($event,13)">
+                                                        <div nz-row>
+                                                            <div nz-col nzSpan="24" *ngFor="let list of agencyIDList">
+                                                                <label style="font-weight: 400;" nz-checkbox
+                                                                    [nzValue]="list.agencyID" [(ngModel)]="list.checked"
+                                                                    (ngModelChange)="updateSingleCheckedFilters(13)"
+                                                                    [ngModelOptions]="{standalone: true}">{{
+                                                                    list.agencyID }}</label>
+                                                            </div>
+                                                        </div>
+                                                    </nz-checkbox-wrapper>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </nz-table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div nz-col nzSpan="3">
+                        <div nz-col>
+                            <label> DS Outlet ID's </label>
+                        </div>
+                        <div>
+                            <label nz-checkbox [(ngModel)]="allCSTDAOutlet"
+                                (ngModelChange)="updateAllCheckedFilters(14)"
+                                [nzIndeterminate]="allCSTDAOutletIntermediate" [ngModelOptions]="{standalone: true}">
+                                ALL
+                            </label>
+                        </div>
+                        <div style="border: solid; border-color: black; border-width: 1px;">
+                            <div nz-row>
+                                <div nz-col>
+                                    <nz-table style="margin-top: 0px;" [nzScroll]="{ y: '700px' }"
+                                        [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
+                                        [nzLoading]="loading" [nzData]="CSTDAOutletList">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}"
+                                                        (nzOnChange)="log($event,14)">
+                                                        <div nz-row>
+                                                            <div nz-col nzSpan="24"
+                                                                *ngFor="let list of CSTDAOutletList">
+                                                                <label style="font-weight: 400;" nz-checkbox
+                                                                    [nzValue]="list.cstdaOutlet"
+                                                                    [(ngModel)]="list.checked"
+                                                                    (ngModelChange)="updateSingleCheckedFilters(14)"
+                                                                    [ngModelOptions]="{standalone: true}">{{
+                                                                    list.cstdaOutlet }}</label>
+                                                            </div>
+                                                        </div>
+                                                    </nz-checkbox-wrapper>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </nz-table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div nz-col nzSpan="8">
+                        <div nz-col>
+                            <label> Agency Programs </label>
+                        </div>
+                        <div>
+                            <label nz-checkbox [(ngModel)]="allAgencyPrograms"
+                                (ngModelChange)="updateAllCheckedFilters(15)"
+                                [nzIndeterminate]="allAgencyProgramsIntermediate" [ngModelOptions]="{standalone: true}">
+                                ALL
+                            </label>
+                        </div>
+                        <div style="border: solid; border-color: black; border-width: 1px;">
+                            <div nz-row>
+                                <div nz-col>
+                                    <nz-table style="margin-top: 0px;" [nzScroll]="{ y: '700px' }"
+                                        [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
+                                        [nzLoading]="loading" [nzData]="agencyProgramsList">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}"
+                                                        (nzOnChange)="log($event,15)">
+                                                        <div nz-row>
+                                                            <div nz-col nzSpan="24"
+                                                                *ngFor="let list of agencyProgramsList">
+                                                                <label style="font-weight: 400;" nz-checkbox
+                                                                    [nzValue]="list.programName"
+                                                                    [(ngModel)]="list.checked"
+                                                                    (ngModelChange)="updateSingleCheckedFilters(15)"
+                                                                    [ngModelOptions]="{standalone: true}">{{
+                                                                    list.programName }}</label>
+                                                            </div>
+                                                        </div>
+                                                    </nz-checkbox-wrapper>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </nz-table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </nz-tab>
+                <nz-tab nzTitle="Service, MDS Output Codes">
+                    <div nz-col nzSpan="6">
+                        <div nz-col>
+                            <label> Service Budget Codes </label>
+                        </div>
+                        <div>
+                            <label nz-checkbox [(ngModel)]="allServiceBudget"
+                                (ngModelChange)="updateAllCheckedFilters(21)"
+                                [nzIndeterminate]="allServiceBudgetIntermediate" [ngModelOptions]="{standalone: true}">
+                                ALL
+                            </label>
+                        </div>
+                        <div style="border: solid; border-color: black; border-width: 1px;">
+                            <div nz-row>
+                                <div nz-col>
+                                    <nz-table style="margin-top: 0px;" [nzScroll]="{ y: '700px' }"
+                                        [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
+                                        [nzLoading]="loading" [nzData]="serviceBudgetList">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}"
+                                                        (nzOnChange)="log($event,21)">
+                                                        <div nz-row>
+                                                            <div nz-col nzSpan="24"
+                                                                *ngFor="let list of serviceBudgetList">
+                                                                <label style="font-weight: 400;" nz-checkbox
+                                                                    [nzValue]="list.description"
+                                                                    [(ngModel)]="list.checked"
+                                                                    (ngModelChange)="updateSingleCheckedFilters(21)"
+                                                                    [ngModelOptions]="{standalone: true}">{{
+                                                                    list.description }}</label>
+                                                            </div>
+                                                        </div>
+                                                    </nz-checkbox-wrapper>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </nz-table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div nz-col nzSpan="14">
+                        <div nz-col>
+                            <label> Funder Service Types </label>
+                        </div>
+                        <div>
+                            <label nz-checkbox [(ngModel)]="allFunderService"
+                                (ngModelChange)="updateAllCheckedFilters(22)"
+                                [nzIndeterminate]="allFunderServiceIntermediate" [ngModelOptions]="{standalone: true}">
+                                ALL
+                            </label>
+                        </div>
+                        <div style="border: solid; border-color: black; border-width: 1px;">
+                            <div nz-row>
+                                <div nz-col>
+                                    <nz-table style="margin-top: 0px;" [nzScroll]="{ y: '700px' }"
+                                        [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
+                                        [nzLoading]="loading" [nzData]="funderServiceList">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}"
+                                                        (nzOnChange)="log($event,22)">
+                                                        <div nz-row>
+                                                            <div nz-col nzSpan="24"
+                                                                *ngFor="let list of funderServiceList">
+                                                                <label style="font-weight: 400;" nz-checkbox
+                                                                    [nzValue]="list.haccType" [(ngModel)]="list.checked"
+                                                                    (ngModelChange)="updateSingleCheckedFilters(22)"
+                                                                    [ngModelOptions]="{standalone: true}">{{
+                                                                    list.haccType }}</label>
+                                                            </div>
+                                                        </div>
+                                                    </nz-checkbox-wrapper>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </nz-table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </nz-tab>
+                <nz-tab nzTitle="Other Domains">
+                    <div nz-col nzSpan="6">
+                        <div nz-col>
+                            <label> Care Domains </label>
+                        </div>
+                        <div>
+                            <label nz-checkbox [(ngModel)]="allCareDomains"
+                                (ngModelChange)="updateAllCheckedFilters(31)"
+                                [nzIndeterminate]="allCareDomainsIntermediate" [ngModelOptions]="{standalone: true}">
+                                ALL
+                            </label>
+                        </div>
+                        <div style="border: solid; border-color: black; border-width: 1px;">
+                            <div nz-row>
+                                <div nz-col>
+                                    <nz-table style="margin-top: 0px;" [nzScroll]="{ y: '700px' }"
+                                        [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
+                                        [nzLoading]="loading" [nzData]="careDomainsList">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}"
+                                                        (nzOnChange)="log($event,31)">
+                                                        <div nz-row>
+                                                            <div nz-col nzSpan="24"
+                                                                *ngFor="let list of careDomainsList">
+                                                                <label style="font-weight: 400;" nz-checkbox
+                                                                    [nzValue]="list.description"
+                                                                    [(ngModel)]="list.checked"
+                                                                    (ngModelChange)="updateSingleCheckedFilters(31)"
+                                                                    [ngModelOptions]="{standalone: true}">{{
+                                                                    list.description }}</label>
+                                                            </div>
+                                                        </div>
+                                                    </nz-checkbox-wrapper>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </nz-table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div nz-col nzSpan="6">
+                        <div nz-col>
+                            <label> Disciplines </label>
+                        </div>
+                        <div>
+                            <label nz-checkbox [(ngModel)]="allDisciplines"
+                                (ngModelChange)="updateAllCheckedFilters(32)"
+                                [nzIndeterminate]="allDisciplinesIntermediate" [ngModelOptions]="{standalone: true}">
+                                ALL
+                            </label>
+                        </div>
+                        <div style="border: solid; border-color: black; border-width: 1px;">
+                            <div nz-row>
+                                <div nz-col>
+                                    <nz-table style="margin-top: 0px;" [nzScroll]="{ y: '700px' }"
+                                        [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
+                                        [nzLoading]="loading" [nzData]="disciplinesList">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}"
+                                                        (nzOnChange)="log($event,32)">
+                                                        <div nz-row>
+                                                            <div nz-col nzSpan="24"
+                                                                *ngFor="let list of disciplinesList">
+                                                                <label style="font-weight: 400;" nz-checkbox
+                                                                    [nzValue]="list.description"
+                                                                    [(ngModel)]="list.checked"
+                                                                    (ngModelChange)="updateSingleCheckedFilters(32)"
+                                                                    [ngModelOptions]="{standalone: true}">{{
+                                                                    list.description }}</label>
+                                                            </div>
+                                                        </div>
+                                                    </nz-checkbox-wrapper>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </nz-table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div nz-col nzSpan="4">
+                        <div nz-col>
+                            <label> Cost Centres </label>
+                        </div>
+                        <div>
+                            <label nz-checkbox [(ngModel)]="allCostCenters"
+                                (ngModelChange)="updateAllCheckedFilters(33)"
+                                [nzIndeterminate]="allCostCentersIntermediate" [ngModelOptions]="{standalone: true}">
+                                ALL
+                            </label>
+                        </div>
+                        <div style="border: solid; border-color: black; border-width: 1px;">
+                            <div nz-row>
+                                <div nz-col>
+                                    <nz-table style="margin-top: 0px;" [nzScroll]="{ y: '700px' }"
+                                        [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
+                                        [nzLoading]="loading" [nzData]="costCentersList">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}"
+                                                        (nzOnChange)="log($event,33)">
+                                                        <div nz-row>
+                                                            <div nz-col nzSpan="24"
+                                                                *ngFor="let list of costCentersList">
+                                                                <label style="font-weight: 400;" nz-checkbox
+                                                                    [nzValue]="list.fax" [(ngModel)]="list.checked"
+                                                                    (ngModelChange)="updateSingleCheckedFilters(33)"
+                                                                    [ngModelOptions]="{standalone: true}">{{
+                                                                    list.fax }}</label>
+                                                            </div>
+                                                        </div>
+                                                    </nz-checkbox-wrapper>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </nz-table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div nz-col nzSpan="8">
+                        <div nz-col>
+                            <label> Environments </label>
+                        </div>
+                        <div>
+                            <label nz-checkbox [(ngModel)]="allEnvironments"
+                                (ngModelChange)="updateAllCheckedFilters(34)"
+                                [nzIndeterminate]="allEnvironmentsIntermediate" [ngModelOptions]="{standalone: true}">
+                                ALL
+                            </label>
+                        </div>
+                        <div style="border: solid; border-color: black; border-width: 1px;">
+                            <div nz-row>
+                                <div nz-col>
+                                    <nz-table style="margin-top: 0px;" [nzScroll]="{ y: '700px' }"
+                                        [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
+                                        [nzLoading]="loading" [nzData]="environmentsList">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}"
+                                                        (nzOnChange)="log($event,34)">
+                                                        <div nz-row>
+                                                            <div nz-col nzSpan="24"
+                                                                *ngFor="let list of environmentsList">
+                                                                <label style="font-weight: 400;" nz-checkbox
+                                                                    [nzValue]="list.description"
+                                                                    [(ngModel)]="list.checked"
+                                                                    (ngModelChange)="updateSingleCheckedFilters(34)"
+                                                                    [ngModelOptions]="{standalone: true}">{{
+                                                                    list.description }}</label>
+                                                            </div>
+                                                        </div>
+                                                    </nz-checkbox-wrapper>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </nz-table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </nz-tab>
+                <nz-tab nzTitle="Staff Groups">
+                    <div nz-col nzSpan="6">
+                        <div nz-col>
+                            <label> Staff Job Categories </label>
+                        </div>
+                        <div>
+                            <label nz-checkbox [(ngModel)]="allStaffJob" (ngModelChange)="updateAllCheckedFilters(41)"
+                                [nzIndeterminate]="allStaffJobIntermediate" [ngModelOptions]="{standalone: true}">
+                                ALL
+                            </label>
+                        </div>
+                        <div style="border: solid; border-color: black; border-width: 1px;">
+                            <div nz-row>
+                                <div nz-col>
+                                    <nz-table style="margin-top: 0px;" [nzScroll]="{ y: '700px' }"
+                                        [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
+                                        [nzLoading]="loading" [nzData]="staffJobList">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}"
+                                                        (nzOnChange)="log($event,41)">
+                                                        <div nz-row>
+                                                            <div nz-col nzSpan="24" *ngFor="let list of staffJobList">
+                                                                <label style="font-weight: 400;" nz-checkbox
+                                                                    [nzValue]="list.description"
+                                                                    [(ngModel)]="list.checked"
+                                                                    (ngModelChange)="updateSingleCheckedFilters(41)"
+                                                                    [ngModelOptions]="{standalone: true}">{{
+                                                                    list.description }}</label>
+                                                            </div>
+                                                        </div>
+                                                    </nz-checkbox-wrapper>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </nz-table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div nz-col nzSpan="6">
+                        <div nz-col>
+                            <label> Staff Admin Categories </label>
+                        </div>
+                        <div>
+                            <label nz-checkbox [(ngModel)]="allStaffAdmin" (ngModelChange)="updateAllCheckedFilters(42)"
+                                [nzIndeterminate]="allStaffAdminIntermediate" [ngModelOptions]="{standalone: true}">
+                                ALL
+                            </label>
+                        </div>
+                        <div style="border: solid; border-color: black; border-width: 1px;">
+                            <div nz-row>
+                                <div nz-col>
+                                    <nz-table style="margin-top: 0px;" [nzScroll]="{ y: '700px' }"
+                                        [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
+                                        [nzLoading]="loading" [nzData]="staffAdminList">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}"
+                                                        (nzOnChange)="log($event,42)">
+                                                        <div nz-row>
+                                                            <div nz-col nzSpan="24" *ngFor="let list of staffAdminList">
+                                                                <label style="font-weight: 400;" nz-checkbox
+                                                                    [nzValue]="list.description"
+                                                                    [(ngModel)]="list.checked"
+                                                                    (ngModelChange)="updateSingleCheckedFilters(42)"
+                                                                    [ngModelOptions]="{standalone: true}">{{
+                                                                    list.description }}</label>
+                                                            </div>
+                                                        </div>
+                                                    </nz-checkbox-wrapper>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </nz-table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div nz-col nzSpan="6">
+                        <div nz-col>
+                            <label> Staff Teams </label>
+                        </div>
+                        <div>
+                            <label nz-checkbox [(ngModel)]="allStaffTeam" (ngModelChange)="updateAllCheckedFilters(43)"
+                                [nzIndeterminate]="allStaffTeamIntermediate" [ngModelOptions]="{standalone: true}">
+                                ALL
+                            </label>
+                        </div>
+                        <div style="border: solid; border-color: black; border-width: 1px;">
+                            <div nz-row>
+                                <div nz-col>
+                                    <nz-table style="margin-top: 0px;" [nzScroll]="{ y: '700px' }"
+                                        [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
+                                        [nzLoading]="loading" [nzData]="staffTeamList">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}"
+                                                        (nzOnChange)="log($event,43)">
+                                                        <div nz-row>
+                                                            <div nz-col nzSpan="24" *ngFor="let list of staffTeamList">
+                                                                <label style="font-weight: 400;" nz-checkbox
+                                                                    [nzValue]="list.description"
+                                                                    [(ngModel)]="list.checked"
+                                                                    (ngModelChange)="updateSingleCheckedFilters(43)"
+                                                                    [ngModelOptions]="{standalone: true}">{{
+                                                                    list.description }}</label>
+                                                            </div>
+                                                        </div>
+                                                    </nz-checkbox-wrapper>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </nz-table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </nz-tab>
+            </nz-tabset>
+        </div>
+    </div>
+</div>

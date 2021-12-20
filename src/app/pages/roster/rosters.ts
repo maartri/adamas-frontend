@@ -49,6 +49,7 @@ import { NzTableModule  } from 'ng-zorro-antd/table';
 import { Router,ActivatedRoute } from '@angular/router';
 import { SetLeftFeature } from 'ag-grid-community';
 import { style } from '@angular/animations';
+import { stringify } from '@angular/compiler/src/util';
 
  
 interface AddTimesheetModalInterface {
@@ -2019,16 +2020,7 @@ ClearMultishift(){
                       //  sheet.options.isProtected = true;
                         spread.resumePaint();
                        
-                        if (self.viewType=='Staff'){
-                            self.current_roster = self.find_roster(self.cell_value.recordNo);
-                            let clientCode =self.current_roster.recipientCode;
-                            let date= self.current_roster.date
-
-                            self.txtAlertSubject = 'NEW SHIFT ADDED : ' ;
-                            self.txtAlertMessage = 'NEW SHIFT ADDED : \n' + date + ' : \n'  + clientCode + '\n'  ;
-                        
-                            self.show_alert=true;
-                        }
+                      
                        // self.load_rosters();
                         return true;
                     }
@@ -3032,6 +3024,18 @@ ClearMultishift(){
                 if( Option=='Copy' ||Option=='Cut')
                     this.load_rosters();
                 return; 
+            }else if( Option=='Copy' ||Option=='Cut'){
+
+                if (this.viewType=='Staff'){
+                    this.current_roster = this.find_roster(stringify.apply(recordNo));
+                    let clientCode =this.current_roster.recipientCode;
+                    let date= this.current_roster.date
+
+                    this.txtAlertSubject = 'NEW SHIFT ADDED : ' ;
+                    this.txtAlertMessage = 'NEW SHIFT ADDED : \n' + date + ' : \n'  + clientCode + '\n'  ;
+                
+                   
+                }
             }
           
     });

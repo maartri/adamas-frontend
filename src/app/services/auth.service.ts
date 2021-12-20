@@ -1,6 +1,7 @@
 import { Injectable, Injector, ErrorHandler } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable ,  throwError } from 'rxjs';
+import { Router } from '@angular/router';
 import { map,retry, takeUntil, catchError, delay } from 'rxjs/operators';
 
 import { GlobalService } from './global.service';
@@ -18,7 +19,8 @@ export class AuthService implements ErrorHandler{
     constructor(
         private http: HttpClient,
         private GlobalS: GlobalService,
-        private injector: Injector
+        private injector: Injector,
+        private router: Router
     ) { 
         
     }
@@ -86,6 +88,10 @@ export class AuthService implements ErrorHandler{
     }
 
     handleError(error: HttpErrorResponse) {
+        console.log(error)
+        if(error.status == 401){
+            this.router.navigate(['/']);
+        }
         if(error.error == null){
             return throwError(error);
         }

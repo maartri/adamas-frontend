@@ -17,10 +17,22 @@ export class ListService {
         public auth: AuthService
     ) { }
 
-    getstaffactivities(): Observable<any>{
-        return this.auth.get(`${list}/staff/activities`);
+    getstaffcompetencylist(data: any): Observable<any>{
+        return this.auth.get(`${list}/staff-competency-list`, data);
     }
 
+    postmtapending(data: any):Observable<any>{
+        return this.auth.post(`${list}/mtapending`, data);
+    }
+    
+    GetRptFilters(): Observable<any>{
+        return this.auth.getstring(`${list}/rptfilters`);
+    }
+
+    getlisttimeattendancefilter(field: string): Observable<any>{
+        return this.auth.get(`${list}/populate-time-attendance-field/${field}`);
+    }
+    
     getfundingSourcePerProgram(program: string): Observable<any>{
         return this.auth.getstring(`${list}/funding-source-per-program/${program}`);
     }
@@ -638,7 +650,7 @@ export class ListService {
         return this.auth.get(`${list}/programs/obj`)
     }
     getcategoriesobj(): Observable<any>{
-        return this.auth.get(`${list}/categories/obj`)
+        return this.auth.get(`${list}/categories/obj `)
     }
     getstaffcategory(): Observable<any>{
         return this.auth.get(`${list}/staff-category`)
@@ -653,7 +665,7 @@ export class ListService {
 
     getstaffcaredomain(): Observable<any>{
         return this.auth.get(`${list}/staff-caredomain`)
-    }
+    } 
 
     getresources(): Observable<any>{
         return this.auth.get(`${list}/resources`)
@@ -727,10 +739,36 @@ export class ListService {
     getintakeactivity(personID: string, program: string, date: string): Observable<any>{
         return this.auth.get(`${list}/intake/activity/${personID}/${program}/${date}`)
     }
-
+    getstaffactivities(): Observable<any>{
+        return this.auth.get(`${list}/staff/activities`);
+    }
     getintakestaff(personID: string): Observable<any>{
         return this.auth.get(`${list}/intake/staff/${personID}`)
     }
+    //clinical 
+    getclinicalnursingdiagnose(personID: string): Observable<any>{
+        return this.auth.get(`${list}/clinical/nursingdiagnose/${personID}`)
+    }
+    getclinicalmedicationdiagnose(personID: string): Observable<any>{
+        return this.auth.get(`${list}/clinical/medicationdiagnose/${personID}`)
+    }
+    getclinicalprocedure(personID: string): Observable<any>{
+        return this.auth.get(`${list}/clinical/procedure/${personID}`)
+    }
+    getclinicalmedications(personID: string): Observable<any>{
+        return this.auth.get(`${list}/clinical/medications/${personID}`)
+    }
+    getclinicalreminder(personID: string): Observable<any>{
+        return this.auth.get(`${list}/clinical/reminder/${personID}`)
+    }
+    getclinicalalert(personID: string): Observable<any>{
+        return this.auth.get(`${list}/clinical/alert/${personID}`)
+    }
+    getclinicalnotes(personID: string): Observable<any>{
+        return this.auth.get(`${list}/clinical/notes/${personID}`)
+    }
+    //end clinical
+
     getcenterlocationstaff(): Observable<any>{
         return this.auth.get(`${list}/centerLocation/staff/`)
     }    

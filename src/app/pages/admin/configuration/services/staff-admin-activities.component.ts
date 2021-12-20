@@ -337,7 +337,7 @@ export class StaffAdminActivitiesComponent implements OnInit {
           
           this.emptyList      = [];
           this.mainGroupList  = ['STAFF ADMINISTRATION','TRAVEL TIME'];
-          this.subGroupList   = ['GAP','GENERAL','LEAVE','BREAK','OTHER','TRAINING','NOT APPLICABLE'];
+          this.subGroupList   = ['GAP','GENERAL','LEAVE','BREAK','OTHER','STAFF ONBOARDING','TRAINING','NOT APPLICABLE'];
           this.status         = ['ATTRIBUTABLE','NONATTRIBUTABLE'];
           this.units          = ['HOUR','SERVICE'];
           this.budgetUomList  = ['EACH/SERVICE','HOURS','PLACE','DOLLARS'];
@@ -576,7 +576,7 @@ export class StaffAdminActivitiesComponent implements OnInit {
               "head9" : "Bill Unit",
             }
           }
-          this.printS.print(data).subscribe(blob => {  
+          this.printS.printControl(data).subscribe((blob: any) => { 
             let _blob: Blob = blob;
             let fileURL = URL.createObjectURL(_blob);
             this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);

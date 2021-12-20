@@ -74,7 +74,6 @@ export class StaffLeaveAdmin implements OnInit, OnDestroy {
         private modalService: NzModalService,
         private cd: ChangeDetectorRef
         ) {
-            cd.detach();
             
             this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
                 if (data instanceof NavigationEnd) {
@@ -262,7 +261,7 @@ export class StaffLeaveAdmin implements OnInit, OnDestroy {
                     "head6" : "Approved",
                 }
             }
-            this.printS.print(data).subscribe(blob => {  
+            this.printS.printControl(data).subscribe((blob: any) => { 
                 let _blob: Blob = blob;
                 let fileURL = URL.createObjectURL(_blob);
                 this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
@@ -283,5 +282,9 @@ export class StaffLeaveAdmin implements OnInit, OnDestroy {
             this.loadingPDF = true;
             this.tryDoctype = "";
             this.pdfTitle = "";
+        }
+
+        reload(data: string){
+            this.search();
         }
     }

@@ -900,7 +900,7 @@ ReportRender(){
         this.spinloading = true;
         
         
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
           this.pdfTitle = rptfile;
           this.SummarydrawerVisible = true;                   
           let _blob: Blob = blob;
@@ -933,23 +933,15 @@ ReportRender(){
             "options": {
                 "reports": { "save": false },
                 //   "sql": "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, (SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC) AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID WHERE R.[AccountNo] > '!MULTIPLE'   AND (R.DischargeDate is NULL)  AND  (RecipientPrograms.ProgramStatus = 'REFERRAL')  ORDER BY R.ONIRating, R.[Surname/Organisation]"
-                 
-                 
                 "userid": this.tocken.user,
                 "txtTitle": Title,
                  "txtid":this.globalS.var1.toString(),
-                
-                 
-                 
-             
-
-                
             }
         }
         
         this.spinloading = true;
         
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
           this.pdfTitle = rptfile;
           this.SummarydrawerVisible = true;                   
           let _blob: Blob = blob;
@@ -975,8 +967,7 @@ ReportRender(){
 
 
  log(event: any,index:number) {
-    console.log("-----");
-    this.testcheck = true;   
+    this.testcheck = false;   
     if(index == 1)
     this.selectedbranches = event;
     if(index == 2)
@@ -985,7 +976,6 @@ ReportRender(){
     this.selectedCordinators = event;
     if(index == 4)
     this.selectedCategories = event;  
-
     if(index == 5 && event.target.checked){
       this.searchAvaibleModal = true;
     }
@@ -1026,12 +1016,6 @@ ReportRender(){
     .filter(opt => opt.checked)
     .map(opt => this.sbFieldsSkill[opt.identifier])
     
-    console.log(this.selectedSkills.length);
-    // JSON.stringify(object)
-    // console.log(JSON.stringify(this.selectedSkills));
-    // console.log(this.sbFieldsSkill.get("fstaffContainer9-Competencies0022"))
-
-
     var postdata = {
       status:this.quicksearch.value.status,
       gender:this.quicksearch.value.gender,
@@ -1114,11 +1098,8 @@ ReportRender(){
     }
   }
   updateAllCheckedFilters(filter: any): void {
-    
+    console.log(this.testcheck + "test flag");
     if(filter == 1 || filter == -1){
-      
-      console.log(this.testcheck + "test flag");
-      
       if(this.testcheck == false){  // why its returing undefined 
         if (this.allBranches) {
           this.branchesList.forEach(x => {
@@ -1131,7 +1112,6 @@ ReportRender(){
         }
       }
     }
-    
     if(filter == 2 || filter == -1){
       if(this.testcheck == false){
         if (this.allProgarms) {
@@ -1158,7 +1138,6 @@ ReportRender(){
         }
       }
     }
-    
     if(filter == 4 || filter == -1){
       if(this.testcheck == false){
         if (this.allcat) {
@@ -1174,6 +1153,7 @@ ReportRender(){
     }
   }
   updateSingleChecked(): void {
+    this.testcheck == false
     if (this.checkOptionsOne.every(item => !item.checked)) {
       this.allChecked = false;
       this.indeterminate = false;
@@ -1183,10 +1163,12 @@ ReportRender(){
     } else {
       this.indeterminate = true;
       this.allChecked = false;
+      this.testcheck  = false;
     }
   }
   updateSingleCheckedFilters(index:number): void {
     if(index == 1){
+      this.testcheck = false;
       if (this.branchesList.every(item => !item.checked)) {
         this.allBranches = false;
         this.allBranchIntermediate = false;
@@ -1199,6 +1181,7 @@ ReportRender(){
       }
     }
     if(index == 2){
+      this.testcheck = false;
       if (this.diciplineList.every(item => !item.checked)) {
         this.allProgarms = false;
         this.allprogramIntermediate = false;
@@ -1211,6 +1194,7 @@ ReportRender(){
       }
     }
     if(index == 3){
+      this.testcheck = false;
       if (this.casemanagers.every(item => !item.checked)) {
         this.allCordinatore = false;
         this.allCordinatorIntermediate = false;
@@ -1223,6 +1207,7 @@ ReportRender(){
       }
     }
     if(index == 4){
+      this.testcheck = false;
       if (this.categoriesList.every(item => !item.checked)) {
         this.allcat = false;
         this.allCatIntermediate = false;

@@ -180,6 +180,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
     staffgroupsArr: Array<any> = [];
     staffArr: Array<any> = [];
     batchclientsArr : Array<any> = [];
+    RptFiltersArr : Array<any> = [];
     
     
 
@@ -634,10 +635,20 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
        
     }
     ngAfterViewInit(): void {
+        //testing 
         this.listS.getreportcriterialist({
             listType: 'BRANCHES',
             includeInactive: false
         }).subscribe(x => this.branchesArr = x);
+
+
+
+        //
+        this.listS.getreportcriterialist({
+            listType: 'BRANCHES',
+            includeInactive: false
+        }).subscribe(x => this.branchesArr = x);
+
 
         this.listS.getreportcriterialist({
             listType: 'MANAGERS',
@@ -660,7 +671,8 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
         this.listS.GetVehicles().subscribe(x => this.vehiclesArr = x);
         this.listS.GetTraccsStaffCodes().subscribe(x => this.staffArr = x) 
         this.listS.getcstdaoutlets().subscribe(x => this.outletsArr = x);
-   
+
+       
    
    
     }
@@ -912,6 +924,21 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
                 this.frm_Accounts = true;
                 this.frm_Date_AgeCycle = true;
                 this.frm_AgeCycle = true;
+                let testArr;
+                let filtertitle = forkJoin([
+                    //this.listS.GetRptFilters(this.tocken.user.toString()),                                              
+                    this.listS.GetRptFilters(),     
+                    ]);   
+                  filtertitle.subscribe(data => {           
+                    this.RptFiltersArr = data;  
+                    console.log(this.RptFiltersArr);
+                    console.log(data);
+                });
+                console.log(this.RptFiltersArr);
+                console.log(filtertitle);
+
+
+
                 break;
             case "invoice-verification":
                 this.ModalName = "Invoice Verification";
@@ -1191,7 +1218,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
         this.loading = true;
         this.drawerVisible = true;
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "NDIA Package Statement.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -1271,7 +1298,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "NDIA UnClaimed Items.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -1319,7 +1346,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "NDIA Batch Register.pdf"    
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -1412,7 +1439,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "CDC Fee Verification.pdf"    
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -1465,7 +1492,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "CDC Leave Verification.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -1551,7 +1578,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "CDC Claim Verification.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -1629,7 +1656,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
         this.loading = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "CDC Package Statement.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -1719,7 +1746,7 @@ var id = "wE05f9PtCWLd67G8";
         this.drawerVisible = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Staff Roster.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -1876,7 +1903,7 @@ var id = "wE05f9PtCWLd67G8";
         this.drawerVisible = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
            
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -1956,7 +1983,7 @@ var id = "wE05f9PtCWLd67G8";
         this.drawerVisible = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Transport RunSheet.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -2033,7 +2060,7 @@ var id = "wE05f9PtCWLd67G8";
         this.drawerVisible = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Group Activity Rosters.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -2134,7 +2161,7 @@ var id = "wE05f9PtCWLd67G8";
         this.drawerVisible = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Location Rosters.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -2169,7 +2196,7 @@ var id = "wE05f9PtCWLd67G8";
         this.drawerVisible = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Staff Job Sheet.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -2185,8 +2212,6 @@ var id = "wE05f9PtCWLd67G8";
     medicareclaim(){
         var fQuery = " "
         var lblcriteria;
-
-
 
 
         const data = {
@@ -2205,7 +2230,7 @@ var id = "wE05f9PtCWLd67G8";
         this.drawerVisible = true;
         
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "CDC Medicare Claim.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
@@ -2248,7 +2273,7 @@ InvoiceBatchRegister(BatchNO){
     this.drawerVisible = true;
     
 
-    this.printS.print(data).subscribe((blob: any) => {
+    this.printS.printControl(data).subscribe((blob: any) => {
         this.pdfTitle = "Invoice Batch Register.pdf"
         this.drawerVisible = true;                   
         let _blob: Blob = blob;
@@ -2316,7 +2341,7 @@ AccountStatement(branch,recipient,startdate,enddate){
     //this.drawerVisible = true;
     
 
-    this.printS.print(data).subscribe((blob: any) => {
+    this.printS.printControl(data).subscribe((blob: any) => {
         this.pdfTitle = "Account Statement.pdf"
         this.drawerVisible = true;                   
         let _blob: Blob = blob;
@@ -2382,7 +2407,7 @@ ageddebtor(branch,recipient,AgingDays,allBranches,allClients){
     //this.drawerVisible = true;
     
 
-    this.printS.print(data).subscribe((blob: any) => {
+    this.printS.printControl(data).subscribe((blob: any) => {
         this.pdfTitle = "Aged Debtors Report.pdf"
         this.drawerVisible = true;                   
         let _blob: Blob = blob;
@@ -2447,7 +2472,7 @@ Invoiceverification(branch,program,region,startdate,enddate){
     this.drawerVisible = true;
     
 
-    this.printS.print(data).subscribe((blob: any) => {
+    this.printS.printControl(data).subscribe((blob: any) => {
         this.pdfTitle = "Invoice Verification.pdf"
         this.drawerVisible = true;                   
         let _blob: Blob = blob;
@@ -2510,7 +2535,7 @@ depositslip(branch,startdate,enddate){
     this.drawerVisible = true;
     
 
-    this.printS.print(data).subscribe((blob: any) => {
+    this.printS.printControl(data).subscribe((blob: any) => {
         this.pdfTitle = "Bank Deposit Slip.pdf"
         this.drawerVisible = true;                   
         let _blob: Blob = blob;

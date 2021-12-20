@@ -1,4 +1,4 @@
-import { Component, OnInit, SimpleChanges,OnChanges, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, SimpleChanges,OnChanges, Input, ChangeDetectionStrategy, ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import {forkJoin,  Observable ,  merge ,  Subject, Subscriber, Subscription } from 'rxjs';
 
@@ -24,9 +24,13 @@ enum Mode{
 
 export class LeaveApplicationComponent implements OnInit, OnChanges {
 
+  currentDate = new Date();
+
   @Input() open: boolean = false;
   @Input() user: any;
   @Input() operation: Process;
+
+  @Output() refresh = new EventEmitter();
   leaveGroup: FormGroup;
   isLoading: boolean = false;
 
@@ -49,55 +53,78 @@ export class LeaveApplicationComponent implements OnInit, OnChanges {
   ) { }
 
   ngOnInit(): void {
-    this.resetGroup();
+    this.leaveGroup = this.fb.group({
+      recordNumber: 0,
+      user: '',
+      staffcode: '',
+      dates: [
+        [], [Validators.required]
+      ],
+      reminderDate: null,
+      approved:false,
+      makeUnavailable: true,
+      unallocAdmin: false,
+      unallocUnapproved: true,
+      unallocMaster: false,
+      explanation: '',
+      activityCode: null,
+      payCode: null,
+      program: null,
+      programShow: false
+  });
+
+    // this.resetGroup();
   }
 
   ngOnChanges(changes: SimpleChanges) {
     for (let property in changes) {
       if (property == 'open' && !changes[property].firstChange && changes[property].currentValue != null) {
         this.open = true;
-        this.populate();
+        
       }
       if (property == 'operation' && !changes[property].firstChange && changes[property].currentValue != null) {
         this.operation = changes[property].currentValue;
-        console.log(this.operation)
         if(this.operation.process == 'UPDATE'){
+          console.log('update')
           this.patchForm();
         }
         if(this.operation.process == 'ADD'){
+          console.log('add')
+          
           this.resetGroup();
         }
       }
     }
   }
 
-  detectChanges(){
-    this.cd.markForCheck();
-    this.cd.detectChanges();
-  }
-
   resetGroup() {
-    this.leaveGroup = this.fb.group({
+    var startDate = startOfMonth(this.currentDate);
+    var lastDate = lastDayOfMonth(this.currentDate);
+
+    this.leaveGroup.reset({
+        recordNumber: 0,
         user: '',
         staffcode: '',
-        dates: [
-          [startOfMonth(new Date()), lastDayOfMonth(new Date())], [Validators.required]],
-        reminderDate:new Date(),
+        dates: [startDate, lastDate],
+        reminderDate: null,
         approved:false,
         makeUnavailable: true,
         unallocAdmin: false,
         unallocUnapproved: true,
         unallocMaster: false,
         explanation: '',
-        activityCode: '',
-        payCode: '',
-        program: '',
+        activityCode: null,
+        payCode: null,
+        program: null,
         programShow: false
     });
+    this.populate();
+    this.detectChanges();
   }
+
   patchForm(){
     this.timeS.getleaveapplicationByid(this.user.code,this.user.recordNo).subscribe(data => {
-      
+      console.log(data)
       this.leaveGroup.patchValue({
         user: '',
         staffcode: '',
@@ -112,10 +139,12 @@ export class LeaveApplicationComponent implements OnInit, OnChanges {
         payCode: data.address1,
         program: '',
         programShow: false,
-        dates: [new Date(data.startDate), new Date(data.endDate)]
+        dates: [new Date(data.startDate), new Date(data.endDate)],
+        recordNumber: data.recordNumber
       });
-
-      this.cd.detectChanges();
+      // console.log(this.leaveGroup.value)
+      this.populate();
+      this.detectChanges();
     });
   }
 
@@ -125,7 +154,7 @@ export class LeaveApplicationComponent implements OnInit, OnChanges {
   }
 
   populate(){
-
+    console.log(this.leaveGroup)
     let dates = {
       StartDate: format(this.leaveGroup.value.dates[0],'MM-dd-yyyy'),
       EndDate: format(this.leaveGroup.value.dates[1],'MM-dd-yyyy')      
@@ -142,20 +171,18 @@ export class LeaveApplicationComponent implements OnInit, OnChanges {
             programs: data[1],
             leaveActivityCodes: data[2],
             leaveBalances: data[3]
-        }      
+        }
+        this.detectChanges();
     });
   }
 
   save(){
 
-    // this.handleCancel();
-    // return;
-
-    const { dates, program, programShow, explanation, payCode, activityCode, unallocAdmin, unallocMaster,makeUnavailable, unallocUnapproved } = this.leaveGroup.value;
+    const { dates, program, programShow, explanation, payCode, activityCode, unallocAdmin, unallocMaster,makeUnavailable, unallocUnapproved, recordNumber } = this.leaveGroup.value;
     const { tokenUser, user } = this.globalS.decode();
 
 
-    const inputs = {
+    let inputs = {
         fromDate: format(dates[0],'yyyy/MM/dd'),
         toDate: format(dates[1],'yyyy/MM/dd'),
         program: programShow ? program : '',
@@ -167,19 +194,40 @@ export class LeaveApplicationComponent implements OnInit, OnChanges {
         unallocAdmin: unallocAdmin,
         makeUnavailable: makeUnavailable,
         unallocMaster: unallocMaster,
-        unallocUnapproved: unallocUnapproved
+        unallocUnapproved: unallocUnapproved,
+        recordNumber: recordNumber
     };
 
-    // console.log(this.globalS.decode());
-
-    this.timeS.postleaveentry(inputs)
+    console.log(inputs);
+    if(this.operation.process == 'ADD'){
+      this.timeS.postleaveentry(inputs)
         .subscribe(data => {
             this.globalS.sToast('Success','Leave processed');
+            this.refresh.emit('reload');
             this.handleCancel();
         }, error =>{
-            this.globalS.eToast('Error',`${error.error.message}`)
+            // this.globalS.eToast('Error',`${error.error.message}`)
             this.handleCancel();
         });
+    }
+
+    if(this.operation.process == 'UPDATE'){
+      this.timeS.putleaveentry(inputs)
+          .subscribe(data => {
+              this.globalS.sToast('Success','Leave processed');
+              this.refresh.emit('reload');
+              this.handleCancel();
+          }, error =>{
+              this.globalS.eToast('Error',`${error.error.message}`)
+              this.handleCancel();
+          });
+    }
+    
+  }
+
+  detectChanges(){
+    this.cd.markForCheck();
+    this.cd.detectChanges();
   }
 
 }

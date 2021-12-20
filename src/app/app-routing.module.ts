@@ -534,6 +534,10 @@ const routes: Routes = [
         component: DayManagerAdmin
       },
       {
+        path: 'time-attendance',
+        component: AttendanceAdmin
+      },
+      {
         path: 'timesheet',
         component: TimesheetAdmin
       },

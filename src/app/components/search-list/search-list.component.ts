@@ -138,7 +138,6 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
     if (this.view == 0) {
       this.searchRecipient(search);
     }
-
     if (this.view == 1) {
       this.searchStaff(search);
     }
@@ -158,7 +157,6 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
     }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
       this.listsAll = data;
       this.lists = data;
-
       this.loading = false;
       this.cd.markForCheck();
     });
@@ -194,7 +192,8 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
     this.lists = []
     this.timeS.getrecipients({
       User: this.globalS.decode().nameid,
-      SearchString: ''
+      SearchString: '',
+      IncludeInactive:this.activeInactive,
     }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
       if(search){
         var index = data.findIndex(x => x.uniqueID == search.id);
@@ -274,5 +273,7 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
     this.searchModel = this.lists[this.lists.map(x => x.uniqueID).indexOf(selected.uniqueID)];
     // console.log(this.searchModel + "----");
     this.change(this.searchModel);
+    this.globalS.sToast('Success', 'Staff Display Sucessfully');
+    this.clearPhoneModal();
   }
 }

@@ -243,7 +243,6 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     this.COORDINATOR = data.coordinator;
                   });
           }
-          console.log(this.user);
           if('docId' in this.user){
             this.DOCUMENTID = this.user.docId;
           }
@@ -955,13 +954,8 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     }
                   }
 
-                  // this.emailnotify(); 
-                  // return;
-                  // this.writereminder(this.user.id, notes, this.notifFollowUpGroup);
-                  // return;
-                  // console.log(data);
-                  // this.emailnotify();
-                  // return;
+                console.log(this.user);
+                return;
 
                 this.listS.postreferralin(data).subscribe(x => {
                       this.globalS.sToast('Success', 'Package is saved'); 
@@ -2846,15 +2840,14 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     
                   }; 
                   
-                  doc(data:any){
-                    
+                  doc(data:any){                    
                     var temp = data.find(x => x.checked === true)
-                    this.globalS.doc = temp.label.toString();
-                    
+                    this.globalS.doc = temp.label.toString();                    
                   }
-                  notif(data: any){  
-                    var temp1 = data.find(x => x.checked === true)
-                    this.listS.getnotifyaddresses(temp1.label).subscribe(x => this.globalS.emailaddress = x)  
+                  
+                  notif(data: any){ 
+                    var temp1 = data.filter(x => x.checked === true).map(x => x.email);
+                    this.globalS.emailaddress = temp1;
                   }
                   
                   followup(data: any){

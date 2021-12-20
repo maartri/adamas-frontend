@@ -477,8 +477,7 @@ export class PrintComponent implements OnInit , OnDestroy {
                 default:
                   temp1 = "1900/01/01";
                    
-
-                    break;
+                break;
                 }
                 let cyclestrdate =  new Date(temp1)
                 let enddate =  new Date(temp1)

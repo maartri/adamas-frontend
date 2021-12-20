@@ -137,7 +137,7 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
 
         commencementDate: '',
         branch:'',
-        jobCategory: '',
+        jobCategory: null,
         manager: '',
 
         activity: null,
@@ -688,7 +688,7 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
 
   populateNotificationDetails(){
 
-   const { manager, branch, activity } = this.staffForm.value;
+   const { manager, branch, activity, jobCategory } = this.staffForm.value;
    const listname = 'StaffOnBoard Notification';
 
    this.listS.getstaffcompetencylist({
@@ -712,7 +712,7 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
       branch: branch,
       coordinator: manager,
       listname: listname,
-      fundingsource: this.FUNDING_TYPE
+      fundingsource: jobCategory
     }).subscribe(data => {
       this.notifCheckBoxes = data.map(x => {
         return {
@@ -728,7 +728,7 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
 
     this.listS.getfollowups({
       branch: branch,
-      fundingType: this.FUNDING_TYPE,
+      fundingType: jobCategory,
       type: activity,
       group: 'FOLLOWUP'
     }).pipe(takeUntil(this.destroy$)).subscribe(data => {
@@ -747,7 +747,7 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
 
     this.listS.getdocumentslist({
       branch: branch,
-      fundingType: this.FUNDING_TYPE,
+      fundingType: jobCategory,
       type: activity,
       group: 'DOCUMENTS'
     }).pipe(takeUntil(this.destroy$)).subscribe(data => {

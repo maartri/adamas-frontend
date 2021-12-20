@@ -1,3 +1,4 @@
+import { from } from 'rxjs'
 export * from './attendance'
 export * from './daymanager'
 export * from './home'
@@ -8,6 +9,7 @@ export * from './user-reports'
 export * from './configuration'
 export * from './billing' //AHSAN
 export * from './timesheet-processing' //AHSAN
+export * from './analyse-budget'
 export * from './staff'
 export * from './timesheet'
 export * from './landing'

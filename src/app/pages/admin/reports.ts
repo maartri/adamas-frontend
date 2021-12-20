@@ -272,8 +272,7 @@ const inputFormDefault = {
         }
         label{
             font-weight: bold; 
-        }
-        
+        }       
         .form-group label{
             font-weight: bold;
         }
@@ -308,23 +307,27 @@ const inputFormDefault = {
             font-weight: 300 !important;
         }
         iframe {
-            width= 950px;
-            height=650px
+            
+            height:calc(100vh-300px)
+        }
+        drawer{
+            height:calc(100vh-230px)
+           
         }
         
 @media only screen 
 and (min-width : 1224px) {
     iframe {
-        width= 1200px;
-        height=768px;
+        
+        height:calc(100vh-300px)
     }
 }
 @media only screen 
 and (min-device-width : 768px) 
 and (max-device-width : 1024px) {
     iframe {
-        width= 1024px;
-        height=668px;
+        
+        height:calc(100vh-300px)
     }
 }
 
@@ -1496,6 +1499,13 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Date = true;
                 this.frm_Recipients = true;
                 break;
+            case 'btn-Regis-LagTimeRegister':
+                this.bodystyle = { height:'350px', overflow: 'auto'}
+                this.ModalName = "LAG TIME REGISTER"
+                this.frm_Date = true;
+                this.frm_Branches = true;
+                this.frm_Programs = true;
+                break;
                 case 'btn-Regis-masterrosteredhoursreport':
                 this.bodystyle = { height:'300px', overflow: 'auto'}
                 this.ModalName = "MASTER ROSTERED HOURS REGISTER "
@@ -2409,6 +2419,9 @@ stafftypeArr: Array<any> = constants.types;
             case 'btn-Regis-mealregisterreport':
                 this.MealOrderReport(s_Recipient, strdate, endate, tempsdate, tempedate);
                 break;
+            case 'btn-Regis-LagTimeRegister':
+                this.lagtimeregister(s_Branches, s_Programs,strdate, endate, tempsdate, tempedate);
+                break;            
             case 'btn-Regis-hasreport':
                 this.HASReport(s_Programs, strdate, endate);
                 break;
@@ -5754,6 +5767,90 @@ stafftypeArr: Array<any> = constants.types;
         
         this.printS.printControl(data).subscribe((blob: any) => {
             this.pdfTitle = "Meal Order Report.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
+
+        return;
+    }
+    lagtimeregister(branch, program,startdate, enddate, tempsdate, tempedate) {
+
+
+        var fQuery = " SELECT DISTINCT R.[Client Code], R.[Program], R.[Date], [Recipients].[UBDMap], [Recipients].[Type], [Recipients].[DischargeDate], [ItemTypes].[MinorGroup] FROM ROSTER R INNER JOIN ItemTypes ON R.[Service Type] = [ItemTypes].[Title] INNER JOIN Recipients ON R.[Client Code] = [Recipients].[Accountno] WHERE EXISTS (SELECT R.Date FROM ROSTER R2 Where R2.[CLIENT CODE] = R.[CLIENT CODE]  AND R2.PROGRAM = R.PROGRAM   AND [SERVICE TYPE] IN (SELECT TITLE FROM ITEMTYPES WHERE MINORGROUP = 'REFERRAL-IN')  "
+        " AND [DATE] BETWEEN '2021/09/01' AND '2021/12/31') "
+
+        " AND R.[Date] >= '2021/09/01' "
+
+        //" AND [DATE] BETWEEN '2021/12/01' AND '2021/12/31') "
+        if (startdate != "" || enddate != "") {
+            this.s_DateSQL = " DATE BETWEEN '" + tempsdate + ("'AND'") + tempedate + "')";
+            if (this.s_DateSQL != "") { fQuery = fQuery + " AND " + this.s_DateSQL };
+        }
+        fQuery = fQuery + " AND [ItemTypes].MinorGroup IN ('REFERRAL-IN','ASSESSMENT','ADMISSION','DISCHARGE') "
+        fQuery = fQuery +" AND R.[Date] >= '"+ tempsdate +"'  "
+        //
+        
+        //fQuery = fQuery +" AND  (Recipients.Branch = 'HOBART' OR Recipients.Branch = 'DARWIN' OR Recipients.Branch = 'PERTH') "
+        //" AND (Recipients.AgencyDefinedGroup = 'INVERELL' OR Recipients.AgencyDefinedGroup = 'KYOGLE') "
+        //" AND  (Recipients.RECIPIENT_CoOrdinator = 'BERNADENE JEFFREYS' OR Recipients.RECIPIENT_CoOrdinator = 'BERNADENE JEFFREYS' OR Recipients.RECIPIENT_CoOrdinator = 'DELL PAULIG' OR Recipients.RECIPIENT_CoOrdinator = 'EZIECHIELE BLEMEN' OR Recipients.RECIPIENT_CoOrdinator = 'FLORRY HYNDSON' OR Recipients.RECIPIENT_CoOrdinator = 'EDITH HEAKE') "
+        var lblcriteria;
+        if (branch != "") {
+            this.s_BranchSQL = "BRANCH in ('" + branch.join("','") + "')";
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+
+        }
+       
+        if (program != "") {
+            this.s_ProgramSQL = " (PROGRAM in ('" + program.join("','") + "'))";
+            if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+        }
+
+        if (branch != "") {
+            lblcriteria = "Branches:" + branch.join(",") + "; "
+        }
+        else { lblcriteria = " All Branches " }
+        
+
+        if (program != "") {
+            lblcriteria = lblcriteria + " Programs " + program.join(",") + "; "
+        }
+        else { lblcriteria = lblcriteria + "All Programs." }
+
+
+        fQuery = fQuery + " ORDER BY [Client Code], [Program], Date "
+
+    
+        //console.log(fQuery)        
+        const data = {
+
+            "template": { "_id": "jEU5BSyn0puhfwPP" },
+            "options": {
+                "reports": { "save": false },                
+                "sql": fQuery,
+                "Criteria": lblcriteria,
+                "userid": this.tocken.user,
+            }
+        }
+
+        this.loading = true;
+        
+
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Lag Time Register.pdf"
             this.drawerVisible = true;                   
             let _blob: Blob = blob;
             let fileURL = URL.createObjectURL(_blob);

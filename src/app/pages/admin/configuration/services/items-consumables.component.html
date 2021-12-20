@@ -247,8 +247,7 @@
                                         </div>
                                         <div nz-col nzSpan="20" class="text-right pad-r-5"> 
                                             <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="datasetGroup"  nzShowSearch nzAllowClear style="width:100%;">
-                                                <!-- <nz-option *ngFor="let budget of budgetGroupList" [nzLabel]="budget.description" [nzValue]="budget.description"></nz-option> -->
-                                                <nz-option nzValue="STF-LEAVE-LONG SERVICE" nzLabel="STF-LEAVE-LONG SERVICE"></nz-option>
+                                                <nz-option *ngFor="let group of dataset_group" [nzLabel]="group" [nzValue]="group"></nz-option>
                                             </nz-select>
                                         </div>
                                     </div>
@@ -258,8 +257,7 @@
                                         </div>
                                         <div nz-col nzSpan="20" class="text-right pad-r-5"> 
                                             <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="haccType"  nzShowSearch nzAllowClear style="width:100%;">
-                                                <!-- <nz-option *ngFor="let budget of budgetGroupList" [nzLabel]="budget.description" [nzValue]="budget.description"></nz-option> -->
-                                                <nz-option nzValue="STF-LEAVE-LONG SERVICE" nzLabel="STF-LEAVE-LONG SERVICE"></nz-option>
+                                                <nz-option *ngFor="let khali of emptyList" [nzLabel]="khali" [nzValue]="khali"></nz-option>
                                             </nz-select>
                                         </div>
                                     </div>

@@ -3027,7 +3027,7 @@ ClearMultishift(){
             }else if( Option=='Copy' ||Option=='Cut'){
 
                 if (this.viewType=='Staff'){
-                    this.current_roster = this.find_roster(stringify.apply(recordNo));
+                    this.current_roster = this.find_roster(parseInt(recordNo));
                     let clientCode =this.current_roster.recipientCode;
                     let date= this.current_roster.date
 

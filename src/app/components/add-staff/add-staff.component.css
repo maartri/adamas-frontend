@@ -16,5 +16,19 @@
     color: gainsboro;
     font-size: 1.4rem;
     cursor:pointer;
-
+}
+.close{
+    margin-bottom:10px;
+}
+.close i{
+    float:right;
+    color:#9d9d9d;
+    cursor:pointer;
+}
+.close i:hover{
+    color:#151515;
+}
+.ref-form{
+    padding: 1rem;
+    border-bottom: 1px solid rgb(230 230 230);
 }

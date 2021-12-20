@@ -92,6 +92,7 @@ import {
   ConfigurationAdmin,
   HCPComponent,
   PrintComponent,
+  BudgetAdmin, //AHSAN
   BillingAdmin,   //AHSAN
   TimesheetProcessingAdmin,   //AHSAN
 } from '@admin/index'
@@ -270,7 +271,7 @@ import { DebtorComponent } from '@admin/billing/debtor.component'; //AHSAN
 import { TravelComponent } from '@admin/billing/travel.component'; //AHSAN 
 import { PayComponent } from '@admin/timesheet-processing-views/pay.Component'; //AHSAN 
 import { PayIntegrityComponent } from '@admin/billing/payIntegrity.component'; //AHSAN
-import { CloseRosterComponent } from '@admin/billing/closeRoster.component';
+import { CloseRosterComponent } from '@admin/billing/closeRoster.component'; //AHSAN
 import { MediaList } from '@admin/recipient-views/mediaList';
 import { UserDetail } from '@admin/configuration/genrel-setup/userdetail';
 
@@ -556,6 +557,10 @@ const routes: Routes = [
       {
         path: 'configuration',
         component: ConfigurationAdmin
+      },
+      {
+        path: 'analyse-budget', //AHSAN
+        component: BudgetAdmin
       },
       {
         path: 'billing', //AHSAN
@@ -1282,6 +1287,7 @@ export const PAGE_COMPONENTS = [
   ConfigurationAdmin,
   HCPComponent,
   PrintComponent,
+  BudgetAdmin, //AHSAN
   BillingAdmin, //AHSAN
   TimesheetProcessingAdmin, //AHSAN
   

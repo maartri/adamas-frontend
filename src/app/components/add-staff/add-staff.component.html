@@ -6,6 +6,7 @@
             <nz-step class="mini" nzTitle="Address Details" nzDescription=""></nz-step>
             <nz-step class="mini" nzTitle="Contact Details" nzDescription=""></nz-step>
             <nz-step class="mini" nzTitle="Other Details & Administration" nzDescription=""></nz-step>
+            <nz-step class="mini" nzTitle="Other Contacts" nzDescription=""></nz-step>
 
             <nz-step class="mini" nzTitle="Date Details" nzDescription=""></nz-step>
             <nz-step class="mini" nzTitle="Note Details" nzDescription=""></nz-step>
@@ -277,7 +278,127 @@
                 </div>                
             </div>
 
-            <div *ngIf="current == 4" [formGroup]="staffForm" style="width:25rem">
+            <div *ngIf="current == 4" [formGroup]="staffForm">
+                <button class="botton success" (click)="addOtherContacts()">Add Other Contacts</button>
+
+
+                    <div [formGroup]="staffForm">
+                        <div nz-row formArrayName="otherContactsForm" *ngFor="let item of staffForm.get('otherContactsForm')['controls']; let i = index;">
+                            <div nzOffset="2" nz-col nzSpan="20" class="ref-form" [formGroupName]="i">
+
+                                <div class="close"><i nz-icon nzType="close" nzTheme="outline" (click)="deleteOther(i)"></i></div>
+
+
+                                <div nz-row>
+                                    <div nz-col nzSpan="24">
+                                        <div class="form-group">
+                                            <label for="">Contact Group</label>
+                                                <nz-select [nzDropdownMatchSelectWidth]="false" style="width:100%" formControlName="contactGroup" (ngModelChange)="contactGroupChange(staffForm.get('otherContactsForm')['controls'],i)" nzShowSearch nzAllowClear
+                                                nzPlaceHolder="Select a Contact Group">
+                                                <nz-option *ngFor="let d of contactGroups" [nzLabel]="d" [nzValue]="d"></nz-option>
+                                            </nz-select>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div nz-row nzGutter="12">
+                                    <div nz-col nzSpan="8">
+                                        <div class="form-group">
+                                            <label for="">Type</label>
+
+                                            <nz-select formControlName="type" nzShowSearch nzAllowClear style="width:100%">
+                                                <nz-option *ngFor="let d of staffForm.get('otherContactsForm')?.controls[i]?.get('contactList')?.value" [nzLabel]="d" [nzValue]="d"></nz-option>
+                                            </nz-select>
+                                        </div>
+                                    </div>
+        
+                                    <div nz-col nzSpan="15">
+                                        <div class="form-group">
+                                            <label for="">Name</label>
+                                            <ng-container *ngIf="staffForm.get('otherContactsForm')?.controls[i]?.get('type')?.value != 'DOCTORS'">
+                                                <input nz-input formControlName="name" autocomplete="nofill" oninput="this.value = this.value.toUpperCase()" />
+                                            </ng-container>
+                                            <ng-container *ngIf="staffForm.get('otherContactsForm')?.controls[i]?.get('type')?.value == 'DOCTORS'">
+                                                <nz-select [nzDropdownMatchSelectWidth]="false" style="width:100%" formControlName="name" (ngModelChange)="doctorChange(staffForm.get('otherContacts')['controls'],i, $event)" nzShowSearch nzAllowClear nzPlaceHolder="Select a Doctor">
+                                                    <nz-option *ngFor="let d of doctors" [nzLabel]="d.name" [nzValue]="d"></nz-option>
+                                                </nz-select>
+                                            </ng-container>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div nz-row nzGutter="12">
+                                    <div nz-col nzSpan="24">
+                                        <div class="form-group">
+                                            <label for="">Address 1</label>
+                                            <input nz-input formControlName="address1" autocomplete="nofill" oninput="this.value = this.value.toUpperCase()" />
+                                        </div>
+                                    </div>
+        
+                                    <div nz-col nzSpan="24">
+                                        <div class="form-group">
+                                            <label for="">Address 2</label>
+                                            <input nz-input formControlName="address1" autocomplete="nofill" oninput="this.value = this.value.toUpperCase()" />
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div nz-row nzGutter="12">
+                                    <div nz-col nzSpan="24">
+                                        <div class="form-group">
+                                            <label for="">Suburb</label>
+                                            <suburb formControlName="suburb"></suburb>
+                                        </div>
+                                    </div>
+        
+                                    <div nz-col nzSpan="24">
+                                        <div class="form-group">
+                                            <label for="">Email</label>
+                                            <input nz-input formControlName="email" autocomplete="nofill" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div nz-row nzGutter="12">
+                                    <div nz-col nzSpan="12">
+                                        <div class="form-group">
+                                            <label for="">Phone 1</label>
+                                            <app-phonefax formControlName="phone1"></app-phonefax>
+                                        </div>
+                                    </div>
+        
+                                    <div nz-col nzSpan="12">
+                                        <div class="form-group">
+                                            <label for="">Phone 2</label>
+                                            <app-phonefax formControlName="phone2"></app-phonefax>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div nz-row nzGutter="12">
+                                    <div nz-col nzSpan="12">
+                                        <div class="form-group">
+                                            <label for="">Mobile</label>
+                                            <app-phonefax [isMobile]="true" formControlName="mobile"></app-phonefax>
+                                        </div>
+                                    </div>
+        
+                                    <div nz-col nzSpan="12">
+                                        <div class="form-group">
+                                            <label for="">Fax</label>
+                                            <app-phonefax formControlName="fax"></app-phonefax>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+            </div>
+
+            <div *ngIf="current == 5" [formGroup]="staffForm" style="width:25rem">
                 <div nz-row [nzGutter]="8" class="space-btm">
                     <div nz-col nzSpan="8">
                         <nz-date-picker [nzFormat]="dateFormat" formControlName="date" [nzFormat]="dateFormat" [nzPlaceHolder]="'Referral Date'"></nz-date-picker>
@@ -293,7 +414,7 @@
                 </div>
             </div>
 
-            <div *ngIf="current == 5" >
+            <div *ngIf="current == 6" >
                 <div nz-col nzSpan="24">
                     <div class="form-group" [formGroup]="staffForm">
                         <nz-radio-group formControlName="radioGroup">
@@ -307,31 +428,31 @@
                 </div>
             </div>
 
-            <div *ngIf="current == 6" [formGroup]="staffForm">
+            <div *ngIf="current == 7" [formGroup]="staffForm">
                 <label for="">Competencies</label>
                 <nz-checkbox-group [(ngModel)]="notifCompetenciesGroup" (ngModelChange)="competencyChange(notifCheckBoxes)"  [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
                 <!-- {{ competencies | json }} -->
             </div>
 
-            <div *ngIf="current == 7" [formGroup]="staffForm">
+            <div *ngIf="current == 8" [formGroup]="staffForm">
                 <label for="">Notifications</label>
                 <nz-checkbox-group [(ngModel)]="notifCheckBoxes" (ngModelChange)="notifChange(notifCheckBoxes)"  [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
                 <nz-alert nzType="warning" *ngIf="notifCheckBoxes?.length == 0" nzMessage="No Notifications"></nz-alert>
             </div>
 
-            <div *ngIf="current == 8" [formGroup]="staffForm">
+            <div *ngIf="current == 9" [formGroup]="staffForm">
                 <label for="">Followups</label>
                 <nz-checkbox-group [(ngModel)]="notifFollowUpGroup" (ngModelChange)="followupChange(notifFollowUpGroup)" [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
                 <nz-alert nzType="warning" *ngIf="notifFollowUpGroup?.length == 0" nzMessage="No Followups"></nz-alert>
             </div>
 
-            <div *ngIf="current == 9" [formGroup]="staffForm">
+            <div *ngIf="current == 10" [formGroup]="staffForm">
                 <label for="">Documents</label>
                 <nz-checkbox-group [(ngModel)]="notifDocumentsGroup" (ngModelChange)="docChange(notifCheckBoxes)"  [ngModelOptions]="{standalone: true}"></nz-checkbox-group>
                 <nz-alert nzType="warning" *ngIf="notifDocumentsGroup?.length == 0" nzMessage="No Documents"></nz-alert>
             </div>
 
-            <div *ngIf="current == 10" [formGroup]="staffForm">
+            <div *ngIf="current == 11" [formGroup]="staffForm">
                 <label for="">Other Required Info</label>
                 <div *ngFor="let l of datalist"> 
                     <a [href]="l.link" target="_blank">{{l.form}}</a>
@@ -348,10 +469,10 @@
                 <span>Previous</span>
             </button>
             <!-- *ngIf="current < 3" [disabled]="!nextRequired" -->
-            <button nz-button nzType="default" (click)="next()" *ngIf="current < 10" [disabled]="!nextRequired">
+            <button nz-button nzType="default" (click)="next()" *ngIf="current < 11" [disabled]="!nextRequired">
                 <span>Next</span>
             </button>
-            <button nz-button nzType="primary" (click)="save()" *ngIf="current == 10" >
+            <button nz-button nzType="primary" (click)="save()" *ngIf="current == 11" >
                 <span>Done</span>
             </button>
         </ng-container>

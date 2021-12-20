@@ -2,7 +2,7 @@ import { Component, OnInit, forwardRef, OnChanges, SimpleChanges, Input, Output,
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
 import { TitleCasePipe } from '@angular/common';
 
-import { TimeSheetService, GlobalService, view, ClientService, StaffService, ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles, SettingsService } from '@services/index';
+import { TimeSheetService, GlobalService, view, ClientService, StaffService, ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles, SettingsService, contactGroups } from '@services/index';
 import * as _ from 'lodash';
 import { forkJoin, Observable, EMPTY, Subject } from 'rxjs';
 import parseISO from 'date-fns/parseISO'
@@ -36,6 +36,10 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
   private onChangeCallback: (_: any) => void = noop;
 
   private destroy$ = new Subject();
+  private otherContacts: FormArray;
+
+  contactGroups: Array<string> = contactGroups;
+  doctors: Array<any> = []
 
   @Input() open: boolean = false;
   @Output() reload = new EventEmitter();
@@ -129,10 +133,11 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
         gender: ['',Validators.required],
         addressForm: this.fb.array(this.defaultAddress() || []),
         contactForm: this.fb.array(this.defaultContacts() || []),
+        otherContactsForm: new FormArray([this.createOtherContact()]),
 
         commencementDate: '',
         branch:'',
-        jobCategory: '',
+        jobCategory: null,
         manager: '',
 
         activity: null,
@@ -367,6 +372,49 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
     });
   }
 
+  contactGroupChange(group: FormGroup, index: number){
+    var contactGroup = (group[index] as FormGroup).get('contactGroup').value;
+    var specificGroup = (group[index] as FormGroup);
+    specificGroup.patchValue({
+      type: null
+    });
+
+    this.listS.gettypeother(contactGroup).subscribe(data => {
+      specificGroup.patchValue({
+        contactList: data
+      });
+    });    
+  }
+
+  addOtherContacts(): void {
+    this.otherContacts = this.staffForm.get('otherContactsForm') as FormArray;
+    this.otherContacts.push(this.createOtherContact());
+  }
+
+  deleteOther(i: number): void {
+    this.otherContacts = this.staffForm.get('otherContactsForm') as FormArray;
+    this.otherContacts.removeAt(i);
+  }
+
+  createOtherContact(): FormGroup {
+    return this.fb.group({
+      contactGroup: new FormControl(''),
+      contactList: [[]],
+      type: new FormControl(''),
+      name: new FormControl(''),
+      address1: new FormControl(''),
+      address2: new FormControl(''),
+      suburb: new FormControl(''),
+      email: new FormControl(''),
+      phone1: new FormControl(''),
+      phone2: new FormControl(''),
+      mobile: new FormControl(''),
+      fax: new FormControl(''),
+
+      // list: new FormControl(['mark','aris'])
+    });
+  }
+
   defaultContacts(): Array<FormGroup>{
     var groupArr: Array<FormGroup> = [];
 
@@ -483,7 +531,7 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
 
   save(){
     
-    // console.log(this.notifCompetenciesGroup);
+    // console.log(this.staffForm.value);
     // return;
 
     const {
@@ -499,7 +547,8 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
           manager,            //manager
           branch,             //branch
           commencementDate,   //commencement date      
-          notes
+          notes,
+          otherContactsForm
       } = this.staffForm.value;
 
       if(
@@ -560,7 +609,8 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
           },
           NamesAndAddresses: addressList,
           PhoneFaxOther: contactList,
-          Competencies: this.notifCompetenciesGroup.filter(x => x.checked).map(x => x.label)
+          Competencies: this.notifCompetenciesGroup.filter(x => x.checked).map(x => x.label),
+          OtherContacts: otherContactsForm,
       }).subscribe(data => {
           if(data){
               this.globalS.sToast('Success','Staff Added');
@@ -581,8 +631,6 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
 
   writereminder(personid: string, notes: string, followups: Array<any>){
     var sql = '', temp = '';
-  
-    // console.log(this.notifFollowUpGroup);
 
     for(var followup of followups)
     {
@@ -640,7 +688,7 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
 
   populateNotificationDetails(){
 
-   const { manager, branch, activity } = this.staffForm.value;
+   const { manager, branch, activity, jobCategory } = this.staffForm.value;
    const listname = 'StaffOnBoard Notification';
 
    this.listS.getstaffcompetencylist({
@@ -664,7 +712,7 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
       branch: branch,
       coordinator: manager,
       listname: listname,
-      fundingsource: this.FUNDING_TYPE
+      fundingsource: jobCategory
     }).subscribe(data => {
       this.notifCheckBoxes = data.map(x => {
         return {
@@ -680,7 +728,7 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
 
     this.listS.getfollowups({
       branch: branch,
-      fundingType: this.FUNDING_TYPE,
+      fundingType: jobCategory,
       type: activity,
       group: 'FOLLOWUP'
     }).pipe(takeUntil(this.destroy$)).subscribe(data => {
@@ -699,7 +747,7 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
 
     this.listS.getdocumentslist({
       branch: branch,
-      fundingType: this.FUNDING_TYPE,
+      fundingType: jobCategory,
       type: activity,
       group: 'DOCUMENTS'
     }).pipe(takeUntil(this.destroy$)).subscribe(data => {
@@ -802,6 +850,36 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
     { 
       c.get('primary').patchValue(false);
     }
+  }
+
+  doctorChange(group: FormGroup, index: number, data: any){
+
+    var specificGroup = (group[index] as FormGroup);
+
+
+    if(!data) {
+      specificGroup.patchValue({
+        address1: '',
+        address2: '',
+        email: '',
+        phone1: '',
+        phone2: '',
+        fax: '',
+        mobile: ''
+      });
+      return;
+    };
+
+   
+    specificGroup.patchValue({
+      address1: data.address1,
+      address2: data.address2,
+      email: data.email,
+      phone1: data.phone1,
+      phone2: data.phone2,
+      fax: data.fax,
+      mobile: data.mobile
+    });    
   }
 
 

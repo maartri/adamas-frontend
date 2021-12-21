@@ -954,8 +954,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     }
                   }
 
-                console.log(this.user);
-                return;
+        
 
                 this.listS.postreferralin(data).subscribe(x => {
                       this.globalS.sToast('Success', 'Package is saved'); 
@@ -2791,7 +2790,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                   //this.referdocument = true;
                   this.referIndocument = true;
                   
-                  
+                  // this.customReq()
                   
                 } 
                 customReq = () => {
@@ -2840,9 +2839,10 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     
                   }; 
                   
-                  doc(data:any){                    
-                    var temp = data.find(x => x.checked === true)
-                    this.globalS.doc = temp.label.toString();                    
+                  doc(data:any){  
+                    var temp = data.filter(x => x.checked)
+                    this.globalS.doc = temp.map(x => x.value);
+                    return this.globalS.doc
                   }
                   
                   notif(data: any){ 

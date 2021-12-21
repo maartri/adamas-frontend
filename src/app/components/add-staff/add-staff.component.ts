@@ -533,8 +533,9 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
 
   save(){
     
-    // this.uploadS.postdocumentstafftemplatereferral({ User: '', PersonId: '2323', OriginalFileName: '', NewFileName: this.globalS.doc[0] }).subscribe(data => console.log(data));
-    // return;
+    this.writereminder('asd', 'notes', this.notifFollowUpGroup);
+    return;
+
     const {
           type,               //category
           accountNo,
@@ -656,11 +657,16 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
     var sql = '', temp = '';
     for(var followup of followups)
     {
-      var dateCounter = parseInt(followup.user1);
+      var dateCounter = parseInt(followup.dateCounter);
       var reminderDatePlusDateCounter = addDays(new Date(), dateCounter);
+      var reminderString = reminderDatePlusDateCounter.toISOString().substring(0, 10);
+
+
+
+
 
       if(followup.checked){
-        sql = sql +"INSERT INTO HumanResources([PersonID], [Notes], [Group],[Type],[Name],[Date1],[Date2]) VALUES ('"+personid+"','"+ notes+"',"+"'RECIPIENTALERT','RECIPIENTALERT','" + followup.label + "','" + reminderDatePlusDateCounter.toDateString() +"','"+ reminderDatePlusDateCounter.toDateString() +"');";
+        sql = sql +"INSERT INTO HumanResources([PersonID], [Notes], [Group],[Type],[Name],[Date1],[Date2]) VALUES ('"+personid+"','"+ notes+"',"+"'RECIPIENTALERT','RECIPIENTALERT','" + followup.label + "','" + reminderString +"','"+ reminderString +"');";
       }
     }
     this.clientS.addRefreminder(sql).subscribe(x => console.log(x) );

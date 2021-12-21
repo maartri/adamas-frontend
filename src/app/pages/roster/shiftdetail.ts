@@ -555,7 +555,7 @@ ngOnInit(){
             sDate : format(tsheet.date,'yyyy/MM/dd'), 
             sStartTime :format(this.defaultStartTime,'HH:mm'), 
             sDuration : durationObject.duration, 
-            sActivity : tsheet.serviceActivity.activity,
+            sActivity : tsheet.serviceActivity,
              sRORecordno : tsheet.recordNo, 
             // sState : '-', 
             // bEnforceActivityLimits :0, 

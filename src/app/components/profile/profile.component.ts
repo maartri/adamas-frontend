@@ -452,7 +452,6 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
       this.staffS.getprofile(token.name).pipe(
         concatMap(data => {
           if (!data) return EMPTY;
-          
           this.user = data;
           this.user.rating = data.rating ? data.rating.split('*').length - 1 : 0;
           this.patchTheseValuesInForm(data);

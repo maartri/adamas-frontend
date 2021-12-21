@@ -128,6 +128,7 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
         accountNo:[''],
 
         surnameOrg: ['', Validators.required],
+        preferred: '',
         firstName: ['', Validators.required],
         birthDate: ['',Validators.required],
         gender: ['',Validators.required],
@@ -548,7 +549,8 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
           branch,             //branch
           commencementDate,   //commencement date      
           notes,
-          otherContactsForm
+          otherContactsForm,
+          preferred
       } = this.staffForm.value;
 
       if(
@@ -605,7 +607,8 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
               commencementDate: commencementDate ? moment(commencementDate).format() : null,
               stf_Department: branch,
               staffGroup: jobCategory,
-              pan_Manager: manager
+              pan_Manager: manager,
+              preferredName: preferred
           },
           NamesAndAddresses: addressList,
           PhoneFaxOther: contactList,

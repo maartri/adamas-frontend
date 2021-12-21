@@ -764,7 +764,7 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
 
     this.listS.getdatalist({
       branch: branch,
-      fundingType: this.FUNDING_TYPE,
+      fundingType: jobCategory,
       type: activity,
       group: 'XTRADATA'
     }).pipe(takeUntil(this.destroy$)).subscribe(data =>  {

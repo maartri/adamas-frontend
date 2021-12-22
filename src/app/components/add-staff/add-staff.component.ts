@@ -138,9 +138,9 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
         otherContactsForm: new FormArray([this.createOtherContact()]),
 
         commencementDate: '',
-        branch:'',
+        branch:null,
         jobCategory: null,
-        manager: '',
+        manager: null,
 
         activity: null,
 
@@ -466,9 +466,6 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
 
   next(): void {
       this.current += 1;
-
-      console.log(this.current);
-
       if(this.current == 4){
         this.populateNotificationDetails();
       }
@@ -533,8 +530,8 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
 
   save(){
     
-    this.writereminder('asd', 'notes', this.notifFollowUpGroup);
-    return;
+    // this.writereminder('asd', 'notes', this.notifFollowUpGroup);
+    // return;
 
     const {
           type,               //category
@@ -582,8 +579,34 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
               }
           }
       }).filter(x => x);
-      
-      
+
+      var othersList = otherContactsForm.map(x => {
+          let pcode = /(\d+)/g.test(x.suburb) ? x.suburb.match(/(\d+)/g)[0] : "";
+          let suburb = /(\D+)/g.test(x.suburb) ? x.suburb.match(/(\D+)/g)[0] : "";
+
+          if(!_.isEmpty(x.type) && !_.isEmpty(x.address1) && !_.isEmpty(suburb) && !_.isEmpty(pcode)){
+              return {
+                  personID: '',
+                  description: x.type,
+                  address1: x.address1.trim(),
+                  address2: x.address2.trim(),
+                  suburb: suburb.trim(),
+                  postcode: pcode.trim(),
+                  primaryAddress: x.primary,
+
+                  name: x.name.trim(),
+                  phone1: x.phone1,
+                  phone2: x.phone2,
+
+                  mobile: x.mobile,
+                  fax: x.fax,
+                  email: x.email,
+
+
+              }
+          }
+      }).filter(x => x);      
+        
       var contactList = (this.staffForm.value.contactForm).map(x => {
           if( !_.isEmpty(x.contact) && !_.isEmpty(x.contacttype) )
           {
@@ -596,8 +619,7 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
           }
       }).filter(x => x);
 
-
-      this.staffS.poststaffprofile({
+      let inputData = {
           Staff: {
               accountNo: (accountNo || surnameOrg).toUpperCase(),
               firstName: firstName,
@@ -614,10 +636,20 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
           NamesAndAddresses: addressList,
           PhoneFaxOther: contactList,
           Competencies: this.notifCompetenciesGroup.filter(x => x.checked).map(x => x.label),
-          OtherContacts: otherContactsForm,
+          OtherContacts: othersList,
+          Reminders: this.notifFollowUpGroup.filter(x => x.checked).map(x => {
+            return {
+              label: x.label,
+              dateCounter: x.dateCounter
+            }
+          }),
           Documents: this.doc(this.notifDocumentsGroup)
-      }).subscribe(data => {
+      }
+
+      this.staffS.poststaffprofile(inputData).subscribe(data => {
+        
           if(data){
+
               this.globalS.sToast('Success','Staff Added');
               this.handleCancel();
 
@@ -637,9 +669,9 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
               //   NewFileName: this.globalS.doc[0] 
               // }).subscribe(data => console.log(data))
 
-              if (this.globalS.followups != null){
-                this.writereminder(data.uniqueId, notes, this.notifFollowUpGroup);
-              }
+              // if (this.globalS.followups != null){
+              //   this.writereminder(data.uniqueId, notes, this.notifFollowUpGroup);
+              // }
 
               // this.uploadS.postdocumentstafftemplate({ User: '', PersonId: data.uniqueId, OriginalFileName: '', NewFileName: this.globalS.doc[0] })
               

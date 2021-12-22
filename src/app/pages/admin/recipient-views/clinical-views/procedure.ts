@@ -57,7 +57,7 @@ export class ClinicalProcedure implements OnInit, OnDestroy {
         });
 
         this.sharedS.changeEmitted$.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-            if (this.globalS.isCurrentRoute(this.router, 'consents')) {
+            if (this.globalS.isCurrentRoute(this.router, 'procedure')) {
                 console.log('sasd')
                 this.user = data;
                 this.search(data);

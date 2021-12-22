@@ -44,12 +44,13 @@ import { SpreadSheetsModule } from '@grapecity/spread-sheets-angular';
 import * as GC from "@grapecity/spread-sheets";
 import { NZ_ICONS, NZ_ICON_DEFAULT_TWOTONE_COLOR } from 'ng-zorro-antd';
 import './styles.css';
-import { ElementSchemaRegistry } from '@angular/compiler';
+import { ElementSchemaRegistry, ThrowStmt } from '@angular/compiler';
 import { NzTableModule  } from 'ng-zorro-antd/table';
 import { Router,ActivatedRoute } from '@angular/router';
 import { SetLeftFeature } from 'ag-grid-community';
 import { style } from '@angular/animations';
 import { stringify } from '@angular/compiler/src/util';
+import { environment } from 'src/environments/environment';
 
  
 interface AddTimesheetModalInterface {
@@ -304,6 +305,10 @@ searchAvaibleModal:boolean=false;
     RecurrentServiceForm:FormGroup;
     AlertForm:FormGroup;
     
+    breachRoster:boolean=false;
+    Error_Msg:string;
+    rDate:any;
+
     viewType: any ;
     // start_date:string="";
     // end_date:string=""
@@ -535,20 +540,51 @@ setPattern(d:string){
 setFrequency(d:string){
     this.Frequency=d;
 }
-Check_BreachedRosterRules_Paste(rDate:string, startTime:string,  duration:String ){
+
+Cancel_ProceedBreachRoster(){
+    this.breachRoster=false;
+    if (this.operation=='copy' ||this.operation=='cut'){
+        this.load_rosters();
+    }
+}
+ProceedBreachRoster(){
+    this.breachRoster=false;
+    let sheet = this.spreadsheet.getActiveSheet();
+    if (this.operation=='copy' ||this.operation=='cut'){
+        if (this.operation=="cut"){
+            this.ProcessRoster("Cut",this.current_roster.recordNo,this.rDate);
+            this.remove_Cells(sheet,this.copy_value.row,this.copy_value.col,this.copy_value.duration)
+        }else
+            this.ProcessRoster("Copy",this.current_roster.recordNo,this.rDate);    
+    }else{
+        this.AddRoster_Entry();
+    }
+
+}
+Check_BreachedRosterRules_Paste(RecNo:number, action:string){
 
     //It is still not being used
-   
+    this.current_roster = this.find_roster(RecNo)
+    let sheet = this.spreadsheet.getActiveSheet();
+        let range = sheet.getSelections();
+        let col= range[0].col;
+        let dt= sheet.getTag(0,col,GC.Spread.Sheets.SheetArea.colHeader);                       
+        this.rDate = dt.getFullYear() + "/" + this.numStr(dt.getMonth()+1) + "/" + this.numStr(dt.getDate());
+  
+        let f_row= range[0].row;             
+        let startTime =   sheet.getCell(f_row,0,GC.Spread.Sheets.SheetArea.rowHeader).tag();
+     
+
     let inputs_breach={
-        sMode : 'Edit', 
-        sStaffCode: this.current_roster.carerCode, 
-        sClientCode: this.current_roster.clientCode, 
+        sMode : 'Add', 
+        sStaffCode: this.current_roster.staffCode, 
+        sClientCode: this.current_roster.recipientCode, 
         sProgram: this.current_roster.program, 
-        sDate : rDate, 
+        sDate : this.rDate, 
         sStartTime :startTime, 
-        sDuration : duration, 
+        sDuration : this.current_roster.duration, 
         sActivity : this.current_roster.activity,
-        // sRORecordno : '-', 
+        sRORecordno : this.current_roster.recordNo, 
         // sState : '-', 
         // bEnforceActivityLimits :0, 
         // bUseAwards:0, 
@@ -560,16 +596,25 @@ Check_BreachedRosterRules_Paste(rDate:string, startTime:string,  duration:String
         // sExcludeRecords : '-', 
         // bSuppressErrorMessages  :0, 
         // sStatusMsg : '-',
-         PasteAction :'Copy'
+         PasteAction : action=="cut" ? "Cut": "Copy"
     };
 
     this.timeS.Check_BreachedRosterRules(inputs_breach).subscribe(data=>{
         let res=data
         if (res.errorValue>0){
-            this.globalS.eToast('Error', res.errorValue +", "+ res.msg);
+          
+            this.Error_Msg=res.errorValue +", "+ res.msg +  '\n Are you sure you want to continue roster addition/change';
+            this.breachRoster=true;
+            
+            //this.globalS.eToast('Error', res.errorValue +", "+ res.msg);
             return; 
         }else{
-           // this.ProcessRoster();
+            if (action=="cut"){
+                this.ProcessRoster("Cut",this.current_roster.recordNo,this.rDate);
+                this.remove_Cells(sheet,this.copy_value.row,this.copy_value.col,this.copy_value.duration)
+            }else
+                this.ProcessRoster("Copy",this.current_roster.recordNo,this.rDate);    
+            
         }
 
     });
@@ -621,7 +666,10 @@ Check_BreachedRosterRules(){
     this.timeS.Check_BreachedRosterRules(inputs_breach).subscribe(data=>{
         let res=data
         if (res.errorValue>0){
-            this.globalS.eToast('Error', res.errorValue +", "+ res.msg);
+           // this.globalS.eToast('Error', res.errorValue +", "+ res.msg);
+           this.addBookingModel=false;
+            this.Error_Msg=res.errorValue +", "+ res.msg +  '<br/>' + 'Are you sure you want to continue roster addition/change'; 
+            this.breachRoster=true;
             return; 
         }else{
             this.AddRoster_Entry();
@@ -1995,16 +2043,18 @@ ClearMultishift(){
                             if (self.copy_value==null || self.copy_value.recordNo==null || self.copy_value.recordNo==0){
                                 continue;
                             }
+
+                            self.Check_BreachedRosterRules_Paste(recdNo,self.operation);
                             //if (self.copy_value.row>=0){
                                let n_row=row+row_iterator;
                             self.draw_Cells(sheet,n_row,col,self.copy_value.duration,self.copy_value.type,self.copy_value.recordNo,self.copy_value.service)
+                                                        
                             
-                            
-                            if (self.operation==="cut"){
-                                self.ProcessRoster("Cut",self.copy_value.recordNo,rdate);
-                                self.remove_Cells(sheet,self.copy_value.row,self.copy_value.col,self.copy_value.duration)
-                            }else
-                                self.ProcessRoster("Copy",self.copy_value.recordNo,rdate);    
+                            // if (self.operation==="cut"){
+                            //     self.ProcessRoster("Cut",self.copy_value.recordNo,rdate);
+                            //     self.remove_Cells(sheet,self.copy_value.row,self.copy_value.col,self.copy_value.duration)
+                            // }else
+                            //     self.ProcessRoster("Copy",self.copy_value.recordNo,rdate);    
                             
                              data_row=data_row+1;                 
                             }// rows loop
@@ -3024,10 +3074,10 @@ ClearMultishift(){
                 if( Option=='Copy' ||Option=='Cut')
                     this.load_rosters();
                 return; 
-            }else if( Option=='Copy' ||Option=='Cut'){
+            } if( Option=='Copy' ||Option=='Cut'){
 
                 if (this.viewType=='Staff'){
-                    this.current_roster = this.find_roster(stringify.apply(recordNo));
+                    this.current_roster = this.find_roster(parseInt(recordNo));
                     let clientCode =this.current_roster.recipientCode;
                     let date= this.current_roster.date
 

@@ -181,23 +181,7 @@
             <button nz-button nzType="default"  (click)="deleteRosterModal=false">Cancel</button>
         </div>
     </nz-modal>
-    
-    <nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="breachRoster" nzTitle="Roster Validation" (nzOnCancel)="breachRoster = false" >
-      
-            <div class="flexy" style="min-height:3rem">
-             
-                <div>
-                    <label style="font-size:14px; " > {{Error_Msg}} </label>
-                   
-                </div>
-            </div>
-       
-        
-        <div *nzModalFooter>
-            <button nz-button nzType="default"  (click)="ProceedBreachRoster()">Yes</button>
-            <button nz-button nzType="default"  (click)="Cancel_ProceedBreachRoster()">No</button>
-        </div>
-    </nz-modal>
+
     <!-- Search staff model -->
     
     <nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="searchStaffModal" nzTitle="Select Staff from below Staff List" (nzOnCancel)="searchStaffModal = false" >
@@ -968,6 +952,25 @@
     <recipientexternal [isVisible]="recipientexternal" [AccountNo]="selected_data" (recipientexternalDone)="cancelRecipientExternal($event)" *ngIf="recipientexternal"></recipientexternal>
      
     <staffexternal [isVisible]="staffexternal" [AccountNo]="selected_data" (staffexternalDone)="cancelStaffExternal($event)" *ngIf="staffexternal"></staffexternal>
+    
+        
+    <nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="breachRoster" nzTitle="Roster Validation" (nzOnCancel)="breachRoster = false" >
+      
+        <div class="flexy" style="min-height:3rem">
+         
+            <div>
+                <label style="font-size:14px; " > {{Error_Msg}} <br/> Are you sure you want to continue roster addition/change </label>
+               
+            </div>
+        </div>
+   
+    
+    <div *nzModalFooter>
+        <button   nz-button nzType="default"  (click)="ProceedBreachRoster()">Yes</button>
+        <button   nz-button nzType="default"  (click)="Cancel_ProceedBreachRoster()">No</button>
+    </div>
+</nz-modal>
+
     <div>
         <img id="icon-1" style="display: none; background-color: transparent;"  src="/media/r1.png"/>
         <img id="icon-2" style="display: none; background-color: transparent;"  src="/media/r2.png"/>

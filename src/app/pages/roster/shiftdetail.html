@@ -253,3 +253,19 @@
         <button nz-button nzType="primary" (click)="handleOk()" [nzLoading]="isConfirmLoading">Custom Submit</button> -->
     </ng-template>
   </nz-modal>
+
+  <nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="breachRoster" nzTitle="Roster Validation" (nzOnCancel)="breachRoster = false" >
+    <div class="flexy" style="min-height:3rem">
+        <div nz-row>
+           
+            <div>
+                <label style="font-size:14px; " > {{Error_Msg}} <br/> Are you sure you want to continue roster addition/change </label>
+               
+            </div>
+        </div>
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default"  (click)="ProceedBreachRoster()">Yes</button>
+        <button nz-button nzType="default"  (click)="Cancel_ProceedBreachRoster()">No</button>
+    </div>
+</nz-modal>

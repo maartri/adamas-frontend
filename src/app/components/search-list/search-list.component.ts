@@ -57,6 +57,7 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
   take: number = 50;
   activeInactive: boolean;
 
+
   // nzFilterOption  = () => true;
   constructor(
     private cd: ChangeDetectorRef,
@@ -126,13 +127,13 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
 
     this.onChangeCallback(user);
   }
+
   changeStatus(event){
-    if(event == 'A')
-    this.activeInactive = false;
-    else
-    this.activeInactive = true;
+    if(event == 'A')  this.activeInactive = false;    
+    if(event == 'B')  this.activeInactive = true;
     this.search();
   }
+
   search(search: string = null) {
     this.loading = true;
     if (this.view == 0) {

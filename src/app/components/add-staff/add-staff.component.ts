@@ -99,7 +99,8 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
     private listS: ListService,
     private fb: FormBuilder,
     private cd: ChangeDetectorRef,
-    private titleCase: TitleCasePipe
+    private titleCase: TitleCasePipe,
+    private uploadS: UploadService
   ) { 
 
 
@@ -128,6 +129,7 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
         accountNo:[''],
 
         surnameOrg: ['', Validators.required],
+        preferred: '',
         firstName: ['', Validators.required],
         birthDate: ['',Validators.required],
         gender: ['',Validators.required],
@@ -136,9 +138,9 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
         otherContactsForm: new FormArray([this.createOtherContact()]),
 
         commencementDate: '',
-        branch:'',
+        branch:null,
         jobCategory: null,
-        manager: '',
+        manager: null,
 
         activity: null,
 
@@ -332,6 +334,7 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
 
   ngOnInit(): void {
     this.buildForm();
+    console.log()
   }
 
   //From ControlValueAccessor interface
@@ -463,9 +466,6 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
 
   next(): void {
       this.current += 1;
-
-      console.log(this.current);
-
       if(this.current == 4){
         this.populateNotificationDetails();
       }
@@ -516,11 +516,10 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
     this.listS.getnotifyaddresses(temp1.label).subscribe(x => this.globalS.emailaddress = x)  
   }
 
-  doc(data:any){
-                    
-    var temp = data.find(x => x.checked === true)
-    this.globalS.doc = temp.label.toString();
-    
+  doc(data:any){  
+    var temp = data.filter(x => x.checked)
+    this.globalS.doc = temp.map(x => x.value);
+    return this.globalS.doc
   }
 
   followup(data: any){
@@ -531,7 +530,7 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
 
   save(){
     
-    // console.log(this.staffForm.value);
+    // this.writereminder('asd', 'notes', this.notifFollowUpGroup);
     // return;
 
     const {
@@ -548,7 +547,8 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
           branch,             //branch
           commencementDate,   //commencement date      
           notes,
-          otherContactsForm
+          otherContactsForm,
+          preferred
       } = this.staffForm.value;
 
       if(
@@ -579,8 +579,34 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
               }
           }
       }).filter(x => x);
-      
-      
+
+      var othersList = otherContactsForm.map(x => {
+          let pcode = /(\d+)/g.test(x.suburb) ? x.suburb.match(/(\d+)/g)[0] : "";
+          let suburb = /(\D+)/g.test(x.suburb) ? x.suburb.match(/(\D+)/g)[0] : "";
+
+          if(!_.isEmpty(x.type) && !_.isEmpty(x.address1) && !_.isEmpty(suburb) && !_.isEmpty(pcode)){
+              return {
+                  personID: '',
+                  description: x.type,
+                  address1: x.address1.trim(),
+                  address2: x.address2.trim(),
+                  suburb: suburb.trim(),
+                  postcode: pcode.trim(),
+                  primaryAddress: x.primary,
+
+                  name: x.name.trim(),
+                  phone1: x.phone1,
+                  phone2: x.phone2,
+
+                  mobile: x.mobile,
+                  fax: x.fax,
+                  email: x.email,
+
+
+              }
+          }
+      }).filter(x => x);      
+        
       var contactList = (this.staffForm.value.contactForm).map(x => {
           if( !_.isEmpty(x.contact) && !_.isEmpty(x.contacttype) )
           {
@@ -593,8 +619,7 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
           }
       }).filter(x => x);
 
-
-      this.staffS.poststaffprofile({
+      let inputData = {
           Staff: {
               accountNo: (accountNo || surnameOrg).toUpperCase(),
               firstName: firstName,
@@ -605,20 +630,50 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
               commencementDate: commencementDate ? moment(commencementDate).format() : null,
               stf_Department: branch,
               staffGroup: jobCategory,
-              pan_Manager: manager
+              pan_Manager: manager,
+              preferredName: preferred
           },
           NamesAndAddresses: addressList,
           PhoneFaxOther: contactList,
           Competencies: this.notifCompetenciesGroup.filter(x => x.checked).map(x => x.label),
-          OtherContacts: otherContactsForm,
-      }).subscribe(data => {
+          OtherContacts: othersList,
+          Reminders: this.notifFollowUpGroup.filter(x => x.checked).map(x => {
+            return {
+              label: x.label,
+              dateCounter: x.dateCounter
+            }
+          }),
+          Documents: this.doc(this.notifDocumentsGroup)
+      }
+
+      this.staffS.poststaffprofile(inputData).subscribe(data => {
+        
           if(data){
+
               this.globalS.sToast('Success','Staff Added');
               this.handleCancel();
 
-              if (this.globalS.followups != null){
-                this.writereminder(data.uniqueId, notes, this.notifFollowUpGroup);
-              }
+              (this.globalS.doc as Array<string>).forEach(x => {
+                this.uploadS.postdocumentstafftemplatereferral({ 
+                  User: this.globalS.decode().user, 
+                  PersonId: data.uniqueId, 
+                  OriginalFileName: x , 
+                  NewFileName: x
+                }).subscribe(data => console.log(data))
+              })
+
+              // this.uploadS.postdocumentstafftemplatereferral({ 
+              //   User: this.globalS.decode().user, 
+              //   PersonId: data.uniqueId, 
+              //   OriginalFileName: this.globalS.doc[0] , 
+              //   NewFileName: this.globalS.doc[0] 
+              // }).subscribe(data => console.log(data))
+
+              // if (this.globalS.followups != null){
+              //   this.writereminder(data.uniqueId, notes, this.notifFollowUpGroup);
+              // }
+
+              // this.uploadS.postdocumentstafftemplate({ User: '', PersonId: data.uniqueId, OriginalFileName: '', NewFileName: this.globalS.doc[0] })
               
               if (this.globalS.emailaddress != null){
                 this.emailnotify(); 
@@ -630,40 +685,24 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
   }
 
   writereminder(personid: string, notes: string, followups: Array<any>){
-    var sql = '', temp = '';
 
+    var sql = '', temp = '';
     for(var followup of followups)
     {
       var dateCounter = parseInt(followup.dateCounter);
-      var reminderDatePlusDateCounter = format(addDays(new Date(), dateCounter),'dd/MM/yyyy');
+      var reminderDatePlusDateCounter = addDays(new Date(), dateCounter);
+      var reminderString = reminderDatePlusDateCounter.toISOString().substring(0, 10);
+
+
+
+
 
       if(followup.checked){
-        sql = sql +"INSERT INTO HumanResources([PersonID], [Notes], [Group],[Type],[Name],[Date1],[Date2]) VALUES ('"+personid+"','"+ notes+"',"+"'RECIPIENTALERT','RECIPIENTALERT','" + followup.label + "','" + reminderDatePlusDateCounter +"','"+ reminderDatePlusDateCounter +"');";
+        sql = sql +"INSERT INTO HumanResources([PersonID], [Notes], [Group],[Type],[Name],[Date1],[Date2]) VALUES ('"+personid+"','"+ notes+"',"+"'RECIPIENTALERT','RECIPIENTALERT','" + followup.label + "','" + reminderString +"','"+ reminderString +"');";
       }
     }
-
-    // let Date1 : Date   = new Date();
-    // let Date2 : Date   = new Date(Date1);
-    
-    // temp = (this.globalS.followups.label).toString().substring(0,2);
-    
-    // switch (temp) {
-    //   case '10':
-    //   Date2.setDate(Date2.getDate() + 10)
-      
-    //   break;
-    //   case '30':
-    //   Date2.setDate(Date2.getDate() + 30)
-    //   break;
-      
-    //   default:
-    //   break;
-    // }
-
-    // sql = "INSERT INTO HumanResources([PersonID], [Notes], [Group],[Type],[Name],[Date1],[Date2]) VALUES ('"+this.globalS.id.toString()+"','"+ this.globalS.followups.label.toString()+"',"+"'RECIPIENTALERT','RECIPIENTALERT','FOLLOWUP REMINDER','" +format(Date1,'yyyy/MM/dd') +"','"+format(Date2,'yyyy/MM/dd') +"') ";
-    console.log(sql);
-    // this.clientS.addRefreminder(sql).subscribe(x => console.log(x) );                  
-    // this.globalS.followups = null;
+    this.clientS.addRefreminder(sql).subscribe(x => console.log(x) );
+    this.globalS.followups = null;
   }
 
   emailnotify(){              
@@ -764,7 +803,7 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
 
     this.listS.getdatalist({
       branch: branch,
-      fundingType: this.FUNDING_TYPE,
+      fundingType: jobCategory,
       type: activity,
       group: 'XTRADATA'
     }).pipe(takeUntil(this.destroy$)).subscribe(data =>  {

@@ -141,15 +141,15 @@ export class StaffAdminActivitiesComponent implements OnInit {
         status      :'NONATTRIBUTABLE',
         unit        :'HOUR',
         minChargeRate :'$0.0000',
-        amount:'$0.0000',
-        minDurtn    :'0',
-        maxDurtn    :'0',
-        fixedTime   :'0',
-        price2:'$0.0000',
-        price3:'$0.0000',
-        price4:'$0.0000',
-        price5:'$0.0000',
-        price6:'$0.0000',
+        amount:0.0,
+        minDurtn    :0,
+        maxDurtn    :0,
+        fixedTime   :0,
+        price2:0.0,
+        price3:0.0,
+        price4:0.0,
+        price5:0.0,
+        price6:0.0,
       });
       
       this.modalOpen = true;
@@ -311,6 +311,9 @@ export class StaffAdminActivitiesComponent implements OnInit {
             this.loading = false;
             this.cd.detectChanges();
           });
+          this.listS.getitemtypesparams().subscribe(data => {
+            console.log(data);
+          });
         }
         loadCompetency(){
           this.menuS.getconfigurationservicescompetency(this.parent_person_id).subscribe(data => {
@@ -438,7 +441,7 @@ export class StaffAdminActivitiesComponent implements OnInit {
             rosterGroup:'',
             minorGroup:'',
             status:'',
-            amount:'',
+            amount:0.0,
             minChargeRate:'',
             lifecycle:'',
             unit:'',
@@ -457,11 +460,11 @@ export class StaffAdminActivitiesComponent implements OnInit {
             glCost:'',
             unitCostUOM:'',
             unitCost:'',
-            price2:'',
-            price3:'',
-            price4:'',
-            price5:'',
-            price6:'',
+            price2:0.0,
+            price3:0.0,
+            price4:0.0,
+            price5:0.0,
+            price6:0.0,
             excludeFromPayExport:false,
             excludeFromUsageStatements:false,
             endDate:'',
@@ -539,8 +542,8 @@ export class StaffAdminActivitiesComponent implements OnInit {
             ndiA_LEVEL2:'',
             ndiA_LEVEL3:'',
             ndiA_LEVEL4:'',
-            recnum:0,
-          });
+            recnum:0, 
+          });  
           this.competencyForm = this.formBuilder.group({
             competencyValue: '',
             mandatory: false,

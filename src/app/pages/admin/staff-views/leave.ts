@@ -9,6 +9,8 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 
+import differenceInCalendarDays from 'date-fns/differenceInCalendarDays';
+
 @Component({
     styles: [`
     nz-table{
@@ -185,7 +187,7 @@ export class StaffLeaveAdmin implements OnInit, OnDestroy {
             this.operation = {
                 process: 'ADD'
             }
-            console.log(JSON.stringify(this.user) + "user");
+            // console.log(JSON.stringify(this.user) + "user");
             this.putonLeaveModal = !this.putonLeaveModal;
         }
         
@@ -287,4 +289,6 @@ export class StaffLeaveAdmin implements OnInit, OnDestroy {
         reload(data: string){
             this.search();
         }
+
+      
     }

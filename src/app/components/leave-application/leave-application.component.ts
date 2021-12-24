@@ -4,9 +4,11 @@ import {forkJoin,  Observable ,  merge ,  Subject, Subscriber, Subscription } fr
 
 import { ListService, GlobalService, TimeSheetService } from '../../services/index';
 
-import lastDayOfMonth from 'date-fns/lastDayOfMonth'
-import startOfMonth from 'date-fns/startOfMonth'
-import format from 'date-fns/format'
+import lastDayOfMonth from 'date-fns/lastDayOfMonth';
+import startOfMonth from 'date-fns/startOfMonth';
+import format from 'date-fns/format';
+
+import differenceInCalendarDays from 'date-fns/differenceInCalendarDays';
 
 interface Process {
   process: Mode
@@ -58,7 +60,7 @@ export class LeaveApplicationComponent implements OnInit, OnChanges {
       user: '',
       staffcode: '',
       dates: [
-        [], [Validators.required]
+        [new Date(), new Date()], [Validators.required]
       ],
       reminderDate: null,
       approved:false,
@@ -98,8 +100,8 @@ export class LeaveApplicationComponent implements OnInit, OnChanges {
   }
 
   resetGroup() {
-    var startDate = startOfMonth(this.currentDate);
-    var lastDate = lastDayOfMonth(this.currentDate);
+    var startDate = new Date();
+    var lastDate = new Date();
 
     this.leaveGroup.reset({
         recordNumber: 0,
@@ -178,14 +180,15 @@ export class LeaveApplicationComponent implements OnInit, OnChanges {
 
   save(){
 
-    const { dates, program, programShow, explanation, payCode, activityCode, unallocAdmin, unallocMaster,makeUnavailable, unallocUnapproved, recordNumber } = this.leaveGroup.value;
+    const { dates, program, programShow, explanation, payCode, activityCode, unallocAdmin, unallocMaster,makeUnavailable, unallocUnapproved, recordNumber, reminderDate } = this.leaveGroup.value;
     const { tokenUser, user } = this.globalS.decode();
 
 
     let inputs = {
         fromDate: format(dates[0],'yyyy/MM/dd'),
         toDate: format(dates[1],'yyyy/MM/dd'),
-        program: programShow ? program : '',
+        reminderDate: reminderDate,
+        program: !programShow ? program : '',
         staffcode: this.user.code,
         user: user,
         explanation: explanation,
@@ -198,7 +201,7 @@ export class LeaveApplicationComponent implements OnInit, OnChanges {
         recordNumber: recordNumber
     };
 
-    console.log(inputs);
+    // console.log(inputs);
     if(this.operation.process == 'ADD'){
       this.timeS.postleaveentry(inputs)
         .subscribe(data => {
@@ -229,5 +232,10 @@ export class LeaveApplicationComponent implements OnInit, OnChanges {
     this.cd.markForCheck();
     this.cd.detectChanges();
   }
+
+  disabledDate = (current: Date): boolean => {
+      // Can not select days before today and today
+      return differenceInCalendarDays(current, new Date()) < 0;
+  };
 
 }

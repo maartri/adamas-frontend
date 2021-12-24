@@ -209,7 +209,7 @@ export class LeaveApplicationComponent implements OnInit, OnChanges {
             this.refresh.emit('reload');
             this.handleCancel();
         }, error =>{
-            // this.globalS.eToast('Error',`${error.error.message}`)
+            this.globalS.eToast('Error',`${error.error.message}`)
             this.handleCancel();
         });
     }

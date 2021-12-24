@@ -290,5 +290,10 @@ export class StaffLeaveAdmin implements OnInit, OnDestroy {
             this.search();
         }
 
+        isUpdateValid(data: any){
+            var currDate = new Date();
+            return !(currDate > new Date(this.tableData[data]));
+        }
+
       
     }

@@ -72,7 +72,7 @@ export class LeaveApplicationComponent implements OnInit, OnChanges {
       activityCode: null,
       payCode: null,
       program: null,
-      programShow: false
+      programShow: true
   });
 
     // this.resetGroup();

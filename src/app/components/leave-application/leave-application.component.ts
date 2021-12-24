@@ -118,7 +118,7 @@ export class LeaveApplicationComponent implements OnInit, OnChanges {
         activityCode: null,
         payCode: null,
         program: null,
-        programShow: false
+        programShow: true
     });
     this.populate();
     this.detectChanges();
@@ -140,7 +140,7 @@ export class LeaveApplicationComponent implements OnInit, OnChanges {
         activityCode: data.address2,
         payCode: data.address1,
         program: '',
-        programShow: false,
+        programShow: true,
         dates: [new Date(data.startDate), new Date(data.endDate)],
         recordNumber: data.recordNumber
       });

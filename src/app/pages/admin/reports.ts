@@ -4143,7 +4143,7 @@ stafftypeArr: Array<any> = constants.types;
             this.reportid   = "4ohDCZRbiaKS4ocK" 
             fQuery = fQuery + " ORDER BY R.[Surname/Organisation], R.FirstName"
 
-            //    console.log(fQuery)
+                console.log(fQuery)
         this.drawerVisible = true;
 
         const data = {

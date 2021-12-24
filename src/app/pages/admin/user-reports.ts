@@ -4947,8 +4947,496 @@ if(this.RptFormat == "AGENCYSTFLIST" || this.RptFormat == "USERSTFLIST"){
         columnNames = columnNames.concat(['CAST(History.Detail AS varchar(4000))  '])
         }else{columnNames = (['CAST(History.Detail AS varchar(4000))  '])}
               break;
-
-
+//Staff Attribute                           
+        case 'Competency':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['StaffAttribute.[competency]'])
+        }else{columnNames = (['StaffAttribute.[competency]'])}
+              break;
+        case 'Competency Expiry Date':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['StaffAttribute.[competency expiry date]'])
+              }else{columnNames = (['StaffAttribute.[competency expiry date]'])}
+              break;
+        case 'Competency Reminder Date':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['StaffAttribute.[competency reminder date]'])
+        }else{columnNames = (['StaffAttribute.[competency reminder date]'])}
+              break;
+        case 'Competency Completion Date':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['StaffAttribute.[competency completion date]'])
+        }else{columnNames = (['StaffAttribute.[competency completion date]'])}
+              break;
+        case 'Mandatory Status':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['StaffAttribute.[mandatory status]'])
+        }else{columnNames = (['StaffAttribute.[mandatory status]'])}
+              break;
+        case 'Certificate Number':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['StaffAttribute.[certificate number]'])
+        }else{columnNames = (['StaffAttribute.[certificate number]'])}
+              break;
+        case 'Competency Notes':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['StaffAttribute.[competency notes]'])
+        }else{columnNames = (['StaffAttribute.[competency notes]'])}
+              break;
+        case 'Staff Position':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['StaffPosition.[name]   AS [Staff Position]'])
+        }else{columnNames = (['StaffPosition.[name]   AS [Staff Position]'])}
+              break;
+        case 'Staff Admin Categories':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['staff.[subcategory]    AS [Staff Admin Categories]'])
+        }else{columnNames = (['staff.[subcategory]    AS [Staff Admin Categories]'])}
+              break;
+        case 'NDIA Staff Level':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['staff.[ndiastafflevel] AS [NDIA Staff Level]'])
+        }else{columnNames = (['staff.[ndiastafflevel] AS [NDIA Staff Level]'])}
+              break;
+//STAFF Position
+        case 'Staff Position':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['StaffPosition.[name] AS [Staff Position]'])
+        }else{columnNames = (['StaffPosition.[name] AS [Staff Position]'])}
+              break;
+        case 'Position Start Date':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['StaffPosition.[start date] AS [Position Start Date]'])
+        }else{columnNames = (['StaffPosition.[start date] AS [Position Start Date]'])}
+              break;
+        case 'Position End Date':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['StaffPosition.[end date] AS [Position End Date]'])
+        }else{columnNames = (['StaffPosition.[end date] AS [Position End Date]'])}
+              break;              
+        case 'Position ID':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['StaffPosition.[position id]'])
+        }else{columnNames = (['StaffPosition.[position id]'])}
+              break;
+        case 'Position Notes':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['StaffPosition.[notes]      AS [Position Notes]'])
+        }else{columnNames = (['StaffPosition.[notes]      AS [Position Notes]'])}
+              break;
+    //Work Hours                  
+        case 'Min_Daily_HRS':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['hrs_daily_min    AS MIN_DAILY_HRS'])
+        }else{columnNames = (['hrs_daily_min    AS MIN_DAILY_HRS'])}
+              break;
+              case 'Max_Daily_HRS':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['hrs_daily_max    AS MAX_DAILY_HRS'])
+              }else{columnNames = (['hrs_daily_max    AS MAX_DAILY_HRS'])}
+                    break;
+              case 'Min_Weekly_HRS':
+                      if(columnNames != []){
+                    columnNames = columnNames.concat(['hrs_weekly_min   AS MIN_WEEKLY_HRS'])
+                    }else{columnNames = (['hrs_weekly_min   AS MIN_WEEKLY_HRS'])}
+                    break;
+              case 'Max_Weekly_HRS':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['hrs_weekly_max   AS MAX_WEEKLY_HRS'])
+              }else{columnNames = (['hrs_weekly_max   AS MAX_WEEKLY_HRS'])}
+                    break;
+              case 'Min_Pay_Period_HRS':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['hrs_fnightly_min AS MIN_PAY_PERIOD_HRS'])
+              }else{columnNames = (['hrs_fnightly_min AS MIN_PAY_PERIOD_HRS'])}
+                    break;
+              case 'Max_Pay_Period_HRS':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['hrs_fnightly_max AS MAX_PAY_PERIOD_HRS'])
+              }else{columnNames = (['hrs_fnightly_max AS MAX_PAY_PERIOD_HRS'])}
+                    break;
+              case 'Week_1_Day_1':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['ch_1_1 AS WEEK_1_DAY_1'])
+              }else{columnNames = (['ch_1_1 AS WEEK_1_DAY_1'])}
+                    break;                    
+              case 'Week_1_Day_2':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['ch_1_2 AS WEEK_1_DAY_2'])
+              }else{columnNames = (['ch_1_2 AS WEEK_1_DAY_2'])}
+                    break;
+              case 'Week_1_Day_3':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['ch_1_3 AS WEEK_1_DAY_3'])
+              }else{columnNames = (['ch_1_3 AS WEEK_1_DAY_3'])}
+                    break;
+              case 'Week_1_Day_4':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['ch_1_4 AS WEEK_1_DAY_4'])
+              }else{columnNames = (['ch_1_4 AS WEEK_1_DAY_4'])}
+                    break;
+              case 'Week_1_Day_5':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['ch_1_5 AS WEEK_1_DAY_5'])
+              }else{columnNames = (['ch_1_5 AS WEEK_1_DAY_5'])}
+                    break;
+              case 'Week_1_Day_6':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['ch_1_6 AS WEEK_1_DAY_6'])
+              }else{columnNames = (['ch_1_6 AS WEEK_1_DAY_6'])}
+                    break;
+              case 'Week_1_Day_7':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['ch_1_7 AS WEEK_1_DAY_7'])
+              }else{columnNames = (['ch_1_7 AS WEEK_1_DAY_7'])}
+                    break;
+              case 'Week_2_Day_1':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['ch_2_1 AS WEEK_2_DAY_1'])
+              }else{columnNames = (['ch_2_1 AS WEEK_2_DAY_1'])}
+                    break;              
+              case 'Week_2_Day_2':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['ch_2_2 AS WEEK_2_DAY_2'])
+              }else{columnNames = (['ch_2_2 AS WEEK_2_DAY_2'])}
+                    break;                    
+              case 'Week_2_Day_3':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['ch_2_3 AS WEEK_2_DAY_3'])
+              }else{columnNames = (['ch_2_3 AS WEEK_2_DAY_3'])}
+                    break;
+              case 'Week_2_Day_4':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['ch_2_4 AS WEEK_2_DAY_4'])
+              }else{columnNames = (['ch_2_4 AS WEEK_2_DAY_4'])}
+                    break;
+              case 'Week_2_Day_5':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['ch_2_5 AS WEEK_2_DAY_5'])
+        }else{columnNames = (['ch_2_5 AS WEEK_2_DAY_5'])}
+              break;
+        case 'Week_2_Day_6':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['ch_2_6 AS WEEK_2_DAY_6'])
+              }else{columnNames = (['ch_2_6 AS WEEK_2_DAY_6'])}
+              break;
+        case 'Week_2_Day_7':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['ch_2_7 AS WEEK_2_DAY_7'])
+        }else{columnNames = (['ch_2_7 AS WEEK_2_DAY_7'])}
+              break;
+//Staff Incident              
+        case 'INCD_Status':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['staffincidents.incd_status'])
+        }else{columnNames = (['staffincidents.incd_status'])}
+              break;
+        case 'INCD_Date':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['staffincidents.incd_date'])
+        }else{columnNames = (['staffincidents.incd_date'])}
+              break;
+        case 'INCD_Type':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['staffincidents.incd_type'])
+        }else{columnNames = (['staffincidents.incd_type'])}
+              break;
+        case 'INCD_Description':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['staffincidents.incd_description'])
+        }else{columnNames = (['staffincidents.incd_description'])}
+              break;
+        case 'INCD_SubCategory':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['staffincidents.incd_subcategory'])
+        }else{columnNames = (['staffincidents.incd_subcategory'])}
+              break;               
+        case 'INCD_Assigned_To':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['staffincidents.incd_assigned_to'])
+        }else{columnNames = (['staffincidents.incd_assigned_to'])}
+              break;
+        case 'INCD_Service':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['staffincidents.incd_service'])
+        }else{columnNames = (['staffincidents.incd_service'])}
+              break;
+        case 'INCD_Severity':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['staffincidents.incd_severity'])
+        }else{columnNames = (['staffincidents.incd_severity'])}
+              break;
+        case 'INCD_Time':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['staffincidents.incd_time'])
+        }else{columnNames = (['staffincidents.incd_time'])}
+              break;
+        case 'INCD_Duration':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['staffincidents.incd_duration'])
+        }else{columnNames = (['staffincidents.incd_duration'])}
+              break;                                                                                                                                                          
+        case 'INCD_Location':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['staffincidents.incd_location'])
+        }else{columnNames = (['staffincidents.incd_location'])}
+              break;
+        case 'INCD_LocationNotes':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['staffincidents.incd_locationnotes'])
+        }else{columnNames = (['staffincidents.incd_locationnotes'])}
+              break;
+        case 'INCD_ReportedBy':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['staffincidents.incd_reportedby'])
+        }else{columnNames = (['staffincidents.incd_reportedby'])}
+              break;
+              case 'INCD_DateReported':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staffincidents.incd_datereported'])
+              }else{columnNames = (['staffincidents.incd_datereported'])}
+                    break;
+              case 'INCD_Reported':
+                var Stf_incd_reported = "CASE WHEN staffincidents.incd_reported = 1 THEN 'YES' ELSE 'NO END  "
+                      if(columnNames != []){
+                    columnNames = columnNames.concat([Stf_incd_reported+'AS incd_reported'])
+                    }else{columnNames = ([Stf_incd_reported+'AS incd_reported'])}
+                    break;                                                                                                                                            
+              case 'INCD_FullDesc':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staffincidents.incd_fulldesc'])
+              }else{columnNames = (['staffincidents.incd_fulldesc'])}
+                    break;
+              case 'INCD_Program':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staffincidents.incd_program'])
+              }else{columnNames = (['staffincidents.incd_program'])}
+                    break;
+              case 'INCD_DSCServiceType':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staffincidents.incd_dscservicetype'])
+              }else{columnNames = (['staffincidents.incd_dscservicetype'])}
+                    break;
+              case 'INCD_TriggerShort':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staffincidents.incd_triggershort'])
+              }else{columnNames = (['staffincidents.incd_triggershort'])}
+                    break;
+              case 'INCD_level':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staffincidents.incd_incident_level'])
+              }else{columnNames = (['staffincidents.incd_incident_level'])}
+                    break;                                                            
+              case 'INCD_Area':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staffincidents.incd_area'])
+              }else{columnNames = (['staffincidents.incd_area'])}
+                    break;
+              case 'INCD_Region':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staffincidents.incd_region'])
+              }else{columnNames = (['staffincidents.incd_region'])}
+                    break;
+              case 'INCD_Position':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staffincidents.incd_position'])
+              }else{columnNames = (['staffincidents.incd_position'])}
+                    break;                                                                                
+              case 'INCD_Phone':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staffincidents.incd_phone'])
+              }else{columnNames = (['staffincidents.incd_phone'])}
+                    break;
+              case 'INCD_Verbal_Date':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staffincidents.incd_verbal_date'])
+              }else{columnNames = (['staffincidents.incd_verbal_date'])}
+                    break;                                                                                                                                                                                    
+              case 'INCD_Verbal_Time':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staffincidents.incd_verbal_time'])
+              }else{columnNames = (['staffincidents.incd_verbal_time'])}
+                    break;              
+              case 'INCD_By_Whome':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staffincidents.incd_by_whome'])
+              }else{columnNames = (['staffincidents.incd_by_whome'])}
+                    break;
+              case 'INCD_To_Whome':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staffincidents.incd_to_whome'])
+              }else{columnNames = (['staffincidents.incd_to_whome'])}
+                    break;
+              case 'INCD_BriefSummary':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staffincidents.incd_briefsummary'])
+              }else{columnNames = (['staffincidents.incd_briefsummary'])}
+                    break;
+                    case 'INCD_ReleventBackground':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['staffincidents.incd_releventbackground'])
+        }else{columnNames = (['staffincidents.incd_releventbackground'])}
+              break;                            
+        case 'INCD_SummaryOfAction':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staffincidents.incd_summaryofaction'])
+              }else{columnNames = (['staffincidents.incd_summaryofaction'])}
+              break;
+        case 'INCD_SummaryOfOtherAction':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['staffincidents.incd_summaryofotheraction'])
+        }else{columnNames = (['staffincidents.incd_summaryofotheraction'])}
+              break;
+        case 'INCD_Triggers':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['staffincidents.incd_triggers'])
+        }else{columnNames = (['staffincidents.incd_triggers'])}
+              break;
+        case 'INCD_InitialAtion':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['staffincidents.incd_initialaction'])
+        }else{columnNames = (['staffincidents.incd_initialaction'])}
+              break;
+        case 'INCD_InitialNotes':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['staffincidents.incd_initialnotes'])
+        }else{columnNames = (['staffincidents.incd_initialnotes'])}
+              break;                                                                                                                                            
+        case 'INCD_InitialFupBy':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['staffincidents.incd_initialfupby'])
+        }else{columnNames = (['staffincidents.incd_initialfupby'])}
+              break;
+        case 'INCD_Completed':
+          var Stf_incd_completed = " CASE WHEN staffincidents.incd_completed = 1 THEN 'YES' ELSE 'NO' END  "
+          if(columnNames != []){
+        columnNames = columnNames.concat([Stf_incd_completed+'AS incd_completed'])
+        }else{columnNames = ([Stf_incd_completed+'AS incd_completed'])}
+              break;
+        case 'INCD_OngoingAction':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['staffincidents.incd_ongoingaction'])
+        }else{columnNames = (['staffincidents.incd_ongoingaction'])}
+              break;
+        case 'INCD_OngoingNotes':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['staffincidents.incd_ongoingnotes'])
+        }else{columnNames = (['staffincidents.incd_ongoingnotes'])}
+              break;
+        case 'INCD_Background':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['staffincidents.incd_background'])
+        }else{columnNames = (['staffincidents.incd_background'])}
+              break;                                                                                                  
+                           
+        case 'INCD_Abuse':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['staffincidents.incd_abuse'])
+        }else{columnNames = (['staffincidents.incd_abuse'])}
+              break;
+        case 'INCD_DOPwithDisability':
+          var Stf_Incd_dopwithdisability = " CASE WHEN staffincidents.incd_dopwithdisability = 1 THEN 'YES' ELSE 'NO'END AS incd_dopwithdisability "
+          if(columnNames != []){
+        columnNames = columnNames.concat([Stf_Incd_dopwithdisability+'AS incd_dopwithdisability'])
+        }else{columnNames = ([Stf_Incd_dopwithdisability+'AS incd_dopwithdisability'])}
+              break;              
+        case 'INCD_SerousRisks':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['staffincidents.incd_seriousrisks'])
+        }else{columnNames = (['staffincidents.incd_seriousrisks'])}
+              break;
+        case 'INCD_Complaints':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['staffincidents.incd_complaints'])
+        }else{columnNames = (['staffincidents.incd_complaints'])}
+              break;
+        case 'INCD_Perpetrator':
+          if(columnNames != []){
+        columnNames = columnNames.concat(['staffincidents.incd_perpetrator'])
+        }else{columnNames = (['staffincidents.incd_perpetrator'])}
+              break;
+              case 'INCD_Notify':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staffincidents.incd_notify'])
+              }else{columnNames = (['staffincidents.incd_notify'])}
+                    break;
+              case 'INCD_NoNotifyReason':
+                      if(columnNames != []){
+                    columnNames = columnNames.concat(['staffincidents.incd_nonotifyreason'])
+                    }else{columnNames = (['staffincidents.incd_nonotifyreason'])}
+                    break;                                                             
+              case 'INCD_Notes':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staffincidents.incd_notes'])
+              }else{columnNames = (['staffincidents.incd_notes'])}
+                    break;
+              case 'INCD_Setting':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staffincidents.incd_setting'])
+              }else{columnNames = (['staffincidents.incd_setting'])}
+                    break;
+//OPNOTES                    
+              case 'General Notes':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staff.[stf_notes]) AS [General Notes]'])
+              }else{columnNames = (['staff.[stf_notes]) AS [General Notes]'])}
+                    break;
+//HR Notes                                                                                                                                
+              case 'HR Notes Date':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['HRHistory.[detaildate] AS [HR Notes Date]'])
+              }else{columnNames = (['HRHistory.[detaildate] AS [HR Notes Date]'])}
+                    break;
+              case 'HR Notes Detail':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['dbo.Rtf2text(HRHistory.[detail]) AS [HR Notes Detail]'])
+              }else{columnNames = (['dbo.Rtf2text(HRHistory.[detail]) AS [HR Notes Detail]'])}
+                    break;
+              case 'HR Notes Creator':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['HRHistory.[creator] AS [HR Notes Creator]'])
+              }else{columnNames = (['HRHistory.[creator] AS [HR Notes Creator]'])}
+                    break;
+              case 'HR Notes Alarm':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['HRHistory.[alarmdate] AS [HR Notes Alarm]'])
+              }else{columnNames = (['HRHistory.[alarmdate] AS [HR Notes Alarm]'])}
+                    break;
+              case 'HR Notes Categories':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['HRHistory.[extradetail2] AS [HR Notes Categories]'])
+              }else{columnNames = (['HRHistory.[extradetail2] AS [HR Notes Categories]'])}
+                    break;
+              case '':
+                if(columnNames != []){
+              columnNames = columnNames.concat([''])
+              }else{columnNames = ([''])}
+                    break;
+              case '':
+                if(columnNames != []){
+              columnNames = columnNames.concat([''])
+              }else{columnNames = ([''])}
+                    break;
+              case '':
+                if(columnNames != []){
+              columnNames = columnNames.concat([''])
+              }else{columnNames = ([''])}
+                    break;              
+              case '':
+                if(columnNames != []){
+              columnNames = columnNames.concat([''])
+              }else{columnNames = ([''])}
+                    break;
+              case '':
+                if(columnNames != []){
+              columnNames = columnNames.concat([''])
+              }else{columnNames = ([''])}
+                    break;
+              case '':
+                if(columnNames != []){
+              columnNames = columnNames.concat([''])
+              }else{columnNames = ([''])}
+                    break;
 
 
     }
@@ -9090,7 +9578,26 @@ TablesSetting(arr){
     if(arr.includes("Service Notes")    ){
       FromSql = FromSql + " LEFT JOIN History ON CONVERT(varchar,SvcDetail.RecordNo,100) = History.PersonID  "
       this.includeSvnDetailNotesWhere = "   History.ExtraDetail1 = 'SVCNOTE'  "
-      }
+      }      
+      if(arr.includes("Competency") || arr.includes(   "Competency Expiry Date"   ) || arr.includes("Competency Reminder Date" ) || arr.includes(  "Competency Completion Date" ) || arr.includes(  "Mandatory Status"   ) || arr.includes("Certificate Number"   ) || arr.includes("Competency Notes" ) || arr.includes( "Staff Admin Categories" ) || arr.includes("NDIA Staff Level")    ){
+        FromSql = FromSql + "  LEFT JOIN (SELECT personid,humanresources.[name] AS [Competency], humanresources.[date1] AS [Competency Expiry Date],humanresources.[date2] AS [Competency Reminder Date],humanresources.[dateinstalled] AS [Competency Completion Date],humanresources.[address1] AS [Certificate Number], humanresources.[recurring] AS [Mandatory Status], humanresources.[notes] AS [Competency Notes] FROM   humanresources WHERE  humanresources.[group] = 'STAFFATTRIBUTE') AS StaffAttribute ON staff.uniqueid = StaffAttribute.personid  "          
+        //LEFT JOIN (SELECT personid,humanresources.[name],date1 AS [Start  Date], date2 AS [End Date], address1 AS [Position ID], notes FROM   humanresources WHERE  humanresources.[group] = 'STAFFPOSITION') AS StaffPosition ON staff.uniqueid = StaffPosition.personid
+        }
+      if(arr.includes("Staff Position") || arr.includes( "Position Start Date") || arr.includes(  "Position End Date" ) || arr.includes( "Position ID") || arr.includes(  "Position Notes")    ){
+        FromSql = FromSql + " LEFT JOIN (SELECT personid,humanresources.[name],date1    AS [Start Date], date2    AS [End Date], address1 AS [Position ID], notes FROM   humanresources WHERE  humanresources.[group] = 'STAFFPOSITION') AS StaffPosition ON staff.uniqueid = StaffPosition.personid  "
+        }
+        if(arr.includes("INCD_Status") || arr.includes("INCD_Date") || arr.includes("INCD_TYpe") || arr.includes("INCD_Description") || arr.includes("INCD_SubCategory") || arr.includes("INCD_Assigned_To") || arr.includes("INCD_Service") || arr.includes("INCD_Severity") || arr.includes("INCD_Time") 
+        || arr.includes("INCD_Duration") || arr.includes("INCD_Location") || arr.includes("INCD_LocationNotes") || arr.includes("INCD_ReportedBy") || arr.includes("INCD_DateReported") || arr.includes("INCD_Reported") || arr.includes("INCD_FullDesc") || arr.includes("INCD_Program") 
+        || arr.includes("INCD_DSCServiceType") || arr.includes("INCD_TriggerShort") || arr.includes("INCD_level") || arr.includes("INCD_Area") || arr.includes("INCD_Region") || arr.includes("INCD_Position") || arr.includes("INCD_Phone") || arr.includes("INCD_Verbal_Date") || arr.includes("INCD_Verbal_Time") 
+        || arr.includes("INCD_By_Whome") || arr.includes("INCD_To_Whome") || arr.includes("INCD_BriefSummary") || arr.includes("INCD_ReleventBackground") || arr.includes("INCD_SummaryOfAction") || arr.includes("INCD_SummaryOfOtherAction") || arr.includes("INCD_Triggers") || arr.includes("INCD_InitialAtion") 
+        || arr.includes("INCD_InitialNotes") || arr.includes("INCD_InitialFupBy") || arr.includes("INCD_Completed") || arr.includes("INCD_OngoingAction") || arr.includes("INCD_OngoingNotes") || arr.includes("INCD_Background") || arr.includes("INCD_Abuse") || arr.includes("INCD_DOPwithDisability") 
+        || arr.includes("INCD_SerousRisks") || arr.includes("INCD_Complaints") || arr.includes("INCD_Perpetrator") || arr.includes("INCD_Notify") || arr.includes("INCD_NoNotifyReason") || arr.includes("INCD_Notes") || arr.includes("INCD_Setting")){
+          FromSql = FromSql + " LEFT JOIN (SELECT personid,imm.status AS incd_status,CONVERT(VARCHAR,imm.date,111) AS incd_date,imm.[Type] AS incd_type,imm.shortdesc AS incd_description,imm.perpspecify AS incd_subcategory,imm.currentassignee AS incd_assigned_to ,imm.service AS incd_service ,imm.severity AS incd_severity ,imm.time AS incd_time ,imm.duration AS incd_duration ,imm.location AS incd_location ,CONVERT(VARCHAR(1000),imm.locationnotes) AS incd_locationnotes ,imm.reportedby AS incd_reportedby ,CONVERT(VARCHAR,imm.datereported,111) AS incd_datereported ,imm.reported AS incd_reported ,CONVERT(VARCHAR(1000),imm.fulldesc) AS incd_fulldesc ,imm.program AS incd_program ,imm.dscservicetype AS incd_dscservicetype ,imm.triggershort AS incd_triggershort,imm.incident_level AS incd_incident_level ,imm.area AS incd_area ,imm.region AS incd_region ,imm.position AS incd_position ,imm.phone AS incd_phone ,CONVERT(VARCHAR,imm.verbal_date,111) AS incd_verbal_date ,imm.verbal_time AS incd_verbal_time ,imm.by_whome AS incd_by_whome ,imm.to_whome AS incd_to_whome ,imm.briefsummary AS incd_briefsummary ,CONVERT(VARCHAR(1000),imm.releventbackground) AS incd_releventbackground ,CONVERT(VARCHAR(1000),imm.summaryofaction) AS incd_summaryofaction ,CONVERT(varchar(1000),imm.summaryofotheraction) AS incd_summaryofotheraction ,CONVERT(varchar(1000),imm.triggers) AS incd_triggers ,imm.initialaction AS incd_initialaction ,CONVERT(varchar(1000),imm.initialnotes) AS incd_initialnotes ,imm.initialfupby AS incd_initialfupby ,imm.completed AS incd_completed ,imm.ongoingaction AS incd_ongoingaction ,CONVERT(varchar(1000),imm.ongoingnotes) AS incd_ongoingnotes ,CONVERT(varchar(1000),imm.background) AS incd_background ,imm.abuse AS incd_abuse ,imm.dopwithdisability AS incd_dopwithdisability ,imm.seriousrisks AS incd_seriousrisks ,imm.complaints AS incd_complaints ,imm.perpetrator AS incd_perpetrator ,imm.notify AS incd_notify ,CONVERT(varchar(1000),imm.nonotifyreason) AS incd_nonotifyreason ,CONVERT(varchar(1000),imm.notes) AS incd_notes , imm.setting AS incd_setting FROM   im_master imm ) AS staffincidents ON staff.uniqueid = staffincidents.personid  "
+          }
+
+          if(arr.includes("HR Notes Date") || arr.includes("HR Notes Detail") || arr.includes("HR Notes Creator") || arr.includes("HR Notes Alarm") || arr.includes("HR Notes Categories") ){
+            FromSql = FromSql + " LEFT JOIN history HRHistory ON staff.uniqueid = HRHistory.personid AND HRHistory.extradetail1 = 'HRNOTE'  "
+            }
 
 
 

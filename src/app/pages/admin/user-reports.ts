@@ -1347,8 +1347,8 @@ this.nodes = [
         break;
         case "46": //Skills & Qualification
         this.data = [
-          { "title": "Aged", "key": "00", isLeaf: true },
-          { "title": "Child", "key": "01", isLeaf: true },
+          { "title": "CERT III AC", "key": "00", isLeaf: true },
+          { "title": "CERT III DS", "key": "01", isLeaf: true },
           { "title": "Dementia", "key": "02", isLeaf: true },
           { "title": "Disabilities", "key": "03", isLeaf: true },
           { "title": "Host", "key": "04", isLeaf: true },
@@ -1375,6 +1375,13 @@ this.nodes = [
           { "title": "Disabilities", "key": "25", isLeaf: true },
           { "title": "DisabilitiesCert", "key": "26", isLeaf: true },
           { "title": "DutyOfCare", "key": "27", isLeaf: true },
+          { "title": "FirstAid", "key": "28", isLeaf: true },
+          { "title": "Grief", "key": "29", isLeaf: true },
+          { "title": "HIST", "key": "30", isLeaf: true },
+          { "title": "OH&S", "key": "31", isLeaf: true },
+          { "title": "PersonalCare", "key": "32", isLeaf: true },
+          { "title": "PCareCertificate", "key": "33", isLeaf: true },
+          { "title": "Other", "key": "34", isLeaf: true },
           
                     
         ]
@@ -1749,7 +1756,138 @@ this.nodes = [
       }
       
     }
-      
+    if(this.RptFormat == "AGENCYSTFLIST" || this.RptFormat == "USERSTFLIST"){
+      switch ((this.inputForm.value.exportitemsArr).toString()) {
+        //STAFF NAME AND ADDRESS      
+        case 'Title':
+          this.ConditionEntity =  '   Staff.Title'
+    break;
+    case 'First Name':
+          this.ConditionEntity =  '   Staff.FirstName'        
+  break;
+case 'Middle Name':
+          this.ConditionEntity =  'Staff.MiddleNames'
+    break;                   
+  case 'Surname/Organisation':
+            this.ConditionEntity =  'Staff.LastName'
+    break;
+    case 'Preferred Name':
+            this.ConditionEntity =  'Staff.PreferredName'
+    break; 
+    case 'contact Address Line 1':               
+    break;
+    case 'contact Address Line 2':
+      break;
+    case 'contact Address-Suburb':           
+    break;
+    case 'contact Address-Postcode':
+     break;
+    case 'contact Address-state':
+       break;
+    case 'contact Address-GoogleAddress':
+      break;
+    case 'Usual Address Line 1 ':                   
+    break;
+    case 'Usual Address Line 2':                  
+    break;
+    case 'Usual Address-Suburb':          
+    break;
+    case 'Usual Address-Postcode':        
+    break;
+    case 'Usual Address-state':         
+    break;
+    case 'Usual Address-GoogleAddress':         
+    break;    
+case 'Billing Address Line 1':
+break;
+case 'Billing Address Line 2':        
+break;
+case 'Billing Address-Suburb':             
+break;
+case 'Billing Address-Postcode':   
+break;
+case 'Billing Address-state':        
+break;
+case 'Billing Address-GoogleAddress':        
+break;
+case 'Destination Address Line 1':         
+break;
+case 'Destination Address Line 2':         
+break;
+case 'Destination Address-Suburb ':        
+break;
+case 'Destination Address-Postcode':         
+break;
+case 'Destination Address-state':        
+break;
+case 'Destination Address-GoogleAddress':         
+break;
+case 'Email':         
+break;      
+case 'Email-SMS':               
+break;
+case 'FAX':        
+break;
+case 'Home Phone':         
+break;
+case 'Mobile Phone':         
+break;
+case 'Usual Phone':         
+break;
+case 'Work Phone':         
+break;
+case 'Current Phone Number':       
+break;
+case 'Other Phone Number':         
+break;
+//  Contacts & Next of Kin
+    case 'Contact Group':
+               this.ConditionEntity =  'HR.[Group]'
+          break;
+    case 'Contact Type':
+               this.ConditionEntity =  ' HR.[Type]'
+          break;
+    case 'Contact Sub Type':
+              this.ConditionEntity =  'HR.[SubType]'
+          break;
+    case 'Contact User Flag':
+             this.ConditionEntity =  ' HR.[User1]'
+          break;                 
+    case 'Contact Person Type':
+            this.ConditionEntity =  ' HR.[EquipmentCode]'
+          break;
+    case 'Contact Name':
+             this.ConditionEntity =  ' HR.[Name]'
+          break;
+    case 'Contact Address':
+          this.ConditionEntity =  'HR.[Address1]'
+          break;
+    case 'Contact Suburb':
+            this.ConditionEntity =  '  HR.[Suburb]'
+          break;
+    case 'Contact Postcode':
+            this.ConditionEntity =  '  HR.[Postcode]'
+          break;
+    case 'Contact Phone 1':
+            this.ConditionEntity =  ' HR.[Phone1]'
+          break;
+    case 'Contact Phone 2':
+            this.ConditionEntity =  '  HR.[Phone2]'
+          break;
+    case 'Contact Mobile': 
+            this.ConditionEntity =  '  HR.[Mobile]'
+          break;
+    case 'Contact FAX':
+            this.ConditionEntity =  '  HR.[FAX]'
+          break;
+    case 'Contact Email':
+            this.ConditionEntity =  ' HR.[Email]'
+          break;
+
+
+      }
+
+    }else{
         
         switch ((this.inputForm.value.exportitemsArr).toString()) {
           //NAME AND ADDRESS
@@ -4092,6 +4230,7 @@ this.nodes = [
           default:
             break;
         }
+    }
 //if(this.ContactGrp == true){
 //  this.ConditionEntity = " HR.[Group] IN ('NEXTOFKIN',  'CONTACT', 'CARER',  '1-NEXT OF KIN',  '2-CARER',  '3-MEDICAL',  '4-ALLIED HEALTH',  '5-HEALTH INSURANCE',  '6-POWER OF ATTORNEY',  '7-LEGAL OTHER',  '8-OTHER','ALLIED HEALTH',  'PHARMACIST',  'HOSPITAL',  'HEALTHINSURER',  'POWERATTORNEY',  'OTHERLEGAL',  'OTHERCONTACT',  'MANAGER',  'HUMAN RESOURCES',  'ACCOUNTS',  'PAYROLL',  'SALES',  'PURCHASING',  'OTHERCONTACT') OR  HR.[Group] IN  (SELECT DESCRIPTION FROM DataDomains WHERE DOMAIN IN ('CONTACTGROUP', 'CARER RELATIONSHIP')AND DATASET = 'USER') "
 //}
@@ -4235,7 +4374,7 @@ this.sqlselect = "Select " + this.ColumnNameAdjuster(this.list)//.join(" as Fiel
   }
        
     //console.log(this.Saverptsql)
-    //console.log(this.sql)
+    console.log(this.sql)
   
   
     
@@ -4451,7 +4590,7 @@ ColumnNameAdjuster(fld){
 if(this.RptFormat == "AGENCYSTFLIST" || this.RptFormat == "USERSTFLIST"){
   for (var key of fld){
     switch (key) {
-      //STAFF NAME AND ADDRESS      
+//STAFF NAME AND ADDRESS      
           case 'Title':
                   if(columnNames != []){          
           columnNames = columnNames.concat(['Staff.Title as Title'])
@@ -4470,10 +4609,7 @@ if(this.RptFormat == "AGENCYSTFLIST" || this.RptFormat == "USERSTFLIST"){
                   if(columnNames != ['']){
           columnNames = columnNames.concat(['Staff.MiddleNames as [Middle Name]'])
         }else{columnNames = (['Staff.MiddleNames as [Middle Name]'])}        
-          break;
-             
-   
-   
+          break;                   
         case 'Surname/Organisation':
                   if(columnNames != []){
           columnNames = columnNames.concat(['Staff.LastName as [Surname/Organisation] '])
@@ -4520,7 +4656,7 @@ if(this.RptFormat == "AGENCYSTFLIST" || this.RptFormat == "USERSTFLIST"){
           columnNames = columnNames.concat([googleaddress+' AS [ Address-GoogleAddress]'])
         }else{columnNames = ([googleaddress+' AS [ Address-GoogleAddress]'])}        
           break;
-          case 'Usual Address Line 1 ':
+          case 'Usual Address Line 1':
             var U_Address1 = "(SELECT TOP 1 address1 FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = '<USUAL>') "
                   if(columnNames != []){
           columnNames = columnNames.concat([U_Address1+'AS [ Address-Line1]'])
@@ -4538,7 +4674,7 @@ if(this.RptFormat == "AGENCYSTFLIST" || this.RptFormat == "USERSTFLIST"){
           columnNames = columnNames.concat([U_Address_Suburb+'AS [ Address-Suburb]'])
         }else{columnNames = ([U_Address_Suburb+'AS [ Address-Suburb]'])}        
           break;
-          case 'Usual Address-Postcode  ':
+          case 'Usual Address-Postcode':
             var U_Address_postode = "(SELECT TOP 1 postcode FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = '<USUAL>') "
                   if(columnNames != []){
           columnNames = columnNames.concat([U_Address_postode+'AS [ Address-Postcode]'])
@@ -4682,9 +4818,7 @@ if(this.RptFormat == "AGENCYSTFLIST" || this.RptFormat == "USERSTFLIST"){
       columnNames = columnNames.concat([other_phone+'AS [OTHER PHONE NUMBER]'])
       }else{columnNames = ([other_phone+'AS [OTHER PHONE NUMBER]'])}        
     break;
-
-
-          //  Contacts & Next of Kin
+//  Contacts & Next of Kin
           case 'Contact Group':
             this.IncludeContacts = true
                   if(columnNames != []){
@@ -4769,7 +4903,7 @@ if(this.RptFormat == "AGENCYSTFLIST" || this.RptFormat == "USERSTFLIST"){
               columnNames = columnNames.concat(['HR.[Email]  '])
             }else{columnNames = (['HR.[Email]  '])}
                 break;
-            // USER GROUPS                     
+// USER GROUPS                     
             case 'Group Name':
               if(columnNames != []){
               columnNames = columnNames.concat(['UserGroup.[Name]  '])
@@ -4807,7 +4941,7 @@ if(this.RptFormat == "AGENCYSTFLIST" || this.RptFormat == "USERSTFLIST"){
               columnNames = columnNames.concat(['Prefr.[Notes]  '])
             }else{columnNames = (['Prefr.[Notes]  '])}  
                   break;
-          //REMINDERS                      
+//REMINDERS                      
           case 'Reminder Detail':
             if(columnNames != []){
             columnNames = columnNames.concat(['Remind.[Name]  '])
@@ -4829,7 +4963,7 @@ if(this.RptFormat == "AGENCYSTFLIST" || this.RptFormat == "USERSTFLIST"){
             columnNames = columnNames.concat(['Remind.[Notes]  '])
           }else{columnNames = (['Remind.[Notes]  '])}  
                 break;
-        //Loan Items                      
+//Loan Items                      
         case 'Loan Item Type':
           if(columnNames != []){
         columnNames = columnNames.concat(['HRLoan.[Type]  '])
@@ -4850,7 +4984,7 @@ if(this.RptFormat == "AGENCYSTFLIST" || this.RptFormat == "USERSTFLIST"){
         columnNames = columnNames.concat(['HRLoan.[Date2]  '])
         }else{columnNames = (['HRLoan.[Date2]  '])}
               break;
-        //  service information Fields                      
+//  service information Fields                      
         case 'Staff Code':
           if(columnNames != []){
         columnNames = columnNames.concat(['SvcDetail.[Carer Code]  '])
@@ -5024,7 +5158,7 @@ if(this.RptFormat == "AGENCYSTFLIST" || this.RptFormat == "USERSTFLIST"){
         columnNames = columnNames.concat(['StaffPosition.[notes]      AS [Position Notes]'])
         }else{columnNames = (['StaffPosition.[notes]      AS [Position Notes]'])}
               break;
-    //Work Hours                  
+//Work Hours                  
         case 'Min_Daily_HRS':
           if(columnNames != []){
         columnNames = columnNames.concat(['hrs_daily_min    AS MIN_DAILY_HRS'])
@@ -5407,39 +5541,185 @@ if(this.RptFormat == "AGENCYSTFLIST" || this.RptFormat == "USERSTFLIST"){
               columnNames = columnNames.concat(['HRHistory.[extradetail2] AS [HR Notes Categories]'])
               }else{columnNames = (['HRHistory.[extradetail2] AS [HR Notes Categories]'])}
                     break;
-              case '':
+//Skills and qualifications                 
+              case 'CERT III AC':
                 if(columnNames != []){
-              columnNames = columnNames.concat([''])
-              }else{columnNames = ([''])}
+              columnNames = columnNames.concat(['staff.sb15 AS [CERT III AC]'])
+              }else{columnNames = (['staff.sb15 AS [CERT III AC]'])}
                     break;
-              case '':
+              case 'CERT III DS':
                 if(columnNames != []){
-              columnNames = columnNames.concat([''])
-              }else{columnNames = ([''])}
+              columnNames = columnNames.concat(['staff.sb16 AS [CERT III DS]'])
+              }else{columnNames = (['staff.sb16 AS [CERT III DS]'])}
                     break;
-              case '':
+              case 'Dementia':
                 if(columnNames != []){
-              columnNames = columnNames.concat([''])
-              }else{columnNames = ([''])}
+              columnNames = columnNames.concat(['staff.sb4  AS [Dementia]'])
+              }else{columnNames = (['staff.sb4  AS [Dementia]'])}
                     break;              
-              case '':
+              case 'Disabilities':
                 if(columnNames != []){
-              columnNames = columnNames.concat([''])
-              }else{columnNames = ([''])}
+              columnNames = columnNames.concat(['staff.sb5  AS [Disabilities]'])
+              }else{columnNames = (['staff.sb5  AS [Disabilities]'])}
                     break;
-              case '':
+              case 'Host':
                 if(columnNames != []){
-              columnNames = columnNames.concat([''])
-              }else{columnNames = ([''])}
+              columnNames = columnNames.concat(['staff.sb19 AS [Host]'])
+              }else{columnNames = (['staff.sb19 AS [Host]'])}
                     break;
-              case '':
+              case 'Spinal':
                 if(columnNames != []){
-              columnNames = columnNames.concat([''])
-              }else{columnNames = ([''])}
+              columnNames = columnNames.concat(['staff.sb20 AS [Spinal]'])
+              }else{columnNames = (['staff.sb20 AS [Spinal]'])}
                     break;
-
-
-    }
+              case 'Mental Health':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staff.sb21 AS [Mental Health]'])
+              }else{columnNames = (['staff.sb21 AS [Mental Health]'])}
+                    break;
+              case 'Palliative':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staff.sb22 AS [Palliative]'])
+              }else{columnNames = (['staff.sb22 AS [Palliative]'])}
+                    break;
+              case 'Other':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staff.sb14 AS [Other]'])
+              }else{columnNames = (['staff.sb14 AS [Other]'])}
+                    break;                                                                                                                                                                              
+              case 'Domestic':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staff.sb24 AS [Domestic]'])
+              }else{columnNames = (['staff.sb24 AS [Domestic]'])}
+                    break;
+              case 'Registered Nurse':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staff.sb25 AS [Registered Nurse]'])
+              }else{columnNames = (['staff.sb25 AS [Registered Nurse]'])}
+                    break;
+              case 'PCP/PCA':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staff.sb26 AS [PCP/PCA]'])
+              }else{columnNames = (['staff.sb26 AS [PCP/PCA]'])}
+                    break;
+              case 'Enrolled Nurse':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staff.sb27 AS [Enrolled Nurse]'])
+              }else{columnNames = (['staff.sb27 AS [Enrolled Nurse]'])}
+                    break;
+              case 'CACL1':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staff.sb28 AS [CACL1]'])
+              }else{columnNames = (['staff.sb28 AS [CACL1]'])}
+                    break;
+              case 'CACL2':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staff.sb29 AS [CACL2]'])
+              }else{columnNames = (['staff.sb29 AS [CACL2]'])}
+                    break;              
+              case 'Other1':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staff.sb30 AS [Other1]'])
+              }else{columnNames = (['staff.sb30 AS [Other1]'])}
+                    break;
+              case 'Other2':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staff.sb31 AS [Other2]'])
+              }else{columnNames = (['staff.sb31 AS [Other2]'])}
+                    break;                                                                                                                       
+              case 'Other3':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staff.sb32 AS [Other3]'])
+              }else{columnNames = (['staff.sb32 AS [Other3]'])}
+                    break;
+              case 'Other4':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staff.sb33 AS [Other4]'])
+              }else{columnNames = (['staff.sb33 AS [Other4]'])}
+                    break;
+              case 'Other5':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staff.sb34 AS [Other5]'])
+              }else{columnNames = (['staff.sb34 AS [Other5]'])}
+                    break;                                                                                                                        
+              case 'Other6':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staff.sb35 AS [Other6]'])
+              }else{columnNames = (['staff.sb35 AS [Other6]'])}
+                    break;
+              case 'Assertiveness':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staff.sb1  AS [Assertiveness]'])
+              }else{columnNames = (['staff.sb1  AS [Assertiveness]'])}
+                    break;
+              case 'BackCare':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staff.sb2  AS [BackCare]'])
+              }else{columnNames = (['staff.sb2  AS [BackCare]'])}
+                    break;                        
+            case 'Confidentiality':
+              if(columnNames != []){
+            columnNames = columnNames.concat(['staff.sb3  AS [Confidentiality]'])
+            }else{columnNames = (['staff.sb3  AS [Confidentiality]'])}
+                  break;
+            case 'Dementia':
+              if(columnNames != []){
+            columnNames = columnNames.concat(['staff.sb4  AS [Dementia]'])
+            }else{columnNames = (['staff.sb4  AS [Dementia]'])}
+                  break;                  
+            case 'Disabilities':
+              if(columnNames != []){
+            columnNames = columnNames.concat(['staff.sb5  AS [Disabilities]'])
+            }else{columnNames = (['staff.sb5  AS [Disabilities]'])}
+                  break;
+            case 'DisabilitiesCert':
+              if(columnNames != []){
+            columnNames = columnNames.concat(['staff.sb6  AS [DisabilitiesCert]'])
+            }else{columnNames = (['staff.sb6  AS [DisabilitiesCert]'])}
+                  break;                                                                                                                                                
+            case 'DutyOfCare':
+              if(columnNames != []){
+            columnNames = columnNames.concat(['staff.sb7  AS [DutyOfCare]'])
+            }else{columnNames = (['staff.sb7  AS [DutyOfCare]'])}
+                  break;
+            case 'FirstAid':
+              if(columnNames != []){
+            columnNames = columnNames.concat(['staff.sb8  AS [FirstAid]'])
+            }else{columnNames = (['staff.sb8  AS [FirstAid]'])}
+                  break;
+            case 'Grief':
+              if(columnNames != []){
+            columnNames = columnNames.concat(['staff.sb9  AS [Grief]'])
+            }else{columnNames = (['staff.sb9  AS [Grief]'])}
+                  break;
+              case 'HIST':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staff.sb10 AS [HIST]'])
+              }else{columnNames = (['staff.sb10 AS [HIST]'])}
+                    break;
+              case 'OH&S':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staff.sb11 AS [OH&S]'])
+              }else{columnNames = (['staff.sb11 AS [OH&S]'])}
+                    break;
+              case 'PersonalCare':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staff.sb12 AS [PersonalCare]'])
+              }else{columnNames = (['staff.sb12 AS [PersonalCare]'])}
+                    break;
+              case 'PCareCertificate':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staff.sb13 AS [PCareCertificate]'])
+              }else{columnNames = (['staff.sb13 AS [PCareCertificate]'])}
+                    break;              
+              case 'Other':
+                if(columnNames != []){
+              columnNames = columnNames.concat(['staff.sb14 AS [Other]'])
+              }else{columnNames = (['staff.sb14 AS [Other]'])}
+                    break;
+                  
+                          
+                  }
   }
 
 }else{

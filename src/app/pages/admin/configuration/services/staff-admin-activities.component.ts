@@ -10,7 +10,7 @@ import { takeUntil } from 'rxjs/operators';
 
 
 const inputFormDefault = {
-  mainGroupList: ['STAFF ADMINISTRATION'],
+  mainGroupList: ['ADMINISTRATION'],
   subGroupList : ['NOT APPLICABLE'],
   status       : ['NONATTRIBUTABLE'],
 }
@@ -53,13 +53,13 @@ export class StaffAdminActivitiesComponent implements OnInit {
   datasetList:Array<any>;
   shiftTypes:Array<any>;
   mobileLogModes:{};
-  selectedMainGrouo:string = 'STAFF ADMINISTRATION';
+  selectedMainGrouo:string = 'ADMINISTRATION';
   selectedsubGroup:string = 'NOT APPLICABLE';
   selectedStatus:string= 'NONATTRIBUTABLE';
   units:Array<any>;//populate dropdown
   budgetUomList:Array<any>;//populate dropdown
   ndiaList:Array<any>;//populate dropdown
-  mainGroupList:Array<any>;//populate dropdown
+  mainGroupList:{};//populate dropdown
   subGroupList:Array<any>;//populate dropdown
   budgetGroupList:Array<any>;//populate dropdown
   lifeCycleList:Array<any>;//populate dropdown
@@ -136,7 +136,7 @@ export class StaffAdminActivitiesComponent implements OnInit {
     showAddModal() {
       this.title = "Add New Staff Admin Activities"
       this.inputForm.patchValue({
-        rosterGroup :'STAFF ADMINISTRATION',
+        rosterGroup :'ADMINISTRATION',
         minorGroup  :'NOT APPLICABLE',
         status      :'NONATTRIBUTABLE',
         unit        :'HOUR',
@@ -311,9 +311,9 @@ export class StaffAdminActivitiesComponent implements OnInit {
             this.loading = false;
             this.cd.detectChanges();
           });
-          this.listS.getitemtypesparams().subscribe(data => {
-            console.log(data);
-          });
+          // this.listS.getitemtypesparams().subscribe(data => {
+          //   console.log(data);
+          // });
         }
         loadCompetency(){
           this.menuS.getconfigurationservicescompetency(this.parent_person_id).subscribe(data => {
@@ -341,7 +341,7 @@ export class StaffAdminActivitiesComponent implements OnInit {
         populateDropdowns(): void {
           
           this.emptyList      = [];
-          this.mainGroupList  = ['STAFF ADMINISTRATION','TRAVEL TIME'];
+          this.mainGroupList  = {"ADMINISTRATION":"STAFF ADMINISTRATION","TRAVELTIME":"TRAVEL TIME"};
           this.subGroupList   = ['GAP','GENERAL','LEAVE','BREAK','OTHER','STAFF ONBOARDING','TRAINING','NOT APPLICABLE'];
           this.status         = ['ATTRIBUTABLE','NONATTRIBUTABLE'];
           this.units          = ['HOUR','SERVICE'];

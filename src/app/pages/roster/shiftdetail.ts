@@ -62,6 +62,9 @@ interface UserView{
        FetchCode:string;
        GroupShiftCategory:string;
        currentDate: string;
+    
+       breachRoster:boolean;
+       Error_Msg:string;
     defaultActivity: any = null;
     selectedActivity: any = null;
     defaultCategory: any = null;
@@ -534,6 +537,17 @@ ngOnInit(){
             return "!INTERNAL"
         }
     }
+    
+Cancel_ProceedBreachRoster(){
+    this.breachRoster=false;
+ 
+}
+ProceedBreachRoster(){
+    this.breachRoster=false;
+   
+    this.EditRoster_Entry();
+   
+}
     Check_BreachedRosterRules(){
 
         const tsheet= this.rosterForm.value;
@@ -555,7 +569,7 @@ ngOnInit(){
             sDate : format(tsheet.date,'yyyy/MM/dd'), 
             sStartTime :format(this.defaultStartTime,'HH:mm'), 
             sDuration : durationObject.duration, 
-            sActivity : tsheet.serviceActivity.activity,
+            sActivity : tsheet.serviceActivity,
              sRORecordno : tsheet.recordNo, 
             // sState : '-', 
             // bEnforceActivityLimits :0, 
@@ -574,7 +588,9 @@ ngOnInit(){
         this.timeS.Check_BreachedRosterRules(inputs_breach).subscribe(data=>{
             let res=data
             if (res.errorValue>0){
-                this.globalS.eToast('Error', res.errorValue +", "+ res.msg);
+               // this.globalS.eToast('Error', res.errorValue +", "+ res.msg);
+                this.breachRoster=true;
+                this.Error_Msg=res.errorValue +", "+ res.msg 
                 return; 
             }else{
                 this.EditRoster_Entry();

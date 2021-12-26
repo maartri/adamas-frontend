@@ -531,7 +531,7 @@ set_RecurentView(){
 }
 createRecurrent_rosters(){
     this.create_Recurrent_Rosters=true;
-    this.doneBooking()
+    this.AddRoster_Entry()
 }
 
 setPattern(d:string){
@@ -603,7 +603,7 @@ Check_BreachedRosterRules_Paste(RecNo:number, action:string){
         let res=data
         if (res.errorValue>0){
           
-            this.Error_Msg=res.errorValue +", "+ res.msg +  '\n Are you sure you want to continue roster addition/change';
+            this.Error_Msg=res.errorValue +", "+ res.msg;
             this.breachRoster=true;
             
             //this.globalS.eToast('Error', res.errorValue +", "+ res.msg);
@@ -667,8 +667,8 @@ Check_BreachedRosterRules(){
         let res=data
         if (res.errorValue>0){
            // this.globalS.eToast('Error', res.errorValue +", "+ res.msg);
-           this.addBookingModel=false;
-            this.Error_Msg=res.errorValue +", "+ res.msg +  '<br/>' + 'Are you sure you want to continue roster addition/change'; 
+           //this.addBookingModel=false;
+            this.Error_Msg=res.errorValue +", "+ res.msg ;
             this.breachRoster=true;
             return; 
         }else{
@@ -2885,12 +2885,26 @@ ClearMultishift(){
     onItemSelected(sel: any, i:number, type:string): void {
             console.log(sel)
             
-            if (type=="program"){       
+           
+            if (type=="program"){      
+                
                 this.HighlightRow=i;   
                 this.defaultProgram=sel;
+               
                 this.bookingForm.patchValue({
                     program:sel
                 });
+                
+                // this.GETSERVICEACTIVITY(sel).subscribe(d=>{
+                //     this.serviceActivityList=d;
+                //     if(d && d.length == 1){
+                //         this.bookingForm.patchValue({
+                //             serviceActivity: d[0]               
+                           
+                //         });                       
+                        
+                //     }
+                // })
             }else if (type=="service"){
                 this.HighlightRow2=i;
                 this.defaultActivity=sel;//this.serviceActivityList[i];
@@ -2925,6 +2939,7 @@ ClearMultishift(){
             
         }
             
+      
       }
      
     onItemDbClick(sel: any, i:number, type:string): void {
@@ -4295,11 +4310,16 @@ GetDayMask()
             var cell_col_text=sheet.getValue(0,i,GC.Spread.Sheets.SheetArea.colHeader);
             
             var col_day= cell_col_text.substring(cell_col_text.length-2,cell_col_text.length);
-        
-            DayNo   = col_day.trim()    
-            MonthNo = parseInt(format(this.date, 'M')),
-            Yearno = parseInt(format(this.date, 'yyyy')),
-
+            if (!this.recurrenceView){
+                DayNo   = col_day.trim()    ;
+                MonthNo = parseInt(format(this.date, 'M'));
+                Yearno = parseInt(format(this.date, 'yyyy'));
+            }else{
+                let dts=this.date.split("/");
+                DayNo   = dts[2]   ;
+                MonthNo = dts[1] ;  
+                Yearno = dts[0] //this.date.substring(0, 4)  ; 
+            }
        // If NullToStr(s_EarliestDate) = "" Then s_EarliestDate = Format$(Yearno & "/" & Monthno & "/" & IIf(b_SDay, DayNo, dCtr), "yyyy/mm/dd")
           s_Date = Yearno + "/" + this.numStr(MonthNo) + "/" + this.numStr(DayNo);
           b_PublicHoliday =   this.IsPublicHoliday1(s_Date);       
@@ -4862,7 +4882,11 @@ isServiceTypeMultipleRecipient(type: string): boolean {
             
         });
         
-      
+this.bookingForm.valueChanges.subscribe(x=>{
+            console.log ('Value changes'+ x.program);
+
+}) ;     
+
 this.bookingForm.get('program').valueChanges.pipe(
             distinctUntilChanged(),
             switchMap(x => {

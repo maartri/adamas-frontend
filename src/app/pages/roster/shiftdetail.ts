@@ -590,7 +590,7 @@ ProceedBreachRoster(){
             if (res.errorValue>0){
                // this.globalS.eToast('Error', res.errorValue +", "+ res.msg);
                 this.breachRoster=true;
-                this.Error_Msg=res.errorValue +", "+ res.msg +  '<br/>' + 'Are you sure you want to continue roster addition/change';
+                this.Error_Msg=res.errorValue +", "+ res.msg 
                 return; 
             }else{
                 this.EditRoster_Entry();

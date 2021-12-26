@@ -1917,6 +1917,469 @@ break;
     case 'Contact Email':
             this.ConditionEntity =  ' HR.[Email]'
           break;
+    // USER GROUPS                     
+    case 'Group Name':
+      this.ConditionEntity =  'UserGroup.[Name]'
+         break;
+ case 'Group Note':
+      this.ConditionEntity =  'UserGroup.[Notes]'
+         break; 
+ case 'Group Start Date':
+      this.ConditionEntity =  'UserGroup.[Date1]'
+         break;                      
+ case 'Group End Date':
+      this.ConditionEntity =  'UserGroup.[Date2]'
+         break;
+ case 'Group Email':
+      this.ConditionEntity =  'UserGroup.[Email]'
+         break;
+       
+//Preferences                                        
+ case 'Preference Name':
+      this.ConditionEntity =  'Prefr.[Name]'
+         break;                      
+ case 'Preference Note':
+      this.ConditionEntity =  'Prefr.[Notes]'
+         break;
+//REMINDERS                      
+ case 'Reminder Detail':
+      this.ConditionEntity =  ' Remind.[Name]'
+       break;
+case 'Event Date':
+       this.ConditionEntity =  ' Remind.[Date2]'
+       break;
+       
+case 'Reminder Date':
+       this.ConditionEntity =  ' Remind.[Date1]'
+       break;
+case 'Reminder Notes':
+       this.ConditionEntity =  ' Remind.[Notes]'
+       break;
+//Loan Items                      
+case 'Loan Item Type':
+   this.ConditionEntity =  ' HRLoan.[Type]'
+     break;
+case 'Loan Item Description':
+    this.ConditionEntity =  ' HRLoan.[Name]'
+     break;
+case 'Loan Item Date Loaned/Installed':
+     this.ConditionEntity =  'HRLoan.[Date1]'
+     break;                      
+case 'Loan Item Date Collected':
+     this.ConditionEntity =  'HRLoan.[Date2]'
+     break;
+//  service information Fields                      
+case 'Staff Code':
+   this.ConditionEntity =  '  SvcDetail.[Carer Code]'
+     break;
+case 'Service Date':
+    this.ConditionEntity =  ' SvcDetail.Date'
+     break;
+case 'Service Start Time':
+    this.ConditionEntity =  ' SvcDetail.[Start Time]'
+     break;
+case 'Service Code':
+   this.ConditionEntity =  '  SvcDetail.[Service Type]'   
+     break;                      
+case 'Service Hours':
+   this.ConditionEntity =  '  (SvcDetail.[Duration]*5) / 60'
+     break;
+case 'Service Pay Rate':
+     this.ConditionEntity =  'SvcDetail.[Unit Pay Rate]'
+     break;
+case 'Service Bill Rate':
+    this.ConditionEntity =  'SvcDetail.[Unit Bill Rate]'
+     break;
+case 'Service Bill Qty':
+    this.ConditionEntity =  ' SvcDetail.[BillQty]'
+     break;
+case 'Service Location/Activity Group':
+     this.ConditionEntity =  'SvcDetail.[ServiceSetting]'
+     break;
+case 'Service Program':
+     this.ConditionEntity =  'SvcDetail.[Program]'
+     break;
+case 'Service Group':
+     this.ConditionEntity =  'SvcDetail.[Type]'
+     break;
+case 'Service HACCType': 
+    this.ConditionEntity =  'SvcDetail.[HACCType]'
+     break;
+case 'Service Category':
+     this.ConditionEntity =  'SvcDetail.[Anal]'
+     break;
+case 'Service Status':
+     this.ConditionEntity =  'SvcDetail.[Status]'
+     break;
+case 'Service Pay Type':
+     this.ConditionEntity =  'SvcDetail.[Service Description]'
+     break;
+case 'Service Pay Qty':
+     this.ConditionEntity =  'SvcDetail.[CostQty]'
+     break;
+case 'Service End Time/ Shift End Time':
+  
+     break;
+case 'Service Funding Source':
+ this.ConditionEntity =  ' Humanresourcetypes.[Type]'      
+     break;  
+case 'Service Notes':
+  this.ConditionEntity =  'CAST(History.Detail'
+     break;
+//Staff Attribute                           
+case 'Competency':
+  this.ConditionEntity =  'StaffAttribute.[competency]'
+     break;
+case 'Competency Expiry Date':
+       this.ConditionEntity =  ' StaffAttribute.[competency expiry date]'        
+     break;
+case 'Competency Reminder Date':
+  this.ConditionEntity =  'StaffAttribute.[competency reminder date]'
+     break;
+case 'Competency Completion Date':
+  this.ConditionEntity =  'StaffAttribute.[competency completion date]'
+     break;
+case 'Mandatory Status':
+  this.ConditionEntity =  'StaffAttribute.[mandatory status]'
+     break;
+case 'Certificate Number':
+  this.ConditionEntity =  'StaffAttribute.[certificate number]'
+     break;
+case 'Competency Notes':
+  this.ConditionEntity =  'StaffAttribute.[competency notes] '
+     break;
+case 'Staff Position':
+  this.ConditionEntity =  'StaffPosition.[name]'
+     break;
+case 'Staff Admin Categories':
+  this.ConditionEntity =  'staff.[subcategory]'
+     break;
+case 'NDIA Staff Level':
+  this.ConditionEntity =  'staff.[ndiastafflevel]'
+     break;
+//STAFF Position
+case 'Staff Position':
+  this.ConditionEntity =  'StaffPosition.[name]'
+     break;
+case 'Position Start Date':
+  this.ConditionEntity =  'StaffPosition.[start date]'
+     break;
+case 'Position End Date':
+  this.ConditionEntity =  'StaffPosition.[end date]'
+     break;              
+case 'Position ID':
+  this.ConditionEntity =  'StaffPosition.[position id]'
+     break;
+case 'Position Notes':
+  this.ConditionEntity =  'StaffPosition.[notes]'
+     break;
+//Work Hours                  
+case 'Min_Daily_HRS':
+  this.ConditionEntity =  'hrs_daily_min'
+     break;
+     case 'Max_Daily_HRS':
+       this.ConditionEntity =  ' hrs_daily_max'
+           break;
+     case 'Min_Weekly_HRS':
+             this.ConditionEntity =  ' hrs_weekly_min'
+           break;
+     case 'Max_Weekly_HRS':
+        this.ConditionEntity =  'hrs_weekly_max'
+           break;
+     case 'Min_Pay_Period_HRS':
+        this.ConditionEntity =  'hrs_fnightly_min'
+           break;
+     case 'Max_Pay_Period_HRS':
+        this.ConditionEntity =  'hrs_fnightly_max'
+           break;
+     case 'Week_1_Day_1':
+        this.ConditionEntity =  'ch_1_1'
+           break;                    
+     case 'Week_1_Day_2':
+        this.ConditionEntity =  'ch_1_2'
+           break;
+     case 'Week_1_Day_3':
+        this.ConditionEntity =  'ch_1_3'
+           break;
+     case 'Week_1_Day_4':
+        this.ConditionEntity =  'ch_1_4'
+           break;
+     case 'Week_1_Day_5':
+        this.ConditionEntity =  'ch_1_5'
+           break;
+     case 'Week_1_Day_6':
+        this.ConditionEntity =  'ch_1_6'
+           break;
+     case 'Week_1_Day_7':
+        this.ConditionEntity =  'ch_1_7'
+           break;
+     case 'Week_2_Day_1':
+        this.ConditionEntity =  'ch_2_1'
+           break;              
+     case 'Week_2_Day_2':
+        this.ConditionEntity =  'ch_2_2'
+           break;                    
+     case 'Week_2_Day_3':
+        this.ConditionEntity =  'ch_2_3'
+           break;
+     case 'Week_2_Day_4':
+        this.ConditionEntity =  'ch_2_4'
+           break;
+     case 'Week_2_Day_5':
+  this.ConditionEntity =  'ch_2_5'
+     break;
+case 'Week_2_Day_6':
+        this.ConditionEntity =  'ch_2_6'
+     break;
+case 'Week_2_Day_7':
+  this.ConditionEntity =  'ch_2_7'
+     break;
+//Staff Incident              
+case 'INCD_Status':
+  this.ConditionEntity =  'staffincidents.incd_status'  
+     break;
+case 'INCD_Date':
+  this.ConditionEntity =  'staffincidents.incd_date'
+     break;
+case 'INCD_Type':
+  this.ConditionEntity =  'staffincidents.incd_type'
+     break;
+case 'INCD_Description':
+  this.ConditionEntity =  'staffincidents.incd_description'
+     break;
+case 'INCD_SubCategory':
+  this.ConditionEntity =  'staffincidents.incd_subcategory'
+     break;               
+case 'INCD_Assigned_To':
+  this.ConditionEntity =  'staffincidents.incd_assigned_to'
+     break;
+case 'INCD_Service':
+  this.ConditionEntity =  'staffincidents.incd_service'
+     break;
+case 'INCD_Severity':
+  this.ConditionEntity =  'staffincidents.incd_severity'
+     break;
+case 'INCD_Time':
+  this.ConditionEntity =  'staffincidents.incd_time'
+     break;
+case 'INCD_Duration':
+  this.ConditionEntity =  'staffincidents.incd_duration'
+     break;                                                                                                                                                          
+case 'INCD_Location':
+  this.ConditionEntity =  'staffincidents.incd_location'
+     break;
+case 'INCD_LocationNotes':
+  this.ConditionEntity =  'staffincidents.incd_locationnotes'
+     break;
+case 'INCD_ReportedBy':
+  this.ConditionEntity =  'staffincidents.incd_reportedby'
+     break;
+     case 'INCD_DateReported':
+        this.ConditionEntity =  'staffincidents.incd_datereported'
+           break;
+     case 'INCD_Reported':
+       
+           break;                                                                                                                                            
+     case 'INCD_FullDesc':
+       this.ConditionEntity =  ' staffincidents.incd_fulldesc'
+           break;
+     case 'INCD_Program':
+        this.ConditionEntity =  'staffincidents.incd_program'
+           break;
+     case 'INCD_DSCServiceType':
+        this.ConditionEntity =  'staffincidents.incd_dscservicetype'
+           break;
+     case 'INCD_TriggerShort':
+        this.ConditionEntity =  'staffincidents.incd_triggershort'
+           break;
+     case 'INCD_level':
+        this.ConditionEntity =  'staffincidents.incd_incident_level'
+           break;                                                            
+     case 'INCD_Area':
+        this.ConditionEntity =  'staffincidents.incd_area'
+           break;
+     case 'INCD_Region':
+        this.ConditionEntity =  'staffincidents.incd_region'
+           break;
+     case 'INCD_Position':
+        this.ConditionEntity =  'staffincidents.incd_position'
+           break;                                                                                
+     case 'INCD_Phone':
+        this.ConditionEntity =  'staffincidents.incd_phone'
+           break;
+     case 'INCD_Verbal_Date':
+        this.ConditionEntity =  'staffincidents.incd_verbal_date'
+           break;                                                                                                                                                                                    
+     case 'INCD_Verbal_Time':
+        this.ConditionEntity =  'staffincidents.incd_verbal_time'
+           break;              
+     case 'INCD_By_Whome':
+        this.ConditionEntity =  'staffincidents.incd_by_whome'
+           break;
+     case 'INCD_To_Whome':
+        this.ConditionEntity =  'staffincidents.incd_to_whome'
+           break;
+     case 'INCD_BriefSummary':
+        this.ConditionEntity =  'staffincidents.incd_briefsummary'
+           break;
+           case 'INCD_ReleventBackground':
+  this.ConditionEntity =  'staffincidents.incd_releventbackground'
+     break;                            
+case 'INCD_SummaryOfAction':
+        this.ConditionEntity =  'staffincidents.incd_summaryofaction'
+     break;
+case 'INCD_SummaryOfOtherAction':
+  this.ConditionEntity =  'staffincidents.incd_summaryofotheraction'
+     break;
+case 'INCD_Triggers':
+  this.ConditionEntity =  'staffincidents.incd_triggers'
+     break;
+case 'INCD_InitialAtion':
+  this.ConditionEntity =  'staffincidents.incd_initialaction'
+     break;
+case 'INCD_InitialNotes':
+  this.ConditionEntity =  'staffincidents.incd_initialnotes'
+     break;                                                                                                                                            
+case 'INCD_InitialFupBy':
+  this.ConditionEntity =  'staffincidents.incd_initialfupby'
+     break;
+case 'INCD_Completed':
+ 
+     break;
+case 'INCD_OngoingAction':
+  this.ConditionEntity =  'staffincidents.incd_ongoingaction'
+     break;
+case 'INCD_OngoingNotes':
+  this.ConditionEntity =  'staffincidents.incd_ongoingnotes'
+     break;
+case 'INCD_Background':
+  this.ConditionEntity =  'staffincidents.incd_background'
+     break;                                                                                                  
+                  
+case 'INCD_Abuse':
+  this.ConditionEntity =  'staffincidents.incd_abuse'
+     break;
+case 'INCD_DOPwithDisability':
+ 
+     break;              
+case 'INCD_SerousRisks':
+  this.ConditionEntity =  'staffincidents.incd_seriousrisks'
+     break;
+case 'INCD_Complaints':
+  this.ConditionEntity =  'staffincidents.incd_complaints'
+     break;
+case 'INCD_Perpetrator':
+  this.ConditionEntity =  'staffincidents.incd_perpetrator'
+     break;
+     case 'INCD_Notify':
+        this.ConditionEntity =  'staffincidents.incd_notify'
+           break;
+     case 'INCD_NoNotifyReason':
+              this.ConditionEntity =  'staffincidents.incd_nonotifyreason'
+           break;                                                             
+     case 'INCD_Notes':
+        this.ConditionEntity =  'staffincidents.incd_notes'       
+           break;
+     case 'INCD_Setting':
+        this.ConditionEntity =  'staffincidents.incd_setting'       
+           break;
+//OPNOTES                    
+     case 'General Notes':
+        this.ConditionEntity =  'staff.[stf_notes]'
+//HR Notes                                                                                                                                
+     case 'HR Notes Date':
+       this.ConditionEntity =  ' HRHistory.[detaildate]'
+     case 'HR Notes Detail':
+        this.ConditionEntity =  'HRHistory.[detail]'
+     case 'HR Notes Creator':
+        this.ConditionEntity =  'HRHistory.[creator]'
+     case 'HR Notes Alarm':
+        this.ConditionEntity =  'HRHistory.[alarmdate]'
+     case 'HR Notes Categories':
+        this.ConditionEntity =  'HRHistory.[extradetail2]'
+//Skills and qualifications                 
+     case 'CERT III AC':
+        this.ConditionEntity =  'staff.sb15'
+     case 'CERT III DS':
+        this.ConditionEntity =  'staff.sb16'
+     case 'Dementia':
+        this.ConditionEntity =  'staff.sb4'
+     case 'Disabilities':
+        this.ConditionEntity =  'staff.sb5'
+     case 'Host':
+        this.ConditionEntity =  'staff.sb19'
+     case 'Spinal':
+        this.ConditionEntity =  'staff.sb20'
+     case 'Mental Health':
+        this.ConditionEntity =  'staff.sb21'
+     case 'Palliative':
+        this.ConditionEntity =  'staff.sb22'
+     case 'Other':
+        this.ConditionEntity =  'staff.sb14'
+     case 'Domestic':
+        this.ConditionEntity =  'staff.sb24'
+     case 'Registered Nurse':
+        this.ConditionEntity =  'staff.sb25'
+     case 'PCP/PCA':
+        this.ConditionEntity =  'staff.sb26'
+     case 'Enrolled Nurse':
+        this.ConditionEntity =  'staff.sb27'
+     case 'CACL1':
+        this.ConditionEntity =  'staff.sb28'   
+     case 'CACL2':
+        this.ConditionEntity =  'staff.sb29'                     
+     case 'Other1':
+        this.ConditionEntity =  'staff.sb30'
+     case 'Other2':
+       this.ConditionEntity =  ' staff.sb31'
+     case 'Other3':
+        this.ConditionEntity =  'staff.sb32'
+     case 'Other4':
+        this.ConditionEntity =  'staff.sb33'
+     case 'Other5':
+       this.ConditionEntity =  ' staff.sb34'                                                                                                                               
+     case 'Other6':
+        this.ConditionEntity =  'staff.sb35'
+     case 'Assertiveness':
+        this.ConditionEntity =  'staff.sb1'
+     case 'BackCare':
+        this.ConditionEntity =  'staff.sb2'                               
+   case 'Confidentiality':
+     this.ConditionEntity =  'staff.sb3'     
+         break;
+   case 'Dementia':
+     this.ConditionEntity =  'staff.sb4'      
+         break;                  
+   case 'Disabilities':
+     this.ConditionEntity =  'staff.sb5'      
+         break;
+   case 'DisabilitiesCert':
+     this.ConditionEntity =  'staff.sb6'
+         break;                                                                                                                                                
+   case 'DutyOfCare':
+     this.ConditionEntity =  'staff.sb7'     
+         break;
+   case 'FirstAid':
+     this.ConditionEntity =  'staff.sb8'      
+         break;
+   case 'Grief':
+     this.ConditionEntity =  'staff.sb9'      
+         break;
+     case 'HIST':
+        this.ConditionEntity =  'staff.sb10'        
+           break;
+     case 'OH&S':
+        this.ConditionEntity =  'staff.sb11' 
+ break;
+     case 'PersonalCare':
+        this.ConditionEntity =  'staff.sb12'
+ break
+     case 'PCareCertificate':
+        this.ConditionEntity =  'staff.sb13'
+break;
+     case 'Other':
+        this.ConditionEntity =  'staff.sb14'
+           break;                                                            
 
 
       }
@@ -4408,7 +4871,7 @@ this.sqlselect = "Select " + this.ColumnNameAdjuster(this.list)//.join(" as Fiel
   }
        
     //console.log(this.Saverptsql)
-    console.log(this.sql)
+    //console.log(this.sql)
   
   
     

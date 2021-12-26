@@ -1774,71 +1774,105 @@ case 'Middle Name':
     case 'Preferred Name':
             this.ConditionEntity =  'Staff.PreferredName'
     break; 
-    case 'contact Address Line 1':               
-    break;
-    case 'contact Address Line 2':
-      break;
-    case 'contact Address-Suburb':           
-    break;
-    case 'contact Address-Postcode':
-     break;
-    case 'contact Address-state':
-       break;
-    case 'contact Address-GoogleAddress':
-      break;
-    case 'Usual Address Line 1 ':                   
-    break;
-    case 'Usual Address Line 2':                  
-    break;
-    case 'Usual Address-Suburb':          
-    break;
-    case 'Usual Address-Postcode':        
-    break;
-    case 'Usual Address-state':         
-    break;
-    case 'Usual Address-GoogleAddress':         
-    break;    
+    
+    case 'contact Address Line 1':
+      this.ConditionEntity =  "(SELECT TOP 1 address1 FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = '<CONTACT>')"                
+   break;
+   case 'contact Address Line 2':
+     this.ConditionEntity =  "(SELECT TOP 1 address2 FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = '<CONTACT>')"                       
+   break;
+   case 'contact Address-Suburb':
+     this.ConditionEntity =  "(SELECT TOP 1 suburb FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = '<CONTACT>')"                        
+   break;
+   case 'contact Address-Postcode':
+     this.ConditionEntity =  "(SELECT TOP 1 postcode FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = '<CONTACT>')"                           
+   break;
+   case 'contact Address-state':
+     this.ConditionEntity =  "(SELECT TOP 1 CASE WHEN LEFT(postcode, 1) = '0' THEN 'NT' WHEN LEFT(postcode, 1) = '2' THEN CASE WHEN postcode BETWEEN '2600' and '2618'OR     postcode BETWEEN '2900' AND    '2999' THEN 'ACT' ELSE 'NSW' END WHEN LEFT(postcode, 1) = '3' THEN 'VIC' WHEN LEFT(postcode, 1) = '4' THEN 'QLD' WHEN LEFT(postcode, 1) = '5' THEN 'SA' WHEN LEFT(postcode, 1) = '6' THEN 'WA' WHEN LEFT(postcode, 1) = '7' THEN 'TAS' END AS primarystate FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = '<CONTACT>')"                       
+   break;
+   case 'contact Address-GoogleAddress':
+     this.ConditionEntity =  "(SELECT TOP 1 googleaddress FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = '<USUAL>')"                         
+   break;
+   case 'Usual Address Line 1':
+     this.ConditionEntity =  "(SELECT TOP 1 address1 FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = '<USUAL>')"                          
+   break;
+   case 'Usual Address Line 2':
+     this.ConditionEntity =  "(SELECT TOP 1 address2 FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = '<USUAL>')"                      
+   break;
+   case 'Usual Address-Suburb':
+    this.ConditionEntity =  "(SELECT TOP 1suburb FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = '<USUAL>')"                        
+   break;
+   case 'Usual Address-Postcode':
+     this.ConditionEntity =  "(SELECT TOP 1 postcode FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = '<USUAL>')"                      
+   break;
+   case 'Usual Address-state':
+     this.ConditionEntity =  "(SELECT TOP 1 CASE WHEN LEFT(postcode, 1) = '0' THEN 'NT' WHEN LEFT(postcode, 1) = '2' THEN CASE WHEN postcode BETWEEN '2600' AND    '2618' OR     postcode BETWEEN '2900' AND    '2999' THEN 'ACT' ELSE 'NSW' END WHEN LEFT(postcode, 1) = '3' THEN 'VIC' WHEN LEFT(postcode, 1) = '4' THEN 'QLD' WHEN LEFT(postcode, 1) = '5' THEN 'SA' WHEN LEFT(postcode, 1) = '6' THEN 'WA' WHEN LEFT(postcode, 1) = '7' THEN 'TAS' END AS primarystate FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = '<USUAL>')"                          
+   break;
+   case 'Usual Address-GoogleAddress':
+     this.ConditionEntity =  "(SELECT TOP 1 googleaddress FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = '<USUAL>')"                          
+   break;    
 case 'Billing Address Line 1':
+ this.ConditionEntity =  "(SELECT TOP 1 address1 FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = 'BILLING ADDRESS')"                    
 break;
-case 'Billing Address Line 2':        
+case 'Billing Address Line 2':
+this.ConditionEntity =  "(SELECT TOP 1 address2 FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = 'BILLING ADDRESS')"               
 break;
-case 'Billing Address-Suburb':             
+case 'Billing Address-Suburb':
+this.ConditionEntity =  "(SELECT TOP 1 suburb FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = 'BILLING ADDRESS')"               
 break;
-case 'Billing Address-Postcode':   
+case 'Billing Address-Postcode':
+this.ConditionEntity =  "(SELECT TOP 1 postcode FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = 'BILLING ADDRESS')"               
 break;
-case 'Billing Address-state':        
+case 'Billing Address-state':
+this.ConditionEntity =  "(SELECT TOP 1 CASE WHEN LEFT(postcode, 1) = '0' THEN 'NT' WHEN LEFT(postcode, 1) = '2' THEN CASE WHEN postcode BETWEEN '2600' AND    '2618' OR     postcode BETWEEN '2900' AND    '2999' THEN 'ACT' ELSE 'NSW' END WHEN LEFT(postcode, 1) = '3' THEN 'VIC' WHEN LEFT(postcode, 1) = '4' THEN 'QLD' WHEN LEFT(postcode, 1) = '5' THEN 'SA' WHEN LEFT(postcode, 1) = '6' THEN 'WA' WHEN LEFT(postcode, 1) = '7' THEN 'TAS' END AS primarystate FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = 'BILLING ADDRESS')"               
 break;
-case 'Billing Address-GoogleAddress':        
+case 'Billing Address-GoogleAddress':
+this.ConditionEntity =  "(SELECT TOP 1 googleaddress FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = 'BILLING ADDRESS')"               
 break;
-case 'Destination Address Line 1':         
+case 'Destination Address Line 1':
+this.ConditionEntity =  "(SELECT TOP 1 address1 FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = 'DESTINATION')"               
 break;
-case 'Destination Address Line 2':         
+case 'Destination Address Line 2':
+this.ConditionEntity =  "(SELECT TOP 1 address2 FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = 'DESTINATION')"              
 break;
-case 'Destination Address-Suburb ':        
+case 'Destination Address-Suburb ':
+this.ConditionEntity =  "(SELECT TOP 1 suburb FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = 'DESTINATION')"              
 break;
-case 'Destination Address-Postcode':         
+case 'Destination Address-Postcode':
+this.ConditionEntity =  "(SELECT TOP 1 postcode FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = 'DESTINATION')"               
 break;
-case 'Destination Address-state':        
+case 'Destination Address-state':
+this.ConditionEntity =  "(SELECT TOP 1 CASE WHEN LEFT(postcode, 1) = '0' THEN 'NT' WHEN LEFT(postcode, 1) = '2' THEN CASE WHEN postcode BETWEEN '2600' AND    '2618' OR     postcode BETWEEN '2900' AND    '2999' THEN 'ACT' ELSE 'NSW' END WHEN LEFT(postcode, 1) = '3' THEN 'VIC' WHEN LEFT(postcode, 1) = '4' THEN 'QLD' WHEN LEFT(postcode, 1) = '5' THEN 'SA' WHEN LEFT(postcode, 1) = '6' THEN 'WA' WHEN LEFT(postcode, 1) = '7' THEN 'TAS' END AS primarystate FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = 'DESTINATION')"              
 break;
-case 'Destination Address-GoogleAddress':         
+case 'Destination Address-GoogleAddress':
+this.ConditionEntity =  "(SELECT TOP 1 googleaddress FROM   namesandaddresses WHERE  personid = uniqueid AND    [Type] = 'PERSONALADDRESS' AND    description = 'DESTINATION')"               
 break;
-case 'Email':         
+case 'Email':
+this.ConditionEntity =  "(SELECT TOP 1 phonefaxother.detail FROM   phonefaxother WHERE  personid = uniqueid AND    phonefaxother.type = '<EMAIL>')"               
 break;      
-case 'Email-SMS':               
+case 'Email-SMS':
+this.ConditionEntity =  "(SELECT TOP 1 phonefaxother.detail FROM   phonefaxother WHERE  personid = uniqueid AND    phonefaxother.type = '<EMAIL-SMS>')"               
 break;
-case 'FAX':        
+case 'FAX':
+this.ConditionEntity =  "(SELECT TOP 1 phonefaxother.detail FROM   phonefaxother WHERE  personid = uniqueid AND    phonefaxother.type = '<FAX>')"               
 break;
-case 'Home Phone':         
+case 'Home Phone':
+this.ConditionEntity =  "(SELECT TOP 1 phonefaxother.detail FROM   phonefaxother WHERE  personid = uniqueid AND    phonefaxother.type = '<HOME>')"               
 break;
-case 'Mobile Phone':         
+case 'Mobile Phone':
+this.ConditionEntity =  "(SELECT TOP 1 phonefaxother.detail FROM   phonefaxother WHERE  personid = uniqueid AND    phonefaxother.type = '<MOBILE>')"               
 break;
-case 'Usual Phone':         
+case 'Usual Phone':
+this.ConditionEntity =  "(SELECT TOP 1 phonefaxother.detail FROM   phonefaxother WHERE  personid = uniqueid AND    phonefaxother.type = '<USUAL>')"         
 break;
-case 'Work Phone':         
+case 'Work Phone':
+this.ConditionEntity =  "(SELECT TOP 1 phonefaxother.detail FROM   phonefaxother WHERE  personid = uniqueid AND    phonefaxother.type = '<WORK>')"               
 break;
-case 'Current Phone Number':       
+case 'Current Phone Number':
+this.ConditionEntity =  "(SELECT TOP 1 phonefaxother.detail FROM   phonefaxother WHERE  personid = uniqueid AND    phonefaxother.type = 'CURRENT PHONE NUMBER')"             
 break;
-case 'Other Phone Number':         
+case 'Other Phone Number':
+this.ConditionEntity =  "(SELECT TOP 1 phonefaxother.detail FROM   phonefaxother WHERE  personid = uniqueid AND    phonefaxother.type = 'OTHER PHONE NUMBER')"              
 break;
 //  Contacts & Next of Kin
     case 'Contact Group':

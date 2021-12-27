@@ -44,8 +44,8 @@ export class ClinicalDiagnose implements OnInit, OnDestroy {
   inputForm: FormGroup;
   whatView: number;
   
-  excludedStaff: Array<any> = []
-  includedStaff: Array<any> = []
+  dignsose: Array<any> = []
+  medialDiagnose: Array<any> = []
   staffApproved: boolean =  false;
   careWorkers: any;
   staffUnApproved: boolean = false;
@@ -102,14 +102,12 @@ export class ClinicalDiagnose implements OnInit, OnDestroy {
       this.cd.reattach();
       this.loading = true;
       forkJoin([
-        this.timeS.getexcludedstaff(user.id),
-        this.timeS.getincludedstaff(user.id),
-        this.listS.getintakestaff(user.id)
+        this.listS.getclinicalnursingdiagnose(user.id),
+        this.listS.getclinicalmedicationdiagnose(user.id),
       ]).subscribe(staff => {
         this.loading = false;
-        this.excludedStaff = staff[0];
-        this.includedStaff = staff[1];
-        this.listStaff = staff[2];
+        this.dignsose = staff[0];
+        this.medialDiagnose = staff[1];
         this.cd.markForCheck();
       });
     }
@@ -244,8 +242,8 @@ export class ClinicalDiagnose implements OnInit, OnDestroy {
         showEditModal(view: number, index: number) {
 
           if (view == 1) {
-            console.log(this.excludedStaff[index]);
-              const { name, notes, recordNumber } = this.excludedStaff[index];
+            console.log(this.dignsose[index]);
+              const { name, notes, recordNumber } = this.dignsose[index];
               this.inputForm.patchValue({
                   list: name,
                   notes: notes,
@@ -253,7 +251,7 @@ export class ClinicalDiagnose implements OnInit, OnDestroy {
               });
           }
           if (view == 2) {
-              const { name, notes, recordNumber } = this.includedStaff[index];
+              const { name, notes, recordNumber } = this.medialDiagnose[index];
               this.inputForm.patchValue({
                   list: name,
                   notes: notes,

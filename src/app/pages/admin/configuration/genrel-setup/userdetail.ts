@@ -62,6 +62,9 @@ export class UserDetail implements OnInit {
     allCordinatore:boolean = true;
     allCordinatorIntermediate:boolean = false;
 
+    allReminders:boolean = true;
+    allRemindersIntermediate:boolean = false;
+
     allStaffCat:boolean = true;
     allStaffCatIntermediate:boolean = false;
 

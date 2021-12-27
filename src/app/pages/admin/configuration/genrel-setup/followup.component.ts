@@ -65,6 +65,7 @@ export class FollowupComponent implements OnInit {
   templates: any;
   documents: any;
   customdatasets: any;
+  jobCategories: any;
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -98,6 +99,11 @@ export class FollowupComponent implements OnInit {
           this.addbtnTitle = "Extra Required Data";
           this.menuType  = 'XTRADATA';
         }
+        if (params.type == 'competency'){
+          this.addbtnTitle = "Staff Competencies";
+          this.menuType  = 'COMPETENCY';
+        }
+        
       });
       this.buildForm();
       this.populateDropdowns();
@@ -140,15 +146,20 @@ export class FollowupComponent implements OnInit {
       if(this.menuType == 'XTRADATA'){
         this.listS.customdatasetObj().subscribe(data => this.staffList = data)
       }
+      if(this.menuType == 'COMPETENCY'){
+        this.listS.getcompetenciesall().subscribe(data => this.staffList = data)
+      }
       
       return forkJoin([
         this.listS.getlistbranchesObj(),
         this.listS.getfundingsource(),
         this.listS.casemanagerslist(),
+        this.listS.getliststaffgroup()
       ]).subscribe(x => {
         this.branchesList   = x[0];
         this.funding_source = x[1];
         this.casemanagers   = x[2];
+        this.jobCategories  = x[3];
       });
     
     }

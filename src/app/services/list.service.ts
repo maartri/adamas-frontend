@@ -818,7 +818,9 @@ export class ListService {
     getliststaffgroup(): Observable<any>{
         return this.auth.get(`${list}/staffgroup`)
     }
-
+    getitemtypesparams(): Observable<any>{
+        return this.auth.get(`${list}/itemtypesparams`)
+    }
     getliststaffadmin(): Observable<any>{
         return this.auth.get(`${list}/staffadmin`)
     }

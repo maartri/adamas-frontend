@@ -218,17 +218,23 @@ export class StaffAdminActivitiesComponent implements OnInit {
       this.current = index;
     }
     save() {
+      this.loading = true;
       if(!this.isUpdate){
         this.menuS.poststaffAdminActivities(this.inputForm.value)
         .subscribe(data => {
           this.globalS.sToast('Success', 'Added Succesfully');
+          this.loading = false;
+          this.handleCancel();
           this.loadData()
         });
       }else{
         this.menuS.updatestaffAdminActivities(this.inputForm.value)
         .subscribe(data => {
           this.globalS.sToast('success','Updated Successfuly');
+          this.loading = false;
+          this.handleCancel();
           this.loadData();
+          
         });
       }
     }

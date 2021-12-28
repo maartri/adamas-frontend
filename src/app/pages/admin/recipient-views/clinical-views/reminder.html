@@ -2,12 +2,13 @@
     <div nz-col nzSpan="24">
         <button class="botton success" (click)="showAddModal()">Add Reminder</button>
         <nz-table #sss [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false"
-            [nzData]="consents">
+            [nzData]="reminderList">
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>Consent</th>
-                    <th>Expiry</th>
+                    <th>Alert/Review</th>
+                    <th>Reminder Date</th>
+                    <th>Dur Date</th>
                     <th>Notes</th>
                     <th class="action">Actions</th>
                 </tr>
@@ -15,8 +16,9 @@
             <tbody>
                 <tr *ngFor="let data of sss.data;let i = index;trackBy: trackByFn">
                     <td class="left">{{ i+1  }}</td>
-                    <td>{{ data.consent}}</td>
-                    <td> {{ data.expiryDate | date: 'dd/MM/y' }}</td>
+                    <td>{{ data.review}}</td>
+                    <td>{{ data.reminderDate | date: 'dd/MM/y' }}</td>
+                    <td>{{ data.dueDate | date: 'dd/MM/y' }}</td>
                     <td>{{ data.notes }}</td>
                     <td>
                         <a (click)="updateconsentmodal(data)">Update</a>

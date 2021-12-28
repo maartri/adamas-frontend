@@ -29,7 +29,7 @@ export class ClinicalMedication implements OnInit, OnDestroy {
 
     consentOpen: boolean = false;
     consentGroup: FormGroup;
-    consents: Array<any> = [];
+    medicationList: Array<any> = [];
 
     addOREdit: number;
 
@@ -177,9 +177,9 @@ export class ClinicalMedication implements OnInit, OnDestroy {
         this.cd.reattach();
         this.loading = true;
 
-        this.timeS.getconsents(user.id).subscribe(consents => {
+        this.listS.getclinicalmedications(user.id).subscribe(medication => {
             this.loading = false;
-            this.consents = consents;
+            this.medicationList = medication;
             this.cd.markForCheck();
         })        
     }

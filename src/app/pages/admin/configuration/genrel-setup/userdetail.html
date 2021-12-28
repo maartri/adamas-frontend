@@ -51,7 +51,7 @@
                     <nz-tab nzTitle="Programs"         (nzClick)="tabFindChangeScopes(1)"> </nz-tab>
                     <nz-tab nzTitle="Categories"       (nzClick)="tabFindChangeScopes(2)"></nz-tab>
                     <nz-tab nzTitle="Coordinators"     (nzClick)="tabFindChangeScopes(3)"> </nz-tab>
-                    <!-- <nz-tab nzTitle="Reminders"        (nzClick)="tabFindChangeScopes(4)"> </nz-tab> -->
+                    <nz-tab nzTitle="Reminders"        (nzClick)="tabFindChangeScopes(4)"> </nz-tab>
                     <nz-tab nzTitle="Staff Categories" (nzClick)="tabFindChangeScopes(5)"> </nz-tab>
                 </nz-tabset>
             </div>
@@ -206,8 +206,42 @@
                     </div>
                 </div>
             </div>
-            <div *ngIf="tabFindIndexScope == 5">
-
+            <div *ngIf="tabFindIndexScope == 4">
+                <div nz-col class="gutter-row" [nzSpan]="6">
+                    <div nz-row  style="border: 1px solid #e8e8e8;">
+                        <div nz-row style="background-color:#fafafa;color: white;padding:4px;">
+                            <label nz-checkbox
+                            [(ngModel)]="allReminders"
+                            (ngModelChange)="updateAllCheckedFilters(4)"
+                            [nzIndeterminate]="allRemindersIntermediate" [ngModelOptions]="{standalone: true}"><b>View ALL Public Reminders</b></label>
+                        </div>
+                        <div nz-col>
+                            <div class="staff-wrapper" style="height: 30rem; width: 100%; overflow: auto; padding: .5rem 1rem;">
+                                <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="log($event,4)">
+                                    <div nz-row>
+                                        <div nz-col nzSpan="24" *ngFor="let manager of casemanagers">
+                                            <label nz-checkbox  [nzValue]="manager.description" [(ngModel)]="manager.checked" (ngModelChange)="updateSingleCheckedFilters(4)" [ngModelOptions]="{standalone: true}">{{ manager.description }}</label>
+                                        </div>
+                                    </div>
+                                </nz-checkbox-wrapper>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="allReminders === false" nz-col class="gutter-row" [nzSpan]="5">
+                    <div nz-row  style="border: 1px solid #e8e8e8;margin-left:1rem;">
+                        <div nz-row style="background-color:#fafafa;color: white;padding:4px;">
+                            <label style="color:rgba(0,0,0,.65);"><b>Viewable CoOrdinators</b></label>
+                        </div>
+                        <div nz-col>
+                            <div class="staff-wrapper" style="height: 30rem; width: 100%; overflow: auto; padding: .5rem 1rem;">
+                                <div nz-col nzSpan="24" *ngFor="let cord of selectedCordinators">
+                                    <label>{{cord }}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div *ngIf="tabFindIndexScope == 5">
                 <div nz-col class="gutter-row" [nzSpan]="6">

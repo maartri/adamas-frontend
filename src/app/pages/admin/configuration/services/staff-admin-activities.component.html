@@ -98,7 +98,7 @@
                                         </div>
                                         <div nz-col nzSpan="12" class="text-right pad-r-5"> 
                                             <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="rosterGroup"  nzShowSearch nzAllowClear style="width:100%;">
-                                                <nz-option *ngFor="let main of mainGroupList" [nzLabel]="main"  [nzValue]="main"></nz-option>
+                                                <nz-option *ngFor="let main of mainGroupList | keyvalue" [nzValue]="main.key" [nzLabel]="main.value"></nz-option>
                                             </nz-select>
                                         </div>
                                     </div>

@@ -309,6 +309,8 @@ export class StaffAdmin implements OnInit, OnDestroy {
     }
   ]
   avilibilityForm: FormGroup;
+  operation: any;
+  
   handleCancel() {
     this.findModalOpen = false;
   }
@@ -990,275 +992,283 @@ export class StaffAdmin implements OnInit, OnDestroy {
                       }
                       
                       
-                      log(event: any,index:number) {
-                        this.testcheck = false;   
-                        if(index == 1)
-                        this.selectedbranches = event;
-                        if(index == 2)
-                        this.selectedPrograms = event;
-                        if(index == 3)
-                        this.selectedCordinators = event;
-                        if(index == 4)
-                        this.selectedCategories = event;  
-                        if(index == 5 && event.target.checked){
-                          this.searchAvaibleModal = true;
-                        }
-                      }
-                      
-                      setCriteria(){ 
-                        this.cariteriaList.push({
-                          fieldName  : this.extendedSearch.value.title,
-                          searchType : this.extendedSearch.value.rule,
-                          textToLoc  : this.extendedSearch.value.from,
-                          endText    : this.extendedSearch.value.to,
-                        })
-                      }
-                      searchData() : void{
-                        this.loading = true;      
-                        
-                        this.selectedTypes = this.checkOptionsOne
-                        .filter(opt => opt.checked)
-                        .map(opt => opt.value).join("','")
-                        
-                        this.selectedPrograms = this.diciplineList
-                        .filter(opt => opt.checked)
-                        .map(opt => opt.value)
-                        
-                        this.selectedCordinators = this.casemanagers
-                        .filter(opt => opt.checked)
-                        .map(opt => opt.value)
-                        
-                        this.selectedCategories = this.categoriesList
-                        .filter(opt => opt.checked)
-                        .map(opt => opt.value)
-                        
-                        this.selectedbranches = this.branchesList
-                        .filter(opt => opt.checked)
-                        .map(opt => opt.value)
-                        
-                        this.selectedSkills  = this.skillsList
-                        .filter(opt => opt.checked)
-                        .map(opt => this.sbFieldsSkill[opt.identifier])
-                        
-                        var postdata = {
-                          status:this.quicksearch.value.status,
-                          gender:this.quicksearch.value.gender,
-                          staff:this.quicksearch.value.staff,
-                          brokers:this.quicksearch.value.brokers,
-                          volunteers:this.quicksearch.value.volunteers,
-                          onleaveStaff:this.quicksearch.value.onleaveStaff,
-                          searchText:this.quicksearch.value.searchText,
-                          
-                          allTeamAreas      : this.allProgarms,
-                          selectedTeamAreas : (this.allProgarms == false) ? this.selectedPrograms : '',
-                          
-                          allcat:this.allcat,
-                          selectedCategories:(this.allcat == false) ? this.selectedCategories : '',
-                          
-                          allBranches:this.allBranches,
-                          selectedbranches:(this.allBranches == false) ? this.selectedbranches : '',
-                          
-                          allCordinatore:this.allCordinatore,
-                          selectedCordinators:(this.allCordinatore == false) ? this.selectedCordinators : '',
-                          
-                          allSkills:(this.selectedSkills.length) ? false : true,
-                          selectedSkills: (this.selectedSkills.length) ? this.selectedSkills : '',
-                          
-                          // onleaveStaff:this.quicksearch.value.onleaveStaff,
-                          // previousWork:this.quicksearch.value.previousWork,
-                          
-                          // allcat:this.allcat,
-                          // selectedCategories:(this.allcat == false) ? this.selectedCategories : '',
-                          // activeprogramsonly:this.filters.value.activeprogramsonly,
-                          // surname:this.quicksearch.value.surname,
-                          // firstname:this.quicksearch.value.firstname,
-                          // phoneno:this.quicksearch.value.phoneno,
-                          // suburb:this.quicksearch.value.suburb,
-                          // dob:(!this.globalS.isEmpty(this.quicksearch.value.dob)) ? this.globalS.convertDbDate(this.quicksearch.value.dob,'yyyy-MM-dd') : '',
-                          // fileno:this.quicksearch.value.fileno,
-                          // searchText:this.quicksearch.value.searchText,
-                          // criterias:this.cariteriaList
-                          // list of rules
-                        }
-                        
-                        this.timeS.poststaffquicksearch(postdata).subscribe(data => {
-                          this.filteredResult = data;
-                          this.loading = false;
-                          this.cd.detectChanges();
-                        });
-                      }
-                      detectChanges() {
-                        throw new Error('Method not implemented.');
-                      }
-                      allcompetencieschecked(): void {
-                        console.log("added");
-                        this.skillsList = this.skillsList.map(item => 
-                          (
-                            {
-                              ...item,
-                              checked: true
-                            }
-                            )
-                            );
-                          }
-                          allcompetenciesunchecked(): void {
-                            this.skillsList = this.skillsList.map(item => ({
-                              ...item,
-                              checked: false,
-                            }));
-                          }
-                          updateAllChecked(): void {
-                            this.indeterminate = false;
-                            if (this.allChecked) {
-                              this.checkOptionsOne = this.checkOptionsOne.map(item => ({
-                                ...item,
-                                checked: true
-                              }));
-                            } else {
-                              this.checkOptionsOne = this.checkOptionsOne.map(item => ({
-                                ...item,
-                                checked: false
-                              }));
-                            }
-                          }
-                          updateAllCheckedFilters(filter: any): void {
-                            console.log(this.testcheck + "test flag");
-                            if(filter == 1 || filter == -1){
-                              if(this.testcheck == false){  // why its returing undefined 
-                                if (this.allBranches) {
-                                  this.branchesList.forEach(x => {
-                                    x.checked = true;
-                                  });
-                                }else{
-                                  this.branchesList.forEach(x => {
-                                    x.checked = false;
-                                  });
-                                }
-                              }
-                            }
-                            if(filter == 2 || filter == -1){
-                              if(this.testcheck == false){
-                                if (this.allProgarms) {
-                                  this.diciplineList.forEach(x => {
-                                    x.checked = true;
-                                  });
-                                }else{
-                                  this.diciplineList.forEach(x => {
-                                    x.checked = false;
-                                  });
-                                }
-                              }
-                            }
-                            if(filter == 3 || filter == -1){
-                              if(this.testcheck == false){
-                                if (this.allCordinatore) {
-                                  this.casemanagers.forEach(x => {
-                                    x.checked = true;
-                                  });
-                                }else{
-                                  this.casemanagers.forEach(x => {
-                                    x.checked = false;
-                                  });
-                                }
-                              }
-                            }
-                            if(filter == 4 || filter == -1){
-                              if(this.testcheck == false){
-                                if (this.allcat) {
-                                  this.categoriesList.forEach(x => {
-                                    x.checked = true;
-                                  });
-                                }else{
-                                  this.categoriesList.forEach(x => {
-                                    x.checked = false;
-                                  });
-                                }
-                              }
-                            }
-                          }
-                          updateSingleChecked(): void {
-                            this.testcheck == false
-                            if (this.checkOptionsOne.every(item => !item.checked)) {
-                              this.allChecked = false;
-                              this.indeterminate = false;
-                            } else if (this.checkOptionsOne.every(item => item.checked)) {
-                              this.allChecked = true;
-                              this.indeterminate = false;
-                            } else {
-                              this.indeterminate = true;
-                              this.allChecked = false;
-                              this.testcheck  = false;
-                            }
-                          }
-                          updateSingleCheckedFilters(index:number): void {
-                            if(index == 1){
-                              this.testcheck = false;
-                              if (this.branchesList.every(item => !item.checked)) {
-                                this.allBranches = false;
-                                this.allBranchIntermediate = false;
-                              } else if (this.branchesList.every(item => item.checked)) {
-                                this.allBranches = true;
-                                this.allBranchIntermediate = false;
-                              } else {
-                                this.allBranchIntermediate = true;
-                                this.allBranches = false;
-                              }
-                            }
-                            if(index == 2){
-                              this.testcheck = false;
-                              if (this.diciplineList.every(item => !item.checked)) {
-                                this.allProgarms = false;
-                                this.allprogramIntermediate = false;
-                              } else if (this.diciplineList.every(item => item.checked)) {
-                                this.allProgarms = true;
-                                this.allprogramIntermediate = false;
-                              } else {
-                                this.allprogramIntermediate = true;
-                                this.allProgarms = false;
-                              }
-                            }
-                            if(index == 3){
-                              this.testcheck = false;
-                              if (this.casemanagers.every(item => !item.checked)) {
-                                this.allCordinatore = false;
-                                this.allCordinatorIntermediate = false;
-                              } else if (this.casemanagers.every(item => item.checked)) {
-                                this.allCordinatore = true;
-                                this.allCordinatorIntermediate = false;
-                              } else {
-                                this.allCordinatorIntermediate = true;
-                                this.allCordinatore = false;
-                              }
-                            }
-                            if(index == 4){
-                              this.testcheck = false;
-                              if (this.categoriesList.every(item => !item.checked)) {
-                                this.allcat = false;
-                                this.allCatIntermediate = false;
-                              } else if (this.categoriesList.every(item => item.checked)) {
-                                this.allcat = true;
-                                this.allCatIntermediate = false;
-                              } else {
-                                this.allCatIntermediate = true;
-                                this.allcat = false;
-                              }
-                            }
-                          }
-                          openFindModal(){
-                            this.tabFindIndex = 0;
-                            
-                            this.updateAllCheckedFilters(-1);
-                            
-                            this.findModalOpen = true;
-                            
-                          }
-                          
-                          tabFindIndex: number = 0;
-                          tabFindChange(index: number){
-                            this.tabFindIndex = index;
-                          }
-                          
-                          filterChange(index: number){
-                            
-                          }
-                        }
+  log(event: any,index:number) {
+    this.testcheck = false;   
+    if(index == 1)
+    this.selectedbranches = event;
+    if(index == 2)
+    this.selectedPrograms = event;
+    if(index == 3)
+    this.selectedCordinators = event;
+    if(index == 4)
+    this.selectedCategories = event;  
+    if(index == 5 && event.target.checked){
+      this.searchAvaibleModal = true;
+    }
+  }
+  
+  setCriteria(){ 
+    this.cariteriaList.push({
+      fieldName  : this.extendedSearch.value.title,
+      searchType : this.extendedSearch.value.rule,
+      textToLoc  : this.extendedSearch.value.from,
+      endText    : this.extendedSearch.value.to,
+    })
+  }
+  searchData() : void{
+    this.loading = true;      
+    
+    this.selectedTypes = this.checkOptionsOne
+    .filter(opt => opt.checked)
+    .map(opt => opt.value).join("','")
+    
+    this.selectedPrograms = this.diciplineList
+    .filter(opt => opt.checked)
+    .map(opt => opt.value)
+    
+    this.selectedCordinators = this.casemanagers
+    .filter(opt => opt.checked)
+    .map(opt => opt.value)
+    
+    this.selectedCategories = this.categoriesList
+    .filter(opt => opt.checked)
+    .map(opt => opt.value)
+    
+    this.selectedbranches = this.branchesList
+    .filter(opt => opt.checked)
+    .map(opt => opt.value)
+    
+    this.selectedSkills  = this.skillsList
+    .filter(opt => opt.checked)
+    .map(opt => this.sbFieldsSkill[opt.identifier])
+    
+    var postdata = {
+      status:this.quicksearch.value.status,
+      gender:this.quicksearch.value.gender,
+      staff:this.quicksearch.value.staff,
+      brokers:this.quicksearch.value.brokers,
+      volunteers:this.quicksearch.value.volunteers,
+      onleaveStaff:this.quicksearch.value.onleaveStaff,
+      searchText:this.quicksearch.value.searchText,
+      
+      allTeamAreas      : this.allProgarms,
+      selectedTeamAreas : (this.allProgarms == false) ? this.selectedPrograms : '',
+      
+      allcat:this.allcat,
+      selectedCategories:(this.allcat == false) ? this.selectedCategories : '',
+      
+      allBranches:this.allBranches,
+      selectedbranches:(this.allBranches == false) ? this.selectedbranches : '',
+      
+      allCordinatore:this.allCordinatore,
+      selectedCordinators:(this.allCordinatore == false) ? this.selectedCordinators : '',
+      
+      allSkills:(this.selectedSkills.length) ? false : true,
+      selectedSkills: (this.selectedSkills.length) ? this.selectedSkills : '',
+      
+      // onleaveStaff:this.quicksearch.value.onleaveStaff,
+      // previousWork:this.quicksearch.value.previousWork,
+      
+      // allcat:this.allcat,
+      // selectedCategories:(this.allcat == false) ? this.selectedCategories : '',
+      // activeprogramsonly:this.filters.value.activeprogramsonly,
+      // surname:this.quicksearch.value.surname,
+      // firstname:this.quicksearch.value.firstname,
+      // phoneno:this.quicksearch.value.phoneno,
+      // suburb:this.quicksearch.value.suburb,
+      // dob:(!this.globalS.isEmpty(this.quicksearch.value.dob)) ? this.globalS.convertDbDate(this.quicksearch.value.dob,'yyyy-MM-dd') : '',
+      // fileno:this.quicksearch.value.fileno,
+      // searchText:this.quicksearch.value.searchText,
+      // criterias:this.cariteriaList
+      // list of rules
+    }
+    
+    this.timeS.poststaffquicksearch(postdata).subscribe(data => {
+      this.filteredResult = data;
+      this.loading = false;
+      this.cd.detectChanges();
+    });
+  }
+  detectChanges() {
+    throw new Error('Method not implemented.');
+  }
+  allcompetencieschecked(): void {
+    console.log("added");
+    this.skillsList = this.skillsList.map(item => 
+      (
+        {
+          ...item,
+          checked: true
+        }
+        )
+        );
+      }
+      allcompetenciesunchecked(): void {
+        this.skillsList = this.skillsList.map(item => ({
+          ...item,
+          checked: false,
+        }));
+      }
+      updateAllChecked(): void {
+        this.indeterminate = false;
+        if (this.allChecked) {
+          this.checkOptionsOne = this.checkOptionsOne.map(item => ({
+            ...item,
+            checked: true
+          }));
+        } else {
+          this.checkOptionsOne = this.checkOptionsOne.map(item => ({
+            ...item,
+            checked: false
+          }));
+        }
+      }
+      updateAllCheckedFilters(filter: any): void {
+        console.log(this.testcheck + "test flag");
+        if(filter == 1 || filter == -1){
+          if(this.testcheck == false){  // why its returing undefined 
+            if (this.allBranches) {
+              this.branchesList.forEach(x => {
+                x.checked = true;
+              });
+            }else{
+              this.branchesList.forEach(x => {
+                x.checked = false;
+              });
+            }
+          }
+        }
+        if(filter == 2 || filter == -1){
+          if(this.testcheck == false){
+            if (this.allProgarms) {
+              this.diciplineList.forEach(x => {
+                x.checked = true;
+              });
+            }else{
+              this.diciplineList.forEach(x => {
+                x.checked = false;
+              });
+            }
+          }
+        }
+        if(filter == 3 || filter == -1){
+          if(this.testcheck == false){
+            if (this.allCordinatore) {
+              this.casemanagers.forEach(x => {
+                x.checked = true;
+              });
+            }else{
+              this.casemanagers.forEach(x => {
+                x.checked = false;
+              });
+            }
+          }
+        }
+        if(filter == 4 || filter == -1){
+          if(this.testcheck == false){
+            if (this.allcat) {
+              this.categoriesList.forEach(x => {
+                x.checked = true;
+              });
+            }else{
+              this.categoriesList.forEach(x => {
+                x.checked = false;
+              });
+            }
+          }
+        }
+      }
+      updateSingleChecked(): void {
+        this.testcheck == false
+        if (this.checkOptionsOne.every(item => !item.checked)) {
+          this.allChecked = false;
+          this.indeterminate = false;
+        } else if (this.checkOptionsOne.every(item => item.checked)) {
+          this.allChecked = true;
+          this.indeterminate = false;
+        } else {
+          this.indeterminate = true;
+          this.allChecked = false;
+          this.testcheck  = false;
+        }
+      }
+      updateSingleCheckedFilters(index:number): void {
+        if(index == 1){
+          this.testcheck = false;
+          if (this.branchesList.every(item => !item.checked)) {
+            this.allBranches = false;
+            this.allBranchIntermediate = false;
+          } else if (this.branchesList.every(item => item.checked)) {
+            this.allBranches = true;
+            this.allBranchIntermediate = false;
+          } else {
+            this.allBranchIntermediate = true;
+            this.allBranches = false;
+          }
+        }
+        if(index == 2){
+          this.testcheck = false;
+          if (this.diciplineList.every(item => !item.checked)) {
+            this.allProgarms = false;
+            this.allprogramIntermediate = false;
+          } else if (this.diciplineList.every(item => item.checked)) {
+            this.allProgarms = true;
+            this.allprogramIntermediate = false;
+          } else {
+            this.allprogramIntermediate = true;
+            this.allProgarms = false;
+          }
+        }
+        if(index == 3){
+          this.testcheck = false;
+          if (this.casemanagers.every(item => !item.checked)) {
+            this.allCordinatore = false;
+            this.allCordinatorIntermediate = false;
+          } else if (this.casemanagers.every(item => item.checked)) {
+            this.allCordinatore = true;
+            this.allCordinatorIntermediate = false;
+          } else {
+            this.allCordinatorIntermediate = true;
+            this.allCordinatore = false;
+          }
+        }
+        if(index == 4){
+          this.testcheck = false;
+          if (this.categoriesList.every(item => !item.checked)) {
+            this.allcat = false;
+            this.allCatIntermediate = false;
+          } else if (this.categoriesList.every(item => item.checked)) {
+            this.allcat = true;
+            this.allCatIntermediate = false;
+          } else {
+            this.allCatIntermediate = true;
+            this.allcat = false;
+          }
+        }
+      }
+      openFindModal(){
+        this.tabFindIndex = 0;
+        
+        this.updateAllCheckedFilters(-1);
+        
+        this.findModalOpen = true;
+        
+      }
+      
+      tabFindIndex: number = 0;
+      tabFindChange(index: number){
+        this.tabFindIndex = index;
+      }
+      
+      filterChange(index: number){
+        
+      }
+
+      showLeaveModal() {
+        this.operation = {
+            process: 'ADD'
+        }
+        // console.log(JSON.stringify(this.user) + "user");
+        this.putonLeaveModal = !this.putonLeaveModal;
+    }
+}

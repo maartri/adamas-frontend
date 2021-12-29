@@ -4385,7 +4385,7 @@ GETSERVICEACTIVITY(program: any): Observable<any> {
     if (!program) return EMPTY;
     
 
-    if (serviceType != 'ADMINISTRATION' && serviceType != 'ALLOWANCE NON-CHARGEABLE' && serviceType != 'ITEM'  && serviceType != 'SERVICE') {
+    if (serviceType != 'ADMINISTRATION'  && serviceType != 'ALLOWANCE NON-CHARGEABLE' && serviceType != 'ITEM'  && serviceType != 'SERVICE') {
 
         if(typeof _date === 'string'){
             _date = parseISO(_date);
@@ -4398,7 +4398,7 @@ GETSERVICEACTIVITY(program: any): Observable<any> {
             recipient: recipientCode,
             program:program,  
             forceAll: "0", //recipientCode=='!MULTIPLE' || recipientCode=='!INTERNAL' ? "1" : "0",   
-            mainGroup: this.IsGroupShift ? this.GroupShiftCategory : 'ALL',
+            mainGroup: this.IsGroupShift ? this.GroupShiftCategory : serviceType,
             subGroup: '-',           
             viewType: this.viewType,
             AllowedDays: s_DayMask,
@@ -4408,16 +4408,16 @@ GETSERVICEACTIVITY(program: any): Observable<any> {
     else {
         let  sql="";
 
-        // return this.timeS.getActivities({            
-        //     recipient: recipientCode,
-        //     program:program,  
-        //     forceAll: "1", //recipientCode=='!MULTIPLE' || recipientCode=='!INTERNAL' ? "1" : "0",   
-        //     mainGroup: this.IsGroupShift ? this.GroupShiftCategory : 'ALL',
-        //     subGroup: '-',           
-        //     viewType: this.viewType,
-        //     AllowedDays: "0",
-        //     duration: this.durationObject?.duration            
-        // });
+        return this.timeS.getActivities({            
+            recipient: recipientCode,
+            program:program,  
+            forceAll: "1", //recipientCode=='!MULTIPLE' || recipientCode=='!INTERNAL' ? "1" : "0",   
+            mainGroup: this.IsGroupShift ? this.GroupShiftCategory : 'ALL',
+            subGroup: '-',           
+            viewType: this.viewType,
+            AllowedDays: "0",
+            duration: this.durationObject?.duration            
+        });
 
     //   ql =`  SELECT DISTINCT [Service Type] AS Activity,I.RosterGroup,
     //     (CASE WHEN ISNULL(SO.ForceSpecialPrice,0) = 0 THEN
@@ -4457,7 +4457,7 @@ GETSERVICEACTIVITY(program: any): Observable<any> {
         AND ITM.[Status] = 'ATTRIBUTABLE' AND (ITM.EndDate Is Null OR ITM.EndDate >= '${this.currentDate}'))
         ORDER BY [Service Type]`;
     
-        return this.listS.getlist(sql);
+//        return this.listS.getlist(sql);
     }
 }
 

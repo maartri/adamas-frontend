@@ -56,6 +56,7 @@
                         <div nz-row nzGutter="24" class="">
                             <label for="CDC Item" col nzSpan="6">Workflow Activity :</label>
                             <nz-select col nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="activity" nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-option [nzValue]="'ALL'" [nzLabel]="'ALL'"></nz-option> 
                                 <nz-option *ngFor="let ltype of listType" [nzValue]="ltype.title" [nzLabel]="ltype.title"></nz-option> 
                             </nz-select>
                         </div>
@@ -64,21 +65,33 @@
                             <input nz-input  formControlName="name" />
                         </div>
                         
-                        <div nz-row nzGutter="24" class="">
+                        <div nz-row nzGutter="24">
                             <label for="CDC Item" col nzSpan="6">Branch :</label>
                             <nz-select col nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="branch" nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-option [nzValue]="'ALL'" [nzLabel]="'ALL'"></nz-option> 
                                 <nz-option *ngFor="let branch of branchesList" [nzValue]="branch.description" [nzLabel]="branch.description"></nz-option> 
                             </nz-select>
                         </div>
-                        <div nz-row nzGutter="24" class="">
+                        
+                        <div *ngIf="menuType != 'COMPETENCY'" nz-row nzGutter="24">
                             <label for="CDC Item" col nzSpan="6">Funding Source :</label>
                             <nz-select col nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="fundingSource" nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-option [nzValue]="'ALL'" [nzLabel]="'ALL'"></nz-option> 
                                 <nz-option *ngFor="let f_source of funding_source" [nzValue]="f_source" [nzLabel]="f_source"></nz-option> 
                             </nz-select>
                         </div>
-                        <div nz-row nzGutter="24" class="">
+                        <div *ngIf="menuType == 'COMPETENCY'" nz-row nzGutter="24">
+                            <label for="CDC Item" col nzSpan="6">JOb Category :</label>
+                            <nz-select col nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="fundingSource" nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-option [nzValue]="'ALL'" [nzLabel]="'ALL'"></nz-option> 
+                                <nz-option *ngFor="let category of jobCategories" [nzValue]="category" [nzLabel]="category"></nz-option> 
+                            </nz-select>
+                        </div>
+
+                        <div nz-row nzGutter="24">
                             <label for="CDC Item" col nzSpan="6">Case Manager :</label>
                             <nz-select col nzSpan="14"  [nzDropdownMatchSelectWidth]="false" formControlName="casemanager" nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-option [nzValue]="'ALL'" [nzLabel]="'ALL'"></nz-option> 
                                 <nz-option *ngFor="let manager of casemanagers" [nzValue]="manager.description" [nzLabel]="manager.description"></nz-option> 
                             </nz-select>
                         </div>

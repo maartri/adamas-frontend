@@ -1,0 +1,424 @@
+<div nz-col nzSpan="24" *ngIf="inputForm" [formGroup]="inputForm">
+    <div nz-row [nzGutter]="6" style="margin-left: 10px; border-bottom: solid; border-color: black; border-width: 1px;">
+        <div nz-col class="gutter-row" style="padding: 4px;">
+            <h3 style="margin-top: 8px; font-size: 16pt; font-style: italic; color:#565656;"
+                *ngFor="let item of companyName"> {{item.companyName}}
+            </h3>
+        </div>
+    </div>
+    <div nz-row style="height: 2pc;"></div>
+    <div nz-row>
+        <div nz-col style="margin-top: 8px;" nzSpan="2">
+            <h3 style="text-align: right; margin-right: 6px;"> Dates Between </h3>
+        </div>
+        <div nz-col nzSpan="2">
+            <nz-date-picker nzPlaceHolder="Start Date" formControlName="dtpStartDate" [nzFormat]="dateFormat">
+            </nz-date-picker>
+        </div>
+        <div nz-col style="margin-top: 8px;" nzSpan="1">
+            <h3 style="text-align: center;"> And </h3>
+        </div>
+        <div nz-col nzSpan="2">
+            <nz-date-picker nzPlaceHolder="End Date" formControlName="dtpEndDate" [nzFormat]="dateFormat">
+            </nz-date-picker>
+        </div>
+        <div nz-col style="margin-top: 5px; text-align:center !important;" nzSpan="1">
+            <button nz-button nzType="primary" style="font-size: 10pt; width: 100% !important;">
+                Refresh
+            </button>
+        </div>
+        <div nz-col style="margin-top: 8px;" nzSpan="3">
+            <h3 style="text-align: right; margin-right: 6px;"> Drill Down On: </h3>
+        </div>
+        <div nz-col nzSpan="3">
+            <nz-select [nzDropdownMatchSelectWidth]="false" formControlName="inputOutput" nzPlaceHolder="" nzShowSearch
+                nzAllowClear style="width:100%; margin-top: 6px;">
+                <nz-option *ngFor="let etype of dataInputOutput" [nzLabel]="etype" [nzValue]="etype">
+                </nz-option>
+            </nz-select>
+        </div>
+    </div>
+    <!-- <div nz-row>
+        <div nz-col style="margin-top: 8px;" nzSpan="4"></div>
+        <div nz-col style="margin-top: 8px;" nzSpan="2">
+            <label style="text-align: center;"> Total Active
+            </label>
+        </div>
+        <div nz-col style="margin-top: 8px; margin-left: 20px;" nzSpan="2">
+            <label style="text-align: center;"> Active In Period </label>
+        </div>
+    </div> -->
+    <div nz-row>
+        <div style="height: 2pc;" nz-row></div>
+        <div nz-col nzSpan="9">
+            <nz-row style="margin-top: 2px;">
+                <div nz-col nzSpan="12">
+                </div>
+                <div nz-col nzSpan="5">
+                    <label style="text-align: center;"> Total Active
+                    </label>
+                </div>
+                <div nz-col style="margin-left: 20px;" nzSpan="5">
+                    <label style="text-align: center;"> Active In Period </label>
+                </div>
+            </nz-row>
+            <nz-row style="margin-top: 2px;">
+                <div nz-col nzSpan="12">
+                    <label style="text-align: right; margin-right: 3px; margin-top: 8px;"> States : </label>
+                </div>
+                <div nz-col nzSpan="5">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+                <div nz-col style="margin-left: 20px;" nzSpan="5">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+            </nz-row>
+            <nz-row style="margin-top: 2px;">
+                <div nz-col nzSpan="12">
+                    <label style="text-align: right; margin-right: 3px; margin-top: 8px;"> Funding Regions : </label>
+                </div>
+                <div nz-col nzSpan="5">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+                <div nz-col style="margin-left: 20px;" nzSpan="5">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+            </nz-row>
+            <nz-row style="margin-top: 2px;">
+                <div nz-col nzSpan="12">
+                    <label style="text-align: right; margin-right: 3px; margin-top: 8px;"> Service Provider ID's (SPID)
+                        : </label>
+                </div>
+                <div nz-col nzSpan="5">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+                <div nz-col style="margin-left: 20px;" nzSpan="5">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+            </nz-row>
+            <nz-row style="margin-top: 2px;">
+                <div nz-col nzSpan="12">
+                    <label style="text-align: right; margin-right: 3px; margin-top: 8px;"> DS Outlets : </label>
+                </div>
+                <div nz-col nzSpan="5">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+                <div nz-col style="margin-left: 20px;" nzSpan="5">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+            </nz-row>
+            <nz-row style="margin-top: 2px;">
+                <div nz-col nzSpan="12">
+                    <label style="text-align: right; margin-right: 3px; margin-top: 8px;"> Branches : </label>
+                </div>
+                <div nz-col nzSpan="5">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+                <div nz-col style="margin-left: 20px;" nzSpan="5">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+            </nz-row>
+            <nz-row style="margin-top: 2px;">
+                <div nz-col nzSpan="12">
+                    <label style="text-align: right; margin-right: 3px; margin-top: 8px;"> Funding Type : </label>
+                </div>
+                <div nz-col nzSpan="5">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+                <div nz-col style="margin-left: 20px;" nzSpan="5">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+            </nz-row>
+            <nz-row style="margin-top: 2px;">
+                <div nz-col nzSpan="12">
+                    <label style="text-align: right; margin-right: 3px; margin-top: 8px;"> Care Domains : </label>
+                </div>
+                <div nz-col nzSpan="5">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+                <div nz-col style="margin-left: 20px;" nzSpan="5">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+            </nz-row>
+            <nz-row style="margin-top: 2px;">
+                <div nz-col nzSpan="12">
+                    <label style="text-align: right; margin-right: 3px; margin-top: 8px;"> Service Budget Codes :
+                    </label>
+                </div>
+                <div nz-col nzSpan="5">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+                <div nz-col style="margin-left: 20px;" nzSpan="5">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+            </nz-row>
+            <nz-row style="margin-top: 2px;">
+                <div nz-col nzSpan="12">
+                    <label style="text-align: right; margin-right: 3px; margin-top: 8px;"> Service Disciplines :
+                    </label>
+                </div>
+                <div nz-col nzSpan="5">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+                <div nz-col style="margin-left: 20px;" nzSpan="5">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+            </nz-row>
+            <nz-row style="margin-top: 2px;">
+                <div nz-col nzSpan="12">
+                    <label style="text-align: right; margin-right: 3px; margin-top: 8px;"> Service Regions : </label>
+                </div>
+                <div nz-col nzSpan="5">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+                <div nz-col style="margin-left: 20px;" nzSpan="5">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+            </nz-row>
+            <nz-row style="margin-top: 2px;">
+                <div nz-col nzSpan="12">
+                    <label style="text-align: right; margin-right: 3px; margin-top: 8px;"> Service Types : </label>
+                </div>
+                <div nz-col nzSpan="5">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+                <div nz-col style="margin-left: 20px;" nzSpan="5">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+            </nz-row>
+            <nz-row style="margin-top: 2px;">
+                <div nz-col nzSpan="12">
+                    <label style="text-align: right; margin-right: 3px; margin-top: 8px;"> Programs : </label>
+                </div>
+                <div nz-col nzSpan="5">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+                <div nz-col style="margin-left: 20px;" nzSpan="5">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+            </nz-row>
+            <nz-row style="margin-top: 2px;">
+                <div nz-col nzSpan="12">
+                    <label style="text-align: right; margin-right: 3px; margin-top: 8px;"> Coordinators/Staff Mgrs :
+                    </label>
+                </div>
+                <div nz-col nzSpan="5">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+                <div nz-col style="margin-left: 20px;" nzSpan="5">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+            </nz-row>
+            <nz-row style="margin-top: 2px;">
+                <div nz-col nzSpan="12">
+                    <label style="text-align: right; margin-right: 3px; margin-top: 8px;"> Cost Centers : </label>
+                </div>
+                <div nz-col nzSpan="5">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+                <div nz-col style="margin-left: 20px;" nzSpan="5">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+            </nz-row>
+            <nz-row style="margin-top: 2px;">
+                <div nz-col nzSpan="12">
+                    <label style="text-align: right; margin-right: 3px; margin-top: 8px;"> Recipients : </label>
+                </div>
+                <div nz-col nzSpan="5">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+                <div nz-col style="margin-left: 20px;" nzSpan="5">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+            </nz-row>
+            <nz-row style="margin-top: 2px;">
+                <div nz-col nzSpan="12">
+                    <label style="text-align: right; margin-right: 3px; margin-top: 8px;"> Staff : </label>
+                </div>
+                <div nz-col nzSpan="5">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+                <div nz-col style="margin-left: 20px;" nzSpan="5">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+            </nz-row>
+            <nz-row style="margin-top: 2px;">
+                <div nz-col nzSpan="12">
+                    <label style="text-align: right; margin-right: 3px; margin-top: 8px;"> Teams : </label>
+                </div>
+                <div nz-col nzSpan="5">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+                <div nz-col style="margin-left: 20px;" nzSpan="5">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+            </nz-row>
+        </div>
+        <div nz-col style="margin-left: 4pc;" nzSpan="4">
+            <div style="height: 2pc;" nz-row></div>
+            <nz-row style="margin-top: 2px;">
+                <div nz-col nzSpan="14">
+                    <label style="text-align: right; margin-right: 3px; margin-top: 8px;"> Total Output Hours : </label>
+                </div>
+                <div nz-col nzSpan="10">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+            </nz-row>
+            <nz-row style="margin-top: 2px;">
+                <div nz-col nzSpan="14">
+                    <label style="text-align: right; margin-right: 3px; margin-top: 8px;"> Funded : </label>
+                </div>
+                <div nz-col nzSpan="10">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+            </nz-row>
+            <nz-row style="margin-top: 2px;">
+                <div nz-col nzSpan="14">
+                    <label style="text-align: right; margin-right: 3px; margin-top: 8px;"> Unfunded : </label>
+                </div>
+                <div nz-col nzSpan="10">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+            </nz-row>
+            <nz-row style="margin-top: 2px;">
+                <div nz-col nzSpan="14">
+                    <label style="text-align: right; margin-right: 3px; margin-top: 8px;"> No. of Recipients : </label>
+                </div>
+                <div nz-col nzSpan="10">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+            </nz-row>
+        </div>
+        <div nz-col style="margin-left: 4pc;" nzSpan="6">
+            <div style="height: 2pc;" nz-row></div>
+            <nz-row style="margin-top: 2px;">
+                <div nz-col nzSpan="16">
+                    <label style="text-align: right; margin-right: 3px; margin-top: 8px;"> Total Worked Hours : </label>
+                </div>
+                <div nz-col nzSpan="7">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+            </nz-row>
+            <nz-row style="margin-top: 2px;">
+                <div nz-col nzSpan="16">
+                    <label style="text-align: right; margin-right: 3px; margin-top: 8px;"> Total Worked Attributable
+                        Hours : </label>
+                </div>
+                <div nz-col nzSpan="7">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+            </nz-row>
+            <nz-row style="margin-top: 2px;">
+                <div nz-col nzSpan="16">
+                    <label style="text-align: right; margin-right: 3px; margin-top: 8px;"> % Staff Utilization :
+                    </label>
+                </div>
+                <div nz-col nzSpan="7">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+            </nz-row>
+            <nz-row style="margin-top: 2px;">
+                <div nz-col nzSpan="16">
+                    <label style="text-align: right; margin-right: 3px; margin-top: 8px;"> No. of Staff : </label>
+                </div>
+                <div nz-col nzSpan="7">
+                    <button nz-button nzType="default"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> 0
+                    </button>
+                </div>
+            </nz-row>
+        </div>
+        <div nz-col style="margin-left: 1pc;" nzSpan="2">
+            <div style="height: 40pc;" nz-row></div>
+            <nz-row>
+                <div nz-col>
+                    <button nz-button nzType="primary"
+                        style="text-align: center; margin-top: 4px; width: 100% !important;"> ANALYSE
+                    </button>
+                </div>
+            </nz-row>
+        </div>
+    </div>
+</div>

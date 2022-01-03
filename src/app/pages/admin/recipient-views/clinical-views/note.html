@@ -2,22 +2,18 @@
     <div nz-col nzSpan="24">
         <button class="botton success" (click)="showAddModal()">Add Note</button>
         <nz-table #sss [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false"
-            [nzData]="consents">
+            [nzData]="notesList">
             <thead>
                 <tr>
-                    <th>#</th>
-                    <th>Consent</th>
-                    <th>Expiry</th>
-                    <th>Notes</th>
+                    <th>Created</th>
+                    <th>Note Deatail</th>
                     <th class="action">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let data of sss.data;let i = index;trackBy: trackByFn">
-                    <td class="left">{{ i+1  }}</td>
-                    <td>{{ data.consent}}</td>
-                    <td> {{ data.expiryDate | date: 'dd/MM/y' }}</td>
-                    <td>{{ data.notes }}</td>
+                    <td>{{data.detailDate | date: 'dd/MM/y' }}</td>
+                    <td>{{data.detail}}</td>
                     <td>
                         <a (click)="updateconsentmodal(data)">Update</a>
                         <nz-divider nzType="vertical"></nz-divider>

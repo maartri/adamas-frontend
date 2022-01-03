@@ -17,7 +17,6 @@ import { dateFormat } from '@services/global.service'
 import { Filters, QuoteLineDTO, QuoteHeaderDTO, AcceptCharges } from '@modules/modules';
 import { billunit, periodQuote, basePeriod } from '@services/global.service';
 import { MedicalProceduresComponent } from '@admin/recipient-views/medical-procedures.component';
-// import { Console } from 'node:console';
 
 import addYears from 'date-fns/addYears';
 import startOfMonth from 'date-fns/startOfMonth';
@@ -29,7 +28,6 @@ import { filter, toLength, xor } from 'lodash';
 import { parseJSON } from 'date-fns';
 
 import { DecimalPipe } from '@angular/common';
-// import { Console } from 'node:console';
 
 
 const noop = () => {};

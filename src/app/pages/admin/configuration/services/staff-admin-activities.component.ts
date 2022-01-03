@@ -93,7 +93,7 @@ export class StaffAdminActivitiesComponent implements OnInit {
   rpthttp = 'https://www.mark3nidad.com:5488/api/report';
   emptyList: any[];
   ndiaItems: any;
-  selectedPrograms: [];
+  selectedPrograms:any;
   competencyForm: FormGroup;
   selectedCompetencies: any;
   parent_person_id: any;
@@ -344,6 +344,14 @@ export class StaffAdminActivitiesComponent implements OnInit {
           });
           this.selectedPrograms = [];
         }
+        selectProgram(){
+          this.programz.forEach(x => {
+            x.checked = true;
+            this.selectedPrograms = x.name;
+          });
+          console.log("programs : " + this.selectedPrograms);
+        }
+
         populateDropdowns(): void {
           
           this.emptyList      = [];

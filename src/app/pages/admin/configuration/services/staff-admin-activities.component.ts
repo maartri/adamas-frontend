@@ -93,7 +93,7 @@ export class StaffAdminActivitiesComponent implements OnInit {
   rpthttp = 'https://www.mark3nidad.com:5488/api/report';
   emptyList: any[];
   ndiaItems: any;
-  selectedPrograms: [];
+  selectedPrograms:any;
   competencyForm: FormGroup;
   selectedCompetencies: any;
   parent_person_id: any;
@@ -218,17 +218,23 @@ export class StaffAdminActivitiesComponent implements OnInit {
       this.current = index;
     }
     save() {
+      this.loading = true;
       if(!this.isUpdate){
         this.menuS.poststaffAdminActivities(this.inputForm.value)
         .subscribe(data => {
           this.globalS.sToast('Success', 'Added Succesfully');
+          this.loading = false;
+          this.handleCancel();
           this.loadData()
         });
       }else{
         this.menuS.updatestaffAdminActivities(this.inputForm.value)
         .subscribe(data => {
           this.globalS.sToast('success','Updated Successfuly');
+          this.loading = false;
+          this.handleCancel();
           this.loadData();
+          
         });
       }
     }
@@ -338,6 +344,14 @@ export class StaffAdminActivitiesComponent implements OnInit {
           });
           this.selectedPrograms = [];
         }
+        selectProgram(){
+          this.programz.forEach(x => {
+            x.checked = true;
+            this.selectedPrograms = x.name;
+          });
+          console.log("programs : " + this.selectedPrograms);
+        }
+
         populateDropdowns(): void {
           
           this.emptyList      = [];

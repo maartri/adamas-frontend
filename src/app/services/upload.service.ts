@@ -15,6 +15,10 @@ export class UploadService {
       public auth: AuthService
    ) { }
 
+   postdocumentstafftemplatereferral(data: any): Observable<any> {
+      return this.http.post(`${upload}/document-staff/template/referral`, data);
+   }
+
    downloadquotedocument(docId: number): Observable<any> {
       return this.http.post(`${upload}/download-quote-document/${docId}`, null , { responseType: 'blob', reportProgress: true })
    }

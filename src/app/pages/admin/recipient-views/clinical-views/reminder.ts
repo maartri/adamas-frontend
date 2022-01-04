@@ -13,7 +13,7 @@ import format from 'date-fns/format';
 
 @Component({
     selector: '',
-    templateUrl: './medication.html',
+    templateUrl: './reminder.html',
     styles:[`
     h4{
         margin-top:10px;
@@ -22,14 +22,14 @@ import format from 'date-fns/format';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 
-export class ClinicalMedication implements OnInit, OnDestroy {
+export class ClinicalReminder implements OnInit, OnDestroy {
     private unsubscribe: Subject<void> = new Subject();
     user: any;
     loading: boolean = false;
 
     consentOpen: boolean = false;
     consentGroup: FormGroup;
-    medicationList: Array<any> = [];
+    reminderList: Array<any> = [];
 
     addOREdit: number;
 
@@ -57,7 +57,7 @@ export class ClinicalMedication implements OnInit, OnDestroy {
         });
 
         this.sharedS.changeEmitted$.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-            if (this.globalS.isCurrentRoute(this.router, 'medication')) {
+            if (this.globalS.isCurrentRoute(this.router, 'reminder')) {
                 console.log('sasd')
                 this.user = data;
                 this.search(data);
@@ -177,9 +177,9 @@ export class ClinicalMedication implements OnInit, OnDestroy {
         this.cd.reattach();
         this.loading = true;
 
-        this.listS.getclinicalmedications(user.id).subscribe(medication => {
+        this.listS.getclinicalreminder(user.id).subscribe(reminders => {
             this.loading = false;
-            this.medicationList = medication;
+            this.reminderList = reminders;
             this.cd.markForCheck();
         })        
     }

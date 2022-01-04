@@ -1,21 +1,21 @@
 <div nz-row>
     <div nz-col nzSpan="24">
-        <button class="botton success" (click)="showAddModal()">Add Procedure</button>
+        <button class="botton success" (click)="showAddModal()">Add Alert</button>
         <nz-table #sss [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false"
-            [nzData]="procedureList">
+            [nzData]="alertList">
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>ICDCODE</th>
-                    <th>Description</th>
+                    <th>Alert</th>
+                    <th>Notes</th>
                     <th class="action">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let data of sss.data;let i = index;trackBy: trackByFn">
                     <td class="left">{{ i+1  }}</td>
-                    <td>{{ data.icdcode}}</td>
-                    <td> {{ data.description }}</td>
+                    <td>{{ data.alert}}</td>
+                    <td>{{ data.notes }}</td>
                     <td>
                         <a (click)="updateconsentmodal(data)">Update</a>
                         <nz-divider nzType="vertical"></nz-divider>
@@ -28,7 +28,7 @@
     </div>
 </div>
 
-<nz-modal [(nzVisible)]="consentOpen" [nzTitle]="addOREdit == 0 ? 'Add Procedure' : 'Edit Procedure'" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+<nz-modal [(nzVisible)]="consentOpen" [nzTitle]="addOREdit == 0 ? 'Add Consent' : 'Edit Consent'" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
     <div>
         
         <div nz-row nzGutter="16">

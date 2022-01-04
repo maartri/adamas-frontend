@@ -32,3 +32,6 @@
     padding: 1rem;
     border-bottom: 1px solid rgb(230 230 230);
 }
+nz-checkbox-group >>> label{
+    display:block;
+}

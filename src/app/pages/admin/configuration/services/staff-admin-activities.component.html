@@ -98,7 +98,7 @@
                                         </div>
                                         <div nz-col nzSpan="12" class="text-right pad-r-5"> 
                                             <nz-select [nzDropdownMatchSelectWidth]="false" [nzSize]="'small'" formControlName="rosterGroup"  nzShowSearch nzAllowClear style="width:100%;">
-                                                <nz-option *ngFor="let main of mainGroupList" [nzLabel]="main"  [nzValue]="main"></nz-option>
+                                                <nz-option *ngFor="let main of mainGroupList | keyvalue" [nzValue]="main.key" [nzLabel]="main.value"></nz-option>
                                             </nz-select>
                                         </div>
                                     </div>
@@ -701,7 +701,7 @@
                                 <nz-divider nzText="Program Approved Against " nzOrientation="left" style="margin: 0px;color:#1890FF;"></nz-divider>
                             </div>
                             <div nz-col nzSpan="10">
-                                <!-- <div nz-col nzSpan="10" ><button style="background-color:#87d068" (click)="clearStaff()" nzSize="small" class="btn-staff" nz-button nzType="success">Select All </button></div> -->
+                                <div nz-col nzSpan="10"><button (click)="selectProgram()" nzSize="small" style="background-color:#87d068;color:white;" class="btn-staff" nz-button nzType="success">Select All </button></div>
                                 <div nz-col nzSpan="10"><button (click)="clearPrograms()" nzSize="small" class="btn-staff" nz-button nzType="danger">Unselect All </button></div>
                             </div>
                             <div nz-col nzSpan="14">

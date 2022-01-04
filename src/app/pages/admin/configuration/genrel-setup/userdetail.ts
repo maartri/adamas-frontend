@@ -41,6 +41,7 @@ export class UserDetail implements OnInit {
     whereString :string="Where ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
     temp_title: any;
     branchesList: any;
+    userList:any;
     diciplineList: any;
     casemanagers: any;
     categoriesList: any;
@@ -48,6 +49,7 @@ export class UserDetail implements OnInit {
     testcheck : boolean = false;
     selectedPrograms: any;
     selectedCordinators: any;
+    selectedReminders:any;
     selectedCategories: any;
     selectedStaffCategories: any;
     allBranches:boolean = true;
@@ -61,6 +63,9 @@ export class UserDetail implements OnInit {
     
     allCordinatore:boolean = true;
     allCordinatorIntermediate:boolean = false;
+
+    allReminders:boolean = true;
+    allRemindersIntermediate:boolean = false;
 
     allStaffCat:boolean = true;
     allStaffCatIntermediate:boolean = false;
@@ -94,6 +99,7 @@ export class UserDetail implements OnInit {
             this.loading = true;
             this.menuS.getUserList(this.check).subscribe(data => {
                 this.tableData = data;
+                this.userList  = data;
                 this.loading = false;
             });
         }
@@ -172,6 +178,21 @@ export class UserDetail implements OnInit {
                     }
                 }
             }
+            if(filter == 5 || filter == -1){
+                if(this.testcheck == false){
+                    if (this.allCordinatore) {
+                        console.log("reminders");
+                        this.userList.forEach(x => {
+                            x.checked = true;
+                        });
+                    }else{
+                        console.log("reminders false");
+                        this.userList.forEach(x => {
+                            x.checked = false;
+                        });
+                    }
+                }
+            }
             if(filter == 6 || filter == -1){
                 if(this.testcheck == false){
                     if (this.allStaffCat) {
@@ -236,6 +257,18 @@ export class UserDetail implements OnInit {
                     this.allCordinatore = false;
                 }
             }
+            if(index == 4){
+                if (this.userList.every(item => !item.checked)) {
+                    this.allReminders = false;
+                    this.allRemindersIntermediate = false;
+                } else if (this.userList.every(item => item.checked)) {
+                    this.allReminders = true;
+                    this.allRemindersIntermediate = false;
+                } else {
+                    this.allRemindersIntermediate = true;
+                    this.allReminders = false;
+                }
+            }
             if(index == 6){
                 if (this.staffjobcategories.every(item => !item.checked)) {
                     this.allStaffCat = false;
@@ -260,6 +293,8 @@ export class UserDetail implements OnInit {
             this.selectedCategories = event;
             if(index == 4)
             this.selectedCordinators = event;  
+            if(index == 4)
+            this.selectedReminders = event;
             if(index == 6)
             this.selectedStaffCategories = event;
         }
@@ -447,6 +482,7 @@ export class UserDetail implements OnInit {
                 buildForm() {
                     this.inputForm = this.formBuilder.group({
                         name: '',
+                        title:'',
                         end_date:'',
                         recordNumber:null,
                     });

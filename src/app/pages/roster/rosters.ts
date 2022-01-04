@@ -554,6 +554,12 @@ Cancel_ProceedBreachRoster(){
 }
 ProceedBreachRoster(){
     this.breachRoster=false;
+    if (this.token.role!= "ADMIN USER")
+    {
+        this.globalS.eToast("Permission Denied","You don't have permission to add conflicting rosters");
+        return; 
+    }
+    
     let sheet = this.spreadsheet.getActiveSheet();
     if (this.operation=='copy' ||this.operation=='cut'){
         // if (this.operation=="cut"){
@@ -2004,6 +2010,7 @@ ClearMultishift(){
                         self.selected_Cell=selected_Cell;
                         self.sel=sel;
                         self.pasting=true;
+                        let conflict:boolean=false;
                         ( function(next) {
                             for (let i=selected_Cell.col; i<selected_columns; i++){                     
                                 self.copy_value=sheet.getTag(selected_Cell.row,i,GC.Spread.Sheets.SheetArea.viewport)
@@ -2012,14 +2019,15 @@ ClearMultishift(){
                                     
                                  self.Check_BreachedRosterRules_Paste(self.copy_value.recordNo,self.operation,sel.row,sel.col).subscribe (res=>{
                                     if (res.errorValue>0){
-          
+                                        
                                         self.Error_Msg=res.errorValue +", "+ res.msg;
                                      //  this.breachRoster=true;
                                          self.pasting=false;
-                                         next(self.pasting)  
-                                                                                                      
+                                         if (!conflict)
+                                            next(self.pasting)  
+                                        conflict=true;                                                         
                                           //this.globalS.eToast('Error', res.errorValue +", "+ res.msg);
-                                    }else{
+                                    }else if (i>=(selected_columns-1)){
                                         next(self.pasting)                                                               
                                     }
                                 });
@@ -3631,7 +3639,7 @@ return rst;
     ngOnInit(): void {
 
         this.token = this.globalS.decode(); 
-
+        console.log(this.token);
         if (this.token==null){
 
             this.globalS.eToast("Authentication","Invalid  User, please login again");

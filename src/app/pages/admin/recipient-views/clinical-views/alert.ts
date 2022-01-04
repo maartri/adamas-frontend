@@ -29,7 +29,7 @@ export class ClinicalAlert implements OnInit, OnDestroy {
 
     consentOpen: boolean = false;
     consentGroup: FormGroup;
-    consents: Array<any> = [];
+    alertList: Array<any> = [];
 
     addOREdit: number;
 
@@ -177,9 +177,9 @@ export class ClinicalAlert implements OnInit, OnDestroy {
         this.cd.reattach();
         this.loading = true;
 
-        this.timeS.getconsents(user.id).subscribe(consents => {
+        this.listS.getclinicalalert(user.id).subscribe(alerts => {
             this.loading = false;
-            this.consents = consents;
+            this.alertList = alerts;
             this.cd.markForCheck();
         })        
     }

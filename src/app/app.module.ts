@@ -76,6 +76,8 @@ import {DocusignComponent} from './pages/docusign/docusign'
 
 import { ContextMenuModule } from 'ngx-contextmenu';
 
+import { NgSelectModule } from '@ng-select/ng-select';
+
 registerLocaleData(en);
 
 export function tokenGetter(request) {
@@ -102,7 +104,7 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
   ],
   imports: [
     BrowserModule,
-    // NgSelectModule,
+    NgSelectModule,
     FormsModule,
     CommonModule,
     ReactiveFormsModule,

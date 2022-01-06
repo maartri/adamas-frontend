@@ -971,7 +971,9 @@ start_adding_Booking(bCase:any){
     this.resetBookingFormModal();
     this.booking_case=bCase;
     this.isTravel=false;
+    
     if (this.booking_case==1){
+        this.selectedCarer='BOOKED';
         this.serviceType="BOOKED";
          this.bookingForm.patchValue({
             staffCode:"BOOKED"
@@ -1136,10 +1138,12 @@ addBooking(type:any){
                 this.current+=1;
             }
             let status:boolean=false;
-            if (this.viewType=="Recipient"){  
+            if (this.viewType=="Recipient" && this.type_to_add>1){  
               
                // this.getStaffAllocation(startTime);   
-                this.IsStaffAllocated(this.selectedCarer,this.date,startTime,this.durationObject.duration).subscribe(data=>{
+               if (this.selectedCarer=='!MULTIPLE' || this.selectedCarer=='!INTERNAL')
+                    this.addBookingModel=true;   
+               else  this.IsStaffAllocated(this.selectedCarer,this.date,startTime,this.durationObject.duration).subscribe(data=>{
                    
                     if (data.length>0){
                         this.globalS.wToast('Booking', `Staff ${this.selectedCarer} is already allocated in this date and time slot`);
@@ -1211,11 +1215,14 @@ deleteRoster(){
            if (sheet.getTag(data_row,i,GC.Spread.Sheets.SheetArea.viewport)==null ){
             data_row=data_row+1;
             continue;
-           }
-                                       
+           }           
+           
+                         
          if (sheet.getTag(data_row,i,GC.Spread.Sheets.SheetArea.viewport)!=null)
             this.cell_value=sheet.getTag(data_row,i,GC.Spread.Sheets.SheetArea.viewport)
         
+        if (this.cell_value.recordNo==null || this.cell_value.recordNo==0) continue;
+
         if (this.cell_value.recordNo==recdNo)
             continue;
         
@@ -1250,9 +1257,14 @@ reAllocate(){
     this.ProcessRoster("Re-Allocate", this.cell_value.recordNo);
     let sheet=this.spreadsheet.getActiveSheet();
     this.spreadsheet.suspendPaint();
-    this.remove_Cells(sheet,this.cell_value.row,this.cell_value.col,this.cell_value.duration)
-    this.spreadsheet.resumePaint();
+    //this.remove_Cells(sheet,this.cell_value.row,this.cell_value.col,this.cell_value.duration)
+    //this.cell_value.type = this.DETERMINE_SERVICE_TYPE_NUMBER(this.cell_value.service);
+    var text=   this.selectedCarer + " (" + this.cell_value.service.replace('BOOKED','') + ")";            
+    this.cell_value.type= this.DETERMINE_SERVICE_TYPE_NUMBER(this.cell_value.service) ;
+    this.draw_Cells(sheet,this.cell_value.row,this.cell_value.col,this.cell_value.duration,this.cell_value.type,this.cell_value.recordNo,text)
 
+    this.spreadsheet.resumePaint();
+   
 
 }
 
@@ -1263,7 +1275,16 @@ UnAllocate(){
     this.ProcessRoster("Un-Allocate", this.cell_value.recordNo);
     let sheet=this.spreadsheet.getActiveSheet();
     this.spreadsheet.suspendPaint();
-    this.remove_Cells(sheet,this.cell_value.row,this.cell_value.col,this.cell_value.duration)
+    //this.remove_Cells(sheet,this.cell_value.row,this.cell_value.col,this.cell_value.duration)
+    if (this.viewType=='Staff')
+        this.remove_Cells(sheet,this.cell_value.row,this.cell_value.col,this.cell_value.duration)
+    else{
+        this.cell_value.type = 1;
+        var service =this.cell_value.service.split("(")[1];
+        var text=    "BOOKED (" + service + ")"; 
+
+        this.draw_Cells(sheet,this.cell_value.row,this.cell_value.col,this.cell_value.duration,this.cell_value.type,this.cell_value.recordNo,text)
+    }
     this.spreadsheet.resumePaint();
 
 
@@ -2014,6 +2035,7 @@ ClearMultishift(){
                         ( function(next) {
                             for (let i=selected_Cell.col; i<selected_columns; i++){                     
                                 self.copy_value=sheet.getTag(selected_Cell.row,i,GC.Spread.Sheets.SheetArea.viewport)
+                                if (self.copy_value==null) continue;
                                 if (self.copy_value.recordNo==null || self.copy_value.recordNo==0) continue;
                                 setTimeout(() => {
                                     
@@ -2138,7 +2160,8 @@ ClearMultishift(){
   
                         if (sheet.getTag(sel.row,sel.col,GC.Spread.Sheets.SheetArea.viewport)==null)                       
                             return;
-                        
+
+                         
                         self.deleteRosterModal=true;   
                         self.operation="Delete";    
                         Commands.endTransaction(context, options);
@@ -2944,7 +2967,6 @@ Pasting_Records(selected_Cell:any,sel:any){
                                 self.isPaused=true;
                             
                             
-                            
                                                                                 
                                 if (self.operation==="cut"){
                                     self.ProcessRoster("Cut",self.copy_value.recordNo,rdate);
@@ -2956,6 +2978,7 @@ Pasting_Records(selected_Cell:any,sel:any){
                                 }// rows loop
                                    
                             }
+                      
 }
     selectedDays(value: string[]): void {
         this.weekDay=value
@@ -3213,7 +3236,7 @@ Pasting_Records(selected_Cell:any,sel:any){
 
                     this.txtAlertSubject = 'NEW SHIFT ADDED : ' ;
                     this.txtAlertMessage = 'NEW SHIFT ADDED : \n' + date + ' : \n'  + clientCode + '\n'  ;
-                
+                    this.show_alert=true;
                    
                 }
             }
@@ -4317,6 +4340,7 @@ IsStaffAllocated(s_StaffCode:string, s_Date : string, s_time:string, duration:nu
 {
     let status:any;
    
+    
 
     let sql=`SELECT [Client Code],[Start Time], LEFT(CONVERT(VARCHAR,DATEADD(Minute,[duration]*5,[Start Time]),108),5) as end_time FROM Roster 
     where [date] = '${moment(s_Date).format('YYYY/MM/DD')}' AND [Carer code]= '${s_StaffCode}' and

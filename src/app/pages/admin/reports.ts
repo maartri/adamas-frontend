@@ -711,6 +711,7 @@ stafftypeArr: Array<any> = constants.types;
 
         }
         
+        
         var date = new Date();
         let temp = new Date(date.getFullYear(), date.getMonth(), 1);
         let temp1 = new Date(date.getFullYear(), date.getMonth() + 1, 0);
@@ -4359,12 +4360,13 @@ stafftypeArr: Array<any> = constants.types;
 
         var sQl_Count = "Select Distinct UniqueID from (" + fQuery + ") cr"
 
+        fQuery = " Select Distinct AccountNo,[Activation Date] ,ONIRating , CONTACT, ADDRESS,LastDate from (  " +fQuery + " ) as t"
         
         /*   
         console.log(s_BranchSQL)
         console.log(s_CategorySQL)
         console.log(s_CoordinatorSQL)*/
-        // //////console.log(fQuery)
+       // //////console.log(fQuery)
         if (this.inputForm.value.printaslabel == true){ 
             this.reportid = "6dfbj72obyLi9qxJ"
             this.pdfTitle = "Carer list.pdf"
@@ -19465,7 +19467,8 @@ CustomReportSetting(){
         this.ReportS.GetReportNames('AGENCYSTFLIST') ,                        
         this.ReportS.GetReportNames('AGENCYLIST'),
         this.ReportS.GetReportNames('USERLIST'),
-        this.ReportS.GetReportNames('USERSTFLIST')
+        this.ReportS.GetReportNames('USERSTFLIST'),
+        this.listS.GetRptFilters()
     ]) 
     temp.subscribe(data => {       
         this.AGENCYSTFButtonlist = data[0];
@@ -19473,11 +19476,13 @@ CustomReportSetting(){
         this.RecpUserRptButtonlist = data[2];
         this.UserSTFButtonlist = data[3];
 
+    //    this.viewfilters = data[4];
+
     
     });
     
         this.frm_CustomRptbtn = true;
-        //console.log(this.AGENCYSTFButtonlist)
+     //   console.log(this.viewfilters)
         
    
    
@@ -19522,10 +19527,10 @@ FetchRuntimeReport(strtitle){
         this.RenderRunTimeReport((this.UserRptSQLlist.toString()).replace(re,"'"))
 
     });
+    
+    
 
-   
 
-   
 
 }
 RenderRunTimeReport(strSQL){

@@ -351,6 +351,7 @@ ngOnInit(){
                 });
             }
         });
+          
         this.rosterForm.get('program').valueChanges.pipe(
            // distinctUntilChanged(),
             switchMap(x => {
@@ -544,7 +545,11 @@ Cancel_ProceedBreachRoster(){
 }
 ProceedBreachRoster(){
     this.breachRoster=false;
-   
+    if (this.token.role!= "ADMIN USER")
+    {
+        this.globalS.eToast("Permission Denied","You don't have permission to add conflicting rosters");
+        return; 
+    }
     this.EditRoster_Entry();
    
 }

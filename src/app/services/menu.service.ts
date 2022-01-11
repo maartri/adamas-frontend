@@ -114,7 +114,6 @@ export class MenuService {
         /**
          *  Services competencies
         */
-
         getconfigurationservicescompetency(id: string): Observable<any> {
             return this.auth.get(`${menu}/services/competency/${id}`)
         }
@@ -129,6 +128,25 @@ export class MenuService {
     
         deleteconfigurationservicescompetency(recordNo: number): Observable<any> {
             return this.auth.delete(`${menu}/services/competency/${recordNo}`)
+        }
+        
+        /**
+         *  Services competencies
+        */
+        getconfigurationserviceschecklist(id: string): Observable<any> {
+            return this.auth.get(`${menu}/services/checklist/${id}`)
+        }
+
+        postconfigurationserviceschecklist(data: any): Observable<any> {
+            return this.auth.post(`${menu}/services/checklist`, data)
+        }
+       
+        updateconfigurationserviceschecklist(data: any): Observable<any> {
+            return this.auth.put(`${menu}/services/checklist`, data)
+        }
+    
+        deleteconfigurationserviceschecklist(recordNo: number): Observable<any> {
+            return this.auth.delete(`${menu}/services/checklist/${recordNo}`)
         }
         /***/
         /**

@@ -277,6 +277,7 @@ import { PayIntegrityComponent } from '@admin/billing/payIntegrity.component'; /
 import { CloseRosterComponent } from '@admin/billing/closeRoster.component'; //AHSAN
 import { MediaList } from '@admin/recipient-views/mediaList';
 import { UserDetail } from '@admin/configuration/genrel-setup/userdetail';
+import { Checklist } from '@admin/configuration/genrel-setup/checklist';
 
 const routes: Routes = [
   {
@@ -664,6 +665,10 @@ const routes: Routes = [
       {
         path:"customdataset",
         component:CustomDatasets,
+      },
+      {
+        path:"checklist",
+        component:Checklist,
       },
       {
         path:"postcodes",
@@ -1339,7 +1344,8 @@ export const PAGE_COMPONENTS = [
   OccupationComponent,
   PhoneemailtypesComponent,
   FinancialclassComponent,
-  CustomDatasets, 
+  CustomDatasets,
+  Checklist, 
   PostcodesComponent,
   HolidaysComponent,
   MedicalcontactComponent,

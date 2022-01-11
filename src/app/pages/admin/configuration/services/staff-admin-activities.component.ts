@@ -95,6 +95,7 @@ export class StaffAdminActivitiesComponent implements OnInit {
   ndiaItems: any;
   selectedPrograms:any;
   competencyForm: FormGroup;
+  chkListForm : FormGroup
   selectedCompetencies: any;
   parent_person_id: any;
   competencies: any;
@@ -103,6 +104,10 @@ export class StaffAdminActivitiesComponent implements OnInit {
   insertOne: number = 0;
   dataSetDropDowns: { CACP: string[]; CTP: string[]; DEX: string[]; DFC: string[]; DVA: any[]; HACC: string[]; HAS: string[]; QCSS: string[]; ICTD: string[]; NDIS: any[]; NRCP: string[]; NRCPSAR: string[]; OTHER: string[]; };
   dataset_group: any;
+  chklstmodal: boolean;
+  selectedChklst: any[];
+  chkList: any;
+  checkList: any;
   constructor(
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
@@ -162,7 +167,9 @@ export class StaffAdminActivitiesComponent implements OnInit {
     logs(event: any) {
       this.selectedCompetencies = event;
     }
-    
+    chklog(event: any) {
+      this.selectedChklst = event;
+    }
     loadTitle()
     {
       return this.title;
@@ -179,15 +186,21 @@ export class StaffAdminActivitiesComponent implements OnInit {
       this.current = 0;
       this.modalOpen = true;
       this.inputForm.patchValue(this.tableData[index-1]); 
-      //this.parent_person_id = recordNumber; //set person id for programs and competencies
+      this.parent_person_id = this.tableData[index-1].recnum; //set person id for programs and competencies and checklist
     }
     
     handleCancel() {
+      this.isUpdate = false;
+      this.resetModal();
       this.modalOpen = false;
     }
     handleCompCancel() {
       this.addOrEdit = 0;
       this.competencymodal = false;
+    }
+    handleChkLstCancel(){
+      this.addOrEdit = 0;
+      this.chklstmodal = false;
     }
     handleAprfCancel(){
       this.staffApproved = false;
@@ -196,9 +209,30 @@ export class StaffAdminActivitiesComponent implements OnInit {
       this.staffUnApproved = false;
     }
     showCompetencyModal(){
+      if(this.globalS.isEmpty(this.inputForm.get('title').value) 
+        || this.globalS.isEmpty(this.inputForm.get('iT_Dataset').value)
+        || this.globalS.isEmpty(this.inputForm.get('datasetGroup').value)
+      )
+      {
+        this.globalS.iToast('Info','can not create this record beacuse there are blank entries');  
+        return;
+      }
       this.addOrEdit = 0;
       this.competencymodal = true;
       this.clearCompetency();
+    }
+    showChkLstModal(){
+      if(this.globalS.isEmpty(this.inputForm.get('title').value) 
+        || this.globalS.isEmpty(this.inputForm.get('iT_Dataset').value)
+        || this.globalS.isEmpty(this.inputForm.get('datasetGroup').value)
+      )
+      {
+        this.globalS.iToast('Info','can not create this record beacuse there are blank entries');  
+        return;
+      }
+      this.addOrEdit = 0;
+      this.chklstmodal = true;
+      this.clearChkList();
     }
     handleCompetencyCancel(){
       this.competencymodal = false;
@@ -212,9 +246,15 @@ export class StaffAdminActivitiesComponent implements OnInit {
       return '1' == data ? true : false;
     }
     onIndexChange(index: number): void {
-      if(index == 7){
-        this.loadCompetency();
-      }
+      // if(this.isUpdate)
+      // {
+        if(index == 7){
+          this.loadCompetency();
+        }
+        if(index == 8){
+          this.loadChecklist();
+        }
+      // }
       this.current = index;
     }
     save() {
@@ -284,11 +324,62 @@ export class StaffAdminActivitiesComponent implements OnInit {
             });
           }
         }
+        saveCheckList(){
+          this.postLoading = true;
+          const group = this.chkListForm.value;
+          this.insertOne = 0;
+          if(this.addOrEdit == 0){
+            if(!this.isUpdate){
+              if(!this.isNewRecord){
+                this.save();
+              }
+            }
+            var checklists = this.selectedChklst;
+            checklists.forEach( (element) => {
+              this.menuS.postconfigurationserviceschecklist({
+                competencyValue:element,
+                personID:this.parent_person_id,
+              }).pipe(
+                takeUntil(this.unsubscribe)).subscribe(data => {
+                  this.insertOne = 1;
+                })
+              });
+              
+              this.globalS.sToast('Success', 'CheckList Added');
+              this.postLoading = false;
+              this.loadChecklist();
+              this.handleChkLstCancel();
+              return false;
+            }
+            else
+            {
+              this.menuS.updateconfigurationserviceschecklist({
+                competencyValue:group.chkListValue,
+                recordNumber:group.recordNumber,
+              }).pipe(
+                takeUntil(this.unsubscribe)).subscribe(data => {
+                  if(data){
+                    this.globalS.sToast('Success','CheckList Updated')
+                    this.postLoading = false;
+                    this.loadChecklist();
+                    this.handleChkLstCancel();
+                    return false;
+                  }
+                });
+              }
+        }
+
         clearCompetency(){
           this.competencyList.forEach(x => {
             x.checked = false
           });
           this.selectedCompetencies = [];
+        }
+        clearChkList(){
+          this.chkList.forEach(x => {
+            x.checked = false
+          });
+          this.selectedChklst = [];
         }
         editCompetencyModal(data:any){
           this.addOrEdit = 1;
@@ -310,6 +401,25 @@ export class StaffAdminActivitiesComponent implements OnInit {
             }
           });
         }
+        editChecklistModal(data:any){
+          this.addOrEdit = 1;
+          this.chkListForm.patchValue({
+            chkListValue : data.checklist,
+            recordNumber:data.recordNumber,
+          })
+          this.chklstmodal = true;
+        }
+        deleteChecklist(data:any){
+          this.loading = true;
+          this.menuS.deleteconfigurationserviceschecklist(data.recordNumber)
+          .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (data) {
+              this.globalS.sToast('Success', 'Data Deleted!');
+              this.loadChecklist();
+              return;
+            }
+          });
+        }
         loadData(){
           this.loading = true;
           this.menuS.GetlistStaffAdminActivities(this.check).subscribe(data => {
@@ -317,13 +427,17 @@ export class StaffAdminActivitiesComponent implements OnInit {
             this.loading = false;
             this.cd.detectChanges();
           });
-          // this.listS.getitemtypesparams().subscribe(data => {
-          //   console.log(data);
-          // });
         }
         loadCompetency(){
           this.menuS.getconfigurationservicescompetency(this.parent_person_id).subscribe(data => {
             this.checkedList = data;
+            this.loading = false;
+            this.cd.detectChanges();
+          });
+        }
+        loadChecklist(){
+          this.menuS.getconfigurationserviceschecklist(this.parent_person_id).subscribe(data => {
+            this.checkList = data;
             this.loading = false;
             this.cd.detectChanges();
           });
@@ -388,24 +502,28 @@ export class StaffAdminActivitiesComponent implements OnInit {
           this.listS.getlist(sql4).subscribe(data => {
             this.contactTypes = data;
           });
-          let sql1 ="SELECT distinct Description from DataDomains Where  Domain = 'BUDGETGROUP'";
+          let sql1 ="SELECT distinct Description from DataDomains Where  Domain = 'BUDGETGROUP' AND ((EndDate IS NULL) OR (EndDate > Getdate()))";
           this.loading = true;
           this.listS.getlist(sql1).subscribe(data => {
             this.budgetGroupList = data;
           });
           
-          let sql2 ="SELECT distinct Description from DataDomains Where  Domain = 'DISCIPLINE'";
+          let sql2 ="SELECT distinct Description from DataDomains Where  Domain = 'DISCIPLINE' AND ((EndDate IS NULL) OR (EndDate > Getdate()))";
           this.loading = true;
           this.listS.getlist(sql2).subscribe(data => {
             this.diciplineList = data;
           });
           
-          let comp = "SELECT distinct Description as name from DataDomains Where  Domain = 'STAFFATTRIBUTE' ORDER BY Description";
+          let comp = "SELECT distinct Description as name from DataDomains Where  Domain = 'STAFFATTRIBUTE' AND ((EndDate IS NULL) OR (EndDate > Getdate())) ORDER BY Description";
           this.listS.getlist(comp).subscribe(data => {
             this.competencyList = data;
             this.loading = false;
           });  
-          
+          let chk = "SELECT distinct Description as name from DataDomains Where  Domain = 'CHECKLIST' AND ((EndDate IS NULL) OR (EndDate > Getdate())) ORDER BY Description";
+          this.listS.getlist(chk).subscribe(data => {
+            this.chkList = data;
+            this.loading = false;
+          });
           let prog = "select distinct Name from HumanResourceTypes WHERE [GROUP]= 'PROGRAMS' AND ((EndDate IS NULL) OR (EndDate > Getdate()))";
           this.listS.getlist(prog).subscribe(data => {
             this.programz = data;
@@ -423,7 +541,7 @@ export class StaffAdminActivitiesComponent implements OnInit {
         activateDomain(data: any) {
           this.postLoading = true;     
           const group = this.inputForm;
-          this.menuS.activeDomain(data.recordNumber)
+          this.menuS.activeDomain(data.recnum)
           .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (data) {
               this.globalS.sToast('Success', 'Data Activated!');
@@ -433,9 +551,10 @@ export class StaffAdminActivitiesComponent implements OnInit {
           });
         }
         delete(data: any) {
+          console.log(data);
           this.postLoading = true;     
           const group = this.inputForm;
-          this.menuS.deleteActivityServiceslist(data.recordNumber)
+          this.menuS.deleteActivityServiceslist(data.recnum)
           .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (data) {
               this.globalS.sToast('Success', 'Data Deleted!');
@@ -565,7 +684,13 @@ export class StaffAdminActivitiesComponent implements OnInit {
             personID: this.parent_person_id,
             recordNumber: 0
           });
-          
+          this.chkListForm = this.formBuilder.group({
+            chkListValue: '',
+            mandatory: false,
+            notes: '',
+            personID: this.parent_person_id,
+            recordNumber: 0
+          })
           this.inputForm.get('iT_Dataset').valueChanges.subscribe(x => {
             this.dataset_group = [];  
             this.dataset_group = this.dataSetDropDowns[x];

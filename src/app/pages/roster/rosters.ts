@@ -581,7 +581,7 @@ Check_BreachedRosterRules_Paste(RecNo:number, action:string,row : number, col : 
     //It is still not being used
     this.current_roster = this.find_roster(RecNo)
     let clientCode= this.current_roster.clientCode;
-     let sheet = this.spreadsheet.getActiveSheet();
+    let sheet = this.spreadsheet.getActiveSheet();
     //     let range = sheet.getSelections();
     //     let col= range[0].col;
         let dt= sheet.getTag(0,col,GC.Spread.Sheets.SheetArea.colHeader);                       
@@ -604,7 +604,7 @@ Check_BreachedRosterRules_Paste(RecNo:number, action:string,row : number, col : 
          PasteAction : action=="cut" ? "Cut": "Copy"
     };
 
-    return    this.timeS.Check_BreachedRosterRules(inputs_breach);
+    return inputs_breach; //    this.timeS.Check_BreachedRosterRules(inputs_breach);
 
     
 }
@@ -2030,97 +2030,43 @@ ClearMultishift(){
                         col=col-1;
                         self.selected_Cell=selected_Cell;
                         self.sel=sel;
+                        var recordsData:Array<any>=[];
                         self.pasting=true;
                         let conflict:boolean=false;
-                        ( function(next) {
-                            for (let i=selected_Cell.col; i<selected_columns; i++){                     
+                        (  function(next) {
+                                                                                              
+                            for (let i=selected_Cell.col; i<selected_columns && !conflict; i++){                     
                                 self.copy_value=sheet.getTag(selected_Cell.row,i,GC.Spread.Sheets.SheetArea.viewport)
                                 if (self.copy_value==null) continue;
                                 if (self.copy_value.recordNo==null || self.copy_value.recordNo==0) continue;
-                                setTimeout(() => {
-                                    
-                                 self.Check_BreachedRosterRules_Paste(self.copy_value.recordNo,self.operation,sel.row,sel.col).subscribe (res=>{
-                                    if (res.errorValue>0){
-                                        
-                                        self.Error_Msg=res.errorValue +", "+ res.msg;
-                                     //  this.breachRoster=true;
-                                         self.pasting=false;
-                                         if (!conflict)
-                                            next(self.pasting)  
-                                        conflict=true;                                                         
-                                          //this.globalS.eToast('Error', res.errorValue +", "+ res.msg);
-                                    }else if (i>=(selected_columns-1)){
-                                        next(self.pasting)                                                               
-                                    }
-                                });
-                            },100);
-                            
-                            if (!self.pasting) break;
+                                    recordsData.push(self.Check_BreachedRosterRules_Paste(self.copy_value.recordNo,self.operation,sel.row,sel.col))
                                                                   
-                        }    
-                            
+                            }    
+                            //let tt=JSON.stringify(recordsData)
+                            self.timeS.pastingRosters(JSON.stringify(recordsData)).subscribe(data=>{
+                            let res=data[0];
+                            if (res.errorValue>0){
+                                self.Error_Msg=res.errorValue +", "+ res.msg ;
+                                self.breachRoster=true; 
+                                self.pasting=false;                              
+                                next(self.pasting);
+                            }else{
+                                self.pasting=true;
+                                next(self.pasting); 
+
+                            }
+
+                        })                        
                             
                     }  
-                                            
-                          (function(continu:boolean) {
+                    (function(continu:boolean) {
                            
                             if (continu){
                                 self.Pasting_Records(selected_Cell,sel)
                             }else{
                                 self.breachRoster=true;
                             }
-
-                            // now wait for firstFunction to finish...
-                            // do something else
-                            // for (let i=selected_Cell.col; i<selected_columns; i++)                     
-                            // {
-                            //     data_row=selected_Cell.row;
-                                
-                            //     col=col+1;
-                            
-                            //     for ( row_iterator=0; row_iterator<=selected_Cell.rowCount; row_iterator++){
-                            //     if (sheet.getTag(data_row,i,GC.Spread.Sheets.SheetArea.viewport)==null ){
-                            //         data_row=data_row+1;
-                            //         continue;
-                            //     }
-                                                            
-                            //     if (sheet.getTag(data_row,i,GC.Spread.Sheets.SheetArea.viewport)!=null)
-                            //         self.copy_value=sheet.getTag(data_row,i,GC.Spread.Sheets.SheetArea.viewport)
-                                
-                            //     if (self.copy_value.recordNo==recdNo)
-                            //         continue;
-                                
-                            //     recdNo=self.copy_value.recordNo;
-                            //     var cell_col_text=sheet.getValue(0,col,GC.Spread.Sheets.SheetArea.colHeader);
-                            //     console.log(cell_col_text);
-                            //     var col_date= cell_col_text.substring(cell_col_text.length-2,cell_col_text.length);
-                            
-                            //     let rdate = dt.getFullYear() + "/" + self.numStr(dt.getMonth()+1) + "/" + self.numStr(col_date.trim());
-                        
-                            //     if (self.copy_value==null || self.copy_value.recordNo==null || self.copy_value.recordNo==0){
-                            //         continue;
-                            //     }
-
-                            
-                            //     //if (self.copy_value.row>=0){
-                            //     let n_row=row+row_iterator;
-                            //     self.draw_Cells(sheet,n_row,col,self.copy_value.duration,self.copy_value.type,self.copy_value.recordNo,self.copy_value.service)
-                            //     self.isPaused=true;
-                            
-                            
-                            
-                                                                                
-                            //     if (self.operation==="cut"){
-                            //         self.ProcessRoster("Cut",self.copy_value.recordNo,rdate);
-                            //         self.remove_Cells(sheet,self.copy_value.row,self.copy_value.col,self.copy_value.duration)
-                            //     }else
-                            //         self.ProcessRoster("Copy",self.copy_value.recordNo,rdate);    
-                                
-                            //     data_row=data_row+1;                 
-                            //     }// rows loop
-                                   
-                            // }
-                        
+    
                     }))
 
                   

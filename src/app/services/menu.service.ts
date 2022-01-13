@@ -34,7 +34,7 @@ export class MenuService {
 
         
         /*******************************************************
-         *  Staff Admin Activities
+         *  Services activities
         */
 
         getlistServices(is_where: boolean):Observable<any>{
@@ -43,6 +43,10 @@ export class MenuService {
         
         postServices(data: any): Observable<any> {
             return this.auth.post(`${menu}/Services/`, data)
+        }
+
+        updateServices(data: any): Observable<any> {
+            return this.auth.put(`${menu}/Services/`, data)
         }
 
         /** */
@@ -57,32 +61,36 @@ export class MenuService {
         postItemConsumables(data: any): Observable<any> {
             return this.auth.post(`${menu}/itemConsumable/`, data)
         }
-
+        updateItemConsumables(data: any): Observable<any> {
+            return this.auth.put(`${menu}/itemConsumable/`, data)
+        }
         /** */
 
         /**
-         *  Staff Admin Activities
+         *  Staff Menu Meals
         */
-
         getlistMenuMeals(is_where: boolean):Observable<any>{
             return this.auth.get(`${menu}/menuMeals/${is_where}`)
         }
-
         postMenuMeals(data: any): Observable<any> {
             return this.auth.post(`${menu}/menuMeals/`, data)
         }
-        
+        updateMenuMeals(data: any): Observable<any> {
+            return this.auth.put(`${menu}/menuMeals/`, data)
+        }
         /** */
 
         /**
-         *  Staff Admin Activities
+         *  Staff Case Management
         */
         GetlistcaseManagement(is_where: boolean):Observable<any>{
             return this.auth.get(`${menu}/caseManagement/${is_where}`)
         }
-        
         postcaseManagement(data: any): Observable<any> {
             return this.auth.post(`${menu}/caseManagement/`, data)
+        }
+        updatecaseManagement(data: any): Observable<any> {
+            return this.auth.put(`${menu}/caseManagement/`, data)
         }
         /** */
 
@@ -96,7 +104,6 @@ export class MenuService {
         poststaffAdminActivities(data: any): Observable<any> {
             return this.auth.post(`${menu}/staffAdminActivities/`, data)
         }
-        
         updatestaffAdminActivities(data: any): Observable<any> {
             return this.auth.put(`${menu}/staffAdminActivities/`, data)
         }
@@ -110,6 +117,9 @@ export class MenuService {
         }
         postRecipientAbsenses(data: any): Observable<any> {
             return this.auth.post(`${menu}/recipientAbsenses/`, data)
+        }
+        updateRecipientAbsenses(data: any): Observable<any> {
+            return this.auth.put(`${menu}/recipientAbsenses/`, data)
         }
         /**
          *  Services competencies

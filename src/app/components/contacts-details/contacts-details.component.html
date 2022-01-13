@@ -162,10 +162,15 @@
             <div *ngIf="current == 1">
                 <div nz-row class="mrg-btm-2">
                     <label for="">Contact Type</label>
-                    <nz-select [nzDropdownMatchSelectWidth]="false" style="width:100%" formControlName="type"  nzShowSearch nzAllowClear
-                    nzPlaceHolder="Select a Contact Type">
+                    <!-- <nz-select [nzDropdownMatchSelectWidth]="false" style="width:100%" formControlName="type"  nzShowSearch nzAllowClear
+                        nzPlaceHolder="Select a Contact Type">
                     <nz-option *ngFor="let d of contactTypes" [nzLabel]="d" [nzValue]="d"></nz-option>
-                    </nz-select>
+                    </nz-select> -->
+                    <ng-select [items]="contactTypes" oninput="this.value = this.value.toUpperCase()"
+                            [addTag]="true" 
+                            formControlName="type"
+                            >
+                    </ng-select>
                 </div>
                 <div nz-row class="mrg-btm-2">
                     <ng-container *ngIf="inputForm?.get('type').value != 'DOCTORS' ">

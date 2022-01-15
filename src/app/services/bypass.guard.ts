@@ -23,7 +23,7 @@ export class ByPassGuard implements CanActivate{
         private router: Router,
         private loginS: LoginService,
     ){
-
+        
     }
  
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean{  

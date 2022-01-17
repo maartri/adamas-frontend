@@ -48,8 +48,7 @@ export interface ApplicationUser {
     Username: string,
     Password: string,
     NewPassword?: string,
-    PasswordHandler?: string,
-    Bypass?: boolean
+    PasswordHandler?: string
 }
 
 export interface Jwt {

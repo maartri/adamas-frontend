@@ -40,7 +40,6 @@
     "bootstrap": "^3.3.7",
     "bootstrap-css-only": "^4.4.1",
     "cropperjs": "^1.5.7",
-    "crypto-js": "^4.1.1",
     "date-fns": "^2.8.0",
     "faker": "^5.1.0",
     "file-saver": "^2.0.2",

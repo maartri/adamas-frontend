@@ -438,13 +438,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     }
     listOfData: Array<{ name: string; age: number; address: string }> = [];
     ngOnInit(): void {
-      
-      // this.globalS.token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUwMDAvIiwiYXVkIjoiY2xpZW50cG9ydGFsIiwibmFtZWlkIjoic3lzbWdyIiwiaWF0IjoxNjQyMTI1NDcyLCJleHAiOjE2NDIxNzk0NzUsIm5iZiI6MTY0MjEyNTQ3MiwiY29kZSI6IlNLRUVORSBST0RFUklHTyIsInJvbGUiOiJBRE1JTiBVU0VSIiwidXNlciI6IlNZU01HUiIsInVuaXF1ZUlEIjoiUzAxMDAwMDUzOTMiLCJjYW5DaG9vc2VQcm92aWRlciI6IkZhbHNlIiwicmVjaXBpZW50RG9jRm9sZGVyIjoiQzpcXEFkYW1hc1xcU3VwcG9ydFxcQ3JhbmVzIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQURNSU4gVVNFUiIsImp0aSI6ImZhMzU2ZmU0LWU4N2QtNGExOC05MDA4LTYwNDQyNWQyZTUwMyJ9.LOmuL9GwvWAtacoStsIl9-cAESqClezqCeege08G52I"
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
-      // this.tocken ={"iss":"http://localhost:5000/","aud":"clientportal","nameid":"sysmgr","iat":1642115732,"exp":1642169735,"nbf":1642115732,"code":"SKEENE RODERIGO","role":"ADMIN USER","user":"SYSMGR","uniqueID":"S0100005393","canChooseProvider":"False","recipientDocFolder":"C:\\Adamas\\Support\\Cranes","http://schemas.microsoft.com/ws/2008/06/identity/claims/role":"ADMIN USER","jti":"18aecec4-c164-448a-b8d6-d714eb50cd19"}
-
-      // console.log(JSON.stringify(this.tocken));
-
       for (let i = 0; i < 100; i++) {
         this.listOfData.push({
           name: `Edward King`,
@@ -452,7 +446,6 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
           address: `LondonLondonLondonLondonLondon`
         });
       } 
-
       this.nodelist = nodes;
       this.getRights(this.tocken.user);
       this.getUserData();

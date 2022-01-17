@@ -138,9 +138,7 @@ import {
 import {
   RouteGuard,
   AdminStaffRouteGuard,
-  CanDeactivateGuard,
-  LoginGuard,
-  ByPassGuard
+  CanDeactivateGuard
 } from '@services/index'
 
 import {
@@ -281,190 +279,10 @@ import { MediaList } from '@admin/recipient-views/mediaList';
 import { UserDetail } from '@admin/configuration/genrel-setup/userdetail';
 import { Checklist } from '@admin/configuration/genrel-setup/checklist';
 
-
-import { RecipientComponent } from './pages/standalone-app/recipient/recipient.component';
-
 const routes: Routes = [
   {
     path: '',
-    component: LoginComponent,
-    canActivate: [ByPassGuard]
-  },
-  {
-    path: 'sys-redirect',
-    component: RecipientComponent,
-    children: [
-      {
-        path: 'recipient',
-        component: RecipientsAdmin,
-        children: [
-          {
-            path: 'personal',
-            component: RecipientPersonalAdmin
-          },
-          {
-            path: 'contacts',
-            component: RecipientContactsAdmin
-          },
-          {
-            path: 'accounting',
-            component: RecipientAccountingAdmin,
-            children: [
-              {
-                path: '',
-                redirectTo: 'profile',
-                pathMatch: 'full'
-              },
-              {
-                path: 'profile',
-                component: ProfileAccounting
-              },
-              {
-                path: 'accounting',
-                component: AccountingHistory
-              },
-            ]
-          },
-          {
-            path: 'intake',
-            component: RecipientIntakeAdmin,
-            children: [
-              {
-                path: '',
-                redirectTo: 'branches',
-                pathMatch: 'full'
-              },
-              {
-                path: 'alerts',
-                component: IntakeAlerts
-              },
-              {
-                path: 'branches',
-                component: IntakeBranches
-              },
-              {
-                path: 'consents',
-                component: IntakeConsents
-              },
-              {
-                path: 'funding',
-                component: IntakeFunding
-              },
-              {
-                path: 'goals',
-                component: IntakeGoals
-              },
-              {
-                path: 'groups',
-                component: IntakeGroups
-              },
-              {
-                path: 'plans',
-                component: IntakePlans
-              },
-              {
-                path: 'services',
-                component: IntakeServices
-              },
-              {
-                path: 'staff',
-                component: IntakeStaff
-              }
-            ]
-          },
-          {
-            path: 'clinical',
-            component: RecipientClinicalAdmin,
-            children: [
-              {
-                path: '',
-                redirectTo: 'diagnose',
-                pathMatch: 'full'
-              },
-              {
-                path: 'diagnose',
-                component: ClinicalDiagnose
-              },
-              {
-                path: 'procedure',
-                component: ClinicalProcedure
-              },
-              {
-                path: 'medication',
-                component: ClinicalMedication
-              },
-              {
-                path: 'reminder',
-                component: ClinicalReminder
-              },
-              {
-                path: 'alert',
-                component: ClinicalAlert,
-              },
-              {
-                path: 'note',
-                component: ClinicalNote,
-              },
-              
-            ]
-          },
-          {
-            path: 'reminders',
-            component: RecipientRemindersAdmin
-          },
-          {
-            path: 'documents',
-            component: RecipientDocumentsAdmin
-          },
-          {
-            path: 'attendance',
-            component: RecipientAttendanceAdmin,
-            canDeactivate: [CanDeactivateGuard]
-          },
-          {
-            path: 'accounting',
-            component: RecipientAccountingAdmin
-          },
-          {
-            path: 'others',
-            component: RecipientOthersAdmin,
-            canDeactivate: [CanDeactivateGuard]
-          },
-          {
-            path: 'opnote',
-            component: RecipientOpnoteAdmin
-          },
-          {
-            path: 'casenote',
-            component: RecipientCasenoteAdmin
-          },
-          {
-            path: 'incidents',
-            component: RecipientIncidentAdmin
-          },
-          {
-            path: 'perm-roster',
-            component: RecipientPermrosterAdmin
-          },
-          {
-            path: 'history',
-            component: RecipientHistoryAdmin
-          },
-          {
-            path: 'insurance-pension',
-            component: RecipientPensionAdmin
-          },
-          {
-            path: 'quotes',
-            component: RecipientQuotesAdmin
-          },
-          {
-            path: 'media',
-            component: MediaList,
-          }
-        ]
-      }
-    ]
+    component: LoginComponent
   },
   {
     path: 'client',
@@ -1185,7 +1003,8 @@ const routes: Routes = [
       {
         path: 'gnotes',
         component:GNotes
-      },      
+      },
+      
       {
         path: 'staff',
         component: StaffAdmin,

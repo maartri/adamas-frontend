@@ -53,8 +53,7 @@ import {
   VersionCheckService,
   MenuService,
   JsreportService,
-  PrintService,
-  ByPassGuard
+  PrintService  
 } from './services/index';
 
 import { IconsProviderModule } from './icons-provider.module';
@@ -77,9 +76,6 @@ import {DocusignComponent} from './pages/docusign/docusign'
 
 import { ContextMenuModule } from 'ngx-contextmenu';
 
-import { NgSelectModule } from '@ng-select/ng-select';
-import { RecipientComponent } from './pages/standalone-app/recipient/recipient.component';
-
 registerLocaleData(en);
 
 export function tokenGetter(request) {
@@ -101,8 +97,8 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     BranchesComponent,
     FundingRegionsComponent,
     DocusignComponent,
-    ReplaceNullWithTextPipe,
-    RecipientComponent    
+    ReplaceNullWithTextPipe
+    
   ],
   imports: [
     BrowserModule,
@@ -175,8 +171,7 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     CurrencyPipe, DatePipe, DecimalPipe, TitleCasePipe,
     MenuService,
     JsreportService,
-    PrintService,
-    ByPassGuard
+    PrintService
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]

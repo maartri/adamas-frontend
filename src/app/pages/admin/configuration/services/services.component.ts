@@ -172,6 +172,7 @@ export class ServicesComponent implements OnInit {
       this.modalOpen = true;
       this.inputForm.patchValue(this.tableData[index-1]);
       this.parent_person_id = this.tableData[index-1].recnum; //set person id for programs and competencies and checklist
+      console.log(this.parent_person_id + "person" + this.tableData[index-1]);
     }
     onIndexChange(index: number): void {
       this.current = index;

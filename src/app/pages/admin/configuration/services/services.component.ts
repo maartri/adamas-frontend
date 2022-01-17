@@ -170,9 +170,9 @@ export class ServicesComponent implements OnInit {
       this.isUpdate = true;
       this.current = 0;
       this.modalOpen = true;
-      this.inputForm.patchValue(this.tableData[index-1]);
-      this.parent_person_id = this.tableData[index-1].recnum; //set person id for programs and competencies and checklist
-      console.log(this.parent_person_id + "person" + this.tableData[index-1]);
+      this.inputForm.patchValue(this.tableData[index-1]); 
+      this.parent_person_id = this.tableData[index-1].recordNumber; //set person id for programs and competencies and checklist
+      console.log(this.parent_person_id + "person" + this.tableData[index-1] +"-----"+ this.tableData[index-1].recordNumber);
     }
     onIndexChange(index: number): void {
       this.current = index;
@@ -343,10 +343,7 @@ export class ServicesComponent implements OnInit {
           });
         }
         showChkLstModal(){
-          if(this.globalS.isEmpty(this.inputForm.get('title').value) 
-            || this.globalS.isEmpty(this.inputForm.get('iT_Dataset').value)
-            || this.globalS.isEmpty(this.inputForm.get('datasetGroup').value)
-          )
+          if(this.globalS.isEmpty(this.inputForm.get('title').value))
           {
             this.globalS.iToast('Info','can not create this record beacuse there are blank entries');  
             return;
@@ -497,7 +494,11 @@ export class ServicesComponent implements OnInit {
             this.competencyList = data;
             this.loading = false;
           });  
-          
+          let chk = "SELECT distinct Description as name from DataDomains Where  Domain = 'CHECKLIST' AND ((EndDate IS NULL) OR (EndDate > Getdate())) ORDER BY Description";
+          this.listS.getlist(chk).subscribe(data => {
+            this.chkList = data;
+            this.loading = false;
+          });
           let prog = "select distinct Name from HumanResourceTypes WHERE [GROUP]= 'PROGRAMS' AND ((EndDate IS NULL) OR (EndDate > Getdate()))";
           this.listS.getlist(prog).subscribe(data => {
             this.programz = data;

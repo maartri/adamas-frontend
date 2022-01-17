@@ -996,7 +996,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     clientCode: this.user.code,
                     carerCode: this.token.code,                   
                     
-                    serviceType: programChecked,
+                    serviceType: referralType,
                     date: format(date,'yyyy/MM/dd'),
                     time: format(time,'HH:mm'),
                     
@@ -1038,9 +1038,7 @@ export class RecipientsOptionsComponent implements OnInit, OnChanges, OnDestroy 
                     }
                   }
 
-                  // console.log(data);
-                  // return;
-                  
+                                  
                   this.listS.postreferralout(data).subscribe(data => {
                     this.globalS.sToast('Success', 'Package is saved');
                   });

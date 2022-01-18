@@ -22,7 +22,7 @@
   }
   
   .gc-corner-normal {
-    background-color: #6a6a6a;
+    background-color: #002060;
   }
   
   .gc-rowHeaderFill {
@@ -45,7 +45,7 @@
   
   .gc-selection {
     background-color: rgba(20, 20, 20, 0.2);
-    border-color: #217346;
+    border-color: #46129b;
     color: rgba(240, 240, 240, 0.7);
   }
   
@@ -147,7 +147,7 @@
   .gc-columnHeader-hover {
     color: #ffffff;
     background-image: none;
-    background-color: #1f224e;
+    background-color: #a5d3e0;
     border-style: solid;
     border-left-color: #9c9c9c !important;
     border-right-color: #d2d2d2 !important;
@@ -156,7 +156,7 @@
   
   .gc-columnHeader-selected {
     color: #ffffff;
-    background-color: #217346;
+    background-color: #002060;
     background-image: none;
     border-style: solid;
     border-left-color: #9c9c9c !important;
@@ -165,9 +165,9 @@
   }
   
   .gc-columnHeader-highlight {
-    color: #ffffff;
+    color: #ffffff;    
     background-image: none;
-    background-color: #c2c2da;
+    background-color: #85B9D5 !important; 
     border-style: solid;
     border-left-color: #9c9c9c !important;
     border-right-color: #d2d2d2 !important;
@@ -175,18 +175,19 @@
   }
   
   .gc-columnHeader-normal {
-    color: #ffffff;
+    color: #eaeef1;
     background-image: none;
     background-color: #6a6a6a;
     border-style: solid;
     border-left-color: #9c9c9c !important;
     border-right-color: #d2d2d2 !important;
     border-bottom-color: #999999 !important;
+    padding-left: auto;
   }
   
   .gc-rowHeader-hover {
     color: #ffffff;
-    background-color: #271b5e;
+    background-color: #F18805;
     background-image: none;
     border-style: solid;
     border-top-color: #9c9c9c !important;
@@ -206,7 +207,7 @@
   
   .gc-rowHeader-highlight {
     color: #ffffff;
-    background-color: #c2c2da;
+    background-color: #F18805;
     background-image: none;
     border-style: solid;
     border-top-color: #9c9c9c !important;
@@ -216,7 +217,7 @@
   
   .gc-rowHeader-normal {
     color: #ffffff;
-    background-color: #6a6a6a;
+    background-color: #f0e4e4;
     background-image: none;
     border-style: solid;
     border-top-color: #9c9c9c !important;
@@ -235,7 +236,7 @@
     /* For old Opera (11.1 to 12.0) */
     background-image: linear-gradient(to bottom, #f0f0f0, #f0f0f0);
     /* Standard syntax; must be last */
-    background-color: #f0f0f0;
+    background-color: #F18805;
     border-style: solid;
     border-left-color: #999999 !important;
     border-right-color: #d3d3d3 !important;
@@ -1138,7 +1139,7 @@
     box-shadow: rgba(0, 0, 0, 0.4) 1px 2px 5px;
     font-family: "Segoe UI", Calibri, Thonburi, Arial, Verdana, sans-serif, "Mongolian Baiti", "Microsoft Yi Baiti", "Javanese Text";
     font-size: 9pt;
-    background: #f0f0f0;
+    background: #fcf9f9;
     border: 1px solid #ACACAC;
     color: #444444;
     cursor: default;

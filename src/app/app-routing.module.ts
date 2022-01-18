@@ -93,6 +93,7 @@ import {
   HCPComponent,
   PrintComponent,
   BudgetAdmin, //AHSAN
+  GlanceAdmin, //AHSAN
   BillingAdmin,   //AHSAN
   TimesheetProcessingAdmin,   //AHSAN
 } from '@admin/index'
@@ -746,6 +747,10 @@ const routes: Routes = [
       {
         path: 'analyse-budget', //AHSAN
         component: BudgetAdmin
+      },
+      {
+        path: 'glance', //AHSAN
+        component: GlanceAdmin
       },
       {
         path: 'billing', //AHSAN
@@ -1485,6 +1490,7 @@ export const PAGE_COMPONENTS = [
   HCPComponent,
   PrintComponent,
   BudgetAdmin, //AHSAN
+  GlanceAdmin, //AHSAN
   BillingAdmin, //AHSAN
   TimesheetProcessingAdmin, //AHSAN
   

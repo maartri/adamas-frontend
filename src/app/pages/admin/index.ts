@@ -9,7 +9,8 @@ export * from './user-reports'
 export * from './configuration'
 export * from './billing' //AHSAN
 export * from './timesheet-processing' //AHSAN
-export * from './analyse-budget'
+export * from './analyse-budget' //AHSAN
+export * from './glance' //AHSAN
 export * from './staff'
 export * from './timesheet'
 export * from './landing'

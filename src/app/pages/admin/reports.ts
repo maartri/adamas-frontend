@@ -19519,7 +19519,7 @@ FetchRuntimeReport(strtitle){
         var re = /~/gi;    
      //   console.log((this.UserRptSQLlist.toString()).replace(re,"'"))
     
-        this.RenderRunTimeReport((this.UserRptSQLlist.toString()).replace(re,"'"))
+        this.RenderRunTimeReport((this.UserRptSQLlist.toString()).replace(re,"'"),title)
 
     });
 
@@ -19528,7 +19528,7 @@ FetchRuntimeReport(strtitle){
    
 
 }
-RenderRunTimeReport(strSQL){
+RenderRunTimeReport(strSQL,RptTitle){
   //  console.log(strSQL)
     const data = {
         
@@ -19540,6 +19540,7 @@ RenderRunTimeReport(strSQL){
             
             "sql": strSQL,            
             "userid": this.tocken.user,
+            "txtTitle":RptTitle,
             
             
         }

@@ -1638,7 +1638,7 @@ ClearMultishift(){
                  
                   // Create two different selection ranges.
                   sheet.addSelection(row, col, new_duration, 1);
-                  //sheet.addSpan(row, col, new_duration, 1,GC.Spread.Sheets.SheetArea.viewport);
+                 // sheet.addSpan(row, col, new_duration, ,GC.Spread.Sheets.SheetArea.viewport);
 
                  let len =row+new_duration;
 
@@ -2482,7 +2482,7 @@ ClearMultishift(){
     sheet.setColumnResizable(0,true, GC.Spread.Sheets.SheetArea.colHeader);
 
     //This example uses the highlightStyle method.
-
+   var isHoliday:boolean=false;
 
     for (let i=0; i<=this.Days_View ; i++)   
     {
@@ -2557,8 +2557,12 @@ ClearMultishift(){
                 else
                     sheet.setValue(0, i, { richText: [{ style: { font: '12px Tahoma',foreColor: '#ffffff' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
             }
-           
+        
+            isHoliday= this.IsPublicHoliday1(moment(date).format('YYYY/MM/DD'))
              
+            if (isHoliday){
+                sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).backColor("#87D068"); //FFDEDB
+            }
            // sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).get('gc-columnHeader-highlight').backgroundColor="#002060";
            
         }
@@ -3843,7 +3847,16 @@ reload(reload: boolean){
                  
      }
 
+selected_person(event:any){
+    this.picked(event);
+    setTimeout(() => {
+        this.prepare_Sheet();
+      }, 1000);
 
+       
+     
+
+}
 picked(data: any) {
         console.log(data);
         this.userStream.next(data);
@@ -3941,7 +3954,7 @@ picked(data: any) {
                 });
                 
                 console.log(this.timesheets);
-            
+               
             });
         
        // this.getComputedPay(data).subscribe(x => this.computeHoursAndPay(x));

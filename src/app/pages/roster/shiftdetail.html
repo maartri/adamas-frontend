@@ -33,7 +33,7 @@
                     </div>
                     <div nz-row>
                         <div class="form-group">
-                            <label for="">Activity Type</label>
+                            <label for="">Service Type</label>
                             <nz-select formControlName="serviceType" [nzDisabled]="!editRecord" [nzDropdownMatchSelectWidth]="false" style="width:15rem">
                                 <nz-option *ngFor="let list of modalTimesheetValues" [nzValue]="list.name" [nzLabel]="list.name"></nz-option>
                             </nz-select>

@@ -145,7 +145,7 @@ export class CloseRosterComponent implements OnInit {
       this.selectedFunding = event;
     if (index == 2)
       this.selectedPrograms = event;
-      
+
     if (index == 11 && event.target.checked) {
       console.log("11")
     }
@@ -311,30 +311,30 @@ export class CloseRosterComponent implements OnInit {
 
   closeRosterPeriod() {
 
-    this.postLoading = true;   
+    this.postLoading = true;
 
-      this.selectedFunding = this.fundingList
+    this.selectedFunding = this.fundingList
       .filter(opt => opt.checked)
       .map(opt => opt.description).join(",")
 
-      this.selectedPrograms = this.programList
+    this.selectedPrograms = this.programList
       .filter(opt => opt.checked)
       .map(opt => opt.title).join(",")
 
-      this.dtpEndDate = this.inputForm.get('dtpEndDate').value;
-      // this.dtpEndDate = formatDate(this.dtpEndDate, 'MM-dd-yyyy','en_US');
+    this.dtpEndDate = this.inputForm.get('dtpEndDate').value;
+    // this.dtpEndDate = formatDate(this.dtpEndDate, 'MM-dd-yyyy','en_US');
 
-      //this code is to close roster using direct query
-      // let sql = "UPDATE HumanResourceTypes set CloseDate = '"+this.dtpEndDate+"' WHERE [NAME] IN ('"+this.selectedPrograms+"') AND [TYPE] IN ('"+this.selectedFunding+"') AND CloseDate <= '"+this.dtpEndDate+"'"; 
-      // // console.log(sql);
-      // this.menuS.updatUDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{        
-      //   if (data) 
-      //   this.globalS.sToast('Success', 'Saved successful');     
-      //   else
-      //   this.globalS.sToast('Success', 'Saved successful');
-      //   this.ngOnInit();
-      //   this.postLoading = false;          
-      // });
+    //this code is to close roster using direct query
+    // let sql = "UPDATE HumanResourceTypes set CloseDate = '"+this.dtpEndDate+"' WHERE [NAME] IN ('"+this.selectedPrograms+"') AND [TYPE] IN ('"+this.selectedFunding+"') AND CloseDate <= '"+this.dtpEndDate+"'"; 
+    // // console.log(sql);
+    // this.menuS.updatUDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{        
+    //   if (data) 
+    //   this.globalS.sToast('Success', 'Saved successful');     
+    //   else
+    //   this.globalS.sToast('Success', 'Saved successful');
+    //   this.ngOnInit();
+    //   this.postLoading = false;          
+    // });
 
     this.billingS.updateCloseRosterPeriod({
       Closedate: this.dtpEndDate,

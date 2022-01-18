@@ -60,6 +60,7 @@
                         <nz-step class="mini" nzTitle="Programs" nzDescription=""></nz-step>
                         <nz-step class="mini" nzTitle="MTA Alerts" nzDescription=""></nz-step>
                         <nz-step class="mini" nzTitle="Comp" nzDescription=""></nz-step>
+                        <nz-step class="mini" nzTitle="ChkLst" nzDescription=""></nz-step>
                     </nz-steps>
                     <nz-divider class="full-height" nzType="vertical"></nz-divider>
                     <div class="steps-content" *ngIf="inputForm" [formGroup]="inputForm">
@@ -850,6 +851,36 @@
                         </div>
                     </div>
                 </div>
+                <div *ngIf="current == 8">
+                    <div nz-row nzGutter=24>
+                        <div nz-col nzSpan="24" class="mrg-btm">
+                            <div nz-row nzGutter=24>
+                                <div nz-col nzSpan="24">
+                                    <button class="botton success" (click)="showChkLstModal()">Checklist</button>
+                                    <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="checkedList">
+                                        <thead>
+                                            <tr>
+                                                <th class="left">CheckList Item</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let list of checkList;let j = index;">
+                                                <td>{{list.checklist}}</td>
+                                                <td class="left">
+                                                    <!-- <a (click)="editChecklistModal(list)">Update</a>
+                                                    <nz-divider nzType="vertical"></nz-divider> -->
+                                                    <a nz-popconfirm nzPopconfirmTitle="Are you sure to delete this entry?"
+                                                    nzPopconfirmPlacement="bottom" (nzOnConfirm)="deleteChecklist(list)">Delete</a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </nz-table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div *nzModalFooter>
                     <ng-container>
                         <div nz-row nzJustify class="mrg-btm">
@@ -887,6 +918,33 @@
             <ng-container>
                 <button nz-button nzType="primary" (click)="saveCompetency()">
                     <span>ADD</span>
+                </button>
+            </ng-container>
+        </div>
+    </nz-modal>
+    <nz-modal [nzWidth]="500"  [(nzVisible)]="chklstmodal" nzTitle="CheckLists" (nzOnCancel)="handleChkLstCancel()">
+        <form nz-form [formGroup]="chkListForm" >
+            <div nz-row>    
+                <div *ngIf="addOrEdit == 0" class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
+                    <h4 style="text-align:center;color:#1890FF">Tick The Checkbox Next To The Required CheckList Item</h4>
+                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="chklog($event)">
+                        <div nz-row>
+                            <div nz-col nzSpan="24" *ngFor="let chklst of chkList">
+                                <label nz-checkbox [nzValue]="chklst.name" [(ngModel)]="chklst.checked" [ngModelOptions]="{standalone: true}">{{ chklst.name }}</label>
+                            </div>
+                        </div>
+                    </nz-checkbox-wrapper>
+                </div>
+                <div class="form-group" *ngIf="addOrEdit == 1">
+                    <nz-form-label>Title</nz-form-label>
+                    <input nz-input formControlName="chkListValue" disabled />
+                </div>
+            </div>
+        </form>
+        <div *nzModalFooter>
+            <ng-container>
+                <button nz-button nzType="primary" (click)="saveCheckList()">
+                    <span>{{(addOrEdit == 0) ? 'ADD' : 'Update'}}</span>
                 </button>
             </ng-container>
         </div>

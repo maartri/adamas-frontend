@@ -93,6 +93,7 @@ import {
   HCPComponent,
   PrintComponent,
   BudgetAdmin, //AHSAN
+  GlanceAdmin, //AHSAN
   BillingAdmin,   //AHSAN
   TimesheetProcessingAdmin,   //AHSAN
 } from '@admin/index'
@@ -277,6 +278,7 @@ import { PayIntegrityComponent } from '@admin/billing/payIntegrity.component'; /
 import { CloseRosterComponent } from '@admin/billing/closeRoster.component'; //AHSAN
 import { MediaList } from '@admin/recipient-views/mediaList';
 import { UserDetail } from '@admin/configuration/genrel-setup/userdetail';
+import { Checklist } from '@admin/configuration/genrel-setup/checklist';
 
 const routes: Routes = [
   {
@@ -566,6 +568,10 @@ const routes: Routes = [
         component: BudgetAdmin
       },
       {
+        path: 'glance', //AHSAN
+        component: GlanceAdmin
+      },
+      {
         path: 'billing', //AHSAN
         component: BillingAdmin
       },
@@ -664,6 +670,10 @@ const routes: Routes = [
       {
         path:"customdataset",
         component:CustomDatasets,
+      },
+      {
+        path:"checklist",
+        component:Checklist,
       },
       {
         path:"postcodes",
@@ -1304,6 +1314,7 @@ export const PAGE_COMPONENTS = [
   HCPComponent,
   PrintComponent,
   BudgetAdmin, //AHSAN
+  GlanceAdmin, //AHSAN
   BillingAdmin, //AHSAN
   TimesheetProcessingAdmin, //AHSAN
   
@@ -1339,7 +1350,8 @@ export const PAGE_COMPONENTS = [
   OccupationComponent,
   PhoneemailtypesComponent,
   FinancialclassComponent,
-  CustomDatasets, 
+  CustomDatasets,
+  Checklist, 
   PostcodesComponent,
   HolidaysComponent,
   MedicalcontactComponent,

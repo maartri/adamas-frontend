@@ -183,9 +183,6 @@ export class TimeSheetService {
     Check_BreachedRosterRules(data: any): Observable<any> {
         return this.auth.get(`${timesheet}/breachedRosterRules`, data);
     }
-    pastingRosters(data: string): Observable<any> {
-        return this.auth.get(`${timesheet}/pastingRosters`, { Json: data});
-    }
     
     getActivities(data: any): Observable<any> {
         return this.auth.get(`${timesheet}/getActivities`, data);

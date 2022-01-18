@@ -157,8 +157,6 @@ export class BudgetAdmin implements OnInit, OnDestroy, AfterViewInit {
         private http: HttpClient,
         private fb: FormBuilder,
         private formBuilder: FormBuilder,
-        private sanitizer: DomSanitizer,
-        private modalService: NzModalService,
         private menuS: MenuService,
         private listS: ListService,
     ) { }
@@ -200,15 +198,6 @@ export class BudgetAdmin implements OnInit, OnDestroy, AfterViewInit {
     }
     onChange(result: Date): void {
         // console.log('onChange: ', result);
-    }
-    view(index: number) {
-        // console.log(index);
-        if (index == 3) {
-            this.router.navigate(['/admin/close-roster-period']);
-        }
-        if (index == 4) {
-            this.router.navigate(['/admin/debtor-updates-exports']);
-        }
     }
     ngOnDestroy(): void {
     }

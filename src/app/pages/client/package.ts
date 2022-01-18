@@ -309,8 +309,10 @@ export class PackageClient implements OnInit, OnDestroy {
     }
 
     printPackage(): void{
-        console.log(this.table);
+        // console.log(this.table);
         // return;
+
+
         var fQuery = "Select CONVERT(varchar, [DetailDate],105) as Field1, Detail as Field2, CONVERT(varchar, [AlarmDate],105) as Field4, Creator as Field3 From History HI INNER JOIN Staff ST ON ST.[UniqueID] = HI.[PersonID] WHERE ST.[AccountNo] = '"+this.user.code+"' AND HI.DeletedRecord <> 1 AND (([PrivateFlag] = 0) OR ([PrivateFlag] = 1 AND [Creator] = 'sysmgr')) AND ExtraDetail1 = 'OPNOTE' ORDER BY DetailDate DESC, RecordNumber DESC";
 
         const user = {
@@ -337,10 +339,36 @@ export class PackageClient implements OnInit, OnDestroy {
                 "balances": balances
             }
         }
+
         this.generateReportBool = true;
         this.printGenStr = GENERATING;
 
-        this.printS.print(data).subscribe((blob: any) => {
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.drawerVisible = true;
+            let _blob: Blob = blob;
+            const blobFile = new File([_blob],'package.pdf',{ type: 'application/pdf' });
+            let fileURL = URL.createObjectURL(blobFile);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {            
+            this.loading = false;
+            this.generateReportBool = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        }, () =>{
+            this.generateReportBool = false;
+            this.printGenStr = PRINT;
+        });
+
+        return;
+
+        this.printS.printControl(data).subscribe((blob: any) => {
             this.drawerVisible = true;
             let _blob: Blob = blob;
             let fileURL = URL.createObjectURL(_blob);

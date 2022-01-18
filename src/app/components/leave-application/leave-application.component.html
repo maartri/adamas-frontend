@@ -4,7 +4,7 @@
             <nz-form-item >
                 <nz-form-label [nzNoColon]="true">Date Range</nz-form-label>
                 <nz-form-control nzErrorTip="Required Field">
-                    <nz-range-picker [nzFormat]="dateFormat" formControlName="dates"></nz-range-picker>
+                    <nz-range-picker [nzFormat]="dateFormat" formControlName="dates" [nzDisabledDate]="disabledDate"></nz-range-picker>
                 </nz-form-control>
             </nz-form-item>
         </div>
@@ -12,20 +12,20 @@
             <nz-form-item>
                 <div nz-col nzSpan="12">
                     <label>Reminder Date </label>
-                    <nz-date-picker [nzFormat]="dateFormat" formControlName="reminderDate"></nz-date-picker>
+                    <nz-date-picker [nzFormat]="dateFormat" formControlName="reminderDate" [nzDisabledDate]="disabledDate" ></nz-date-picker>
                 </div>
                 <div nz-col nzSpan="12">
-                    <label nz-checkbox formControlName="approved"> Approved </label>
+                    <label nz-checkbox formControlName="approved" style="margin-top: 1.5rem;"> Approved </label>
                 </div>
             </nz-form-item>
         </div>
         <div nz-row>
             <ul>
                 <li>
-                    <label nz-checkbox formControlName="makeUnavailable">Make Unavailable for balance of day</label>
+                    <!-- <label nz-checkbox formControlName="makeUnavailable">Make Unavailable for balance of day</label> -->
                 </li>
                 <li>
-                    <label nz-checkbox formControlName="unallocAdmin">Unallocate Admin Activities</label>
+                    <!-- <label nz-checkbox formControlName="unallocAdmin">Unallocate Admin Activities</label> -->
                 </li>
                 <li>
                     <label nz-checkbox formControlName="unallocUnapproved">Unallocate any unapproved entries</label>
@@ -66,7 +66,7 @@
                 <label nz-checkbox formControlName="programShow">Accept Program of Original Service As Program For Leave</label>
            </div>
         </div>
-        <div nz-row *ngIf="leaveGroup.get('programShow').value">
+        <div nz-row *ngIf="!(leaveGroup.get('programShow').value)">
             <div class="form-group">
                 <label for="">Change Program For Leave To the Following Program</label>
                 <nz-select formControlName="program" nzAllowClear>

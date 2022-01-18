@@ -11,6 +11,22 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { Reminders } from '@modules/modules';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
+import { isSameDay } from 'date-fns';
+
+const defaultForm: any = {
+    recordNumber: 0,
+    personID: '',
+    listOrder: '',
+    followUpEmail:'',
+    recurring: false,
+    recurrInt: '',
+    recurrStr: '',
+    notes: '',
+    reminderDate: null,
+    dueDate: null,
+    staffAlert: null
+}
+
 @Component({
     styles: [`
     nz-table{
@@ -61,6 +77,7 @@ export class StaffReminderAdmin implements OnInit, OnDestroy {
     tryDoctype: any;
     drawerVisible: boolean =  false;
     rpthttp = 'https://www.mark3nidad.com:5488/api/report';
+
     constructor(
         private timeS: TimeSheetService,
         private sharedS: ShareService,
@@ -110,8 +127,9 @@ export class StaffReminderAdmin implements OnInit, OnDestroy {
         }
         
         buildForm() {
+
             this.inputForm = this.formBuilder.group({
-                recordNumber: '',
+                recordNumber: 0,
                 personID: '',
                 listOrder: '',
                 followUpEmail: ['', [Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$")]],
@@ -138,6 +156,10 @@ export class StaffReminderAdmin implements OnInit, OnDestroy {
                     this.inputForm.controls['recurrInt'].enable()
                 }
             })
+        }
+
+        resetForm(){
+            this.inputForm.reset(defaultForm);
         }
         
         search(user: any = this.user) {
@@ -175,10 +197,15 @@ export class StaffReminderAdmin implements OnInit, OnDestroy {
                 date2: dueDate,
                 state: remGroup.listOrder,
                 notes: remGroup.notes,
-                recurring: remGroup.recurring
+                recurring: remGroup.recurring,
+                sameDate:false,
+                sameDay:false,
+                creator:"",
             }
-            
-            
+
+            console.log(reminder)
+
+                   
             if(this.addOREdit == 1){
                 this.timeS.postreminders(reminder).pipe(
                     takeUntil(this.unsubscribe))
@@ -189,7 +216,7 @@ export class StaffReminderAdmin implements OnInit, OnDestroy {
                     })
                 }
                 
-                if (this.addOREdit == 2) {
+                if (this.addOREdit == 0) {
                     this.timeS.updatereminders(reminder).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
                         this.globalS.sToast('Success', 'Data updated');
                         this.search();
@@ -200,6 +227,7 @@ export class StaffReminderAdmin implements OnInit, OnDestroy {
             
             showAddModal() {
                 this.modalOpen = true;
+                this.resetForm();
                 this.addOREdit = 1;
             }
             
@@ -273,7 +301,7 @@ export class StaffReminderAdmin implements OnInit, OnDestroy {
                             "head4" : "Notes",
                         }
                     }
-                    this.printS.print(data).subscribe(blob => {  
+                    this.printS.printControl(data).subscribe((blob: any) => { 
                         let _blob: Blob = blob;
                         let fileURL = URL.createObjectURL(_blob);
                         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);

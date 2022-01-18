@@ -12,7 +12,7 @@
                             <label for="">Default Leave Activity &nbsp;</label>
                         </div>
                         <div nz-col nzSpan="12">
-                            <nz-select  nzAllowClear nzShowSearch [nzSize]="'small'" formControlName="defaultUnallocateLeaveActivity">
+                            <nz-select  nzAllowClear nzShowSearch [nzSize]="'small'" (ngModelChange)="leaveactivityChanged()" formControlName="defaultUnallocateLeaveActivity">
                                 <nz-option *ngFor="let paytype of leavepaytypes" [nzValue]="paytype" [nzLabel]="paytype"></nz-option>
                             </nz-select>
                         </div>
@@ -24,7 +24,7 @@
                             <label for="">Default Leave Type &nbsp;</label>
                         </div>
                         <div nz-col nzSpan="12">
-                            <nz-select  nzAllowClear nzShowSearch [nzSize]="'small'" formControlName="defaultUnallocateLeavePayType">
+                            <nz-select  nzAllowClear nzShowSearch [nzSize]="'small'" (ngModelChange)="leavepaytypechanged()" formControlName="defaultUnallocateLeavePayType">
                                 <nz-option *ngFor="let activity of leaveactivities;" [nzValue]="activity" [nzLabel]="activity"></nz-option>
                             </nz-select>
                         </div>
@@ -56,8 +56,8 @@
                     <label nz-checkbox nzDisabled [ngModel]="data.approved" nzDisabled [ngModelOptions]="{standalone: true}"></label>
                 </td>
                 <td>
-                    <a (click)="showEditModal(data)">Update</a>
-                    <nz-divider nzType="vertical"></nz-divider>
+                    <a *ngIf="isUpdateValid(i)" (click)="showEditModal(data)">Update</a>
+                    <nz-divider *ngIf="isUpdateValid(i)" nzType="vertical"></nz-divider>
                     <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this Leave from the List?"
                     nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>
                 </td>
@@ -68,7 +68,8 @@
 </div>
 
 
-<app-leave-application *ngIf="user" [open]="putonLeaveModal" [operation]="operation" [user]="user"></app-leave-application>
+<app-leave-application *ngIf="user" [open]="putonLeaveModal" [operation]="operation" [user]="user" (refresh)="reload($event)"></app-leave-application>
+
 <nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
     <div class="col-md-12 spinner" *ngIf="loadingPDF">
         <nz-spin nzSimple [nzSize]="'large'"></nz-spin>

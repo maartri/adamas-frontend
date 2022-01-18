@@ -93,33 +93,7 @@
                     <b>{{ data.description }} </b>
                 </li>
             </ul>
-            <!-- <nz-table #basicTable [nzData]="user?.addresses" [nzSize]="'small'" [nzFrontPagination]="false"
-                [nzShowPagination]="false">
-                <thead>
-                    <tr>
-                        <th>Description</th>
-                        <th>Address</th>
-                        <th>Suburb</th>
-                        <th>Postcode</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let data of basicTable.data">
-                        <td>{{ data.description }}</td>
-                        <td>{{ data.address1 }}</td>
-                        <td>{{ data.suburb }}</td>
-                        <td>{{ data.postCode }}</td>
-                        <td>
-                            <a (click)="editAddressOpen(data)">Edit</a>
-                            <nz-divider nzType="vertical"></nz-divider>
-                            <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this address?"
-                                nzPopconfirmPlacement="bottom" (nzOnConfirm)="confirm(1,data)"
-                                (nzOnCancel)="cancel(1)">Delete</a>
-                        </td>
-                    </tr>
-                </tbody>
-            </nz-table> -->
+          
         </div>
     
         <div class="form-group space-top">
@@ -130,29 +104,6 @@
                             nzType="plus" nzTheme="outline"></i> Add Contact</button>
                 </div>
             </div>
-            <!-- <nz-table #contactTable [nzData]="user?.contacts" [nzSize]="'small'" [nzFrontPagination]="false"
-                [nzShowPagination]="false">
-                <thead>
-                    <tr>
-                        <th>Type</th>
-                        <th>Detail</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let data of contactTable.data">
-                        <td>{{ data.type }}</td>
-                        <td>{{ data.detail }}</td>
-                        <td>
-                            <a (click)="editContactOpen(data)">Edit</a>
-                            <nz-divider nzType="vertical"></nz-divider>
-                            <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this contact?"
-                                nzPopconfirmPlacement="bottom" (nzOnConfirm)="confirm(2, data)"
-                                (nzOnCancel)="cancel(2)">Delete</a>
-                        </td>
-                    </tr>
-                </tbody>
-            </nz-table> -->
             <ul style="width: 50%;">
                 <li *ngFor="let data of user?.contacts">
                     <div class="options">
@@ -196,6 +147,14 @@
                     <div nz-row nzGutter="16">
                         <div nz-col nzSpan="12">
                             <div class="form-group">
+                                <label class="highlight"><i nz-icon nzType="user" nzTheme="outline"></i> Preferred Name</label>
+                                <span>{{ user?.preferredName || '-' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div nz-row nzGutter="16">
+                        <div nz-col nzSpan="12">
+                            <div class="form-group">
                                 <label class="highlight"><i nz-icon nzType="calendar" nzTheme="outline"></i> Birthdate</label>
                                 <span>{{ user?.dob | date: 'dd / MM / yyyy' || '-' }}</span>
                             </div>
@@ -207,14 +166,6 @@
                             </div>
                         </div>
                     </div>
-                    <!-- <div nz-row nzGutter="16">                        
-                        <div nz-col nzSpan="12">
-                            <div class="form-group">
-                                <label class="highlight"><i nz-icon nzType="calendar" nzTheme="outline"></i> Birthdate</label>
-                                <span>{{ user?.dob | date: 'dd / MM / yyyy' || '-' }}</span>
-                            </div>
-                        </div>
-                    </div> -->
                     <hr>
                     <div nz-row *ngIf="staffrecordview && staffrecordview[16] == '1'">
                         <div class="form-group">
@@ -307,7 +258,7 @@
                         <nz-descriptions-item nzTitle="Has Caseload"><label nz-checkbox nzDisabled [ngModel]="user?.caseManager" nzDisabled ></label></nz-descriptions-item>
                         <nz-descriptions-item nzTitle="Is Rosterable"><label nz-checkbox nzDisabled [ngModel]="user?.isRosterable" nzDisabled ></label></nz-descriptions-item>
                         <nz-descriptions-item nzTitle="Email Timesheet"><label nz-checkbox nzDisabled [ngModel]="user?.emailTimesheet" nzDisabled ></label></nz-descriptions-item>
-                        <nz-descriptions-item nzTitle="Exclude From Roaster Conflict Checking"><label nz-checkbox nzDisabled [ngModel]="user?.excludeFromConflictChecking" nzDisabled ></label></nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Exclude From Roster Conflict Checking"><label nz-checkbox nzDisabled [ngModel]="user?.excludeFromConflictChecking" nzDisabled ></label></nz-descriptions-item>
                         
 
                     </nz-descriptions>

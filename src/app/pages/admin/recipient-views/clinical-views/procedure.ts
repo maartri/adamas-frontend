@@ -29,7 +29,7 @@ export class ClinicalProcedure implements OnInit, OnDestroy {
 
     consentOpen: boolean = false;
     consentGroup: FormGroup;
-    consents: Array<any> = [];
+    procedureList: Array<any> = [];
 
     addOREdit: number;
 
@@ -57,7 +57,7 @@ export class ClinicalProcedure implements OnInit, OnDestroy {
         });
 
         this.sharedS.changeEmitted$.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-            if (this.globalS.isCurrentRoute(this.router, 'consents')) {
+            if (this.globalS.isCurrentRoute(this.router, 'procedure')) {
                 console.log('sasd')
                 this.user = data;
                 this.search(data);
@@ -70,7 +70,7 @@ export class ClinicalProcedure implements OnInit, OnDestroy {
         this.buildForm();
         this.search(this.user);
 
-        this.listDropDowns()
+        // this.listDropDowns()
     }
 
     buildForm(){
@@ -177,9 +177,9 @@ export class ClinicalProcedure implements OnInit, OnDestroy {
         this.cd.reattach();
         this.loading = true;
 
-        this.timeS.getconsents(user.id).subscribe(consents => {
+        this.listS.getclinicalprocedure(user.id).subscribe(consents => {
             this.loading = false;
-            this.consents = consents;
+            this.procedureList = consents;
             this.cd.markForCheck();
         })        
     }

@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
-import { GlobalService, ListService, MenuService,PrintService,TimeSheetService,timeSteps } from '@services/index';
+import { GlobalService, ListService,dataSetDropDowns,MenuService,PrintService,TimeSheetService,timeSteps } from '@services/index';
 import { SwitchService } from '@services/switch.service';
 import { NzModalService } from 'ng-zorro-antd';
 import { Subject } from 'rxjs';
@@ -10,7 +10,7 @@ import { takeUntil } from 'rxjs/operators';
 
 
 const inputFormDefault = {
-  mainGroupList: ['STAFF ADMINISTRATION'],
+  mainGroupList: ['ADMINISTRATION'],
   subGroupList : ['NOT APPLICABLE'],
   status       : ['NONATTRIBUTABLE'],
 }
@@ -53,13 +53,13 @@ export class StaffAdminActivitiesComponent implements OnInit {
   datasetList:Array<any>;
   shiftTypes:Array<any>;
   mobileLogModes:{};
-  selectedMainGrouo:string = 'STAFF ADMINISTRATION';
+  selectedMainGrouo:string = 'ADMINISTRATION';
   selectedsubGroup:string = 'NOT APPLICABLE';
   selectedStatus:string= 'NONATTRIBUTABLE';
   units:Array<any>;//populate dropdown
   budgetUomList:Array<any>;//populate dropdown
   ndiaList:Array<any>;//populate dropdown
-  mainGroupList:Array<any>;//populate dropdown
+  mainGroupList:{};//populate dropdown
   subGroupList:Array<any>;//populate dropdown
   budgetGroupList:Array<any>;//populate dropdown
   lifeCycleList:Array<any>;//populate dropdown
@@ -93,7 +93,7 @@ export class StaffAdminActivitiesComponent implements OnInit {
   rpthttp = 'https://www.mark3nidad.com:5488/api/report';
   emptyList: any[];
   ndiaItems: any;
-  selectedPrograms: [];
+  selectedPrograms:any;
   competencyForm: FormGroup;
   selectedCompetencies: any;
   parent_person_id: any;
@@ -101,7 +101,8 @@ export class StaffAdminActivitiesComponent implements OnInit {
   addOrEdit: number = 0;
   isNewRecord: boolean =  false;
   insertOne: number = 0;
-  
+  dataSetDropDowns: { CACP: string[]; CTP: string[]; DEX: string[]; DFC: string[]; DVA: any[]; HACC: string[]; HAS: string[]; QCSS: string[]; ICTD: string[]; NDIS: any[]; NRCP: string[]; NRCPSAR: string[]; OTHER: string[]; };
+  dataset_group: any;
   constructor(
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
@@ -124,6 +125,7 @@ export class StaffAdminActivitiesComponent implements OnInit {
       this.inputForm = this.formBuilder.group(inputFormDefault);
       
       this.checkedList = new Array<string>();
+      this.dataSetDropDowns = dataSetDropDowns;
       this.loadData();
       this.buildForm();
       this.populateDropdowns();
@@ -134,20 +136,20 @@ export class StaffAdminActivitiesComponent implements OnInit {
     showAddModal() {
       this.title = "Add New Staff Admin Activities"
       this.inputForm.patchValue({
-        rosterGroup :'STAFF ADMINISTRATION',
+        rosterGroup :'ADMINISTRATION',
         minorGroup  :'NOT APPLICABLE',
         status      :'NONATTRIBUTABLE',
         unit        :'HOUR',
         minChargeRate :'$0.0000',
-        amount:'$0.0000',
-        minDurtn    :'0',
-        maxDurtn    :'0',
-        fixedTime   :'0',
-        price2:'$0.0000',
-        price3:'$0.0000',
-        price4:'$0.0000',
-        price5:'$0.0000',
-        price6:'$0.0000',
+        amount:0.0,
+        minDurtn    :0,
+        maxDurtn    :0,
+        fixedTime   :0,
+        price2:0.0,
+        price3:0.0,
+        price4:0.0,
+        price5:0.0,
+        price6:0.0,
       });
       
       this.modalOpen = true;
@@ -216,17 +218,23 @@ export class StaffAdminActivitiesComponent implements OnInit {
       this.current = index;
     }
     save() {
+      this.loading = true;
       if(!this.isUpdate){
         this.menuS.poststaffAdminActivities(this.inputForm.value)
         .subscribe(data => {
           this.globalS.sToast('Success', 'Added Succesfully');
+          this.loading = false;
+          this.handleCancel();
           this.loadData()
         });
       }else{
         this.menuS.updatestaffAdminActivities(this.inputForm.value)
         .subscribe(data => {
           this.globalS.sToast('success','Updated Successfuly');
+          this.loading = false;
+          this.handleCancel();
           this.loadData();
+          
         });
       }
     }
@@ -309,6 +317,9 @@ export class StaffAdminActivitiesComponent implements OnInit {
             this.loading = false;
             this.cd.detectChanges();
           });
+          // this.listS.getitemtypesparams().subscribe(data => {
+          //   console.log(data);
+          // });
         }
         loadCompetency(){
           this.menuS.getconfigurationservicescompetency(this.parent_person_id).subscribe(data => {
@@ -333,11 +344,19 @@ export class StaffAdminActivitiesComponent implements OnInit {
           });
           this.selectedPrograms = [];
         }
+        selectProgram(){
+          this.programz.forEach(x => {
+            x.checked = true;
+            this.selectedPrograms = x.name;
+          });
+          console.log("programs : " + this.selectedPrograms);
+        }
+
         populateDropdowns(): void {
           
           this.emptyList      = [];
-          this.mainGroupList  = ['STAFF ADMINISTRATION','TRAVEL TIME'];
-          this.subGroupList   = ['GAP','GENERAL','LEAVE','BREAK','OTHER','TRAINING','NOT APPLICABLE'];
+          this.mainGroupList  = {"ADMINISTRATION":"STAFF ADMINISTRATION","TRAVELTIME":"TRAVEL TIME"};
+          this.subGroupList   = ['GAP','GENERAL','LEAVE','BREAK','OTHER','STAFF ONBOARDING','TRAINING','NOT APPLICABLE'];
           this.status         = ['ATTRIBUTABLE','NONATTRIBUTABLE'];
           this.units          = ['HOUR','SERVICE'];
           this.budgetUomList  = ['EACH/SERVICE','HOURS','PLACE','DOLLARS'];
@@ -436,7 +455,7 @@ export class StaffAdminActivitiesComponent implements OnInit {
             rosterGroup:'',
             minorGroup:'',
             status:'',
-            amount:'',
+            amount:0.0,
             minChargeRate:'',
             lifecycle:'',
             unit:'',
@@ -455,11 +474,11 @@ export class StaffAdminActivitiesComponent implements OnInit {
             glCost:'',
             unitCostUOM:'',
             unitCost:'',
-            price2:'',
-            price3:'',
-            price4:'',
-            price5:'',
-            price6:'',
+            price2:0.0,
+            price3:0.0,
+            price4:0.0,
+            price5:0.0,
+            price6:0.0,
             excludeFromPayExport:false,
             excludeFromUsageStatements:false,
             endDate:'',
@@ -531,11 +550,14 @@ export class StaffAdminActivitiesComponent implements OnInit {
             ndiaTravel:false,
             DeletedRecord:false,
             excludeFromRecipSummarySheet:false,
+            ExcludeFromMinHoursCalculation:false,
+            OnSpecial:false,
+            Discountable:false,
             ndiA_LEVEL2:'',
             ndiA_LEVEL3:'',
             ndiA_LEVEL4:'',
-            recnum:'',
-          });
+            recnum:0, 
+          });  
           this.competencyForm = this.formBuilder.group({
             competencyValue: '',
             mandatory: false,
@@ -543,6 +565,12 @@ export class StaffAdminActivitiesComponent implements OnInit {
             personID: this.parent_person_id,
             recordNumber: 0
           });
+          
+          this.inputForm.get('iT_Dataset').valueChanges.subscribe(x => {
+            this.dataset_group = [];  
+            this.dataset_group = this.dataSetDropDowns[x];
+          });
+        
         }
         handleOkTop() {
           this.generatePdf();
@@ -576,7 +604,7 @@ export class StaffAdminActivitiesComponent implements OnInit {
               "head9" : "Bill Unit",
             }
           }
-          this.printS.print(data).subscribe(blob => {  
+          this.printS.printControl(data).subscribe((blob: any) => { 
             let _blob: Blob = blob;
             let fileURL = URL.createObjectURL(_blob);
             this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);

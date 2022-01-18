@@ -11,9 +11,9 @@ import { Component, Input, ViewChild, ChangeDetectorRef,ElementRef,ViewEncapsula
 import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { getLocaleDateFormat, getLocaleFirstDayOfWeek, Time,DatePipe } from '@angular/common';
 
-import { forkJoin, Subscription, Observable, Subject, EMPTY, of,fromEvent, } from 'rxjs';
+import { forkJoin, Subscription, Observable, Subject, EMPTY, of,fromEvent, observable } from 'rxjs';
 
-import {debounceTime, distinctUntilChanged, takeUntil,mergeMap, concatMap, switchMap,buffer,map, bufferTime, filter} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged, takeUntil,mergeMap, concatMap, switchMap,buffer,map, bufferTime, filter, tap} from 'rxjs/operators';
 import { TimeSheetService, GlobalService, view, ClientService, StaffService,ShareService, ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles } from '@services/index';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzRadioModule  } from 'ng-zorro-antd/radio';
@@ -28,7 +28,7 @@ import { NzStepsModule, NzStepComponent } from 'ng-zorro-antd/steps';
 
 //import parse from 'date-fns/parse';
 import { PROCESS } from '../../modules/modules';
-import { format, formatDistance, formatRelative, subDays } from 'date-fns'
+import { format, formatDistance, formatRelative, nextDay, subDays } from 'date-fns'
 
 import parseISO from 'date-fns/parseISO'
 import addMinutes from 'date-fns/addMinutes'
@@ -44,14 +44,13 @@ import { SpreadSheetsModule } from '@grapecity/spread-sheets-angular';
 import * as GC from "@grapecity/spread-sheets";
 import { NZ_ICONS, NZ_ICON_DEFAULT_TWOTONE_COLOR } from 'ng-zorro-antd';
 import './styles.css';
-import { ElementSchemaRegistry } from '@angular/compiler';
+import { ElementSchemaRegistry, ThrowStmt } from '@angular/compiler';
 import { NzTableModule  } from 'ng-zorro-antd/table';
 import { Router,ActivatedRoute } from '@angular/router';
 import { SetLeftFeature } from 'ag-grid-community';
 import { style } from '@angular/animations';
-import { forEach } from 'lodash';
-
-
+import { stringify } from '@angular/compiler/src/util';
+import { environment } from 'src/environments/environment';
 
  
 interface AddTimesheetModalInterface {
@@ -132,7 +131,6 @@ IconCellType2.prototype.paint = function (ctx, value, x, y, w, h, style, context
 };
 
    
-
   
 @Component({
     selector: 'roster-component',
@@ -225,6 +223,8 @@ masterCycle:string="CYCLE 1";
 masterCycleNo:number=1;
 Days_View:number=14;
 dval:number=14;
+publicHolidayRegionData:any;
+lstPublicHolidays: Array<any> =[];
 
 data:any=[];  
 ActiveCellText:any;
@@ -286,7 +286,7 @@ searchAvaibleModal:boolean=false;
     optionsModal:boolean=false;
     
     enable_buttons :boolean=false;
-    
+    isPaused:boolean;    
     private picked$: Subscription;   
     isConfirmLoading = false;
     changeModalView = new Subject<number>();
@@ -305,6 +305,12 @@ searchAvaibleModal:boolean=false;
     RecurrentServiceForm:FormGroup;
     AlertForm:FormGroup;
     
+    pasting:boolean=true;
+    breachRoster:boolean=false;
+    Error_Msg:string;
+    rDate:any;
+    selected_Cell:any;
+    sel:any;
     viewType: any ;
     // start_date:string="";
     // end_date:string=""
@@ -349,6 +355,9 @@ searchAvaibleModal:boolean=false;
     isSleepOver: boolean = false;
     payUnits: any;
     addRecurrent:boolean=false
+    promise: any;
+    dblclick:boolean
+
     parserPercent = (value: string) => value.replace(' %', '');
     parserDollar = (value: string) => value.replace('$ ', '');
     formatterDollar = (value: number) => `${value > -1 || !value ? `$ ${value}` : ''}`;
@@ -407,10 +416,12 @@ searchAvaibleModal:boolean=false;
         return;
     }
 
+   
       this.selectedCarer=event.accountNo;
       this.bookingForm.patchValue({
             staffCode:event.accountNo
       });
+
 
     this.user = {
         code: event.accountNo,
@@ -420,6 +431,11 @@ searchAvaibleModal:boolean=false;
         sysmgr: event.sysmgr
     }
 
+    
+    if (this.viewType=='Recipient'){
+        this.getPublicHolidyas(this.selectedCarer);
+
+    }
     this.sharedS.emitChange(this.user);
     this.cd.detectChanges();
 }
@@ -518,7 +534,7 @@ set_RecurentView(){
 }
 createRecurrent_rosters(){
     this.create_Recurrent_Rosters=true;
-    this.doneBooking()
+    this.AddRoster_Entry()
 }
 
 setPattern(d:string){
@@ -527,7 +543,137 @@ setPattern(d:string){
 setFrequency(d:string){
     this.Frequency=d;
 }
+
+Cancel_ProceedBreachRoster(){
+    this.breachRoster=false;
+    if (this.operation=='copy' ||this.operation=='cut'){
+        //this.load_rosters();
+        this.pasting=false;
+    }
+    this.isPaused=false;
+}
+ProceedBreachRoster(){
+    this.breachRoster=false;
+    if (this.token.role!= "ADMIN USER")
+    {
+        this.globalS.eToast("Permission Denied","You don't have permission to add conflicting rosters");
+        return; 
+    }
+    
+    let sheet = this.spreadsheet.getActiveSheet();
+    if (this.operation=='copy' ||this.operation=='cut'){
+        // if (this.operation=="cut"){
+        //     this.ProcessRoster("Cut",this.current_roster.recordNo,this.rDate);
+        //     this.remove_Cells(sheet,this.copy_value.row,this.copy_value.col,this.copy_value.duration)
+        // }else
+        //     this.ProcessRoster("Copy",this.current_roster.recordNo,this.rDate);  
+        this.pasting=false;
+        this.Pasting_Records(this.selected_Cell,this.sel)
+    }else{
+        this.AddRoster_Entry();
+    }
+
+    this.isPaused=false;
+
+}
+Check_BreachedRosterRules_Paste(RecNo:number, action:string,row : number, col : number):any{
+
+    //It is still not being used
+    this.current_roster = this.find_roster(RecNo)
+    let clientCode= this.current_roster.clientCode;
+    let sheet = this.spreadsheet.getActiveSheet();
+    //     let range = sheet.getSelections();
+    //     let col= range[0].col;
+        let dt= sheet.getTag(0,col,GC.Spread.Sheets.SheetArea.colHeader);                       
+        this.rDate = dt.getFullYear() + "/" + this.numStr(dt.getMonth()+1) + "/" + this.numStr(dt.getDate());
+  
+        let f_row= row;             
+        let startTime =   sheet.getCell(f_row,0,GC.Spread.Sheets.SheetArea.rowHeader).tag();
+     
+
+    let inputs_breach={
+        sMode : 'Add', 
+        sStaffCode: this.current_roster.staffCode, 
+        sClientCode: this.current_roster.recipientCode, 
+        sProgram: this.current_roster.program, 
+        sDate : this.rDate, 
+        sStartTime :startTime, 
+        sDuration : this.current_roster.duration, 
+        sActivity : this.current_roster.activity,
+        sRORecordno : this.current_roster.recordNo, 
+         PasteAction : action=="cut" ? "Cut": "Copy"
+    };
+
+    return inputs_breach; //    this.timeS.Check_BreachedRosterRules(inputs_breach);
+
+    
+}
+Check_BreachedRosterRules(){
+
+    const tsheet= this.bookingForm.value;
+    let clientCode ='';
+    let carerCode = '';
+    if (this.viewType=="Staff"){
+        if (this.IsGroupShift)
+            clientCode="!MULTIPLE";
+        else
+            clientCode = tsheet.recipientCode;
+
+        carerCode= this.selected.data;
+    }
+    
+    if (this.viewType=="Recipient"){
+        carerCode = this.selectedCarer
+        clientCode=this.recipient.data
+    }
+    var durationObject = (this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime));        
+
+    let inputs_breach={
+        sMode : 'Edit', 
+        sStaffCode: carerCode, 
+        sClientCode: clientCode, 
+        sProgram: tsheet.program, 
+        sDate : format(this.date,'yyyy/MM/dd'), 
+        sStartTime :format(this.defaultStartTime,'HH:mm'), 
+        sDuration : durationObject.duration, 
+        sActivity : tsheet.serviceActivity.activity,
+        // sRORecordno : '-', 
+        // sState : '-', 
+        // bEnforceActivityLimits :0, 
+        // bUseAwards:0, 
+        // bDisallowOT :0, 
+        // bDisallowNoBreaks :0, 
+        // bDisallowConflicts :0, 
+        // bForceNote :0, 
+        // sOldDuration : '-', 
+        // sExcludeRecords : '-', 
+        // bSuppressErrorMessages  :0, 
+        // sStatusMsg : '-',
+        // PasteAction :'-'
+    };
+
+    this.timeS.Check_BreachedRosterRules(inputs_breach).subscribe(data=>{
+        let res=data
+        if (res.errorValue>0){
+           // this.globalS.eToast('Error', res.errorValue +", "+ res.msg);
+           //this.addBookingModel=false;
+            this.Error_Msg=res.errorValue +", "+ res.msg ;
+            this.breachRoster=true;
+            return; 
+        }else{
+            this.AddRoster_Entry();
+        }
+
+    });
+}
 doneBooking(){
+
+    this.Check_BreachedRosterRules();
+    if (1==1) return;
+    
+}
+
+AddRoster_Entry(){
 
     this.addBookingModel=false;
     this.add_UnAllocated=false;
@@ -575,7 +721,7 @@ doneBooking(){
         }
         
         if (this.viewType=="Recipient"){
-            carerCode = tsheet.staffCode
+            carerCode = this.selectedCarer
             clientCode=this.recipient.data
         }
        
@@ -825,7 +971,9 @@ start_adding_Booking(bCase:any){
     this.resetBookingFormModal();
     this.booking_case=bCase;
     this.isTravel=false;
+    
     if (this.booking_case==1){
+        this.selectedCarer='BOOKED';
         this.serviceType="BOOKED";
          this.bookingForm.patchValue({
             staffCode:"BOOKED"
@@ -869,19 +1017,35 @@ start_adding_Booking(bCase:any){
         if (this.booking_case==2){
             this.booking_case=3;          
         }
-        this.addBookingModel=true;
-        this.addBooking(0);
+        this.select_StaffModal=true;
+        //this.addBookingModel=true;
+        //this.addBooking(0);
     }
 
     
 }
 
-addBooking(type:any){
-    
+
+async  getStaffAllocation (startTime:string){
+  
+          
+        let res = await this.IsStaffAllocated(this.selectedCarer,this.date,startTime,this.durationObject.duration);
+       res.subscribe(data=>{
+           console.log(data);
+       })
+        if (status){
+            this.globalS.eToast('Booking', 'Staff is already allocated in this date and time slot');
+        }
+    }
+
+   
+addBooking(type:any){    
    
     this.select_StaffModal=false;
     this.select_RecipientModal=false;
     //this.ShowCentral_Location=false;
+    
+   
     this.current=0;
     
     this.type_to_add=type;
@@ -899,17 +1063,15 @@ addBooking(type:any){
    
     let sheet = this.spreadsheet.getActiveSheet();
     var range=sheet.getSelections();
-    // console.log(range)
-   
+    let startTime="";
+    let endTime = "";
+
     //let dt = moment.utc(this.date).local();
     if ((range==null || range.length==0) && !this.recurrenceView){
         this.globalS.eToast('Booking', 'Please select some time range to proceed');
         return;
     }
     
-   // let  date = this.date;  // For recurrent cases
-  
-
     if (!this.recurrenceView){
         let col=range[0].col;
         let date = sheet.getCell(0,col,GC.Spread.Sheets.SheetArea.colHeader).tag();
@@ -919,18 +1081,19 @@ addBooking(type:any){
         date = dt.getFullYear() + "-" + this.numStr(dt.getMonth()+1) + "-" + this.numStr(dt.getDate());
         let f_row= range[0].row;
         let l_row=f_row+range[0].rowCount;
-        let startTime =   sheet.getCell(f_row,0,GC.Spread.Sheets.SheetArea.rowHeader).tag()
-        let endTime =   sheet.getCell(l_row,0,GC.Spread.Sheets.SheetArea.rowHeader).tag();
+        startTime = sheet.getCell(f_row,0,GC.Spread.Sheets.SheetArea.rowHeader).tag()
+        endTime =   sheet.getCell(l_row,0,GC.Spread.Sheets.SheetArea.rowHeader).tag();
         //let endTime =sheet.getTag(l_row,0,GC.Spread.Sheets.SheetArea.viewport);
 
         this.defaultStartTime = parseISO(new Date(date + " " + startTime).toISOString());
         this.defaultEndTime = parseISO(new Date(date + " " + endTime).toISOString());
 
         this.date = parseISO(this.datepipe.transform(date, 'yyyy-MM-dd'));
+
+      
     }
 
     this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
-   
    
    // this.bookingForm.patchValue({date:date})
 
@@ -960,7 +1123,6 @@ addBooking(type:any){
         this.programsList = this.programsList.filter((v, i, a) => a.indexOf(v) === i);
         //this.serviceActivityList = d.map(x => x.serviceType);
        // this.serviceActivityList = this.serviceActivityList.filter((v, i, a) => a.indexOf(v) === i);
-        
       
         if (this.programsList==null || this.programsList.length==0){
           // 
@@ -975,7 +1137,26 @@ addBooking(type:any){
                 
                 this.current+=1;
             }
-            this.addBookingModel=true;
+            let status:boolean=false;
+            if (this.viewType=="Recipient" && this.type_to_add>1){  
+              
+               // this.getStaffAllocation(startTime);   
+               if (this.selectedCarer=='!MULTIPLE' || this.selectedCarer=='!INTERNAL')
+                    this.addBookingModel=true;   
+               else  this.IsStaffAllocated(this.selectedCarer,this.date,startTime,this.durationObject.duration).subscribe(data=>{
+                   
+                    if (data.length>0){
+                        this.globalS.wToast('Booking', `Staff ${this.selectedCarer} is already allocated in this date and time slot`);
+                        status=true;
+                        this.addBookingModel=true;
+                        //return;
+                    }else
+                    this.addBookingModel=true;
+                });
+               
+               
+            }else
+                this.addBookingModel=true;
                 
         }
     });
@@ -1034,11 +1215,14 @@ deleteRoster(){
            if (sheet.getTag(data_row,i,GC.Spread.Sheets.SheetArea.viewport)==null ){
             data_row=data_row+1;
             continue;
-           }
-                                       
+           }           
+           
+                         
          if (sheet.getTag(data_row,i,GC.Spread.Sheets.SheetArea.viewport)!=null)
             this.cell_value=sheet.getTag(data_row,i,GC.Spread.Sheets.SheetArea.viewport)
         
+        if (this.cell_value.recordNo==null || this.cell_value.recordNo==0) continue;
+
         if (this.cell_value.recordNo==recdNo)
             continue;
         
@@ -1073,9 +1257,14 @@ reAllocate(){
     this.ProcessRoster("Re-Allocate", this.cell_value.recordNo);
     let sheet=this.spreadsheet.getActiveSheet();
     this.spreadsheet.suspendPaint();
-    this.remove_Cells(sheet,this.cell_value.row,this.cell_value.col,this.cell_value.duration)
-    this.spreadsheet.resumePaint();
+    //this.remove_Cells(sheet,this.cell_value.row,this.cell_value.col,this.cell_value.duration)
+    //this.cell_value.type = this.DETERMINE_SERVICE_TYPE_NUMBER(this.cell_value.service);
+    var text=   this.selectedCarer + " (" + this.cell_value.service.replace('BOOKED','') + ")";            
+    this.cell_value.type= this.DETERMINE_SERVICE_TYPE_NUMBER(this.cell_value.service) ;
+    this.draw_Cells(sheet,this.cell_value.row,this.cell_value.col,this.cell_value.duration,this.cell_value.type,this.cell_value.recordNo,text)
 
+    this.spreadsheet.resumePaint();
+   
 
 }
 
@@ -1086,7 +1275,16 @@ UnAllocate(){
     this.ProcessRoster("Un-Allocate", this.cell_value.recordNo);
     let sheet=this.spreadsheet.getActiveSheet();
     this.spreadsheet.suspendPaint();
-    this.remove_Cells(sheet,this.cell_value.row,this.cell_value.col,this.cell_value.duration)
+    //this.remove_Cells(sheet,this.cell_value.row,this.cell_value.col,this.cell_value.duration)
+    if (this.viewType=='Staff')
+        this.remove_Cells(sheet,this.cell_value.row,this.cell_value.col,this.cell_value.duration)
+    else{
+        this.cell_value.type = 1;
+        var service =this.cell_value.service.split("(")[1];
+        var text=    "BOOKED (" + service + ")"; 
+
+        this.draw_Cells(sheet,this.cell_value.row,this.cell_value.col,this.cell_value.duration,this.cell_value.type,this.cell_value.recordNo,text)
+    }
     this.spreadsheet.resumePaint();
 
 
@@ -1145,10 +1343,13 @@ ClearMultishift(){
     let sheet = this.spreadsheet.getActiveSheet()
     var cell:any;
     
-    if (this.viewType=="Staff")
+    if (this.viewType=="Staff"){
         sheet.name("Staff Rosters");
-    else
+        this.sheetName="Staff Rosters";
+    }else{
         sheet.name("Recipient Rosters");
+        this.sheetName="Recipient Rosters";
+    }
     
         
      cell= sheet.getRange(0, 0, this.time_slot, this.Days_View, GC.Spread.Sheets.SheetArea.viewport)
@@ -1289,17 +1490,24 @@ ClearMultishift(){
             spread.commandManager().execute({cmd: "Paste", sheetName: self.sheetName, index: 3, count: 5});
         }
         );
+        spread.commandManager().register('myCut',
+        function AddRow() {                   
+           
+            spread.commandManager().execute({cmd: "Cut", sheetName: self.sheetName, index: 3, count: 5});
+        }
+        );
         spread.commandManager().register('myDelete',
         function AddRow() {                   
            
             spread.commandManager().execute({cmd: "Delete", sheetName: self.sheetName, index: 3, count: 5});
         }
         );
-
         spread.commandManager().setShortcutKey('myCopy', GC.Spread.Commands.Key.c, true, false, false, false);
         spread.commandManager().setShortcutKey('myPast', GC.Spread.Commands.Key.v, true, false, false, false);
+        spread.commandManager().setShortcutKey('myCut', GC.Spread.Commands.Key.x, true, false, false, false);
         spread.commandManager().setShortcutKey('myDelete', GC.Spread.Commands.Key.del, true, false, false, false);
-      
+        
+          
         spread.bind(GC.Spread.Sheets.Events.SheetTabClick, function (sender, args) {
             if (args.sheet === null && args.sheetName === null) {
                 console.log("New button Clicked, new sheet added");
@@ -1604,10 +1812,11 @@ ClearMultishift(){
   
           var newMenuData = [];
           var selected_Cell; 
+          
           var copy = {
             iconClass : "gc-spread-copy",
             name : "Copy",
-            text : "Copy",
+            text : "Copy    (Ctrl+C)",
             command : "Copy",
             workArea : "viewportcolHeaderrowHeadercorner"
         };       
@@ -1616,7 +1825,7 @@ ClearMultishift(){
           var cut = {
             iconClass : "gc-spread-cut",
             name : "Cut",
-            text : "Cut",
+            text : "Cut     (Ctrl+X)",
             command : "Cut",
             workArea : "viewportcolHeaderrowHeadercorner"
         };
@@ -1625,7 +1834,7 @@ ClearMultishift(){
           var paste = {
             iconClass : "gc-spread-pasteAll",
             name : "Paste",
-            text : "Paste",
+            text : "Paste   (Ctrl+V)",
             command : "Paste",
             workArea : "viewportcolHeaderrowHeadercorner"
         };       
@@ -1636,7 +1845,7 @@ ClearMultishift(){
           var del = {
             iconClass : "gc-spread-delete",
             name : "Delete",
-            text : "Delete",
+            text : "Delete  (Ctrl+Del)",
             command : "Delete",
             workArea : "viewportcolHeaderrowHeadercorner"
         };
@@ -1733,6 +1942,7 @@ ClearMultishift(){
                         self.operation="copy";
                         console.log("Row=" + sel.row  + ", col=" + sel.col)
                         selected_Cell=sel;
+                        
   
                         if (sheet.getTag(sel.row,sel.col,GC.Spread.Sheets.SheetArea.viewport)!=null)
                           self.copy_value=sheet.getTag(sel.row,sel.col,GC.Spread.Sheets.SheetArea.viewport)
@@ -1777,6 +1987,7 @@ ClearMultishift(){
                         var row = sel.row;
                        
                         selected_Cell=sel;
+                        
   
                         if (sheet.getTag(sel.row,sel.col,GC.Spread.Sheets.SheetArea.viewport)!=null)
                           self.copy_value=sheet.getTag(sel.row,sel.col,GC.Spread.Sheets.SheetArea.viewport)
@@ -1795,6 +2006,7 @@ ClearMultishift(){
                 canUndo: true,
                 execute: function (context, options, isUndo) {
                     var Commands = GC.Spread.Sheets.Commands;
+                    
                                  // add cmd here
                     //options.cmd = "gc.spread.contextMenu.pasteAll";
                     options.cmd = "Paste";
@@ -1814,75 +2026,55 @@ ClearMultishift(){
                         console.log(selected_Cell);     
                         
                         let selected_columns = selected_Cell.col + selected_Cell.colCount;
-                        let dt= new Date(self.date);        
-                        let data_row=0;
-                        let row_iterator=0;
-                        let recdNo=0;
-                   
-                        col=col-1;
-                       for (let i=selected_Cell.col; i<selected_columns; i++)                     
-                        {
-                            data_row=selected_Cell.row;
-                            
-                            col=col+1;
-                         
-                            for ( row_iterator=0; row_iterator<=selected_Cell.rowCount; row_iterator++){
-                               if (sheet.getTag(data_row,i,GC.Spread.Sheets.SheetArea.viewport)==null ){
-                                data_row=data_row+1;
-                                continue;
-                               }
-                                                           
-                             if (sheet.getTag(data_row,i,GC.Spread.Sheets.SheetArea.viewport)!=null)
-                                self.copy_value=sheet.getTag(data_row,i,GC.Spread.Sheets.SheetArea.viewport)
-                            
-                            if (self.copy_value.recordNo==recdNo)
-                                continue;
-                            
-                            recdNo=self.copy_value.recordNo;
-                            var cell_col_text=sheet.getValue(0,col,GC.Spread.Sheets.SheetArea.colHeader);
-                            console.log(cell_col_text);
-                            var col_date= cell_col_text.substring(cell_col_text.length-2,cell_col_text.length);
                         
-                            let rdate = dt.getFullYear() + "/" + self.numStr(dt.getMonth()+1) + "/" + self.numStr(col_date.trim());
-                      
-                            if (self.copy_value==null || self.copy_value.recordNo==null || self.copy_value.recordNo==0){
-                                continue;
-                            }
-                            //if (self.copy_value.row>=0){
-                               let n_row=row+row_iterator;
-                            self.draw_Cells(sheet,n_row,col,self.copy_value.duration,self.copy_value.type,self.copy_value.recordNo,self.copy_value.service)
-                            
-                            
-                            if (self.operation==="cut"){
-                                self.ProcessRoster("Cut",self.copy_value.recordNo,rdate);
-                                self.remove_Cells(sheet,self.copy_value.row,self.copy_value.col,self.copy_value.duration)
-                            }else
-                                self.ProcessRoster("Copy",self.copy_value.recordNo,rdate);    
-                            
-                             data_row=data_row+1;                 
-                            }// rows loop
-                            
-                        }
+                        col=col-1;
+                        self.selected_Cell=selected_Cell;
+                        self.sel=sel;
+                        var recordsData:Array<any>=[];
+                        self.pasting=true;
+                        let conflict:boolean=false;
+                        (  function(next) {
+                                                                                              
+                            for (let i=selected_Cell.col; i<selected_columns && !conflict; i++){                     
+                                self.copy_value=sheet.getTag(selected_Cell.row,i,GC.Spread.Sheets.SheetArea.viewport)
+                                if (self.copy_value==null) continue;
+                                if (self.copy_value.recordNo==null || self.copy_value.recordNo==0) continue;
+                                    recordsData.push(self.Check_BreachedRosterRules_Paste(self.copy_value.recordNo,self.operation,sel.row,sel.col))
+                                                                  
+                            }    
+                            //let tt=JSON.stringify(recordsData)
+                            self.timeS.pastingRosters(JSON.stringify(recordsData)).subscribe(data=>{
+                            let res=data[0];
+                            if (res.errorValue>0){
+                                self.Error_Msg=res.errorValue +", "+ res.msg ;
+                                self.breachRoster=true; 
+                                self.pasting=false;                              
+                                next(self.pasting);
+                            }else{
+                                self.pasting=true;
+                                next(self.pasting); 
 
-                       // sheet.setValue(row,col,sheet.getCell(selected_Cell.row, selected_Cell.col));
-  
-                       //sheet.getCell(row,col).backColor(sheet.getCell(selected_Cell.row, selected_Cell.col).backColor);
-                      //sheet.getCell(row,col).backgroundImage(sheet.getCell(selected_Cell.row, selected_Cell.col).backgroundImage);
-  
+                            }
+
+                        })                        
+                            
+                    }  
+                    (function(continu:boolean) {
+                           
+                            if (continu){
+                                self.Pasting_Records(selected_Cell,sel)
+                            }else{
+                                self.breachRoster=true;
+                            }
+    
+                    }))
+
+                  
                         Commands.endTransaction(context, options);
                       //  sheet.options.isProtected = true;
                         spread.resumePaint();
                        
-                        if (self.viewType=='Staff'){
-                            self.current_roster = self.find_roster(self.cell_value.recordNo);
-                            let clientCode =self.current_roster.recipientCode;
-                            let date= self.current_roster.date
-
-                            self.txtAlertSubject = 'NEW SHIFT ADDED : ' ;
-                            self.txtAlertMessage = 'NEW SHIFT ADDED : \n' + date + ' : \n'  + clientCode + '\n'  ;
-                        
-                            self.show_alert=true;
-                        }
+                      
                        // self.load_rosters();
                         return true;
                     }
@@ -1914,7 +2106,8 @@ ClearMultishift(){
   
                         if (sheet.getTag(sel.row,sel.col,GC.Spread.Sheets.SheetArea.viewport)==null)                       
                             return;
-                        
+
+                         
                         self.deleteRosterModal=true;   
                         self.operation="Delete";    
                         Commands.endTransaction(context, options);
@@ -2671,7 +2864,68 @@ ClearMultishift(){
       
       return val;
     }
+Pasting_Records(selected_Cell:any,sel:any){
+    let self=this;
+    let sheet=this.spreadsheet.getActiveSheet();
+    
+    var col = sel.col;
+    var row = sel.row;
+    let selected_columns = selected_Cell.col + selected_Cell.colCount;
+                        let dt= new Date(self.date);        
+                        let data_row=0;
+                        let row_iterator=0;
+                        let recdNo=0;
+                        let breachStatus:boolean=false;
+                        col=col-1;
+                        for (let i=selected_Cell.col; i<selected_columns; i++)                     
+                            {
+                                data_row=selected_Cell.row;
+                                
+                                col=col+1;
+                            
+                                for ( row_iterator=0; row_iterator<=selected_Cell.rowCount; row_iterator++){
+                                if (sheet.getTag(data_row,i,GC.Spread.Sheets.SheetArea.viewport)==null ){
+                                    data_row=data_row+1;
+                                    continue;
+                                }
+                                                            
+                                if (sheet.getTag(data_row,i,GC.Spread.Sheets.SheetArea.viewport)!=null)
+                                    self.copy_value=sheet.getTag(data_row,i,GC.Spread.Sheets.SheetArea.viewport)
+                                
+                                if (self.copy_value.recordNo==recdNo)
+                                    continue;
+                                
+                                recdNo=self.copy_value.recordNo;
+                                var cell_col_text=sheet.getValue(0,col,GC.Spread.Sheets.SheetArea.colHeader);
+                                console.log(cell_col_text);
+                                var col_date= cell_col_text.substring(cell_col_text.length-2,cell_col_text.length);
+                            
+                                let rdate = dt.getFullYear() + "/" + self.numStr(dt.getMonth()+1) + "/" + self.numStr(col_date.trim());
+                        
+                                if (self.copy_value==null || self.copy_value.recordNo==null || self.copy_value.recordNo==0){
+                                    continue;
+                                }
 
+                            
+                                //if (self.copy_value.row>=0){
+                                let n_row=row+row_iterator;
+                                self.draw_Cells(sheet,n_row,col,self.copy_value.duration,self.copy_value.type,self.copy_value.recordNo,self.copy_value.service)
+                                self.isPaused=true;
+                            
+                            
+                                                                                
+                                if (self.operation==="cut"){
+                                    self.ProcessRoster("Cut",self.copy_value.recordNo,rdate);
+                                    self.remove_Cells(sheet,self.copy_value.row,self.copy_value.col,self.copy_value.duration)
+                                }else
+                                    self.ProcessRoster("Copy",self.copy_value.recordNo,rdate);    
+                                
+                                data_row=data_row+1;                 
+                                }// rows loop
+                                   
+                            }
+                      
+}
     selectedDays(value: string[]): void {
         this.weekDay=value
         console.log(value);
@@ -2697,12 +2951,26 @@ ClearMultishift(){
     onItemSelected(sel: any, i:number, type:string): void {
             console.log(sel)
             
-            if (type=="program"){       
+           
+            if (type=="program"){      
+                
                 this.HighlightRow=i;   
                 this.defaultProgram=sel;
+               
                 this.bookingForm.patchValue({
                     program:sel
                 });
+                
+                // this.GETSERVICEACTIVITY(sel).subscribe(d=>{
+                //     this.serviceActivityList=d;
+                //     if(d && d.length == 1){
+                //         this.bookingForm.patchValue({
+                //             serviceActivity: d[0]               
+                           
+                //         });                       
+                        
+                //     }
+                // })
             }else if (type=="service"){
                 this.HighlightRow2=i;
                 this.defaultActivity=sel;//this.serviceActivityList[i];
@@ -2737,19 +3005,41 @@ ClearMultishift(){
             
         }
             
+      
       }
      
-    onItemDbClick(sel: any, i:number, type:string): void {
-
+    onItemDbClick(sel: any, i:number, type:string) : void {
         
         console.log(sel)
         this.HighlightRow=i;               
 
         if (type=="program"){          
             this.defaultProgram=sel;
+            this.dblclick=true;
             this.bookingForm.patchValue({
                  program:sel
              })
+             
+             this.GETSERVICEACTIVITY(sel).subscribe((d: Array<any>) => {
+                this.serviceActivityList = d;
+                this.next_tab();
+                   setTimeout(() => {
+                       this.bookingForm.patchValue({
+                           serviceActivity: this.defaultActivity                         
+                       });                   
+                   }, 0);            
+              
+               if(d && d.length == 1){
+                   this.bookingForm.patchValue({
+                       serviceActivity: d[0]               
+                      
+                   });
+
+                }
+             });
+                   
+                
+               
         }else if (type=="service"){
             this.defaultActivity=sel;
             
@@ -2783,21 +3073,17 @@ ClearMultishift(){
             })
             
         }
-       
-        //this.next_tab();
-        
-       
-        if (this.showDone2 && this.rosterGroup!="" ){
-          //  this.doneBooking();
-            return;
-        }
-        if (this.current==1 && (this.activity_value==12 || this.booking_case==8)){
-            
-        }else if(this.showDone2==false ){
-            this.next_tab();
-        }
- 
-       
+
+         if (this.showDone2 && this.rosterGroup!="" ){
+            //  this.doneBooking();
+              return;
+          }
+          if (this.current==1 && (this.activity_value==12 || this.booking_case==8)){
+              
+          }else if(this.showDone2==false && type!="program" ){              
+              this.next_tab();
+          }
+  
    
   }
 
@@ -2828,7 +3114,7 @@ ClearMultishift(){
       this.addBooking(0);
       this.add_multi_roster=true;
   }
-    ProcessRoster(Option:any, recordNo:string, rdate:string=""):any {
+    ProcessRoster(Option:any, recordNo:string, rdate:string="", start_Time:string=""):any {
         
         
         let dt= new Date(this.date);
@@ -2844,7 +3130,8 @@ ClearMultishift(){
        // let startTime=sheet.getTag(f_row,0,GC.Spread.Sheets.SheetArea.viewport);
         let startTime =   sheet.getCell(f_row,0,GC.Spread.Sheets.SheetArea.rowHeader).tag();
         let endTime =   sheet.getCell(l_row,0,GC.Spread.Sheets.SheetArea.rowHeader).tag();
-
+        if (start_Time!="")
+            startTime=start_Time
 
         if (this.master){
 
@@ -2868,7 +3155,7 @@ ClearMultishift(){
         this.timeS.ProcessRoster(inputs).subscribe(data => {
         //if  (this.ClearMultiShiftModal==false &&  this.SetMultiShiftModal==false) 
              //  this.globalS.sToast('Success', 'Timesheet '  + Option + ' operation has been completed');
-        this.selectedCarer="";
+        //this.selectedCarer="";
         this.searchStaffModal=false;
         this.UnAllocateStaffModal=false;
         
@@ -2878,7 +3165,28 @@ ClearMultishift(){
         this.ViewServiceDetail=false;
         this.ViewStaffDetail=false;
         this.deleteRosterModal=false;
-            
+
+        let res=data;
+       
+            if (res.errorValue>0){
+                this.globalS.eToast('Error', res.errorValue +", "+ res.msg);
+                if( Option=='Copy' ||Option=='Cut')
+                    this.load_rosters();
+                return; 
+            } if( Option=='Copy' ||Option=='Cut'){
+
+                if (this.viewType=='Staff'){
+                    this.current_roster = this.find_roster(parseInt(recordNo));
+                    let clientCode =this.current_roster.recipientCode;
+                    let date= this.current_roster.date
+
+                    this.txtAlertSubject = 'NEW SHIFT ADDED : ' ;
+                    this.txtAlertMessage = 'NEW SHIFT ADDED : \n' + date + ' : \n'  + clientCode + '\n'  ;
+                    this.show_alert=true;
+                   
+                }
+            }
+          
     });
     
     
@@ -3204,6 +3512,7 @@ return rst;
            this.detail.viewType =this.viewType
            this.detail.editRecord=false;
            this.detail.ngAfterViewInit();
+          // this.detail.details(index);
            return;
         this.whatProcess = PROCESS.UPDATE;
         console.log(index);
@@ -3217,7 +3526,6 @@ return rst;
             billto,
             date, 
             debtor,
-            duration, 
             durationNumber,
             serviceTypePortal,
             recipientCode,            
@@ -3299,7 +3607,15 @@ return rst;
 
     ngOnInit(): void {
 
+        this.token = this.globalS.decode(); 
+        console.log(this.token);
+        if (this.token==null){
 
+            this.globalS.eToast("Authentication","Invalid  User, please login again");
+            
+            this.router.navigate(['/']);
+            return;
+        }
      
         GC.Spread.Sheets.LicenseKey = license;
 
@@ -3326,7 +3642,7 @@ return rst;
         this.date = moment();
         this.AddTime();
         this.buildForm(); 
-         this.token = this.globalS.decode();    
+          
          this.tval=96;
          this.dval=14;
      
@@ -3526,8 +3842,8 @@ picked(data: any) {
                     this.agencyDefinedGroup = data.data;
                 });
         } 
-        
-       // return;
+        if(this.viewType == 'Staff')
+            this.getPublicHolidyas(data.data);
         
         this.picked$ = this.timeS.gettimesheets({
             AccountNo: data.data,            
@@ -3930,42 +4246,176 @@ picked(data: any) {
         return this.listS.getlist(sql);
     }
 
-    GetDayMask(b_SDay:boolean, s_EarliestDate:string, s_Staff:string)
-    {
-        let dCtr:number
-        let s_Date:string
-        let b_PublicHoliday : boolean
-        let s_PubHolState:string
-        let s_PubHolRegion:string;
-        let s_PubHolFilter:string;
-        let s_Weekday:string;
-        let ip : Array<string>;
+ GetStateFromPostcode(s_Postcode : string) 
+{
+    let StateFromPostcode = ""
+
+    switch(Number(s_Postcode.substring(0, 1))){
+    case 0 :
+        StateFromPostcode = "NT";
+        break;
+    case 2 :
+            var x = Number(s_Postcode);
+            switch(true){
+            case (x>=2600 && x<=2618): StateFromPostcode = "ACT";  break;
+            case (x>=2900 && x<=2999): StateFromPostcode = "ACT";  break;
+            default: StateFromPostcode = "NSW";  break;
+            }
+            break;
+    case 3:
+        StateFromPostcode = "VIC";
+        break;
+    case 4:
+        StateFromPostcode = "QLD";
+        break;
+    case 5 :
+        StateFromPostcode = "SA";
+        break;
+    case 6:
+        StateFromPostcode = "WA";
+        break;
+    case 7:
+        StateFromPostcode = "TAS";
+        break;
+    }
+    
+    return StateFromPostcode;
+}
+
+IsStaffAllocated(s_StaffCode:string, s_Date : string, s_time:string, duration:number) 
+{
+    let status:any;
+   
+    
+
+    let sql=`SELECT [Client Code],[Start Time], LEFT(CONVERT(VARCHAR,DATEADD(Minute,[duration]*5,[Start Time]),108),5) as end_time FROM Roster 
+    where [date] = '${moment(s_Date).format('YYYY/MM/DD')}' AND [Carer code]= '${s_StaffCode}' and
+    ([start Time]  between  '${s_time}'  and  LEFT(CONVERT(VARCHAR,DATEADD(Minute,${duration}*5,'${s_time}'),108),5)
+     OR 
+     ('${s_time}' between [Start Time] and LEFT(CONVERT(VARCHAR,DATEADD(Minute,duration*5,[start time]),108),5))
+    )`
+   return  this.listS.getlist(sql);
+    // this.listS.getlist(sql).subscribe(data=>{
+    //     if (data.length>0)
+    //         return true;
+    //     else
+    //         return false;
+    //  });   
+    
+    //return  this.listS.getlist(sql).subscribe(data=>{})
+}
+  
+
+getPublicHolidyas(s_StaffCode:string){
+  
+    let s_PubHolState:string
+    let s_PubHolRegion:string;
+    let s_PubHolFilter:string;
+    let s_FilterMask:string
+
+       let sql=`SELECT st.PublicHolidayRegion, sta.Postcode FROM Staff st INNER JOIN NamesAndAddresses sta ON st.Uniqueid = sta.personid WHERE (ISNULL(sta.primaryAddress, 0) = 1 or sta.Type = '<USUAL>') AND st.AccountNo = '${s_StaffCode}'`
+
+      // this.listS.getlist(sql) 
+       let sql2="";
         
-        let s_FilterMask:string
+            new Observable(observer => {
+                this.listS.getlist(sql)          
+            .pipe(
+                tap(output => {
+                    console.log(output);
+                    this.publicHolidayRegionData=output[0];
+                    s_PubHolRegion = this.publicHolidayRegionData.publicHolidayRegion;
+                    s_PubHolState = this.GetStateFromPostcode(this.publicHolidayRegionData.postcode);//(N2S(!postcode))
+                 
+                    s_FilterMask = (s_PubHolState != ""? 1: 0)  + "" + (s_PubHolRegion != ""? 1: 0)
+                    s_PubHolFilter="";   
+                    switch(s_FilterMask){
+                    case "00" : ""; break;
+                    case "01": s_PubHolFilter = s_PubHolFilter + " AND ( (ISNULL(Stats, '') IN ('', 'ALL')) OR (PublicHolidayRegion = '" + s_PubHolRegion + "'))" ; break;
+                    case "10": s_PubHolFilter = s_PubHolFilter + " AND ( (ISNULL(Stats, '') IN ('', 'ALL')) OR (Stats = '" + s_PubHolState + "'))" ; break;
+                    case "11": s_PubHolFilter = s_PubHolFilter + " AND ( (ISNULL(Stats, '') IN ('', 'ALL')) OR ((Stats = '" + s_PubHolState + "') OR ( (Stats = '" + s_PubHolState + "') AND (PublicHolidayRegion = '" + s_PubHolRegion + "'))))" ; break;
+                    }
+                    let dd= new Date (this.date);
+                    sql2=`select [DATE] from PUBLIC_HOLIDAYS where month([DATE])=${dd.getMonth()+1} and year([DATE])=  ${dd.getFullYear()}  ${s_PubHolFilter} `
+        
+                }),
+                switchMap(output =>                     
+                    forkJoin( 
+                        this.listS.getlist(sql2)  
+                    )) ,
+                tap(output2 => {
+                    console.log(output2);
+                    this.lstPublicHolidays=output2[0];
+                })
+            
+
+            ).subscribe(output2 => console.log( output2))
+        
+        }).subscribe(data=>{
+            console.log(data);
+        });
+
+    
+}
+
+IsPublicHoliday1(s_Date : String) : boolean
+{
+    let status=false;
+   if (this.lstPublicHolidays!=null){
+        var target=this.lstPublicHolidays.find(tmp=>tmp.date==s_Date)
+        if(target!=null)
+            status=true;
+   }
+    return status;
+    
+}
+
+
+GetDayMask()
+{
+        let s_Date:string
+        let s_Weekday:string;
+        let b_PublicHoliday : any
+        
+        let ip : Array<string>=["0","0","0","0","0","0","0","0"];
+     
         let DayNo:number;
         let Yearno:number;
         let MonthNo:number;
-     //for (i% = 0 i<=7; i++)
-         //ip[i%] = "0";
-         var sels = this.spreadsheet.getSelections();
+        
+        var sheet=this.spreadsheet.getActiveSheet();
+
+         var sels = sheet.getSelections();
          var sel = sels[0];
          var row = sel.row;
          
          for (let i=sel.col; i<(sel.col+sels[0].colCount); i++)
         {
-            DayNo=i;                        
-            MonthNo = parseInt(format(this.date, 'M')),
-            Yearno = parseInt(format(this.date, 'yyyy')),
-
+           // DayNo=i;              
+            var cell_col_text=sheet.getValue(0,i,GC.Spread.Sheets.SheetArea.colHeader);
+            
+            var col_day= cell_col_text.substring(cell_col_text.length-2,cell_col_text.length);
+            if (!this.recurrenceView){
+                DayNo   = col_day.trim()    ;
+                MonthNo = parseInt(format(this.date, 'M'));
+                Yearno = parseInt(format(this.date, 'yyyy'));
+            }else{
+                let dts=this.date.split("/");
+                DayNo   = dts[2]   ;
+                MonthNo = dts[1] ;  
+                Yearno = dts[0] //this.date.substring(0, 4)  ; 
+            }
        // If NullToStr(s_EarliestDate) = "" Then s_EarliestDate = Format$(Yearno & "/" & Monthno & "/" & IIf(b_SDay, DayNo, dCtr), "yyyy/mm/dd")
-         s_Date = Yearno + "/" + MonthNo + "/" + DayNo;
-         s_Date=format(this.date, 'yyyy/MM/dd'),
-         b_PublicHoliday = false;//this.IsPublicHoliday1(s_Date, s_Staff)
+          s_Date = Yearno + "/" + this.numStr(MonthNo) + "/" + this.numStr(DayNo);
+          b_PublicHoliday =   this.IsPublicHoliday1(s_Date);       
+     
+          
+         ip[7] = "0"
          if (b_PublicHoliday)
              ip[7] = "1"
          else {           
             s_Weekday = this.GetWeekday(s_Date);
-            switch (s_Date)
+            switch (s_Weekday.toUpperCase())
             {        
              case "MONDAY": 
                 ip[0] = "1" 
@@ -3989,13 +4439,14 @@ picked(data: any) {
                 ip[6] = "1";
                 break;
             }
-        
-         for( i = 0; i<7; i++)
-         ;
-            // GetDayMask = GetDayMask + ip[i%];
-        }       
+                        
+         }
     }
-    
+    var DaysString="";
+         for( let i = 0; i<=7; i++)
+            DaysString = DaysString + ip[i];
+        
+    return DaysString;
 }
 
 GetWeekday(date:string) : string {
@@ -4019,37 +4470,39 @@ GETSERVICEACTIVITY(program: any): Observable<any> {
     if (!program) return EMPTY;
     
 
-    if (serviceType != 'ADMINISTRATION' && serviceType != 'ALLOWANCE NON-CHARGEABLE' && serviceType != 'ITEM'  && serviceType != 'SERVICE') {
+    if (serviceType != 'ADMINISTRATION'  && serviceType != 'ALLOWANCE NON-CHARGEABLE' && serviceType != 'ITEM'  && serviceType != 'SERVICE') {
 
         if(typeof _date === 'string'){
             _date = parseISO(_date);
         }
 
+              
+        var s_DayMask= this.GetDayMask();
        // return this.listS.getserviceactivityall({
            return this.timeS.getActivities({            
             recipient: recipientCode,
             program:program,  
             forceAll: "0", //recipientCode=='!MULTIPLE' || recipientCode=='!INTERNAL' ? "1" : "0",   
-            mainGroup: this.IsGroupShift ? this.GroupShiftCategory : 'ALL',
+            mainGroup: this.IsGroupShift ? this.GroupShiftCategory : serviceType,
             subGroup: '-',           
             viewType: this.viewType,
-            AllowedDays: "0",
+            AllowedDays: s_DayMask,
             duration: this.durationObject?.duration            
         });
     }
     else {
         let  sql="";
 
-        // return this.timeS.getActivities({            
-        //     recipient: recipientCode,
-        //     program:program,  
-        //     forceAll: "1", //recipientCode=='!MULTIPLE' || recipientCode=='!INTERNAL' ? "1" : "0",   
-        //     mainGroup: this.IsGroupShift ? this.GroupShiftCategory : 'ALL',
-        //     subGroup: '-',           
-        //     viewType: this.viewType,
-        //     AllowedDays: "0",
-        //     duration: this.durationObject?.duration            
-        // });
+        return this.timeS.getActivities({            
+            recipient: recipientCode,
+            program:program,  
+            forceAll: "1", //recipientCode=='!MULTIPLE' || recipientCode=='!INTERNAL' ? "1" : "0",   
+            mainGroup: this.IsGroupShift ? this.GroupShiftCategory : 'ALL',
+            subGroup: '-',           
+            viewType: this.viewType,
+            AllowedDays: "0",
+            duration: this.durationObject?.duration            
+        });
 
     //   ql =`  SELECT DISTINCT [Service Type] AS Activity,I.RosterGroup,
     //     (CASE WHEN ISNULL(SO.ForceSpecialPrice,0) = 0 THEN
@@ -4089,7 +4542,7 @@ GETSERVICEACTIVITY(program: any): Observable<any> {
         AND ITM.[Status] = 'ATTRIBUTABLE' AND (ITM.EndDate Is Null OR ITM.EndDate >= '${this.currentDate}'))
         ORDER BY [Service Type]`;
     
-        return this.listS.getlist(sql);
+//        return this.listS.getlist(sql);
     }
 }
 
@@ -4514,7 +4967,11 @@ isServiceTypeMultipleRecipient(type: string): boolean {
             
         });
         
-      
+this.bookingForm.valueChanges.subscribe(x=>{
+            console.log ('Value changes'+ x.program);
+
+}) ;     
+
 this.bookingForm.get('program').valueChanges.pipe(
             distinctUntilChanged(),
             switchMap(x => {
@@ -4530,14 +4987,11 @@ this.bookingForm.get('program').valueChanges.pipe(
         ).subscribe((d: Array<any>) => {
 
             this.serviceActivityList = d;//d.map(x => x.activity);
-          
-           
                 setTimeout(() => {
                     this.bookingForm.patchValue({
                         serviceActivity: this.defaultActivity                     
                         
                     });
-                    //this.next_tab();
                    
                 }, 0);
             
@@ -4550,6 +5004,7 @@ this.bookingForm.get('program').valueChanges.pipe(
                
                 
             }
+            
         });
      
 
@@ -4711,9 +5166,10 @@ this.bookingForm.get('program').valueChanges.pipe(
     resetBookingFormModal() {
         this.current = 0;
         this.rosterGroup = '';
-        this.selectedCarer="";
+      //  this.selectedCarer="";
         this.defaultProgram="";
         this.defaultActivity="";
+        //this.sample="";
         this.defaultStartTime = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 8, 0, 0);
         this.defaultEndTime = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 9, 0, 0);        
         this.IsClientCancellation=false;
@@ -4792,7 +5248,8 @@ this.bookingForm.get('program').valueChanges.pipe(
 
    pre_tab(): void {
         this.current -= 1;
-        if (this.viewType=="Staff" && this.current == 3 ){
+        //this.viewType=="Staff" &&
+        if ( this.current == 3 ){
             this.current -= 1;
         }
         if(this.current == 2 && !(this.activity_value==12 || this.ShowCentral_Location)){
@@ -4836,8 +5293,8 @@ this.bookingForm.get('program').valueChanges.pipe(
         }
         //console.log(this.current + ", " + this.ShowCentral_Location +", " + this.viewType + ", " + this.IsGroupShift )
                 
-        
-        if (this.viewType=="Staff" && this.current == 3 ){
+        //this.viewType=="Staff" &&
+        if ( this.current == 3 ){
      
             this.current += 1;
           

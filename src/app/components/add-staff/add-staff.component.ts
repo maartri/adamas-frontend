@@ -2,15 +2,21 @@ import { Component, OnInit, forwardRef, OnChanges, SimpleChanges, Input, Output,
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
 import { TitleCasePipe } from '@angular/common';
 
-import { TimeSheetService, GlobalService, view, ClientService, StaffService, ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles, SettingsService } from '@services/index';
+import { TimeSheetService, GlobalService, view, ClientService, StaffService, ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles, SettingsService, contactGroups } from '@services/index';
 import * as _ from 'lodash';
 import { forkJoin, Observable, EMPTY, Subject } from 'rxjs';
 import parseISO from 'date-fns/parseISO'
 import { RemoveFirstLast } from '../../pipes/pipes';
 import { mergeMap, debounceTime, distinctUntilChanged, first, take, takeUntil, switchMap, concatMap } from 'rxjs/operators';
 import * as moment from 'moment';
+import format from 'date-fns/format';
+import addDays from 'date-fns/addDays'
 
 const noop = () => {};
+
+const defaultTimeSpent = new Date().setHours(0, 15);
+const defaultDate = new Date().setHours(0,0);
+const defaultDateTime = new Date();
 
 @Component({
   selector: 'app-add-staff',
@@ -29,6 +35,12 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
   private onTouchedCallback: () => void = noop;
   private onChangeCallback: (_: any) => void = noop;
 
+  private destroy$ = new Subject();
+  private otherContacts: FormArray;
+
+  contactGroups: Array<string> = contactGroups;
+  doctors: Array<any> = []
+
   @Input() open: boolean = false;
   @Output() reload = new EventEmitter();
 
@@ -43,6 +55,10 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
   branchesArr: Array<string> = [];
   jobCategoryArr: Array<string> = [];
   managerArr: Array<string> = [];
+  activities: Array<string> = [];
+
+  FUNDING_TYPE: string = "!INTERNAL";
+  BRANCH_NAME: string;
   
   staffForm: FormGroup;
 
@@ -57,8 +73,23 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
     lineHeight: '30px'
   };
 
+  notifFollowUpGroup: any;
+  notifDocumentsGroup: any;
+  followups: Array<string>;
+
+  notifCheckBoxes: Array<string> = [];
+  notifCompetenciesGroup: Array<any> = [];
+
+  competencies: Array<string> = [];
+
+  datalist: Array<string>;
+
   private verifyAccount = new Subject<any>();
   private verifyAccountPerOrg = new Subject<any>();
+
+  defaultDate: string;
+  firstOpenChange: boolean = false;
+  
   
   constructor(
     private globalS: GlobalService,
@@ -68,7 +99,8 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
     private listS: ListService,
     private fb: FormBuilder,
     private cd: ChangeDetectorRef,
-    private titleCase: TitleCasePipe
+    private titleCase: TitleCasePipe,
+    private uploadS: UploadService
   ) { 
 
 
@@ -97,16 +129,31 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
         accountNo:[''],
 
         surnameOrg: ['', Validators.required],
+        preferred: '',
         firstName: ['', Validators.required],
         birthDate: ['',Validators.required],
         gender: ['',Validators.required],
         addressForm: this.fb.array(this.defaultAddress() || []),
         contactForm: this.fb.array(this.defaultContacts() || []),
+        otherContactsForm: new FormArray([this.createOtherContact()]),
 
         commencementDate: '',
-        branch:'',
-        jobCategory: '',
-        manager: '',
+        branch:null,
+        jobCategory: null,
+        manager: null,
+
+        activity: null,
+
+        // date
+        date: new Date(),
+        time: new Date(),
+        timeSpent: new Date(defaultTimeSpent),
+
+        // note details
+        radioGroup: 'CASENOTE',
+        notes: null,
+
+
     });
 
     this.staffForm.get('accountNo').valueChanges
@@ -273,13 +320,21 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
         });
     });
 
-    this.listS.getlistbranches().subscribe(data => this.branchesArr = data)
-    this.listS.getliststaffgroup().subscribe(data => this.jobCategoryArr = data)
-    this.listS.getlistcasemanagers().subscribe(data => this.managerArr = data)
+    this.listS.getlistbranches().subscribe(data => this.branchesArr = data);
+    this.listS.getliststaffgroup().subscribe(data => this.jobCategoryArr = data);
+    this.listS.getlistcasemanagers().subscribe(data => this.managerArr = data);
+    this.listS.getstaffactivities().subscribe(data => {
+      this.activities = data;
+
+      if(this.activities.length  == 1 ){
+        this.staffForm.patchValue({ activity: this.activities[0] })
+      }
+    })
   }
 
   ngOnInit(): void {
     this.buildForm();
+    console.log()
   }
 
   //From ControlValueAccessor interface
@@ -306,7 +361,8 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
   createContact(): FormGroup{    
     return this.fb.group({
       contacttype: new FormControl(null),
-      contact: new FormControl('')
+      contact: new FormControl(''),
+      primary: new FormControl(false)
     });
   }
 
@@ -314,7 +370,51 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
     return this.fb.group({
       address1: new FormControl(''),
       type: new FormControl(null),
-      suburb: new FormControl('')
+      suburb: new FormControl(''),
+      primary: new FormControl(false)
+    });
+  }
+
+  contactGroupChange(group: FormGroup, index: number){
+    var contactGroup = (group[index] as FormGroup).get('contactGroup').value;
+    var specificGroup = (group[index] as FormGroup);
+    specificGroup.patchValue({
+      type: null
+    });
+
+    this.listS.gettypeother(contactGroup).subscribe(data => {
+      specificGroup.patchValue({
+        contactList: data
+      });
+    });    
+  }
+
+  addOtherContacts(): void {
+    this.otherContacts = this.staffForm.get('otherContactsForm') as FormArray;
+    this.otherContacts.push(this.createOtherContact());
+  }
+
+  deleteOther(i: number): void {
+    this.otherContacts = this.staffForm.get('otherContactsForm') as FormArray;
+    this.otherContacts.removeAt(i);
+  }
+
+  createOtherContact(): FormGroup {
+    return this.fb.group({
+      contactGroup: new FormControl(''),
+      contactList: [[]],
+      type: new FormControl(''),
+      name: new FormControl(''),
+      address1: new FormControl(''),
+      address2: new FormControl(''),
+      suburb: new FormControl(''),
+      email: new FormControl(''),
+      phone1: new FormControl(''),
+      phone2: new FormControl(''),
+      mobile: new FormControl(''),
+      fax: new FormControl(''),
+
+      // list: new FormControl(['mark','aris'])
     });
   }
 
@@ -323,10 +423,12 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
 
     groupArr =[ new FormGroup({
       contacttype: new FormControl('HOME'),
-      contact: new FormControl('')
+      contact: new FormControl(''),
+      primary: new FormControl(false)
     }),new FormGroup({
         contacttype: new FormControl('MOBILE'),
-        contact: new FormControl('')
+        contact: new FormControl(''),
+        primary: new FormControl(false)
     })]
     return groupArr;
   }
@@ -337,11 +439,13 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
     groupArr =[ new FormGroup({
         type: new FormControl('USUAL'),
         address1: new FormControl(''),
-        suburb: new FormControl('')
+        suburb: new FormControl(''),
+        primary: new FormControl(false)
     }),new FormGroup({
        type: new FormControl('POSTAL'),
         address1: new FormControl(''),
-        suburb: new FormControl('')
+        suburb: new FormControl(''),
+        primary: new FormControl(false)
     })]
     return groupArr;
   }
@@ -362,12 +466,40 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
 
   next(): void {
       this.current += 1;
+      if(this.current == 4){
+        this.populateNotificationDetails();
+      }
   }
 
+  specialPages: Array<number> = [0,3];
+
   get nextRequired() {
+    
+    const {
+      type,               //category
+      accountNo,
+
+      surnameOrg,         //lastname
+      firstName,          //firstname
+      gender,             //gender
+      birthDate,          //birthdate
+
+      jobCategory,        //job category
+      manager,            //manager
+      branch,             //branch
+      commencementDate,   //commencement date      
+      notes,
+      activity
+  } = this.staffForm.value;
+
     if(this.current == 0 && (!this.globalS.isEmpty(this.staffForm.get('surnameOrg').value)   && (!this.accountTaken) && (this.staffForm.get('orgType').value === 'Organisation'))) return true;
+   
     if(this.current == 0 && (this.staffForm.get('orgType').value === 'Individual') && this.checkIfPersonalDetailsHasNoValue()  && (!this.accountTaken) && !this.globalS.isEmpty(this.staffForm.get('accountNo').value)) return true;
-    if(this.current > 0) return true;
+
+    if(this.current == 3 && (!this.globalS.isEmpty(activity) && !this.globalS.isEmpty(manager) && !this.globalS.isEmpty(branch) && !this.globalS.isEmpty(jobCategory))) return true;
+
+    if(!this.specialPages.includes(this.current)) return true;
+
     return false;
   }
 
@@ -379,8 +511,28 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
     return data == 'FAX' || data == 'HOME' || data == 'WORK';
   }
 
+  notif(data: any){  
+    var temp1 = data.find(x => x.checked === true)
+    this.listS.getnotifyaddresses(temp1.label).subscribe(x => this.globalS.emailaddress = x)  
+  }
+
+  doc(data:any){  
+    var temp = data.filter(x => x.checked)
+    this.globalS.doc = temp.map(x => x.value);
+    return this.globalS.doc
+  }
+
+  followup(data: any){
+    var temp
+    temp = data.find(x => x.checked === true)
+    this.globalS.followups = temp
+  } 
+
   save(){
     
+    // this.writereminder('asd', 'notes', this.notifFollowUpGroup);
+    // return;
+
     const {
           type,               //category
           accountNo,
@@ -394,11 +546,13 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
           manager,            //manager
           branch,             //branch
           commencementDate,   //commencement date      
-          
+          notes,
+          otherContactsForm,
+          preferred
       } = this.staffForm.value;
 
       if(
-          this.globalS.isEmpty(commencementDate) || 
+          // this.globalS.isEmpty(commencementDate) || 
           this.globalS.isEmpty(manager) || 
           this.globalS.isEmpty(branch) || 
           this.globalS.isEmpty(jobCategory)
@@ -407,7 +561,8 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
           return;
         }
 
-
+      //  this.writereminder('asdas', notes, this.notifFollowUpGroup);
+      //  return;
 
       var addressList = (this.staffForm.value.addressForm).map(x => {
           let pcode = /(\d+)/g.test(x.suburb) ? x.suburb.match(/(\d+)/g)[0] : "";
@@ -419,23 +574,52 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
                   description: x.type,
                   address1: x.address1.trim(),
                   suburb: suburb.trim(),
-                  postcode: pcode.trim()
+                  postcode: pcode.trim(),
+                  primaryAddress: x.primary
               }
           }
-      }).filter(x => x)
-      
+      }).filter(x => x);
+
+      var othersList = otherContactsForm.map(x => {
+          let pcode = /(\d+)/g.test(x.suburb) ? x.suburb.match(/(\d+)/g)[0] : "";
+          let suburb = /(\D+)/g.test(x.suburb) ? x.suburb.match(/(\D+)/g)[0] : "";
+
+          if(!_.isEmpty(x.type) && !_.isEmpty(x.address1) && !_.isEmpty(suburb) && !_.isEmpty(pcode)){
+              return {
+                  personID: '',
+                  description: x.type,
+                  address1: x.address1.trim(),
+                  address2: x.address2.trim(),
+                  suburb: suburb.trim(),
+                  postcode: pcode.trim(),
+                  primaryAddress: x.primary,
+
+                  name: x.name.trim(),
+                  phone1: x.phone1,
+                  phone2: x.phone2,
+
+                  mobile: x.mobile,
+                  fax: x.fax,
+                  email: x.email,
+
+
+              }
+          }
+      }).filter(x => x);      
+        
       var contactList = (this.staffForm.value.contactForm).map(x => {
           if( !_.isEmpty(x.contact) && !_.isEmpty(x.contacttype) )
           {
               return {
                   detail: x.contact,
                   type: x.contacttype,
-                  personID: ''
+                  personID: '',
+                  primaryPhone: x.primary
               }
           }
       }).filter(x => x);
 
-      this.staffS.poststaffprofile({
+      let inputData = {
           Staff: {
               accountNo: (accountNo || surnameOrg).toUpperCase(),
               firstName: firstName,
@@ -446,17 +630,296 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
               commencementDate: commencementDate ? moment(commencementDate).format() : null,
               stf_Department: branch,
               staffGroup: jobCategory,
-              pan_Manager: manager
+              pan_Manager: manager,
+              preferredName: preferred
           },
           NamesAndAddresses: addressList,
-          PhoneFaxOther: contactList
-      }).subscribe(data => {
+          PhoneFaxOther: contactList,
+          Competencies: this.notifCompetenciesGroup.filter(x => x.checked).map(x => x.label),
+          OtherContacts: othersList,
+          Reminders: this.notifFollowUpGroup.filter(x => x.checked).map(x => {
+            return {
+              label: x.label,
+              dateCounter: x.dateCounter
+            }
+          }),
+          Documents: this.doc(this.notifDocumentsGroup)
+      }
+
+      this.staffS.poststaffprofile(inputData).subscribe(data => {
+        
           if(data){
+
               this.globalS.sToast('Success','Staff Added');
               this.handleCancel();
-              this.reload.next(true);
+
+              (this.globalS.doc as Array<string>).forEach(x => {
+                this.uploadS.postdocumentstafftemplatereferral({ 
+                  User: this.globalS.decode().user, 
+                  PersonId: data.uniqueId, 
+                  OriginalFileName: x , 
+                  NewFileName: x
+                }).subscribe(data => console.log(data))
+              })
+
+              // this.uploadS.postdocumentstafftemplatereferral({ 
+              //   User: this.globalS.decode().user, 
+              //   PersonId: data.uniqueId, 
+              //   OriginalFileName: this.globalS.doc[0] , 
+              //   NewFileName: this.globalS.doc[0] 
+              // }).subscribe(data => console.log(data))
+
+              // if (this.globalS.followups != null){
+              //   this.writereminder(data.uniqueId, notes, this.notifFollowUpGroup);
+              // }
+
+              // this.uploadS.postdocumentstafftemplate({ User: '', PersonId: data.uniqueId, OriginalFileName: '', NewFileName: this.globalS.doc[0] })
+              
+              if (this.globalS.emailaddress != null){
+                this.emailnotify(); 
+              }
+
+              this.reload.next(true);              
           }
       });
-
   }
+
+  writereminder(personid: string, notes: string, followups: Array<any>){
+
+    var sql = '', temp = '';
+    for(var followup of followups)
+    {
+      var dateCounter = parseInt(followup.dateCounter);
+      var reminderDatePlusDateCounter = addDays(new Date(), dateCounter);
+      var reminderString = reminderDatePlusDateCounter.toISOString().substring(0, 10);
+
+
+
+
+
+      if(followup.checked){
+        sql = sql +"INSERT INTO HumanResources([PersonID], [Notes], [Group],[Type],[Name],[Date1],[Date2]) VALUES ('"+personid+"','"+ notes+"',"+"'RECIPIENTALERT','RECIPIENTALERT','" + followup.label + "','" + reminderString +"','"+ reminderString +"');";
+      }
+    }
+    this.clientS.addRefreminder(sql).subscribe(x => console.log(x) );
+    this.globalS.followups = null;
+  }
+
+  emailnotify(){              
+              
+    const { notes } = this.staffForm.value;
+
+    let notifications =  this.notifCheckBoxes.filter((x:any) => x.checked == true);
+    let emails = notifications.map((x: any) => x.email).join(';')
+
+    // var emailTo = this.globalS.emailaddress; 
+    
+    var emailSubject = "ADAMAS NOTIFICATION";
+    var emailBody = notes;  
+
+    location.href = "mailto:" + emails + "?" +     
+    (emailSubject ? "subject=" + emailSubject : "") + 
+    (emailBody ? "&body=" + emailBody : "");
+    
+    this.globalS.emailaddress = null;              
+  }
+
+
+  populateNotificationDetails(){
+
+   const { manager, branch, activity, jobCategory } = this.staffForm.value;
+   const listname = 'StaffOnBoard Notification';
+
+   this.listS.getstaffcompetencylist({
+    branch: branch,
+    type: activity,
+    fundingType: 'SW-CAS',
+    group: 'COMPETENCY'
+   }).subscribe(data =>{
+    this.notifCompetenciesGroup = data.map(x => {
+      return {
+        label: x,
+        value: x,
+        disabled: false,
+        checked: true
+      }
+    });
+   })
+
+
+    this.listS.getnotifications({
+      branch: branch,
+      coordinator: manager,
+      listname: listname,
+      fundingsource: jobCategory
+    }).subscribe(data => {
+      this.notifCheckBoxes = data.map(x => {
+        return {
+          label: x.staffToNotify,
+          value: x.staffToNotify,
+          email: x.email,
+          disabled: x.mandatory ? true : false,
+          checked: x.mandatory ? true : false
+        }
+      });
+      this.changeDetection();
+    });
+
+    this.listS.getfollowups({
+      branch: branch,
+      fundingType: jobCategory,
+      type: activity,
+      group: 'FOLLOWUP'
+    }).pipe(takeUntil(this.destroy$)).subscribe(data => {
+      this.notifFollowUpGroup = data.map(x => {
+        return {
+          label: x.reminders,
+          value: x.reminders,
+          dateCounter: x.user1,
+          disabled: false,
+          checked: false
+        }
+      });
+      this.changeDetection();
+    })
+
+
+    this.listS.getdocumentslist({
+      branch: branch,
+      fundingType: jobCategory,
+      type: activity,
+      group: 'DOCUMENTS'
+    }).pipe(takeUntil(this.destroy$)).subscribe(data => {
+      this.notifDocumentsGroup = data.map(x => {
+        return {
+          label: x,
+          value: x,
+          disabled: false,
+          checked: false
+        }
+      })
+      this.changeDetection();
+    });
+
+    this.listS.getdatalist({
+      branch: branch,
+      fundingType: jobCategory,
+      type: activity,
+      group: 'XTRADATA'
+    }).pipe(takeUntil(this.destroy$)).subscribe(data =>  {
+      this.datalist = data.map(x =>{
+        return {
+          form: x.form,
+          link: (x.link).toLowerCase()
+        }
+      })
+      this.changeDetection();
+    }); 
+  }
+
+  changeDetection(){
+    this.cd.markForCheck();
+    this.cd.detectChanges();
+  }
+
+   getdefaultDate(){
+    this.defaultDate = this.globalS.getAgedCareDate()
+   }
+
+   defaultBirthDate(): Date{
+    var currDate = new Date();
+    currDate.setFullYear(currDate.getFullYear() - 65);
+    return currDate;
+  }
+
+   dateOpenChange(data: any){
+    if(this.firstOpenChange || !data) return;
+    this.firstOpenChange = true;
+    this.staffForm.patchValue({
+      birthDate: this.defaultBirthDate()
+    });
+  }
+
+  notifChange(data: any){ 
+    var temp1 = data.filter(x => x.checked === true).map(x => x.email);
+    this.globalS.emailaddress = temp1;
+  }
+
+  followupChange(data: any){
+    var temp
+    temp = data.find(x => x.checked === true)
+    this.globalS.followups = temp
+  } 
+
+     
+  docChange(data:any){                    
+    var temp = data.find(x => x.checked === true)
+    this.globalS.doc = temp.label.toString();                    
+  }
+
+  competencyChange(data: any){
+    
+  }
+
+  addressIsPrimary(index: any){
+    this.uncheckPrimaryAddress();
+    var address = this.staffForm.get('addressForm') as FormArray;
+    var isPrimary = address.controls[index].get('primary').value
+    address.controls[index].get('primary').patchValue(!isPrimary);    
+  }
+
+  uncheckPrimaryAddress(){
+    var contact = this.staffForm.get('addressForm') as FormArray;
+    for(var c of contact.controls)
+    { 
+      c.get('primary').patchValue(false);
+    }
+  }
+
+  contactIsPrimary(index: any){
+    this.uncheckPrimaryContacts();
+    var contact = this.staffForm.get('contactForm') as FormArray;
+    var isPrimary = contact.controls[index].get('primary').value
+    contact.controls[index].get('primary').patchValue(!isPrimary);    
+  }
+
+  uncheckPrimaryContacts(){
+    var contact = this.staffForm.get('contactForm') as FormArray;
+    for(var c of contact.controls)
+    { 
+      c.get('primary').patchValue(false);
+    }
+  }
+
+  doctorChange(group: FormGroup, index: number, data: any){
+
+    var specificGroup = (group[index] as FormGroup);
+
+
+    if(!data) {
+      specificGroup.patchValue({
+        address1: '',
+        address2: '',
+        email: '',
+        phone1: '',
+        phone2: '',
+        fax: '',
+        mobile: ''
+      });
+      return;
+    };
+
+   
+    specificGroup.patchValue({
+      address1: data.address1,
+      address2: data.address2,
+      email: data.email,
+      phone1: data.phone1,
+      phone2: data.phone2,
+      fax: data.fax,
+      mobile: data.mobile
+    });    
+  }
+
+
 }

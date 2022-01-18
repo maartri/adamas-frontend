@@ -62,6 +62,9 @@ interface UserView{
        FetchCode:string;
        GroupShiftCategory:string;
        currentDate: string;
+    
+       breachRoster:boolean;
+       Error_Msg:string;
     defaultActivity: any = null;
     selectedActivity: any = null;
     defaultCategory: any = null;
@@ -72,6 +75,7 @@ interface UserView{
     parserDollar = (value: string) => value.replace('$ ', '');
     formatterDollar = (value: number) => `${value > -1 || !value ? `$ ${value}` : ''}`;
     formatterPercent = (value: number) => `${value > -1 || !value ? `% ${value}` : ''}`;
+    token:any;
     rosterGroup: string;
     rosterForm:FormGroup;
     IsGroupShift:boolean;
@@ -143,7 +147,7 @@ ngOnInit(){
     //   this.date = moment();
     //   this.AddTime();
        this.buildForm(); 
-    //    this.token = this.globalS.decode();    
+        this.token = this.globalS.decode();    
 }
       ngModelChangeEnd(event): void {
         this.rosterForm.patchValue({
@@ -162,8 +166,10 @@ ngOnInit(){
           if (this.data!=null){
               this.details(this.data);
           }
-         
+          
+
       }
+     
     ngModelChangeStart(event): void{
         this.rosterForm.patchValue({
             time: {
@@ -345,6 +351,7 @@ ngOnInit(){
                 });
             }
         });
+          
         this.rosterForm.get('program').valueChanges.pipe(
            // distinctUntilChanged(),
             switchMap(x => {
@@ -531,7 +538,76 @@ ngOnInit(){
             return "!INTERNAL"
         }
     }
-    done(): void {
+    
+Cancel_ProceedBreachRoster(){
+    this.breachRoster=false;
+ 
+}
+ProceedBreachRoster(){
+    this.breachRoster=false;
+    if (this.token.role!= "ADMIN USER")
+    {
+        this.globalS.eToast("Permission Denied","You don't have permission to add conflicting rosters");
+        return; 
+    }
+    this.EditRoster_Entry();
+   
+}
+    Check_BreachedRosterRules(){
+
+        const tsheet= this.rosterForm.value;
+        
+
+        this.defaultStartTime = tsheet.time.startTime;
+        this.defaultEndTime = tsheet.time.endTime;
+        var durationObject = (this.globalS.computeTimeDATE_FNS(tsheet.time.startTime,  this.defaultEndTime));
+        if(typeof tsheet.date === 'string'){
+            tsheet.date = parseISO(this.datepipe.transform(tsheet.date, 'yyyy-MM-dd'));
+        }
+       
+       
+        let inputs_breach={
+            sMode : 'Edit', 
+            sStaffCode: tsheet.staffCode, 
+            sClientCode: tsheet.recipientCode, 
+            sProgram: tsheet.program, 
+            sDate : format(tsheet.date,'yyyy/MM/dd'), 
+            sStartTime :format(this.defaultStartTime,'HH:mm'), 
+            sDuration : durationObject.duration, 
+            sActivity : tsheet.serviceActivity,
+             sRORecordno : tsheet.recordNo, 
+            // sState : '-', 
+            // bEnforceActivityLimits :0, 
+            // bUseAwards:0, 
+            // bDisallowOT :0, 
+            // bDisallowNoBreaks :0, 
+            // bDisallowConflicts :0, 
+            // bForceNote :0, 
+            // sOldDuration : '-', 
+            // sExcludeRecords : '-', 
+            // bSuppressErrorMessages  :0, 
+            // sStatusMsg : '-',
+            // PasteAction :'-'
+        };
+    
+        this.timeS.Check_BreachedRosterRules(inputs_breach).subscribe(data=>{
+            let res=data
+            if (res.errorValue>0){
+               // this.globalS.eToast('Error', res.errorValue +", "+ res.msg);
+                this.breachRoster=true;
+                this.Error_Msg=res.errorValue +", "+ res.msg 
+                return; 
+            }else{
+                this.EditRoster_Entry();
+            }
+    
+        });
+    }
+    done(){
+        this.Check_BreachedRosterRules();
+        
+    }
+    EditRoster_Entry(): void {
         this.fixStartTimeDefault();
         this.editRecord=false;
         const tsheet = this.rosterForm.value;
@@ -1139,7 +1215,7 @@ GETSERVICEACTIVITY(program: any): Observable<any> {
          this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
       //  this.durationObject = this.globalS.computeTimeDATE_FNS(startTime, endTime);
 
-        setTimeout(() => {
+        
             
             this.defaultProgram = program;
             this.defaultActivity = activity;
@@ -1147,6 +1223,7 @@ GETSERVICEACTIVITY(program: any): Observable<any> {
             this.serviceType =  this.DETERMINE_SERVICE_TYPE(serviceType);
             this.recipientCode=recipientCode;
             this.Timesheet_label="Edit Timesheet (RecordNo : " + recordNo +")"
+            this.rosterForm.disable();
             this.rosterForm.patchValue({
                 serviceType: this.serviceType,
                 date: date,
@@ -1164,7 +1241,9 @@ GETSERVICEACTIVITY(program: any): Observable<any> {
                 staffCode:staffCode                
                 
             });
-        }, 100);
+
+            this.rosterForm.enable();
+        
     }
     DETERMINE_SERVICE_TYPE(index: any): any{
         console.log(index);

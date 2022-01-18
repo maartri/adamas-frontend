@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
-import { GlobalService, ListService, MenuService,PrintService,timeSteps } from '@services/index';
+import { GlobalService, ListService,dataSetDropDowns,MenuService,PrintService,timeSteps } from '@services/index';
 import { SwitchService } from '@services/switch.service';
 import { NzModalService } from 'ng-zorro-antd';
 import { Subject } from 'rxjs';
@@ -89,7 +89,8 @@ export class RecipientAbsenceComponent implements OnInit {
   parent_person_id: any;
   addOrEdit: number = 0;
   isNewRecord: any;
-  
+  dataSetDropDowns: { CACP: string[]; CTP: string[]; DEX: string[]; DFC: string[]; DVA: any[]; HACC: string[]; HAS: string[]; QCSS: string[]; ICTD: string[]; NDIS: any[]; NRCP: string[]; NRCPSAR: string[]; OTHER: string[]; };
+  dataset_group: any[];
   constructor(
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
@@ -109,6 +110,7 @@ export class RecipientAbsenceComponent implements OnInit {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
       this.userRole = this.tocken.role;
       this.checkedList = new Array<string>();
+      this.dataSetDropDowns = dataSetDropDowns;
       this.loadData();
       this.buildForm();
       this.populateDropdowns();
@@ -522,6 +524,10 @@ export class RecipientAbsenceComponent implements OnInit {
             personID: this.parent_person_id,
             recordNumber: 0
           });
+          this.inputForm.get('iT_Dataset').valueChanges.subscribe(x => {
+            this.dataset_group = [];  
+            this.dataset_group = this.dataSetDropDowns[x];
+          });
         }
         handleOkTop() {
           this.generatePdf();
@@ -557,7 +563,7 @@ export class RecipientAbsenceComponent implements OnInit {
               "head9" : "Bill Unit",
             }
           }
-          this.printS.print(data).subscribe(blob => {  
+          this.printS.printControl(data).subscribe((blob: any) => { 
             let _blob: Blob = blob;
             let fileURL = URL.createObjectURL(_blob);
             this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);

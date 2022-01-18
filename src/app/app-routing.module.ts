@@ -158,6 +158,9 @@ import {
   ClinicalDiagnose,
   ClinicalProcedure,
   ClinicalMedication,
+  ClinicalReminder,
+  ClinicalAlert,
+  ClinicalNote,
 } from './pages/admin/recipient-views/clinical-views/index';
 
 import {
@@ -534,6 +537,10 @@ const routes: Routes = [
       {
         path: 'daymanager',
         component: DayManagerAdmin
+      },
+      {
+        path: 'time-attendance',
+        component: AttendanceAdmin
       },
       {
         path: 'timesheet',
@@ -1164,6 +1171,19 @@ const routes: Routes = [
                 path: 'medication',
                 component: ClinicalMedication
               },
+              {
+                path: 'reminder',
+                component: ClinicalReminder
+              },
+              {
+                path: 'alert',
+                component: ClinicalAlert,
+              },
+              {
+                path: 'note',
+                component: ClinicalNote,
+              },
+              
             ]
           },
           {
@@ -1458,6 +1478,9 @@ export const PAGE_COMPONENTS = [
   ClinicalDiagnose,
   ClinicalProcedure,
   ClinicalMedication,
+  ClinicalReminder,
+  ClinicalAlert,
+  ClinicalNote,
   // Client Manager
   HomeClientManager,
   ProfileClientManager,

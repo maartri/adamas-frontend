@@ -3,7 +3,7 @@ import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { filter, switchMap } from 'rxjs/operators';
 import format from 'date-fns/format';
 
-import { GlobalService,nodes,StaffService,sbFieldsSkill, ShareService,timeSteps,conflictpointList,checkOptionsOne,sampleList,genderList,statusList,leaveTypes, ListService,PrintService, TimeSheetService, SettingsService, LoginService } from '@services/index';
+import { GlobalService,staffnodes,StaffService,sbFieldsSkill, ShareService,timeSteps,conflictpointList,checkOptionsOne,sampleList,genderList,statusList,leaveTypes, ListService,PrintService, TimeSheetService, SettingsService, LoginService } from '@services/index';
 import { NzFormatEmitEvent } from 'ng-zorro-antd/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 import { EMPTY, forkJoin } from 'rxjs';
@@ -364,7 +364,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
     ngOnInit(): void {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
       this.sbFieldsSkill = sbFieldsSkill;
-      this.nodelist = nodes;
+      this.nodelist = staffnodes;
       this.buildForm();
       this.buildForms();
       this.timeSteps = timeSteps;
@@ -1065,21 +1065,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
       
       allSkills:(this.selectedSkills.length) ? false : true,
       selectedSkills: (this.selectedSkills.length) ? this.selectedSkills : '',
-      
-      // onleaveStaff:this.quicksearch.value.onleaveStaff,
-      // previousWork:this.quicksearch.value.previousWork,
-      
-      // allcat:this.allcat,
-      // selectedCategories:(this.allcat == false) ? this.selectedCategories : '',
-      // activeprogramsonly:this.filters.value.activeprogramsonly,
-      // surname:this.quicksearch.value.surname,
-      // firstname:this.quicksearch.value.firstname,
-      // phoneno:this.quicksearch.value.phoneno,
-      // suburb:this.quicksearch.value.suburb,
-      // dob:(!this.globalS.isEmpty(this.quicksearch.value.dob)) ? this.globalS.convertDbDate(this.quicksearch.value.dob,'yyyy-MM-dd') : '',
-      // fileno:this.quicksearch.value.fileno,
-      // searchText:this.quicksearch.value.searchText,
-      // criterias:this.cariteriaList
+      criterias:this.cariteriaList
       // list of rules
     }
     

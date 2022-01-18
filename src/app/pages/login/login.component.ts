@@ -80,7 +80,7 @@ export class LoginComponent implements OnInit {
         return this.loginS.login(user);
       }) 
     ).subscribe(data => {
-        this.globalS.token = data.access_token;
+        this.globalS.token = data.access_token;        
         
         if (this.globalS.redirectURL) {
           this.globalS.ISTAFF_BYPASS = 'true';

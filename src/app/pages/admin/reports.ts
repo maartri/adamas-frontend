@@ -711,7 +711,6 @@ stafftypeArr: Array<any> = constants.types;
 
         }
         
-        
         var date = new Date();
         let temp = new Date(date.getFullYear(), date.getMonth(), 1);
         let temp1 = new Date(date.getFullYear(), date.getMonth() + 1, 0);
@@ -1906,11 +1905,10 @@ stafftypeArr: Array<any> = constants.types;
                this.FORptModelTitle = "PROGRAM ACTIVITY SPREAD " ;                 
                 break;                
             case 'btn-FORPT-AwardStaffPayRpt':
-               this.FORptModelTitle = "AWARD STAFF PAY REPORT " ;                                                        
+               this.FORptModelTitle = "AWARD STAFF PAY REPORT " ;                 
                 break;                
             case 'btn-FORPT-AwardStaffProgramPayRpt':
                 this.FORptModelTitle = "AWARD STAFF PROGRAM PAY REPORT " ;                 
-                             
                     break;
             case 'btn-FORPT-ProgramStaffUtilized':
                 this.FORptModelTitle = "PROGRAM STAFF UTILIZED " ;
@@ -1918,9 +1916,8 @@ stafftypeArr: Array<any> = constants.types;
              case 'btn-FORPT-ProgramRecipientServiced':
                 this.FORptModelTitle = "PROGRAM RECIPIENT SERVICED " ;
              break;
-             case 'btn-FORPT-ProgramBillingReport':                
+             case 'btn-FORPT-ProgramBillingReport':
                 this.FORptModelTitle = "PROGRAM BILLING REPORT" ;
-                                           
              break;
              case 'btn-FORPT-ActivityRecipientRpt':
                 this.FORptModelTitle = "ACTIVITY RECIPIENT REPORT" ;
@@ -1933,13 +1930,13 @@ stafftypeArr: Array<any> = constants.types;
              break;
            
              case 'btn-FORPT-ActivityGroupRpt':
-                this.FORptModelTitle = "ACTIVITY GROUP REPORT";                
+                this.FORptModelTitle = "ACTIVITY GROUP  REPORT" ;
              break;
             /* case 'btn-FORPT-fundingAuditReport':
                 this.FORptModelTitle = "FUNDING AUDIT REPORT CRITERIA" ;
              break;*/
              case 'btn-FORPT-DatasetActivityAnalysis':
-                this.FORptModelTitle = "DATA SET ACTIVITY ANALYSIS REPORT" ;
+                this.FORptModelTitle = "DATA SET ACTIVITY ANALYSIS  REPORT" ;
              break;
              case 'btn-FORPT-DatasetoutputSummary':
                 this.FORptModelTitle = "DATA SET OUTPUT  REPORT" ;
@@ -1949,14 +1946,9 @@ stafftypeArr: Array<any> = constants.types;
              break;
              case 'btn-FORPT-StaffPaysRpt':
                 this.FORptModelTitle = "STAFF PAY  " ;
-                                              
-             break;  
-             case 'btn-FORPT-StaffProgramPayType':
-                this.FORptModelTitle = "Staff Program Pay Type";
-                                            
-             break;           
+             break;             
              case 'btn-FORPT-FunderPayrollRpt':
-                this.FORptModelTitle = "FUNDER PAYROLL " ;
+                this.FORptModelTitle = "FUNDER PAYROLL R " ;
              break;
              case 'btn-FORPT-StaffunderPayrollRpt':
                 this.FORptModelTitle = "STAFF FUNDER PAYROLL  " ;
@@ -1965,7 +1957,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.FORptModelTitle = "STAFF ALLOWANCE  " ;
              break;             
              case 'btn-FORPT-StaffDateProgramRpt':
-                this.FORptModelTitle = "STAFF DATE PROGRAM  " ;                                             
+                this.FORptModelTitle = "STAFF DATE PROGRAM  " ;                                                
              break;
              case 'btn-FORPT-StaffProgramUtilisation':
                 this.FORptModelTitle = "STAFF PROGRAM UTILIZATION  " ;
@@ -2697,7 +2689,7 @@ stafftypeArr: Array<any> = constants.types;
         
 
     }
-               
+    //           
     Refeeral_list(branch, manager, region, program) {
 
         var lblcriteria;
@@ -4151,7 +4143,7 @@ stafftypeArr: Array<any> = constants.types;
             this.reportid   = "4ohDCZRbiaKS4ocK" 
             fQuery = fQuery + " ORDER BY R.[Surname/Organisation], R.FirstName"
 
-                console.log(fQuery)
+            //    console.log(fQuery)
         this.drawerVisible = true;
 
         const data = {
@@ -4367,13 +4359,12 @@ stafftypeArr: Array<any> = constants.types;
 
         var sQl_Count = "Select Distinct UniqueID from (" + fQuery + ") cr"
 
-        fQuery = " Select Distinct AccountNo,[Activation Date] ,ONIRating , CONTACT, ADDRESS,LastDate from (  " +fQuery + " ) as t"
         
         /*   
         console.log(s_BranchSQL)
         console.log(s_CategorySQL)
         console.log(s_CoordinatorSQL)*/
-       // //////console.log(fQuery)
+        // //////console.log(fQuery)
         if (this.inputForm.value.printaslabel == true){ 
             this.reportid = "6dfbj72obyLi9qxJ"
             this.pdfTitle = "Carer list.pdf"
@@ -19474,8 +19465,7 @@ CustomReportSetting(){
         this.ReportS.GetReportNames('AGENCYSTFLIST') ,                        
         this.ReportS.GetReportNames('AGENCYLIST'),
         this.ReportS.GetReportNames('USERLIST'),
-        this.ReportS.GetReportNames('USERSTFLIST'),
-        this.listS.GetRptFilters()
+        this.ReportS.GetReportNames('USERSTFLIST')
     ]) 
     temp.subscribe(data => {       
         this.AGENCYSTFButtonlist = data[0];
@@ -19483,13 +19473,11 @@ CustomReportSetting(){
         this.RecpUserRptButtonlist = data[2];
         this.UserSTFButtonlist = data[3];
 
-    //    this.viewfilters = data[4];
-
     
     });
     
         this.frm_CustomRptbtn = true;
-     //   console.log(this.viewfilters)
+        //console.log(this.AGENCYSTFButtonlist)
         
    
    
@@ -19520,26 +19508,27 @@ FetchRuntimeReport(strtitle){
         default: 
             break;
     }
-  const temp =  forkJoin([           
-        this.ReportS.GetReportSql(title)        
+  const temp =  forkJoin([
+    //    this.ReportS.GetReportFormat(title),
+    
+        this.ReportS.GetReportSql(title)
     ]);    
     temp.subscribe(data => {
         //this.UserRptFormatlist = data[0];
         this.UserRptSQLlist = data[0];   
-        
         var re = /~/gi;    
      //   console.log((this.UserRptSQLlist.toString()).replace(re,"'"))
     
-        this.RenderRunTimeReport((this.UserRptSQLlist.toString()).replace(re,"'"),title)
+        this.RenderRunTimeReport((this.UserRptSQLlist.toString()).replace(re,"'"))
 
     });
-    
-    
 
+   
 
+   
 
 }
-RenderRunTimeReport(strSQL,RptTitle){
+RenderRunTimeReport(strSQL){
   //  console.log(strSQL)
     const data = {
         
@@ -19551,7 +19540,6 @@ RenderRunTimeReport(strSQL,RptTitle){
             
             "sql": strSQL,            
             "userid": this.tocken.user,
-            "txtTitle":RptTitle.toString(),
             
             
         }

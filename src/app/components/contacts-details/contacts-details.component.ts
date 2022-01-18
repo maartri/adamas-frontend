@@ -31,8 +31,6 @@ const noop = () => {
 export class ContactsDetailsComponent implements OnInit, OnDestroy, OnChanges,ControlValueAccessor {
   private unsubscribe: Subject<void> = new Subject();
 
-  selectedCompany;
-
   doctor: any;
   @Input() user: any;  
 

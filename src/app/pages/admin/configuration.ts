@@ -335,6 +335,9 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
         if(index == 92){
             this.router.navigate(['/admin/customdataset']);
         }
+        if(index == 93){
+            this.router.navigate(['/admin/checklist']);
+        }
         if(index == 21){
             this.router.navigate(['/admin/initial-actions']);
         }

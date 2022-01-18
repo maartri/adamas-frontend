@@ -91,8 +91,14 @@ export class ServicesComponent implements OnInit {
   parent_person_id: any;
   addOrEdit: number = 0;
   isNewRecord: any;
+  insertOne: number = 0;
   dataSetDropDowns: { CACP: string[]; CTP: string[]; DEX: string[]; DFC: string[]; DVA: any[]; HACC: string[]; HAS: string[]; QCSS: string[]; ICTD: string[]; NDIS: any[]; NRCP: string[]; NRCPSAR: string[]; OTHER: string[]; };
   dataset_group: any[];
+  checkList: any;
+  chkList: any;
+  selectedChklst: any[];
+  chkListForm: any;
+  chklstmodal: boolean;
   constructor(
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
@@ -146,6 +152,9 @@ export class ServicesComponent implements OnInit {
     log(event: any) {
       this.selectedPrograms = event;
     }
+    chklog(event: any) {
+      this.selectedChklst = event;
+    }
     loadTitle()
     {
       return this.title;
@@ -161,10 +170,18 @@ export class ServicesComponent implements OnInit {
       this.isUpdate = true;
       this.current = 0;
       this.modalOpen = true;
-      this.inputForm.patchValue(this.tableData[index-1]);
+      this.inputForm.patchValue(this.tableData[index-1]); 
+      this.parent_person_id = this.tableData[index-1].recordNumber; //set person id for programs and competencies and checklist
+      console.log(this.parent_person_id + "person" + this.tableData[index-1] +"-----"+ this.tableData[index-1].recordNumber);
     }
     onIndexChange(index: number): void {
       this.current = index;
+      if(index == 7){
+        this.loadCompetency();
+      }
+      if(index == 8){
+        this.loadChecklist();
+      }
     }
     handleCancel() {
       this.modalOpen = false;
@@ -210,13 +227,24 @@ export class ServicesComponent implements OnInit {
       this.current += 1;
     }
     save() {
+      this.loading = true;
       if(!this.isUpdate){
         this.menuS.postServices(this.inputForm.value)
         .subscribe(data => {
           this.globalS.sToast('Success', 'Added Succesfully');
+          this.loading = false;
+          this.handleCancel();
+          this.loadData()
         });
       }else{
-        
+        this.menuS.updateServices(this.inputForm.value)
+        .subscribe(data => {
+          this.globalS.sToast('success','Updated Successfuly');
+          this.loading = false;
+          this.handleCancel();
+          this.loadData();
+          
+        });
       }
     }
     saveCompetency(){
@@ -307,6 +335,96 @@ export class ServicesComponent implements OnInit {
             this.cd.detectChanges();
           });
         }
+        loadChecklist(){
+          this.menuS.getconfigurationserviceschecklist(this.parent_person_id).subscribe(data => {
+            this.checkList = data;
+            this.loading = false;
+            this.cd.detectChanges();
+          });
+        }
+        showChkLstModal(){
+          if(this.globalS.isEmpty(this.inputForm.get('title').value))
+          {
+            this.globalS.iToast('Info','can not create this record beacuse there are blank entries');  
+            return;
+          }
+          this.addOrEdit = 0;
+          this.chklstmodal = true;
+          this.clearChkList();
+        }
+        saveCheckList(){
+          this.postLoading = true;
+          const group = this.chkListForm.value;
+          this.insertOne = 0;
+          if(this.addOrEdit == 0){
+            if(!this.isUpdate){
+              if(!this.isNewRecord){
+                this.save();
+              }
+            }
+            var checklists = this.selectedChklst;
+            checklists.forEach( (element) => {
+              this.menuS.postconfigurationserviceschecklist({
+                competencyValue:element,
+                personID:this.parent_person_id,
+              }).pipe(
+                takeUntil(this.unsubscribe)).subscribe(data => {
+                  this.insertOne = 1;
+                })
+              });
+              
+              this.globalS.sToast('Success', 'CheckList Added');
+              this.postLoading = false;
+              this.loadChecklist();
+              this.handleChkLstCancel();
+              return false;
+            }
+            else
+            {
+              this.menuS.updateconfigurationserviceschecklist({
+                competencyValue:group.chkListValue,
+                recordNumber:group.recordNumber,
+              }).pipe(
+                takeUntil(this.unsubscribe)).subscribe(data => {
+                  if(data){
+                    this.globalS.sToast('Success','CheckList Updated')
+                    this.postLoading = false;
+                    this.loadChecklist();
+                    this.handleChkLstCancel();
+                    return false;
+                  }
+                });
+              }
+        }
+        handleChkLstCancel(){
+          this.addOrEdit = 0;
+          this.chklstmodal = false;
+        }
+        clearChkList(){
+          this.chkList.forEach(x => {
+            x.checked = false
+          });
+          this.selectedChklst = [];
+        }
+        editChecklistModal(data:any){
+          this.addOrEdit = 1;
+          this.chkListForm.patchValue({
+            chkListValue : data.checklist,
+            recordNumber:data.recordNumber,
+          })
+          this.chklstmodal = true;
+        }
+        deleteChecklist(data:any){
+          this.loading = true;
+          this.menuS.deleteconfigurationserviceschecklist(data.recordNumber)
+          .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (data) {
+              this.globalS.sToast('Success', 'Data Deleted!');
+              this.loadChecklist();
+              return;
+            }
+          });
+        }
         fetchAll(e){
           if(e.target.checked){
             this.whereString = "WHERE ProcessClassification <> 'INPUT' ";
@@ -376,7 +494,11 @@ export class ServicesComponent implements OnInit {
             this.competencyList = data;
             this.loading = false;
           });  
-          
+          let chk = "SELECT distinct Description as name from DataDomains Where  Domain = 'CHECKLIST' AND ((EndDate IS NULL) OR (EndDate > Getdate())) ORDER BY Description";
+          this.listS.getlist(chk).subscribe(data => {
+            this.chkList = data;
+            this.loading = false;
+          });
           let prog = "select distinct Name from HumanResourceTypes WHERE [GROUP]= 'PROGRAMS' AND ((EndDate IS NULL) OR (EndDate > Getdate()))";
           this.listS.getlist(prog).subscribe(data => {
             this.programz = data;
@@ -434,11 +556,11 @@ export class ServicesComponent implements OnInit {
             glCost:'',
             unitCostUOM:'',
             unitCost:'',
-            price2:'',
-            price3:'',
-            price4:'',
-            price5:'',
-            price6:'',
+            price2:0.0,
+            price3:0.0,
+            price4:0.0,
+            price5:0.0,
+            price6:0.0,
             excludeFromPayExport:false,
             excludeFromUsageStatements:false,
             endDate:'',
@@ -521,6 +643,13 @@ export class ServicesComponent implements OnInit {
             personID: this.parent_person_id,
             recordNumber: 0
           });
+          this.chkListForm = this.formBuilder.group({
+            chkListValue: '',
+            mandatory: false,
+            notes: '',
+            personID: this.parent_person_id,
+            recordNumber: 0
+          })
           this.inputForm.get('iT_Dataset').valueChanges.subscribe(x => {
             this.dataset_group = [];  
             this.dataset_group = this.dataSetDropDowns[x];

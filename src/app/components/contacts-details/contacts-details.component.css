@@ -43,11 +43,3 @@ button{
     font-weight: 500;
     color: #a3a3a3;
 }
-
-ng-select >>> div.ng-select-container .ng-value-container input {
-    text-transform: uppercase;
-}
-
-ng-select >>> ng-dropdown-panel.ng-dropdown-panel .ng-dropdown-panel-items .ng-option span { 
-    text-transform: uppercase;
-  }

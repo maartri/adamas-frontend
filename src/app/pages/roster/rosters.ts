@@ -81,13 +81,13 @@ IconCellType.prototype.paint = function (ctx, value, x, y, w, h, style, context)
     ctx.clip();
 
     // draw text
-    GC.Spread.Sheets.CellTypes.Base.prototype.paint.apply(this, [ctx, value, x+20, y, w-20, h, style, context]);
+    GC.Spread.Sheets.CellTypes.Base.prototype.paint.apply(this, [ctx, value, x+22, y, w-22, h, style, context]);
     ctx.beginPath();
     // let img = document.getElementById('icon-lock');
   
     ctx.fillStyle = "#85B9D5";   
-    ctx.fillRect(x, y, 20, 20);       
-    ctx.drawImage(this.img, x+1 , y+1, 20, 20);
+    ctx.fillRect(x, y, 24, 24);       
+    ctx.drawImage(this.img, x+1 , y+1, 22, 22);
     ctx.fill();
     ctx.stroke();
     ctx.restore();
@@ -1370,9 +1370,7 @@ ClearMultishift(){
             
        // if (r.dayNo>this.Days_View) break;
 
-            if (r.recordNo==258702 || r.shiftbookNo==258702){
-                code= r.carerCode 
-            }
+            
             if (this.Days_View>=30)
                 col=r.dayNo-1;
             else{
@@ -1638,7 +1636,7 @@ ClearMultishift(){
                  
                   // Create two different selection ranges.
                   sheet.addSelection(row, col, new_duration, 1);
-                 // sheet.addSpan(row, col, new_duration, ,GC.Spread.Sheets.SheetArea.viewport);
+                 // sheet.addSpan(row, col, new_duration,1 ,GC.Spread.Sheets.SheetArea.viewport);
 
                  let len =row+new_duration;
 
@@ -2438,23 +2436,21 @@ ClearMultishift(){
     sheet.clearSelection();
 
     var style = new GC.Spread.Sheets.Style();
-    style.backColor = "red";
-    style.borderLeft = new GC.Spread.Sheets.LineBorder("blue",GC.Spread.Sheets.LineStyle.medium);
-    style.borderTop = new GC.Spread.Sheets.LineBorder("blue",GC.Spread.Sheets.LineStyle.medium);
-    style.borderRight = new GC.Spread.Sheets.LineBorder("blue",GC.Spread.Sheets.LineStyle.medium);
-    style.borderBottom = new GC.Spread.Sheets.LineBorder("blue",GC.Spread.Sheets.LineStyle.medium);
-    style.font = "8pt Segoe UI";     
+    //style.backColor = "red";
+    // style.borderLeft = new GC.Spread.Sheets.LineBorder("blue",GC.Spread.Sheets.LineStyle.medium);
+    // style.borderTop = new GC.Spread.Sheets.LineBorder("blue",GC.Spread.Sheets.LineStyle.medium);
+    // style.borderRight = new GC.Spread.Sheets.LineBorder("blue",GC.Spread.Sheets.LineStyle.medium);
+    // style.borderBottom = new GC.Spread.Sheets.LineBorder("blue",GC.Spread.Sheets.LineStyle.medium);
+    style.font = "10pt Segoe UI";     
     style.themeFont = "Segoe UI";
 
-    style.watermark="#3334455";    
-    style.cellPadding = "20";
     // sheet.setStyle(1,1,style,GC.Spread.Sheets.SheetArea.viewport);
     // //row
     // sheet.setStyle(1,-1,style,GC.Spread.Sheets.SheetArea.viewport);
     // //column
     // sheet.setStyle(-1,2,style,GC.Spread.Sheets.SheetArea.viewport);
 
-    //sheet.setDefaultStyle(style, GC.Spread.Sheets.SheetArea.viewport);
+    sheet.setDefaultStyle(style, GC.Spread.Sheets.SheetArea.viewport);
 
      let date:Date = new Date(this.date);
 
@@ -2597,7 +2593,7 @@ ClearMultishift(){
         sheet.getCell(j, 0, GC.Spread.Sheets.SheetArea.rowHeader).backColor("#F18805");
         sheet.getCell(j, 0, GC.Spread.Sheets.SheetArea.rowHeader).foreColor("#000000");
         //setting row height
-       // sheet.setRowHeight(j, 40.0,GC.Spread.Sheets.SheetArea.viewport);
+        sheet.setRowHeight(j, 24.0,GC.Spread.Sheets.SheetArea.viewport);
         //setting row width
         sheet.setColumnWidth(0, 60.0,GC.Spread.Sheets.SheetArea.rowHeader);
         sheet.setRowResizable(j,true, GC.Spread.Sheets.SheetArea.rowHeader);

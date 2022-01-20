@@ -655,6 +655,7 @@ stafftypeArr: Array<any> = constants.types;
     endmonth : Date;
     year : Date;
     startmonth: Date;
+    Rptformat : string;
     
 
     //   enddate: string ;  defaultsratdate defaultenddate
@@ -19488,30 +19489,32 @@ FetchRuntimeReport(strtitle){
     this.tryDoctype = ""; 
     this.drawerVisible = true; 
     this.loading = true;
-    var strFilter = strtitle.toString().substring(0,1)
-  //  console.log(strFilter)
+    var strFilter  = strtitle.toString().substring(0,1)
+ //   console.log(strFilter)
     var title = strtitle.toString().substring(1,strtitle.length)
     
-    switch (strFilter) {
-        case 1:
-            var format = 'AGENCYLIST'                        
+    switch (strFilter.toString()) {
+        case "1":
+            this.Rptformat = 'AGENCYLIST'                        
             break;        
-        case 2:
-            var format = 'USERLIST'        
+        case "2":
+            this.Rptformat = 'USERLIST'        
             break;
-        case 3:
-            var format = 'AGENCYSTFLIST'            
+        case "3":
+            this.Rptformat = 'AGENCYSTFLIST'            
             break;
-        case 4:
-            var format = 'USERSTFLIST'            
+        case "4":
+            this.Rptformat = 'USERSTFLIST'            
             break;    
         default: 
             break;
     }
+   // console.log(this.Rptformat);
   const temp =  forkJoin([
     //    this.ReportS.GetReportFormat(title),
     
-        this.ReportS.GetReportSql(title)
+        //this.ReportS.GetReportSql(title)
+        this.ReportS.GetReportSql(title,this.Rptformat)
     ]);    
     temp.subscribe(data => {
         //this.UserRptFormatlist = data[0];
@@ -19529,7 +19532,7 @@ FetchRuntimeReport(strtitle){
 
 }
 RenderRunTimeReport(strSQL,RptTitle){
-  //  console.log(strSQL)
+    console.log(strSQL)
     const data = {
         
         //"template": { "_id": "qTQEyEz8zqNhNgbU" },
@@ -19542,7 +19545,7 @@ RenderRunTimeReport(strSQL,RptTitle){
             "userid": this.tocken.user,
             "txtTitle":RptTitle,
             
-            
+                                                                                         
         }
     }
     this.loading = true;

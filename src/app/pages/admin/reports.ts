@@ -19532,7 +19532,7 @@ FetchRuntimeReport(strtitle){
 
 }
 RenderRunTimeReport(strSQL,RptTitle){
-    console.log(strSQL)
+    //console.log(strSQL)
     const data = {
         
         //"template": { "_id": "qTQEyEz8zqNhNgbU" },

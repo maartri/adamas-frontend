@@ -206,6 +206,7 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
   includeRecipientCompetencyWhere :string;
   includeCareplanWhere :string;
   includeHRCaseStaffWhere :string;
+  includeNotesWhere :string;
   
   //bodystyle:object;
   RptFormat :string ;
@@ -288,7 +289,7 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
           { title: 'Agreed Service Information', key: '017' },
           { title: 'Clinical Information', key: '018' },
           { title: 'Billing Information', key: '019' },
-          { title: 'Time Logging ', key: '020' },
+          { title: 'Time Logging', key: '020' },
           { title: 'Notes', key: '21' },
           { title: 'Insurance and Pension', key: '022' },
           { title: 'HACCS Dataset Fields', key: '023' },
@@ -592,6 +593,24 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
         //BILLING INFORMATION
         case "19":
         this.data = [
+          { "title": "Billing Client", "key": "00", isLeaf: true },
+          { "title": "Billing Cycle", "key": "01", isLeaf: true },
+          { "title": "Billing Rate", "key": "02", isLeaf: true },
+          { "title": "Billing %", "key": "03", isLeaf: true },
+          { "title": "Billing Amount", "key": "04", isLeaf: true },
+          { "title": "Account Identifier", "key": "05", isLeaf: true }, 
+          { "title": "External Order Number", "key": "06", isLeaf: true },
+          { "title": "Financially Dependent", "key": "07", isLeaf: true },
+          { "title": "BPay Reference", "key": "08", isLeaf: true },
+          { "title": "NDIA/MAC ID", "key": "09", isLeaf: true },
+          { "title": "Bill Profile", "key": "10", isLeaf: true },
+          { "title": "Allow Different Biller", "key": "11", isLeaf: true },
+          { "title": "Capped Bill", "key": "12", isLeaf: true },
+          { "title": "Hide Fare on Transport Runsheet", "key": "13", isLeaf: true },
+          { "title": "Print Invoice", "key": "14", isLeaf: true },
+          { "title": "Email Invoice", "key": "15", isLeaf: true },
+          { "title": "Direct Debit", "key": "16", isLeaf: true },
+          { "title": "DVA CoBiller", "key": "17", isLeaf: true },						
         ]
         break;
         //PANZTEL Timezone
@@ -606,6 +625,13 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
         case "21":
         this.data = [
           
+          { "title": "General Notes", "key": "00", isLeaf: true },
+          { "title": "Case Notes Date", "key": "01", isLeaf: true },
+          { "title": "Case Notes Detail", "key": "02", isLeaf: true },
+          { "title": "Case Notes Creator", "key": "03", isLeaf: true },
+          { "title": "Case Notes Alarm", "key": "04", isLeaf: true },
+          { "title": "Case Notes Program", "key": "05", isLeaf: true }, 
+          { "title": "Case Notes Category", "key": "06", isLeaf: true },	
         ]
         break;
         //INSURANCE AND PENSION
@@ -2243,6 +2269,61 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
             case 'Medical Procedure':
             this.ConditionEntity =  'MProcedures.[Description]'
             break;
+            //Billing information
+            case 'Billing Client':
+            this.ConditionEntity =  'R.[BillingCycle]'
+            break;
+            case 'Billing Cycle':
+            this.ConditionEntity =  'R.[BillingCycle]'
+            break;
+            case 'Billing Rate':
+            this.ConditionEntity =  'R.[BillingMethod]'
+            break;
+            case 'Billing %':
+            this.ConditionEntity =  'R.[PercentageRate]'
+            break;            
+            case 'Billing Amount':
+            this.ConditionEntity =  'R.[DonationAmount]'
+            break;
+            case 'Account Identifier':
+            this.ConditionEntity =  ''
+            break;
+            case 'External Order Number':
+            this.ConditionEntity =  'R.[Order#]'
+            break;
+            case 'Financially Dependent':
+            this.ConditionEntity =  'R.[FDP]'
+            break;
+            case 'BPay Reference':
+            this.ConditionEntity =  'R.[BPayRef]'
+            break;
+            case 'NDIA/MAC ID':
+            this.ConditionEntity =  'R.[NDISNumber]'
+            break;
+            case 'Bill Profile':
+            this.ConditionEntity =  'R.[BillProfile]'
+            break;
+            case 'Allow Different Biller':
+            this.ConditionEntity =  'R.[RECIPIENT_SPLIT_BILL]'
+            break;
+            case 'Capped Bill':
+            this.ConditionEntity =  'R.[CappedBill]'
+            break;
+            case 'Hide Fare on Transport Runsheet':
+            this.ConditionEntity =  'R.[HideTransportFare]'
+            break;
+            case 'Print Invoice':
+            this.ConditionEntity =  'R.[PrintInvoice]'
+            break;
+            case 'Email Invoice':
+            this.ConditionEntity =  'R.[EmailInvoice]'
+            break;
+            case 'Direct Debit':
+            this.ConditionEntity =  'R.[DirectDebit]'
+            break;
+            case 'DVA CoBiller':
+            this.ConditionEntity =  'R.[DVACoBiller]'
+            break;
             //PANZTEL Timezone 
             case 'PANZTEL Timezone':
             this.ConditionEntity =  'R.[RECIPIENT_TIMEZONE]'
@@ -2256,6 +2337,28 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
             case 'DAELIBS Logger ID':
             this.ConditionEntity =  'R.[DAELIBSID]'
             break;
+            //NOTES
+            case 'General Notes':
+                this.ConditionEntity =  ''
+                break;
+                case 'Case Notes Date':
+                this.ConditionEntity =  ''
+                break;
+                case 'Case Notes Detail':
+                this.ConditionEntity =  ''
+                break;
+                case 'Case Notes Creator':
+                this.ConditionEntity =  ''
+                break;
+                case 'Case Notes Alarm':
+                this.ConditionEntity =  ''
+                break;
+                case 'Case Notes Program':
+                this.ConditionEntity =  ''
+                break;
+                case 'Case Notes Category':
+                this.ConditionEntity =  ''
+              break;
             //INSURANCE AND PENSION                  
             case 'Medicare Number':
             this.ConditionEntity =  'R.[MedicareNumber]'
@@ -4333,6 +4436,10 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
           if(this.includeRecipientCompetencyWhere != undefined && this.includeRecipientCompetencyWhere != ""){sql = sql + " AND " + this.includeRecipientCompetencyWhere}
           if(this.includeCareplanWhere != undefined && this.includeCareplanWhere != ""){sql = sql + " AND " + this.includeCareplanWhere}
           if(this.includeHRCaseStaffWhere != undefined && this.includeHRCaseStaffWhere != ""){sql = sql + " AND " + this.includeHRCaseStaffWhere}
+          if(this.includeNotesWhere != undefined && this.includeNotesWhere != ""){sql = sql + " AND " + this.includeNotesWhere}
+          
+
+          
           
           if(this.sqlcondition == undefined){
             S_SQL = s_sql + ' where ' + sql.substring(6,sql.length+1);
@@ -4368,9 +4475,7 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
           if(this.includeClinicHistoryWhere != undefined && this.includeClinicHistoryWhere != ""){sql = sql + " AND " + this.includeClinicHistoryWhere}
           if(this.includeRecipientCompetencyWhere != undefined && this.includeRecipientCompetencyWhere != ""){sql = sql + " AND " + this.includeRecipientCompetencyWhere}
           if(this.includeCareplanWhere != undefined && this.includeCareplanWhere != ""){sql = sql + " AND " + this.includeCareplanWhere}
-          if(this.includeHRCaseStaffWhere != undefined && this.includeHRCaseStaffWhere != ""){sql = sql + " AND " + this.includeHRCaseStaffWhere}
-          
-          
+          if(this.includeHRCaseStaffWhere != undefined && this.includeHRCaseStaffWhere != ""){sql = sql + " AND " + this.includeHRCaseStaffWhere}                    
           */
           
           
@@ -5865,6 +5970,106 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
                       columnNames = columnNames.concat(['MProcedures.[Description]  '])
                     }else{columnNames = (['MProcedures.[Description]  '])}  
                     break;
+                    //Billing Information
+                    case 'Billing Client':
+                    if(columnNames != []){
+                      columnNames = columnNames.concat(['R.[BillTo] as [Billing Client]  '])
+                    }else{columnNames = (['R.[BillTo] as [Billing Client]  '])}
+                    break;
+                    case 'Billing Cycle':
+                    if(columnNames != []){
+                      columnNames = columnNames.concat(['R.[BillingCycle] as [Billing Cycle]  '])
+                    }else{columnNames = (['R.[BillingCycle] as [Billing Cycle]  '])}
+                    break;
+                    case 'Billing Rate':
+                    if(columnNames != []){
+                      columnNames = columnNames.concat(['R.[BillingMethod] as [Billing Rate]  '])
+                    }else{columnNames = (['R.[BillingMethod] as [Billing Rate]  '])}
+                    break;                                                                                                                                                                                    
+                    case 'Billing %':
+                    if(columnNames != []){
+                      columnNames = columnNames.concat(['R.[PercentageRate] as [Billing %]  '])
+                    }else{columnNames = (['R.[PercentageRate] as [Billing %]  '])}
+                    break;            
+                    case 'Billing Amount':
+                    if(columnNames != []){
+                      columnNames = columnNames.concat(['R.[DonationAmount] as [Billing Amount]  '])
+                    }else{columnNames = (['R.[DonationAmount] as [Billing Amount]  '])}
+                    break;
+                    case 'Account Identifier':
+                    if(columnNames != []){
+                      columnNames = columnNames.concat(['  '])
+                    }else{columnNames = (['  '])}
+                    break;
+                    case 'External Order Number':
+                    if(columnNames != []){
+                      columnNames = columnNames.concat(['R.[Order#] as [External Order Number]  '])
+                    }else{columnNames = (['R.[Order#] as [External Order Number]  '])}
+                    break;
+                    case 'Financially Dependent':
+                    if(columnNames != []){
+                      columnNames = columnNames.concat(['R.[FDP] as [Financially Dependent]  '])
+                    }else{columnNames = (['R.[FDP] as [Financially Dependent]  '])}
+                    break;
+                    case 'BPay Reference':
+                    if(columnNames != []){
+                      columnNames = columnNames.concat(['R.[BPayRef] as [BPay Reference]  '])
+                    }else{columnNames = (['R.[BPayRef] as [BPay Reference]  '])}
+                    break;
+                    case 'NDIA/MAC ID':
+                    if(columnNames != []){
+                      columnNames = columnNames.concat(['R.[NDISNumber] as [NDIA/MAC ID]  '])
+                    }else{columnNames = (['R.[NDISNumber] as [NDIA/MAC ID]  '])}
+                    break;
+                    case 'Bill Profile':
+                    if(columnNames != []){
+                      columnNames = columnNames.concat(['Convert(nVarChar(4000), R.[BillProfile]) as [Bill Profile]  '])
+                    }else{columnNames = (['Convert(nVarChar(4000), R.[BillProfile]) as [Bill Profile]  '])}
+                    break;
+                    case 'Allow Different Biller':
+                      var DifferentBiller = "CASE WHEN [RECIPIENT_SPLIT_BILL] = 1 THEN 'YES' ELSE 'NO' END "
+                    if(columnNames != []){
+                      columnNames = columnNames.concat([DifferentBiller+ ' AS [Allow Different Biller] '])
+                    }else{columnNames = ([DifferentBiller +' AS [Allow Different Biller] '])}
+                    break;
+                                                                                
+                    case 'Capped Bill':
+                      var CappedBill = "CASE WHEN [CappedBill] = 1 THEN 'YES' ELSE 'NO' END "
+                    if(columnNames != []){
+                      columnNames = columnNames.concat([CappedBill +' AS [Capped Bill] '])
+                    }else{columnNames = ([CappedBill +' AS [Capped Bill] '])}
+                    break;
+                    case 'Hide Fare on Transport Runsheet':
+                      var HideTransportSheet = "CASE WHEN [HideTransportFare] = 1 THEN 'YES' ELSE 'NO' END  "
+                    if(columnNames != []){
+                      columnNames = columnNames.concat([HideTransportSheet + ' AS [Hide Fare on Transport Runsheet] '])
+                    }else{columnNames = ([HideTransportSheet + ' AS [Hide Fare on Transport Runsheet] '])}
+                    break;
+                    case 'Print Invoice':
+                      var PrintInvoice = "CASE WHEN [PrintInvoice] = 1 THEN 'YES' ELSE 'NO' END   "
+                    if(columnNames != []){
+                      columnNames = columnNames.concat([PrintInvoice +' AS [Print Invoice] '])
+                    }else{columnNames = ([PrintInvoice +' AS [Print Invoice] '])}
+                    break;                                                          
+                    case 'Email Invoice':
+                      var EmailInvoice = "CASE WHEN [EmailInvoice] = 1 THEN 'YES' ELSE 'NO' END AS [Email Invoice]"
+                    if(columnNames != []){
+                      columnNames = columnNames.concat([EmailInvoice +' AS [Email Invoice] '])
+                    }else{columnNames = ([EmailInvoice + ' AS [Email Invoice] '])}
+                    break;
+                    case 'Direct Debit':
+                      var DirectDebit = "CASE WHEN [DirectDebit] = 1 THEN 'YES' ELSE 'NO' END  "
+                    if(columnNames != []){
+                      columnNames = columnNames.concat([DirectDebit + ' AS [Direct Debit] '])
+                    }else{columnNames = ([DirectDebit + ' AS [Direct Debit] '])}
+                    break;
+                    case 'DVA CoBiller':
+                      var dvaCobiller = "CASE WHEN [DVACoBiller] = 1 THEN 'YES' ELSE 'NO' END  "
+                    if(columnNames != []){
+                      columnNames = columnNames.concat([dvaCobiller +' AS [DVA CoBiller] '])
+                    }else{columnNames = ([dvaCobiller +' AS [DVA CoBiller] '])}
+                    break;
+                    
                     //PANZTEL Timezone 
                     case 'PANZTEL Timezone':
                     if(columnNames != []){
@@ -5886,6 +6091,43 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
                       columnNames = columnNames.concat(['R.[DAELIBSID]  '])
                     }else{columnNames = (['R.[DAELIBSID]  '])} 
                     break;
+                    //NOTES
+                    case 'General Notes':
+                    if(columnNames != []){
+                      columnNames = columnNames.concat(['CONVERT(TEXT, R.[Recipient_Notes]) as [General Notes]   '])
+                    }else{columnNames = (['CONVERT(TEXT, R.[Recipient_Notes]) as [General Notes]   '])}
+                    break;
+                    case 'Case Notes Date':
+                    if(columnNames != []){
+                      columnNames = columnNames.concat(['History.[DetailDate] as [Case Notes Date]  '])
+                    }else{columnNames = (['History.[DetailDate] as [Case Notes Date]  '])}
+                    break;
+                    case 'Case Notes Detail':
+                    if(columnNames != []){
+                      columnNames = columnNames.concat(['dbo.RTF2TEXT(History.[Detail]) as [Case Notes Detail]  '])
+                    }else{columnNames = (['dbo.RTF2TEXT(History.[Detail]) as [Case Notes Detail]  '])}
+                    break;
+                    case 'Case Notes Creator':
+                    if(columnNames != []){
+                      columnNames = columnNames.concat(['History.[Creator] as [Case Notes Creator]   '])
+                    }else{columnNames = (['History.[Creator] as [Case Notes Creator]   '])}
+                    break;
+                    case 'Case Notes Alarm':
+                    if(columnNames != []){
+                      columnNames = columnNames.concat(['History.[AlarmDate] as [Case Notes Alarm]  '])
+                    }else{columnNames = (['History.[AlarmDate] as [Case Notes Alarm]  '])}
+                    break;
+                    case 'Case Notes Program':
+                    if(columnNames != []){
+                      columnNames = columnNames.concat(['History.Program as [Case Notes Program]  '])
+                    }else{columnNames = (['History.Program as [Case Notes Program]  '])}
+                    break;
+                    case 'Case Notes Category':
+                    var CasenoteCategory = "CASE WHEN IsNull(History.ExtraDetail2,'') < 'A' THEN 'UNKNOWN' ELSE History.ExtraDetail2 END "
+                    if(columnNames != []){
+                      columnNames = columnNames.concat([CasenoteCategory + ' AS [Case Notes Category] '])
+                    }else{columnNames = ([CasenoteCategory + ' AS [Case Notes Category] '])}
+break;
                     //INSURANCE AND PENSION                      
                     case 'Medicare Number':
                     if(columnNames != []){
@@ -9334,8 +9576,13 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
                           FromSql = FromSql + " INNER JOIN STAFF S ON HRCaseStaff.NAME = S.UNIQUEID "
                           this.includeHRCaseStaffWhere = "  HRCaseStaff.[Group] = 'COORDINATOR'"
                         }
-                        
+                        if( arr.includes("Case Notes Date") || arr.includes("Case Notes Detail") || arr.includes("Case Notes Creator") || arr.includes("Case Notes Alarm") || arr.includes("Case Notes Program") || arr.includes("Case Notes Category") ){ 
+                          FromSql = FromSql + "LEFT JOIN History ON R.UniqueID = History.PersonID"
+                          this.includeNotesWhere = " History.ExtraDetail1 = 'CASENOTE'"
+                        }
                       }
+
+                      // 
                       
                       
                       

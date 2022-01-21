@@ -27,7 +27,7 @@
         </div>
     </div>
 </div>
-<nz-modal [nzWidth]="1000" [(nzVisible)]="modalOpen" [nzTitle]="loadTitle()" (nzOnCancel)="handleCancel()">
+<nz-modal [nzStyle]="{ top: '20px' }" nzWidth="1240" [(nzVisible)]="modalOpen" [nzTitle]="loadTitle()" (nzOnCancel)="handleCancel()">
     <div class="flexy">
         <nz-tabset  [nzTabPosition]="'top'" [nzType]="'card'">
             <nz-tab nzTitle="General" (nzClick)="tabFindChange(0)"> </nz-tab>
@@ -1083,7 +1083,1175 @@
             </div>
         </div>
     </div>
-    
+    <div *ngIf="tabFindIndex == 3">
+        <div nz-row [nzGutter]="8" *ngIf="inputForm" [formGroup]="inputForm">
+            <div nz-col class="gutter-row" nzSpan="9" >
+                <nz-card [nzSize]="'small'" nzTitle="">
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="12">
+                            <label></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label>Acc</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label>ADD</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label>Edit</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label>Del</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label>ARC</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label>IMP</label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="12">
+                            <label><b>Personal</b></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="10" nzOffset="2" >
+                            <label>Phone Detail</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="10" nzOffset="2" >
+                            <label>Address Detail</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="10" nzOffset="2" >
+                            <label>Case Staff</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="10" nzOffset="2" >
+                            <label>Roster Alerts</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="10" nzOffset="2" >
+                            <label>Runsheet Alerts</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="10" nzOffset="2" >
+                            <label>Contact Issues</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="10" nzOffset="2" >
+                            <label> Default Alerts/Issues Tab </label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label>:</label>
+                        </div>
+                        <div nz-col nzSpan="6">
+                            
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="12">
+                            <label><b>Contacts</b></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="10" nzOffset="2" >
+                            <label>Next Of Kin</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="10" nzOffset="2" >
+                            <label>Other Parties</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="12">
+                            <label><b>ONI</b></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="12">
+                            <label><b>Intake Details</b></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="10" nzOffset="2" >
+                            <label>Branches</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="10" nzOffset="2" >
+                            <label>Funding</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="10" nzOffset="2" >
+                            <label>Goals</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="10" nzOffset="2" >
+                            <label>Legacy CarePlans</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="10" nzOffset="2" >
+                            <label>Care Plans</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="10" nzOffset="2" >
+                            <label>Services</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="10" nzOffset="2" >
+                            <label>nzPlacements</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="12">
+                            <label>Staff</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="10" nzOffset="2" >
+                            <label>Excluded Staff</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="10" nzOffset="2" >
+                            <label>Approved Staff</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="12">
+                            <label>Alerts</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="10" nzOffset="2" >
+                            <label>Occ Health</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="10" nzOffset="2" >
+                            <label>Competencies</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="12">
+                            <label>Consents</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="12">
+                            <label>Groups</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                </nz-card>
+            </div>
+            <div nz-col class="gutter-row" nzSpan="9" >
+                <nz-card [nzSize]="'small'" nzTitle="">
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="12">
+                            <label></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label>Acc</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label>ADD</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label>Edit</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label>Del</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label>ARC</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label>IMP</label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="12">
+                            <label><b>Clinical Details</b></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="10" nzOffset="2" >
+                            <label>Diagnoses</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="10" nzOffset="2" >
+                            <label>Procedures</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="10" nzOffset="2" >
+                            <label>Medications</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="10" nzOffset="2" >
+                            <label>Clinical Reminders</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="10" nzOffset="2" >
+                            <label>Clinical Alerts</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="10" nzOffset="2" >
+                            <label>Clinical Notes</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="12">
+                            <label><b>Reminders</b></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="12">
+                            <label><b>OP Notes</b></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="12">
+                            <label><b>Case Notes</b></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="12">
+                            <label><b>Incidents</b></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="12">
+                            <label><b>History</b></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="12">
+                            <label><b>Permanent Roster</b></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="12">
+                            <label><b>Insurance and Pension</b></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                           
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="12">
+                            <label><b>Charts</b></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="12">
+                            <label><b>Datasets</b></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="10" nzOffset="2">
+                            <label>HACC</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="10" nzOffset="2">
+                            <label>CSTDA</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="10" nzOffset="2">
+                            <label>NRCP</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="10" nzOffset="2">
+                            <label>DSS</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="12">
+                            <label><b>Loans</b></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="12">
+                            <label><b>Documents</b></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="12">
+                            <label><b>Quotes</b></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="12">
+                            <label><b>Forms</b></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="12">
+                            <label><b>Time and Attendence</b></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="12">
+                            <label><b>Other</b></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="12">
+                            <label><b>Accounting</b></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="10" nzOffset="2">
+                            <label>Profile</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="">
+                        <div nz-col nzSpan="10" nzOffset="2">
+                            <label>History</label>
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                </nz-card>
+            </div>
+            <div nz-col class="gutter-row" nzSpan="6" >
+                <nz-card [nzSize]="'small'" nzTitle="" class="mrg-btm">
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="22" class="text-right">
+                            <label>Can Add Change Recipient Records :</label>
+                        </div>
+                        <div nz-col nzSpan="2" class="text-right">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="22" class="text-right">
+                            <label>Can Change Recipient Code :</label>
+                        </div>
+                        <div nz-col nzSpan="2" class="text-right">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="22" class="text-right">
+                            <label>Edit NDIA ID :</label>
+                        </div>
+                        <div nz-col nzSpan="2" class="text-right">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="22" class="text-right">
+                            <label>Allow Transition Program: </label>
+                        </div>
+                        <div nz-col nzSpan="2" class="text-right">
+                            <label nz-checkbox formControlName="title"></label>
+                        </div>
+                    </div>
+                </nz-card>
+                <nz-card [nzSize]="'small'" nzTitle="">
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-row nzJustify class="">
+                            <div nz-col nzSpan="12">
+                                <label><b>Buttons Access</b></label>
+                            </div>
+                        </div>
+                        <div nz-row nzJustify class="">
+                            <div nz-col nzSpan="20" nzOffset="2">
+                                <label>Rfer In</label>
+                            </div>
+                            <div nz-col nzSpan="2">
+                                <label nz-checkbox formControlName="title"></label>
+                            </div>
+                        </div>
+                        <div nz-row nzJustify class="">
+                            <div nz-col nzSpan="20" nzOffset="2">
+                                <label>Rfer On</label>
+                            </div>
+                            <div nz-col nzSpan="2">
+                                <label nz-checkbox formControlName="title"></label>
+                            </div>
+                        </div>
+                        <div nz-row nzJustify class="">
+                            <div nz-col nzSpan="20" nzOffset="2">
+                                <label>Not Proceed</label>
+                            </div>
+                            <div nz-col nzSpan="2">
+                                <label nz-checkbox formControlName="title"></label>
+                            </div>
+                        </div>
+                        <div nz-row nzJustify class="">
+                            <div nz-col nzSpan="20" nzOffset="2">
+                                <label>Assess</label>
+                            </div>
+                            <div nz-col nzSpan="2">
+                                <label nz-checkbox formControlName="title"></label>
+                            </div>
+                        </div>
+                        <div nz-row nzJustify class="">
+                            <div nz-col nzSpan="20" nzOffset="2">
+                                <label>Admit</label>
+                            </div>
+                            <div nz-col nzSpan="2">
+                                <label nz-checkbox formControlName="title"></label>
+                            </div>
+                        </div>
+                        <div nz-row nzJustify class="">
+                            <div nz-col nzSpan="20" nzOffset="2">
+                                <label>Wait List</label>
+                            </div>
+                            <div nz-col nzSpan="2">
+                                <label nz-checkbox formControlName="title"></label>
+                            </div>
+                        </div>
+                        <div nz-row nzJustify class="">
+                            <div nz-col nzSpan="20" nzOffset="2">
+                                <label>Dicharge</label>
+                            </div>
+                            <div nz-col nzSpan="2">
+                                <label nz-checkbox formControlName="title"></label>
+                            </div>
+                        </div>
+                        <div nz-row nzJustify class="">
+                            <div nz-col nzSpan="20" nzOffset="2">
+                                <label>Suspend</label>
+                            </div>
+                            <div nz-col nzSpan="2">
+                                <label nz-checkbox formControlName="title"></label>
+                            </div>
+                        </div>
+                        <div nz-row nzJustify class="">
+                            <div nz-col nzSpan="20" nzOffset="2">
+                                <label>Rinstate</label>
+                            </div>
+                            <div nz-col nzSpan="2">
+                                <label nz-checkbox formControlName="title"></label>
+                            </div>
+                        </div>
+                        <div nz-row nzJustify class="">
+                            <div nz-col nzSpan="20" nzOffset="2">
+                                <label>Decease</label>
+                            </div>
+                            <div nz-col nzSpan="2">
+                                <label nz-checkbox formControlName="title"></label>
+                            </div>
+                        </div>
+                        <div nz-row nzJustify class="">
+                            <div nz-col nzSpan="20" nzOffset="2">
+                                <label>Admin</label>
+                            </div>
+                            <div nz-col nzSpan="2">
+                                <label nz-checkbox formControlName="title"></label>
+                            </div>
+                        </div>
+                        <div nz-row nzJustify class="">
+                            <div nz-col nzSpan="20" nzOffset="2">
+                                <label>Item</label>
+                            </div>
+                            <div nz-col nzSpan="2">
+                                <label nz-checkbox formControlName="title"></label>
+                            </div>
+                        </div>
+                        <div nz-row nzJustify class="">
+                            <div nz-col nzSpan="20" nzOffset="2">
+                                <label>>Print</label>
+                            </div>
+                            <div nz-col nzSpan="2">
+                                <label nz-checkbox formControlName="title"></label>
+                            </div>
+                        </div>
+                        <div nz-row nzJustify class="">
+                            <div nz-col nzSpan="20" nzOffset="2">
+                                <label>Roster</label>
+                            </div>
+                            <div nz-col nzSpan="2">
+                                <label nz-checkbox formControlName="title"></label>
+                            </div>
+                        </div>
+                        <div nz-row nzJustify class="">
+                            <div nz-col nzSpan="20" nzOffset="2">
+                                <label>Master</label>
+                            </div>
+                            <div nz-col nzSpan="2">
+                                <label nz-checkbox formControlName="title"></label>
+                            </div>
+                        </div>
+                        <div nz-row nzJustify class="">
+                            <div nz-col nzSpan="20" nzOffset="2">
+                                <label>OnHold</label>
+                            </div>
+                            <div nz-col nzSpan="2">
+                                <label nz-checkbox formControlName="title"></label>
+                            </div>
+                        </div>
+                    </div>
+                </nz-card>
+            </div>       
+        </div>
+    </div>
 </nz-modal>
 <nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
     <div class="col-md-12 spinner" *ngIf="loading">

@@ -29,6 +29,17 @@
     </nz-button-group>
 </div>
 
+<div class="search-container" *ngIf="view == 0">
+    <!-- <nz-radio-group [(ngModel)]="staffType" (ngModelChange)="changeStatus($event)">
+        <label nz-radio nzValue="A"> View {{(view == 1) ? 'Staff' : 'Recipient'}}  </label>
+        <label nz-radio nzValue="B" class="viewAll"> View All {{(view == 1) ? 'Staff' : 'Recipient'}} </label>
+    </nz-radio-group> -->
+    <nz-button-group style="margin-top:5px">
+        <button nz-button class="special-btns" [class.ant-btn-primary]="!activeInactive" (click)="changeStatus('A')">VIEW RECIPIENTS</button>
+        <button nz-button class="special-btns" [class.ant-btn-primary]="activeInactive" (click)="changeStatus('B')">VIEW ALL RECIPIENTS</button>
+    </nz-button-group>
+</div>
+
 
 
 

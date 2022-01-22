@@ -389,7 +389,7 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
           { "title": "NDIA/MAC Number", "key": "09", isLeaf: true },
           { "title": "Last Activated Date", "key": "10", isLeaf: true },
           { "title": "Created By", "key": "11", isLeaf: true },
-          { "title": "Other", "key": "12", isLeaf: true },
+          //{ "title": "Other", "key": "12", isLeaf: true },
         ]
         break;
         //Staff 
@@ -1940,10 +1940,10 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
             this.ConditionEntity =  'R.Autocopy'
             break;           
             case 'Activation Date':
-            // this.ConditionEntity =  
+             this.ConditionEntity =  'R.[AdmissionDate]'
             break;
             case 'DeActivation Date':
-            // this.ConditionEntity =  
+             this.ConditionEntity =  'R.[DischargeDate]'
             break;
             case 'Mobility':
             this.ConditionEntity =  'R.Mobility'
@@ -2168,7 +2168,7 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
             this.ConditionEntity =  'RecipientPrograms.[Program]'
             break;
             case 'Funded Program Agency ID':
-            //    this.ConditionEntity =  
+                this.ConditionEntity =  'HumanResourceTypes.[Address1]'
             break;                  
             case 'Program Status':
             this.ConditionEntity =  'RecipientPrograms.[ProgramStatus]'
@@ -2812,9 +2812,9 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
             case 'NRCP-Recipient-Dementia':
             this.ConditionEntity =  'R.[RECIPT_Dementia]'
             break;
-            /*  case 'NRCP-CALD Background':
-            this.ConditionEntity =  
-            break; */
+            case 'NRCP-CALD Background':
+            this.ConditionEntity =  'R.[CALDStatus]'
+            break; 
             // "ONI-Core"  
             
             case 'ONI-Family Name':
@@ -5325,12 +5325,12 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
                     if(columnNames != []){
                       columnNames = columnNames.concat(['R.CreatedBy as  [Created By]'])
                     }else{columnNames = (['R.CreatedBy as  [Created By]'])}        
-                    break;
+                    break;/*
                     case 'Other':
                     if(columnNames != []){
                       columnNames = columnNames.concat(['  '])
                     }else{columnNames = (['  '])}        
-                    break; 
+                    break;  */
                     //Staff                
                     case 'Staff Name':
                     if(columnNames != []){
@@ -5393,20 +5393,20 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
                       columnNames = columnNames.concat(['R.Autocopy as [Copy Rosters] '])
                     }else{columnNames = (['R.Autocopy as [Copy Rosters] '])}
                     break;
-                    case 'Enabled':
+                    /*case 'Enabled':
                     if(columnNames != []){
                       columnNames = columnNames.concat(['  '])
-                    }else{columnNames = (['  '])} 
-                    break;
+                    }else{columnNames = ([' '])} 
+                    break; */
                     case 'Activation Date':
                     if(columnNames != []){
-                      columnNames = columnNames.concat(['  '])
-                    }else{columnNames = (['  '])} 
+                      columnNames = columnNames.concat([' R.[AdmissionDate] as [Activation Date] '])
+                    }else{columnNames = ([' R.[AdmissionDate] as [Activation Date] '])} 
                     break;
                     case 'DeActivation Date':
                     if(columnNames != []){
-                      columnNames = columnNames.concat(['  '])
-                    }else{columnNames = (['  '])}  
+                      columnNames = columnNames.concat([' R.[DischargeDate] as [DeActivation Date] '])
+                    }else{columnNames = ([' R.[DischargeDate] as [DeActivation Date] '])}  
                     break;
                     case 'Mobility':
                     if(columnNames != []){
@@ -5417,12 +5417,12 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
                     if(columnNames != []){
                       columnNames = columnNames.concat(['R.SpecialConsiderations as  [Specific Competencies]'])
                     }else{columnNames = (['R.SpecialConsiderations as [Specific Competencies] '])}
-                    break;
+                    break; /*
                     case 'Carer Info':
                     if(columnNames != []){
                       columnNames = columnNames.concat(['  '])
                     }else{columnNames = (['  '])} 
-                    break;
+                    break; */
                     //  Contacts & Next of Kin
                     case 'Contact Group':
                     this.IncludeContacts = true
@@ -5798,9 +5798,10 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
                     }else{columnNames = (['RecipientPrograms.[Program]  '])}  
                     break;
                     case 'Funded Program Agency ID':
+                      
                     if(columnNames != []){
-                      columnNames = columnNames.concat(['  '])
-                    }else{columnNames = (['  '])}  
+                      columnNames = columnNames.concat(['HumanResourceTypes.[Address1] As [Funded Program Agency ID]  '])
+                    }else{columnNames = (['HumanResourceTypes.[Address1] As [Funded Program Agency ID]  '])}  
                     break;
                     case 'Program Status':
                     if(columnNames != []){
@@ -5812,10 +5813,10 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
                       columnNames = columnNames.concat(['HumanResourceTypes.[Address2]  '])
                     }else{columnNames = (['HumanResourceTypes.[Address2]  '])}  
                     break;
-                    case 'Funding Start Date':
+                    case 'Funding Start Date':                      
                     if(columnNames != []){
-                      columnNames = columnNames.concat(['  '])
-                    }else{columnNames = (['  '])} 
+                      columnNames = columnNames.concat([' RecipientPrograms.[StartDate] As [Funding Start Date]  '])
+                    }else{columnNames = ([' RecipientPrograms.[StartDate] As [Funding Start Date]  '])} 
                     break;
                     case 'Funding End Date':
                     if(columnNames != []){
@@ -6274,9 +6275,10 @@ break;
                     R.[CarerRelationship] as [HACC-Carer Relationship]
                     *  */                      
                     case 'HACC-Date Of Birth Estimated':
+                      var HaccDB = "(CASE R.[CSTDA_BDEstimate]  WHEN 1 THEN 'True' else 'False' END) "
                     if(columnNames != []){
-                      columnNames = columnNames.concat(['  '])
-                    }else{columnNames = (['  '])} 
+                      columnNames = columnNames.concat([HaccDB +' as [HACC-Date Of Birth Estimated] '])
+                    }else{columnNames = ([HaccDB +' as [HACC-Date Of Birth Estimated] '])} 
                     break;                
                     case 'HACC-Gender':
                     if(columnNames != []){
@@ -6924,11 +6926,11 @@ break;
                       columnNames = columnNames.concat(['R.[RECIPT_Dementia]  '])
                     }else{columnNames = (['R.[RECIPT_Dementia]  '])}  
                     break;
-                    /*  case 'NRCP-CALD Background':
+                      case 'NRCP-CALD Background':
                     if(columnNames != []){
-                      columnNames = columnNames.concat(['  '])
-                    }else{columnNames = (['  '])}  
-                    break; */
+                      columnNames = columnNames.concat(['R.[CALDStatus] as [NRCP-CALD Background]  '])
+                    }else{columnNames = (['R.[CALDStatus] as [NRCP-CALD Background]  '])}  
+                    break; 
                     // "ONI-Core"     
                     /**
                     * 
@@ -9384,7 +9386,7 @@ break;
                 if(arr.includes("Funding Source") ){
                   FromSql = FromSql + " LEFT JOIN RecipientPrograms ON R.UniqueID = RecipientPrograms.PersonID LEFT JOIN HumanResourceTypes ON RecipientPrograms.Program = HumanResourceTypes.Name "
                 }
-                if(arr.includes("Funded Program") || arr.includes("Program Status") || arr.includes("Program Coordinator") || arr.includes("Funding Start Date") || arr.includes("Funding End Date") || arr.includes("AutoRenew") || arr.includes("Rollover Remainder") || arr.includes("Funded Qty") || arr.includes("Funded Type")|| arr.includes("Funding Cycle")  || arr.includes("Funded Total Allocation") ){
+                if(arr.includes("Funded Program") || arr.includes("Program Status") || arr.includes("Program Coordinator") || arr.includes("Funding Start Date") || arr.includes("Funding End Date") || arr.includes("AutoRenew") || arr.includes("Rollover Remainder") || arr.includes("Funded Qty") || arr.includes("Funded Type")|| arr.includes("Funding Cycle")  || arr.includes("Funded Total Allocation") || arr.includes("Funded Program Agency ID") ){
                   FromSql = FromSql + " LEFT JOIN RecipientPrograms ON R.UniqueID = RecipientPrograms.PersonID LEFT JOIN HumanResourceTypes ON RecipientPrograms.Program = HumanResourceTypes.Name "
                 }
                 if(arr.includes("Name") || arr.includes("Start Date") || arr.includes("End Date") || arr.includes("Details") || arr.includes("Reminder Date") || arr.includes("Reminder Text")  ){

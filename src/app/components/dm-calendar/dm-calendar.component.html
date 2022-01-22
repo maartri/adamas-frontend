@@ -1,21 +1,25 @@
 <div class="daymanager-wrapper">
     <div class="header-wrapper" [class.fixed]="fixedHeader">
-        <h3 class="date-month-name noselect">
+        <h3 class="date-month-name noselect header-wrapper">
             <i class="material-icons left" (click)="previousDate()"> keyboard_arrow_left
             </i>{{ startDate | date: 'MMMM yyyy' }}
             <i class="material-icons right" (click)="futureDate()"> keyboard_arrow_right </i>
         </h3>
-        <div class="date-wrapper">
+        <div class="date-wrapper"  >
             <div *ngFor="let day of days" class="cell" [class.five]="dayView == 5" [class.seven]="dayView == 7"
-                [class.ten]="dayView == 10" [class.fourteen]="dayView == 14">
-                <div *ngIf="day == null" class="x-cancel">
-                    <span *ngIf="akonani?.length > 0">{{ akonani?.length }} selected</span>
-                </div>
-                <div *ngIf="day" class="calendar-dates">
-                    <div>
-                        <h5>{{ day | date: 'MMM dd' }}</h5>
+                [class.ten]="dayView == 10" [class.fourteen]="dayView == 14" >
+                
+                <div class="date-wrapper" [class.dateweekend]="(day| date: 'EEE') == 'Sat' || (day| date: 'EEE') == 'Sun'" >
+                    <div *ngIf="day == null" class="x-cancel">
+                        <span *ngIf="akonani?.length > 0">{{ akonani?.length }} selected</span>
                     </div>
-                    <div><span style="font-size:12px">{{ day | date: 'EEE' }}</span></div>
+                    <div *ngIf="day" class="calendar-dates" >
+                        <!-- ng-style ="{ ' background-color' : (Weekday(day)=='sat')? '#73c7af' : '#ffffff' }" -->
+                        <div > 
+                            <h5 >{{ day | date: 'MMM dd' }}</h5>
+                        </div>
+                        <div><span style="font-size:12px; ">{{ day | date: 'EEE' }}</span></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -32,7 +36,7 @@
                             <span *ngIf="data?.key.indexOf('BOOKED') > -1">UNASSIGNED BOOKINGS</span>
                             <span *ngIf="!(data?.key.indexOf('BOOKED') > -1)">{{ data?.key }}</span>
                         </div>
-                        <div style="font-size:10px;color:#16c516">{{ data?.value[0].staffCategory}}</div>
+                        <div style="font-size:10px;">{{ data?.value[0].staffCategory}}</div>
                     </div>
                     <ng-container *ngIf="i > 0">
                         <ng-container *ngFor="let value of data.value | dmz: day ">
@@ -42,16 +46,24 @@
                                 (mousedown)="mousedown($event,value)" (mousemove)="mousemove($event,value)"
                                 [class.selected]="value.isSelected">
 
-                                <div class="approve-logo"><i class="material-icons" *ngIf="value.status == '2'"> done
-                                    </i></div>
-                                <div class="service-logo" [style.background-position]="getPositionImg(value)"></div>
+                                <!-- <div class="approve-logo"><i class="material-icons" *ngIf="value.status == '2'"> done
+                                    </i>
+                                </div> -->
+                                <div [class.icon2]="dayView >= 10">
+                                    <!--  <div class="service-logo" [style.background-position]="getPositionImg(value)"> -->
+                                        
+                                        
+                                    <i nz-icon *ngIf="value.type==1" [nzType]="'audit'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
+                                    <i nz-icon *ngIf="value.type==2" [nzType]="'check-circle'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
+                                    <i nz-icon *ngIf="value.type==3" [nzType]="'heart'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
+                                    <i nz-icon *ngIf="value.type>3" [nzType]="'container'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
 
-                                <strong>{{ value.startTime}}-{{ value.endTime }}</strong>
-
-                                <i class="material-icons option showOption" option-click
-                                    (mousedownEmit)="mouseEmitter(value)" (click)="optionEmitter(value)"> more_horiz
-                                </i>
-
+                                    <strong >{{ value.startTime}}-{{ value.endTime }}</strong>
+                                      
+                                    <i class="material-icons option showOption icon" option-click
+                                        (mousedownEmit)="mouseEmitter(value)" (click)="optionEmitter(value)"> more_horiz
+                                    </i>
+                                </div>
                                 <div class="details">{{ value.recipient}} * {{ value.activity}}</div>
                             </div>
                             <div class="data total" *ngIf="value.isLast && !value.isNone">

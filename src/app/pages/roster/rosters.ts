@@ -1327,7 +1327,8 @@ ClearMultishift(){
     
 
 }
-  load_rosters(){
+  
+load_rosters(){
     
     
     this.spreadsheet.suspendPaint();

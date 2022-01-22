@@ -70,6 +70,19 @@ class Address {
         display:block;
         transition: all 0.5s ease 0s;
     }
+    .main-wrapper{
+        position: sticky;
+        border-top-right-radius: 5px;
+        border-top-left-radius: 5px;
+        top: -5px;
+        border-top: 1px solid #fff;
+        color:#000;
+        width: 100%;
+        text-align: center;    
+        background:  linear-gradient(0.25turn, #3f87a6, #a1ddf7, #fafcfc);  
+        z-index:2;
+    }
+    
     `],
     templateUrl: './daymanager.html'
 })
@@ -124,7 +137,13 @@ export class DayManagerAdmin implements OnInit, OnDestroy {
     ngOnDestroy(): void {
 
     }
+    Weekday(date:string) : string {
 
+        let dt= new Date(date);
+       // return  this.DayOfWeek(dt.toLocaleDateString('en-US', { weekday: 'long' }));
+       return  dt.toLocaleDateString('en-US', { weekday: 'short' });
+    
+    }
     showDetail(data: any) {
         console.log(data);
     }

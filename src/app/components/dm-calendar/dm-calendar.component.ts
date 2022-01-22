@@ -10,7 +10,7 @@ import { Subscription, Subject } from 'rxjs';
 const enum ImagePosition {
   LaundryService = '-24px 0px',
   PersonalCare = "-4px 0px",
-  CaseManagement = "-71px 0px",
+  CaseManagement = "-4px 0px",
   StaffTravel = "1px -21px",
   Transport = "-98px 0px",
   Unavailable = "-50px 0px"
@@ -233,6 +233,7 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
         this.daymanager = data;
         this.data.emit(data);
         this.loading = false;
+        console.log(data)
       })
   }
 

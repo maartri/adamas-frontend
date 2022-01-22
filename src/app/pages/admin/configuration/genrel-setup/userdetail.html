@@ -2467,102 +2467,123 @@
                 </div>
                 <div nz-col class="gutter-row" nzSpan="12">
                     <nz-card [nzSize]="'small'" nzType="inner" nzTitle="Dairy Management">
-                        <div nz-row nzJustify class="mrg-btm">
-                            <div nz-col nzSpan="15" class="text-right pad-r-5">
-                                <label for="Timesheets">TimeSheets :</label>
+                        <div nz-row nzJustify>
+                            <div nz-col nzSpan="16" class="text-right pad-r-5">
+                                <label for="Security Token Session Time Limit">Security Token Session Time Limit :</label>
                             </div>
-                            <div nz-col nzSpan="9">
+                            <div nz-col nzSpan="8">
+                                <input [nzSize]="'small'" nz-input placeholder="" formControlName="title" />
+                            </div>
+                        </div>
+                        <div nz-row nzJustify>
+                            <div nz-col nzSpan="16" class="text-right pad-r-5">
+                                <label for="No Days Accessible">No Days Accessible :</label>
+                            </div>
+                            <div nz-col nzSpan="8">
+                                <input [nzSize]="'small'" nz-input placeholder="" formControlName="title" />
+                            </div>
+                        </div>
+                        <div nz-row nzJustify>
+                            <div nz-col nzSpan="16" class="text-right pad-r-5">
+                                <label for="Attendence Recording Mode">Attendence Recording Mode :</label>
+                            </div>
+                            <div nz-col nzSpan="8">
                                 <label nz-checkbox formControlName="title"></label>
                             </div>
                         </div>
-                        <div nz-row nzJustify class="mrg-btm">
-                            <div nz-col nzSpan="15" class="text-right pad-r-5">
-                                <label for="Report-Basic Listing">Reports - Basic Listing :</label>
+                        <div nz-row nzJustify>
+                            <div nz-col nzSpan="16" class="text-right pad-r-5">
+                                <label for="Force Diary Refresh On Logon">Force Diary Refresh On Logon :</label>
                             </div>
-                            <div nz-col nzSpan="9">
+                            <div nz-col nzSpan="8">
                                 <label nz-checkbox formControlName="title"></label>
                             </div>
                         </div>
-                        <div nz-row nzJustify class="mrg-btm">
-                            <div nz-col nzSpan="15" class="text-right pad-r-5">
-                                <label for="Reports-Financial">Reports - Financial :</label>
+                        <div nz-row nzJustify>
+                            <div nz-col nzSpan="16" class="text-right pad-r-5">
+                                <label for="Hide Client Phone Number">Hide Client Phone Number :</label>
                             </div>
-                            <div nz-col nzSpan="9">
+                            <div nz-col nzSpan="8">
                                 <label nz-checkbox formControlName="title"></label>
                             </div>
                         </div>
-                        <div nz-row nzJustify class="mrg-btm">
-                            <div nz-col nzSpan="15" class="text-right pad-r-5">
-                                <label for="Report-Basic Listing">Reports - Basic Listing :</label>
+                        <div nz-row nzJustify>
+                            <div nz-col nzSpan="16" class="text-right pad-r-5">
+                                <label for="Hide Client Address">Hide Client Address :</label>
                             </div>
-                            <div nz-col nzSpan="9">
+                            <div nz-col nzSpan="8">
                                 <label nz-checkbox formControlName="title"></label>
                             </div>
                         </div>
-                        <div nz-row nzJustify class="mrg-btm">
-                            <div nz-col nzSpan="15" class="text-right pad-r-5">
-                                <label for="Reports-Financial">Reports - Financial :</label>
+                        <div nz-row nzJustify>
+                            <div nz-col nzSpan="16" class="text-right pad-r-5">
+                                <label for="Can Manully Set Shift Start/End Times">Can Manully Set Shift Start/End Times :</label>
                             </div>
-                            <div nz-col nzSpan="9">
+                            <div nz-col nzSpan="8">
                                 <label nz-checkbox formControlName="title"></label>
                             </div>
                         </div>
-                        <div nz-row nzJustify class="mrg-btm">
-                            <div nz-col nzSpan="15" class="text-right pad-r-5">
-                                <label for="Allow Print Preview of Reports">Allow Print Preview of Reports :</label>
+                        <div nz-row nzJustify>
+                            <div nz-col nzSpan="16" class="text-right pad-r-5">
+                                <label for="Can Add New Attendence To Center/Group/Transports">Can Add New Attendence To Center/Group/Transports :</label>
                             </div>
-                            <div nz-col nzSpan="9">
+                            <div nz-col nzSpan="8">
                                 <label nz-checkbox formControlName="title"></label>
                             </div>
                         </div>
-                        <div nz-row nzJustify class="mrg-btm">
-                            <div nz-col nzSpan="15" class="text-right pad-r-5">
-                                <label for="Email In User Defined Report">Email In User Defined Report :</label>
+                        <div nz-row nzJustify>
+                            <div nz-col nzSpan="16" class="text-right pad-r-5">
+                                <label for="Allow Multishift for Admin and Multi Client Shifts">Allow Multishift for Admin and Multi Client Shifts :</label>
                             </div>
-                            <div nz-col nzSpan="9">
+                            <div nz-col nzSpan="8">
                                 <label nz-checkbox formControlName="title"></label>
                             </div>
                         </div>
-                        <div nz-row nzJustify class="mrg-btm">
-                            <div nz-col nzSpan="15" class="text-right pad-r-5">
-                                <label for="Print Rosters and Runsheets">Print Rosters and Runsheets :</label>
+                        <div nz-row nzJustify>
+                            <div nz-col nzSpan="16" class="text-right pad-r-5">
+                                <label for="Disallow Travel Recording On Previous Days">Disallow Travel Recording On Previous Days :</label>
                             </div>
-                            <div nz-col nzSpan="9">
+                            <div nz-col nzSpan="8">
                                 <label nz-checkbox formControlName="title"></label>
                             </div>
                         </div>
-                        <div nz-row nzJustify class="mrg-btm">
-                            <div nz-col nzSpan="15" class="text-right pad-r-5">
-                                <label for="Pay Integrity Check">Pay Integrity Check :</label>
+                        <div nz-row nzJustify>
+                            <div nz-col nzSpan="16" class="text-right pad-r-5">
+                                <label for="Push a Prefix before the phone number">Push a Prefix before the phone number :</label>
                             </div>
-                            <div nz-col nzSpan="9">
+                            <div nz-col nzSpan="2">
+                                <label nz-checkbox formControlName="title"></label>
+                            </div>
+                            <div nz-col nzSpan="6">
+                                <input [nzSize]="'small'" nz-input placeholder="" formControlName="title" />
+                            </div>
+                        </div>
+                        <nz-divider nzText="Alert and Alarms" nzOrientation="left"></nz-divider>
+                        <div nz-row nzJustify>
+                            <div nz-col nzSpan="16" class="text-right pad-r-5">
+                                <label for="Enable Dairy Alerts/Alarms/s">Enable Dairy Alerts/Alarms/s :</label>
+                            </div>
+                            <div nz-col nzSpan="8">
                                 <label nz-checkbox formControlName="title"></label>
                             </div>
                         </div>
-                        <div nz-row nzJustify class="mrg-btm">
-                            <div nz-col nzSpan="15" class="text-right pad-r-5">
-                                <label for="Pay Billing & Claim Updates">Pay Billing & Claim Updates :</label>
+                        <div nz-row nzJustify>
+                            <div nz-col nzSpan="16" class="text-right pad-r-5">
+                                <label for="Enable Shift Start Alarm">Enable Shift Start Alarm :</label>
                             </div>
-                            <div nz-col nzSpan="9">
+                            <div nz-col nzSpan="8">
                                 <label nz-checkbox formControlName="title"></label>
                             </div>
                         </div>
-                        <div nz-row nzJustify class="mrg-btm">
-                            <div nz-col nzSpan="15" class="text-right pad-r-5">
-                                <label for="CDC Claim Prep and Update">CDC Claim Prep and Update :</label>
+                        <div nz-row nzJustify>
+                            <div nz-col nzSpan="16" class="text-right pad-r-5">
+                                <label for="Alert Refresh Interval (Whole Minutes)">Alert Refresh Interval (Whole Minutes) :</label>
                             </div>
-                            <div nz-col nzSpan="9">
-                                <label nz-checkbox formControlName="title"></label>
-                            </div>
-                        </div>
-                        <div nz-row nzJustify class="mrg-btm">
-                            <div nz-col nzSpan="15" class="text-right pad-r-5">
-                                <label for="Invoice Inquiry">Invoice Inquiry :</label>
-                            </div>
-                            <div nz-col nzSpan="9">
-                                <label nz-checkbox formControlName="title"></label>
+                            <div nz-col nzSpan="8">
+                                <input [nzSize]="'small'" nz-input placeholder="" formControlName="title" />
                             </div>
                         </div>
+
                     </nz-card>
                 </div>
             </nz-card>

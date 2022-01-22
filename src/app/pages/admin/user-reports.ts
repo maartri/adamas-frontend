@@ -1132,7 +1132,7 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
         this.data = [
           { "title": "Activity", "key": "00", isLeaf: true },
           { "title": "Competency", "key": "01", isLeaf: true },
-          { "title": "SS Status", "key": "02", isLeaf: true },
+          { "title": "S Status", "key": "02", isLeaf: true },
         ]
         break; 
         //  RECIPIENT OP NOTES
@@ -2286,7 +2286,7 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
             this.ConditionEntity =  'R.[DonationAmount]'
             break;
             case 'Account Identifier':
-            this.ConditionEntity =  ''
+            this.ConditionEntity =  'R.[AccountingIdentifier]'
             break;
             case 'External Order Number':
             this.ConditionEntity =  'R.[Order#]'
@@ -3620,8 +3620,8 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
             case 'Competency':
             this.ConditionEntity =  'SvcSpecCompetency.[Name]'
             break;
-            case 'SS Status':
-            //  this.ConditionEntity =  
+            case 'S Status':
+              this.ConditionEntity =  'ServiceCompetencyStatus.[S Status]'
             break;
             //  RECIPIENT OP NOTES                  
             case 'OP Notes Date':
@@ -5999,8 +5999,8 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
                     break;
                     case 'Account Identifier':
                     if(columnNames != []){
-                      columnNames = columnNames.concat(['  '])
-                    }else{columnNames = (['  '])}
+                      columnNames = columnNames.concat([' R.[AccountingIdentifier] AS [Account Identifier] '])
+                    }else{columnNames = ([' R.[AccountingIdentifier] AS [Account Identifier] '])}
                     break;
                     case 'External Order Number':
                     if(columnNames != []){
@@ -8309,10 +8309,10 @@ break;
                       columnNames = columnNames.concat(['SvcSpecCompetency.[Name]  '])
                     }else{columnNames = (['SvcSpecCompetency.[Name]  '])}
                     break;
-                    case 'SS Status':
+                    case 'S Status':
                     if(columnNames != []){
-                      columnNames = columnNames.concat(['  '])
-                    }else{columnNames = (['  '])}
+                      columnNames = columnNames.concat([' ServiceCompetencyStatus.[S Status] '])
+                    }else{columnNames = ([' ServiceCompetencyStatus.[S Status] '])}
                     break;
                     //  RECIPIENT OP NOTES                      
                     case 'OP Notes Date':
@@ -9489,7 +9489,7 @@ break;
                     FromSql = FromSql + " LEFT JOIN HumanResources SvcSpecCompetency  ON R.UniqueID = SvcSpecCompetency.PersonID "
                     this.includeSvcSpecCompetencyWhere = " SvcSpecCompetency.[Type] = 'STAFFATTRIBUTE  "
                   }         
-                  if(arr.includes("SS Status")    ){
+                  if(arr.includes("S Status")    ){
                     FromSql = FromSql + " LEFT JOIN  ServiceOverview ServiceCompetencyStatus ON ServiceCompetencyStatus.[PersonID]  = R.[UniqueID]  "        
                     if(arr.includes("Activity")  || arr.includes("Competency")    ){
                       FromSql = FromSql +  " AND ServiceCompetencyStatus.[SERVICE TYPE] = SvcSpecCompetency.[Service] "

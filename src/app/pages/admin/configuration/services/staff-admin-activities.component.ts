@@ -276,6 +276,7 @@ export class StaffAdminActivitiesComponent implements OnInit {
           this.loadData();
           
         });
+        this.loading = false;
       }
     }
     saveCompetency(){

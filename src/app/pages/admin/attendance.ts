@@ -1,10 +1,12 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core'
 
 import { ListService } from '@services/index';
-import { forkJoin } from 'rxjs';
+import { forkJoin, timer, Observable, of, Subject, Subscription } from 'rxjs';
+import { switchMap, takeUntil } from 'rxjs/operators';
 
 import { format } from 'date-fns';
 
+const timerValue: number = 10000;
 
 export interface VirtualDataInterface {
   index: number;
@@ -64,17 +66,17 @@ export interface VirtualDataInterface {
 
 export class AttendanceAdmin implements OnInit, OnDestroy {
 
-    allCheckedBranches: boolean = false;
-    allCheckedTeams: boolean = false;
-    allCheckedCategories: boolean = false;
-    allCheckedCoordinators: boolean = false;
+    allCheckedBranches: boolean = true;
+    allCheckedTeams: boolean = true;
+    allCheckedCategories: boolean = true;
+    allCheckedCoordinators: boolean = true;
 
     loadingPending: boolean = false;
 
-    indeterminateBranch = true;
-    indeterminateTeams = true;
-    indeterminateCategories = true;
-    indeterminateCoordinators = true;
+    indeterminateBranch = false;
+    indeterminateTeams = false;
+    indeterminateCategories = false;
+    indeterminateCoordinators = false;
 
     date: Date = new Date();
     nzSelectedIndex: number = 0;
@@ -82,17 +84,15 @@ export class AttendanceAdmin implements OnInit, OnDestroy {
     dataSet: Array<any> = [];
 
 
-    checkOptionsOne = [
-        { label: 'Apple', value: 'Apple', checked: true },
-        { label: 'Pear', value: 'Pear', checked: false },
-        { label: 'Orange', value: 'Orange', checked: false }
-    ];
 
     branches: Array<any> = [];
     teams: Array<any> = [];
     categories: Array<any> = [];
     coordinators: Array<any> = [];
-    
+
+
+    joinedWithIntervalNeverCompleting$: Subscription;
+    destroyTimer$ = new Subject();
 
     constructor(
       private listS: ListService
@@ -101,50 +101,61 @@ export class AttendanceAdmin implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-      forkJoin([
+
+      this.joinedWithIntervalNeverCompleting$  = forkJoin([
         this.listS.getlisttimeattendancefilter("BRANCHES"),
         this.listS.getlisttimeattendancefilter("STAFFTEAM"),
         this.listS.getlisttimeattendancefilter("STAFFGROUP"),
         this.listS.getlisttimeattendancefilter("CASEMANAGERS")
-      ]).subscribe(data => {
-        // console.log(data);
-        this.branches = data[0].map(x => {
-          return {
-            label: x,
-            value: x,
-            checked: false
-          }
-        });
+      ]).pipe(
+        switchMap(data => {
 
-        this.teams = data[1].map(x => {
-          return {
-            label: x,
-            value: x,
-            checked: false
-          }
-        });
+          this.branches = data[0].map(x => {
+            return {
+              label: x,
+              value: x,
+              checked: true
+            }
+          });
+  
+          this.teams = data[1].map(x => {
+            return {
+              label: x,
+              value: x,
+              checked: true
+            }
+          });
+  
+          this.categories = data[2].map(x => {
+            return {
+              label: x,
+              value: x,
+              checked: true
+            }
+          });
+  
+          this.coordinators = data[3].map(x => {
+            return {
+              label: x,
+              value: x,
+              checked: true
+            }
+          });
 
-        this.categories = data[2].map(x => {
-          return {
-            label: x,
-            value: x,
-            checked: false
-          }
-        });
 
-        this.coordinators = data[3].map(x => {
-          return {
-            label: x,
-            value: x,
-            checked: false
-          }
-        });
-
-
-      });
+          return of(data)
+        })
+      ).subscribe(d => {
+        timer(0,timerValue).pipe(takeUntil(this.destroyTimer$))
+          .subscribe(d => this.reload())
+        })
     }
 
     ngOnDestroy(): void {
+
+      this.destroyTimer$.next();
+      this.destroyTimer$.unsubscribe();
+      this.joinedWithIntervalNeverCompleting$.unsubscribe();
 
     }
 
@@ -293,7 +304,8 @@ export class AttendanceAdmin implements OnInit, OnDestroy {
 
     
     reload(){
-      this.loadingPending = true;
+      this.loadingPending = false;
+
       let data = {
         Date:  format(this.date,'yyyy/MM/dd'),
         LocalTimezoneOffset: 0,

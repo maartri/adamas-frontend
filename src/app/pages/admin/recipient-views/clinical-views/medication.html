@@ -30,12 +30,12 @@
     <div>
         
         <div nz-row nzGutter="16">
-            <div nz-col nzSpan="12" [formGroup]="consentGroup">
+            <div nz-col nzSpan="24" [formGroup]="consentGroup">
                 <nz-select style="width:100%" nzAllowClear formControlName="consent"  nzPlaceHolder="Consent">
                     <nz-option *ngFor="let data of lists"  [nzValue]="data" [nzLabel]="data"></nz-option>
                 </nz-select>
             </div>
-            <div nz-col nzSpan="12" [formGroup]="consentGroup">                
+            <div nz-col nzSpan="24" style="margin-top:10px" [formGroup]="consentGroup">                
                 <nz-date-picker formControlName="expiryDate" [nzFormat]="dateFormat" nzPlaceHolder="Expiry Date"></nz-date-picker>
             </div>
         </div>

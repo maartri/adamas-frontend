@@ -141,7 +141,7 @@ export class ClinicalMedication implements OnInit, OnDestroy {
     }
 
     listDropDowns(){
-        this.listS.getconsents(this.user.id).subscribe(data => this.lists = data)
+        this.listS.getmedication(this.user.id).subscribe(data => this.lists = data)
     }
 
 

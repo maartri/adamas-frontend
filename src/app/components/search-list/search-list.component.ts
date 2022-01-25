@@ -57,6 +57,8 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
   take: number = 50;
   activeInactive: boolean;
 
+  globalUser: any;
+
 
   // nzFilterOption  = () => true;
   constructor(
@@ -77,6 +79,7 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
   }
 
   ngOnInit(): void {
+    this.globalUser = this.globalS.decode();  
     this.search();
   }
 
@@ -152,7 +155,7 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
     this.lists = [];   
 
     this.timeS.getstaff({
-      User: this.globalS.decode().nameid,
+      User: this.globalUser.nameid,
       SearchString: '',
       IncludeInactive:this.activeInactive,
     }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
@@ -178,7 +181,7 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
   loadMore(){
     this.pageCounter = this.pageCounter + 1;
     this.timeS.getstaffpaginate({
-      User: this.globalS.decode().nameid,
+      User: this.globalUser.nameid,
       SearchString: '',
       Skip: this.pageCounter,
       Take: this.take
@@ -192,7 +195,7 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
   searchRecipient(search: any = null): void {
     this.lists = []
     this.timeS.getrecipients({
-      User: this.globalS.decode().nameid,
+      User: this.globalUser.nameid,
       SearchString: '',
       IncludeInactive:this.activeInactive,
     }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {

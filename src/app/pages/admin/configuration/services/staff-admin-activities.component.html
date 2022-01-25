@@ -49,6 +49,9 @@
                 </nz-table>
             </div>
         </div>
+        <div class="col-md-12 spinner" *ngIf="loading">
+            <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
+        </div>
         <nz-modal [nzWidth]="900" [(nzVisible)]="modalOpen" [nzTitle]="loadTitle()" (nzOnCancel)="handleCancel()">
             <div class="">
                 <nz-steps [nzSize]="'small'" [nzCurrent]="current" (nzIndexChange)="onIndexChange($event)">
@@ -76,7 +79,7 @@
                                 <div nz-col nzSpan="24" class="mrg-btm">
                                     <div nz-row nzJustify class="mrg-btm">
                                         <div nz-col nzSpan="4" class="text-right pad-r-5">
-                                            <nz-form-label  nzRequired nzFor="Title" style="text-transform: uppercase;">Title</nz-form-label>
+                                            <nz-form-label  nzRequired nzFor="Title" style="text-transform:uppercase;">Title</nz-form-label>
                                         </div>
                                         <div nz-col nzSpan="16" class="text-right pad-r-5"> 
                                             <input nz-input [nzSize]="'small'"  formControlName="title" />

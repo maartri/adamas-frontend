@@ -749,8 +749,15 @@ export class ListService {
     getclinicalnursingdiagnose(personID: string): Observable<any>{
         return this.auth.get(`${list}/clinical/nursingdiagnose/${personID}`)
     }
+    getaddclinicalnursingdiagnose(personID: string): Observable<any>{
+        return this.auth.get(`${list}/clinical/addnursingdiagnose/${personID}`)
+    }
+    
     getclinicalmedicationdiagnose(personID: string): Observable<any>{
         return this.auth.get(`${list}/clinical/medicationdiagnose/${personID}`)
+    }
+    getaddclinicalmedicationdiagnose(personID: string): Observable<any>{
+        return this.auth.get(`${list}/clinical/addmedicationdiagnose/${personID}`)
     }
     getclinicalprocedure(personID: string): Observable<any>{
         return this.auth.get(`${list}/clinical/procedure/${personID}`)

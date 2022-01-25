@@ -57,8 +57,11 @@ export class ClinicalDiagnose implements OnInit, OnDestroy {
   checkedListApproved: any;
   inputvalueSearch:string = '';
   listArray: Array<any>;
-  listStaff: any;
-  
+  listDiagnosis: any;
+  nDiagnosis:any;
+  mDiagnosis:any;
+  nlist: any;
+  mlist: any;
   constructor(
     private timeS: TimeSheetService,
     private sharedS: ShareService,
@@ -104,10 +107,14 @@ export class ClinicalDiagnose implements OnInit, OnDestroy {
       forkJoin([
         this.listS.getclinicalnursingdiagnose(user.id),
         this.listS.getclinicalmedicationdiagnose(user.id),
+        this.listS.getaddclinicalnursingdiagnose(user.id),
+        this.listS.getaddclinicalmedicationdiagnose(user.id),
       ]).subscribe(staff => {
         this.loading = false;
-        this.dignsose = staff[0];
-        this.medialDiagnose = staff[1];
+        this.nlist = staff[0];
+        this.mlist = staff[1];
+        this.nDiagnosis = staff[2];
+        this.mDiagnosis = staff[3];
         this.cd.markForCheck();
       });
     }
@@ -117,12 +124,13 @@ export class ClinicalDiagnose implements OnInit, OnDestroy {
         recordNumber: '',
         personID: '',
         list: '',
-        notes: ['']
+        usercode:'',
+        icdcode:'',
       })
     }
     
     get title() {
-      const str = this.whatView == 1 ? 'Excluded Staff' : 'Approved Staff';
+      const str = this.whatView == 1 ? 'Nursing Diagnosis' : 'Medical Diagnosis';
       const pro = this.editOrAdd == 1 ? 'Add' : 'Edit';
       return `${pro} ${str}`;
     }
@@ -154,12 +162,9 @@ export class ClinicalDiagnose implements OnInit, OnDestroy {
       this.isLoading = true;
       
       if (index == 1) {    
-        this.timeS.postintakestaff({
-          Notes: (notes == null) ? '' : notes,
+        this.timeS.postnursingdiagnosis({
           PersonID: this.user.id,
-          Name: list,
-          StaffCategory:0,
-          DateCreated: this.globalS.getCurrentDate()
+          Description: list,
         }).pipe(takeUntil(this.unsubscribe))
         .subscribe(data => {
           if (data) {
@@ -169,14 +174,10 @@ export class ClinicalDiagnose implements OnInit, OnDestroy {
           }
         })
       }
-      
       if (index == 2) {
-        this.timeS.postintakestaff({
-          Notes: (notes == null) ? '' : notes,
-          personID: this.user.id,
-          name: list,
-          staffCategory:1,
-          dateCreated: this.globalS.getCurrentDate()
+        this.timeS.postmedicaldiagnosis({
+          PersonID: this.user.id,
+          Description: list,
         }).pipe(takeUntil(this.unsubscribe))
         .subscribe(data => {
           if (data) {
@@ -242,19 +243,19 @@ export class ClinicalDiagnose implements OnInit, OnDestroy {
         showEditModal(view: number, index: number) {
 
           if (view == 1) {
-            console.log(this.dignsose[index]);
-              const { name, notes, recordNumber } = this.dignsose[index];
+            console.log(this.nDiagnosis[index]);
+              const { description, icdcode, recordNumber } = this.nDiagnosis[index];
               this.inputForm.patchValue({
-                  list: name,
-                  notes: notes,
+                  list: description,
+                  icdcode: icdcode,
                   recordNumber: recordNumber
               });
           }
           if (view == 2) {
-              const { name, notes, recordNumber } = this.medialDiagnose[index];
+              const { description, icdcode, recordNumber } = this.mDiagnosis[index];
               this.inputForm.patchValue({
-                  list: name,
-                  notes: notes,
+                  list: description,
+                  icdcode: icdcode,
                   recordNumber: recordNumber
               });
           }
@@ -263,8 +264,9 @@ export class ClinicalDiagnose implements OnInit, OnDestroy {
           this.modalOpen = true;
       }
         
-        delete(recordNo: number) {
-          this.timeS.deleteintakestaff(recordNo)
+        delete(recordNo: number,view:number) {
+          if(view == 1){
+            this.timeS.deletenursingdiagnosis(recordNo)
             .subscribe(data => {
                 if (data) {
                     this.handleCancel();
@@ -272,6 +274,16 @@ export class ClinicalDiagnose implements OnInit, OnDestroy {
                     this.globalS.sToast('Success', 'Data Deleted');
                 }
             });
+          }else{
+            this.timeS.deletemedicaldiagnosis(recordNo)
+            .subscribe(data => {
+                if (data) {
+                    this.handleCancel();
+                    this.success();
+                    this.globalS.sToast('Success', 'Data Deleted');
+                }
+            });
+          }
         }
         
         handleCancel() {
@@ -281,6 +293,7 @@ export class ClinicalDiagnose implements OnInit, OnDestroy {
         }
         
         showAddModal(view : number) {
+          this.listDiagnosis =  (view == 1) ? this.nDiagnosis:this.mDiagnosis;
           this.whatView = view;
           this.editOrAdd = 1;
           this.modalOpen = true;

@@ -387,6 +387,9 @@ export class TimeSheetService {
         return this.auth.get(`${timesheet}/audit-history/${recordNo}`)
     }
 
+    postaudithistory(data:any): Observable<any> {
+        return this.auth.get(`${timesheet}/audit-history`,data)
+    }
 
     /**
      * Data Set
@@ -1088,6 +1091,18 @@ export class TimeSheetService {
     updatecompetency(data: any, id: number): Observable<any> {
         return this.auth.put(`${timesheet}/competency/update/${id}`, data)
     }
+    postnursingdiagnosis(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/clinical/Nursingdiagnose/store`,data)
+    }
+    deletenursingdiagnosis(id:number):Observable<any>{
+        return this.auth.delete(`${timesheet}/clinical/Nursingdiagnose/delete/${id}`)
+    }
+    postmedicaldiagnosis(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/clinical/Medicaldiagnose/store`,data)
+    }
+    deletemedicaldiagnosis(id:number):Observable<any>{
+        return this.auth.delete(`${timesheet}/clinical/Medicaldiagnose/delete/${id}`)
+    }
 
     getincidentdetails(name: string, id: number): Observable<any> {
         return this.auth.get(`${timesheet}/incidents/${name}/${id}`)
@@ -1232,7 +1247,6 @@ export class TimeSheetService {
         return this.auth.get(`${timesheet}/intake/services/${id}`)
     }
     
-
     postintakeservices(data: any): Observable<any> {
         return this.auth.post(`${timesheet}/intake/services`, data)
     }

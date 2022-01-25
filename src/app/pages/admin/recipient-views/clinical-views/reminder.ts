@@ -58,7 +58,6 @@ export class ClinicalReminder implements OnInit, OnDestroy {
 
         this.sharedS.changeEmitted$.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (this.globalS.isCurrentRoute(this.router, 'reminder')) {
-                console.log('sasd')
                 this.user = data;
                 this.search(data);
             }
@@ -141,7 +140,7 @@ export class ClinicalReminder implements OnInit, OnDestroy {
     }
 
     listDropDowns(){
-        this.listS.getconsents(this.user.id).subscribe(data => this.lists = data)
+        this.listS.getclinicalreminder(this.user.id).subscribe(data => this.lists = data)
     }
 
 

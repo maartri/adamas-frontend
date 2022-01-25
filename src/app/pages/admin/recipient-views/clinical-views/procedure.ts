@@ -18,6 +18,9 @@ import format from 'date-fns/format';
     h4{
         margin-top:10px;
     }
+    ng-select >>> ng-dropdown-panel{
+        width: 50rem;
+    }
     `],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -141,7 +144,7 @@ export class ClinicalProcedure implements OnInit, OnDestroy {
     }
 
     listDropDowns(){
-        this.listS.getconsents(this.user.id).subscribe(data => this.lists = data)
+        this.listS.getmedicalprocedure(this.user.id).subscribe(data => this.lists = data)
     }
 
 

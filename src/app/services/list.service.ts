@@ -890,6 +890,20 @@ export class ListService {
         return this.auth.get(`${list}/consent/${personId}`)
     }
 
+    getmedicalprocedure(personId: string):Observable<any>{
+        return this.auth.get(`${list}/procedure/${personId}`)
+    }
+
+    getmedication(personId: string):Observable<any>{
+        return this.auth.get(`${list}/medication/${personId}`)
+    }
+
+    // getclinicalreminders(personId: string):Observable<any>{
+    //     return this.auth.get(`${list}/clinical-reminders/${personId}`)
+    // }
+
+    
+
     getusergroup(personID: string):Observable<any>{
         return this.auth.get(`${list}/group/usergroup/${personID}`)
     }

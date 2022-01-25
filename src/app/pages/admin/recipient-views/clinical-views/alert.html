@@ -28,7 +28,7 @@
     </div>
 </div>
 
-<nz-modal [(nzVisible)]="consentOpen" [nzTitle]="addOREdit == 0 ? 'Add Consent' : 'Edit Consent'" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+<nz-modal [(nzVisible)]="consentOpen" [nzTitle]="addOREdit == 0 ? 'Add Clinical Alert' : 'Edit Clinical Alert'" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
     <div>
         
         <div nz-row nzGutter="16">
@@ -38,7 +38,7 @@
                 </nz-select>
             </div>
             <div nz-col nzSpan="12" [formGroup]="consentGroup">                
-                <nz-date-picker formControlName="expiryDate" [nzFormat]="dateFormat" nzPlaceHolder="Expiry Date"></nz-date-picker>
+                <nz-date-picker formControlName="expiryDate" [nzFormat]="dateFormat" nzPlaceHolder="Reminder Date"></nz-date-picker>
             </div>
         </div>
         <div nz-row nzGutter="16" >

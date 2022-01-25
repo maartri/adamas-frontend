@@ -243,8 +243,8 @@ export class ClinicalDiagnose implements OnInit, OnDestroy {
         showEditModal(view: number, index: number) {
 
           if (view == 1) {
-            console.log(this.nDiagnosis[index]);
-              const { description, icdcode, recordNumber } = this.nDiagnosis[index];
+            console.log(this.nlist[index]);
+              const { description, icdcode, recordNumber } = this.nlist[index];
               this.inputForm.patchValue({
                   list: description,
                   icdcode: icdcode,
@@ -252,7 +252,7 @@ export class ClinicalDiagnose implements OnInit, OnDestroy {
               });
           }
           if (view == 2) {
-              const { description, icdcode, recordNumber } = this.mDiagnosis[index];
+              const { description, icdcode, recordNumber } = this.mlist[index];
               this.inputForm.patchValue({
                   list: description,
                   icdcode: icdcode,

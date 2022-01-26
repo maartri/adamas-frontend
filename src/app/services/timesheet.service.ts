@@ -1094,11 +1094,17 @@ export class TimeSheetService {
     postnursingdiagnosis(data: any): Observable<any> {
         return this.auth.post(`${timesheet}/clinical/Nursingdiagnose/store`,data)
     }
+    updatenursingdiagnosis(data: any, id: number): Observable<any> {
+        return this.auth.put(`${timesheet}/clinical/Nursingdiagnose/update/${id}`,data)
+    }
     deletenursingdiagnosis(id:number):Observable<any>{
         return this.auth.delete(`${timesheet}/clinical/Nursingdiagnose/delete/${id}`)
     }
     postmedicaldiagnosis(data: any): Observable<any> {
         return this.auth.post(`${timesheet}/clinical/Medicaldiagnose/store`,data)
+    }
+    updatemedicaldiagnosis(data: any, id: number): Observable<any> {
+        return this.auth.put(`${timesheet}/clinical/Medicaldiagnose/update/${id}`,data)
     }
     deletemedicaldiagnosis(id:number):Observable<any>{
         return this.auth.delete(`${timesheet}/clinical/Medicaldiagnose/delete/${id}`)

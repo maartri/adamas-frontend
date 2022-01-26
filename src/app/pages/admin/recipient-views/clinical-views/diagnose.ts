@@ -198,16 +198,18 @@ export class ClinicalDiagnose implements OnInit, OnDestroy {
       if (!this.inputForm.valid)
       return;
       
-      const { list, notes, recordNumber } = this.inputForm.value;
+      const { list,usercode,icdcode,recordNumber } = this.inputForm.value;
       const index = this.whatView;
       this.isLoading = true;
       
       if (index == 1) {
-        this.timeS.updateintakestaff({
-          name: list,
-          notes:notes,
+        this.timeS.updatenursingdiagnosis({
+          description:list,
+          PersonID:this.user.id,
+          icdcode:icdcode,
+          code:usercode,
           recordNumber:recordNumber
-        }).pipe(
+        },recordNumber).pipe(
           takeUntil(this.unsubscribe))
           .subscribe(data => {
             if (data) {
@@ -219,11 +221,13 @@ export class ClinicalDiagnose implements OnInit, OnDestroy {
         }
         
         if (index == 2) {
-          this.timeS.updateintakestaff({
-            name: list,
-            notes:notes,
+          this.timeS.updatemedicaldiagnosis({
+            description: list,
+            PersonID:this.user.id,
+            icdcode:icdcode,
+            code:usercode,
             recordNumber:recordNumber
-          }).pipe(
+          },recordNumber).pipe(
             takeUntil(this.unsubscribe))
             .subscribe(data => {
               if (data) {
@@ -244,18 +248,20 @@ export class ClinicalDiagnose implements OnInit, OnDestroy {
 
           if (view == 1) {
             console.log(this.nlist[index]);
-              const { description, icdcode, recordNumber } = this.nlist[index];
+              const { description,code,icdcode,recordNumber } = this.nlist[index];
               this.inputForm.patchValue({
                   list: description,
                   icdcode: icdcode,
+                  usercode:code,
                   recordNumber: recordNumber
               });
           }
           if (view == 2) {
-              const { description, icdcode, recordNumber } = this.mlist[index];
+              const { description,code,icdcode,recordNumber } = this.mlist[index];
               this.inputForm.patchValue({
                   list: description,
                   icdcode: icdcode,
+                  usercode:code,
                   recordNumber: recordNumber
               });
           }

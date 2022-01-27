@@ -906,13 +906,6 @@ export class ListService {
     getmedication(personId: string):Observable<any>{
         return this.auth.get(`${list}/medication/${personId}`)
     }
-
-    // getclinicalreminders(personId: string):Observable<any>{
-    //     return this.auth.get(`${list}/clinical-reminders/${personId}`)
-    // }
-
-    
-
     getusergroup(personID: string):Observable<any>{
         return this.auth.get(`${list}/group/usergroup/${personID}`)
     }

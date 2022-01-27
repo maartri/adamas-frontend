@@ -1114,6 +1114,16 @@ export class TimeSheetService {
         return this.auth.get(`${timesheet}/incidents/${name}/${id}`)
     }
 
+    postclinicalprocedure(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/clinical/procedure/store`,data)
+    }
+    updateclinicalprocedure(data: any, id: number): Observable<any> {
+        return this.auth.put(`${timesheet}/clinical/procedure/update/${id}`,data)
+    }
+    deleteclinicalprocedure(id:number):Observable<any>{
+        return this.auth.delete(`${timesheet}/clinical/procedure/delete/${id}`)
+    }
+
     getincidents(name: string): Observable<any> {
         return this.auth.get(`${timesheet}/incidents/${name}`)
     }

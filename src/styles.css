@@ -350,3 +350,9 @@ th.action{
     cursor:not-allowed;
 }
       
+.pos-left{
+    float:left;
+}
+.pos-right{
+    float:right;
+}

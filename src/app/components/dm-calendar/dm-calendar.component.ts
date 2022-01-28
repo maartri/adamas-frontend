@@ -47,7 +47,7 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
 
   @Input() startDate: any
   @Input() dayView: number
-  @Input() reload: number
+  @Input() reload:Subject<boolean>= new Subject()
   @Input() copyPaste: boolean = false
 
   @Output() showDetail = new EventEmitter();
@@ -60,7 +60,7 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
   daymanager: Array<any> = [];
 
   loading: boolean = false;
-
+  
   constructor(
     private timeS: TimeSheetService,
     private elem: ElementRef,
@@ -87,15 +87,21 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
 
   ngOnInit() {
     this.days = this.calculateDays(this.startDate, this.dayView);
+    this.reload.subscribe(v => { 
+      this.alertChange();
+     // this.reload.next(false);
+    });
   }
 
   private elemMouseUp;
   private documentMouseUp;
+ 
 
   ngOnDestroy() {
     this.paramsSubscription$.unsubscribe();
     this.document.removeEventListener('mouseup', this.documentMouseUp, false);
     this.elem.nativeElement.removeEventListener('mouseup', this.elemMouseUp, false);
+   
   }
 
   ngAfterViewInit() {
@@ -116,10 +122,13 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
           this.deselect(null, e)
       }
 
+    
       this.elem.nativeElement.addEventListener('mouseup', this.elemMouseUp, false);
-
+     
+      
       // Will stop highlighting other rosters if mouseup event happened outside of the desired ELEMENT Component
       this.document.addEventListener('mouseup', this.documentMouseUp, false)
+      
 
     });
 
@@ -171,6 +180,8 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
     }
 
     this.showOptions.emit({ selected: value, diary: rostersThatDay });
+    
+    
   }
 
   optionEmitter(data: any) {
@@ -316,6 +327,17 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
     };
   }
 
+  mousedblclick(event: any, value: any) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    this.isClicked = true;
+    this.coordinates = {
+      clientX: event.clientX,
+      clientY: event.clientY
+    };
+    this.showDetail.emit(value);
+  }
   akonani: Array<any> = []
   mousemove(event: any, data: any) {
     event.stopPropagation();

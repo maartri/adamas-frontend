@@ -147,6 +147,10 @@ i.option{
     transform:scale(1.2);
     background:#c8d2e4;
 }
+.listitem{
+    border: 1px solid #bdd5e2;
+    background-color: #d9e8f0;
+}
 .selected {
     background:#8cc9ff  !important;
 }

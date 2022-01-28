@@ -155,6 +155,7 @@ IconCellType2.prototype.paint = function (ctx, value, x, y, w, h, style, context
 })
 
 export class RostersAdmin implements OnInit,
+
 AfterViewInit,
 OnDestroy  {
 
@@ -578,7 +579,7 @@ Check_BreachedRosterRules_Paste(RecNo:number, action:string,row : number, col : 
         let dt= sheet.getTag(0,col,GC.Spread.Sheets.SheetArea.colHeader);                       
         this.rDate = dt.getFullYear() + "/" + this.numStr(dt.getMonth()+1) + "/" + this.numStr(dt.getDate());
   
-        let f_row= row;             
+        let f_row = row;             
         let startTime =   sheet.getCell(f_row,0,GC.Spread.Sheets.SheetArea.rowHeader).tag();
      
 
@@ -2694,6 +2695,7 @@ load_rosters(){
             break;
         case 3:
             sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-3')));
+            //<i nz-icon *ngIf="value.type==2" [nzType]="'heart'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
             break;
         case 4:
             sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-4')));

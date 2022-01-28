@@ -30,7 +30,7 @@
                 <div class="cell" [attr.date]="day" [class.roster-container]="i > 0" [class.five]="dayView == 5"
                     [class.seven]="dayView == 7" [class.ten]="dayView == 10" [class.fourteen]="dayView == 14"
                     (mousedown)="deselect(null,$event)" (drop)="drop($event);$event.stopPropagation()"
-                    (dragover)="dragOver($event)">
+                    (dragover)="dragOver($event)" >
                     <div *ngIf="i == 0">
                         <div>
                             <span *ngIf="data?.key.indexOf('BOOKED') > -1">UNASSIGNED BOOKINGS</span>
@@ -42,22 +42,34 @@
                         <ng-container *ngFor="let value of data.value | dmz: day ">
                             <div class="data" *ngIf="!value.isLast && !value.isNone"
                                 (dragstart)="dragStart($event,value)" (dragend)="dragEnd($event)"
-                                (dblclick)="showDetail.emit(value)" (mouseenter)="mouseenter($event, value)"
+                                (dblclick)="mousedblclick($event,value)"
+                                (mouseenter)="mouseenter($event, value)"
                                 (mousedown)="mousedown($event,value)" (mousemove)="mousemove($event,value)"
                                 [class.selected]="value.isSelected">
 
-                                <!-- <div class="approve-logo"><i class="material-icons" *ngIf="value.status == '2'"> done
+                                <!--
+                                    (dblclick)="showDetail.emit(value)" 
+                                    <div class="approve-logo"><i class="material-icons" *ngIf="value.status == '2'"> done
                                     </i>
                                 </div> -->
                                 <div [class.icon2]="dayView >= 10">
                                     <!--  <div class="service-logo" [style.background-position]="getPositionImg(value)"> -->
-                                        
-                                        
-                                    <i nz-icon *ngIf="value.type==1" [nzType]="'audit'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
-                                    <i nz-icon *ngIf="value.type==2" [nzType]="'check-circle'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
-                                    <i nz-icon *ngIf="value.type==3" [nzType]="'heart'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
-                                    <i nz-icon *ngIf="value.type>3" [nzType]="'container'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
-
+                                
+                                    <i nz-icon *ngIf="value.type==1" [nzType]="'question-circle'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
+                                    <i nz-icon *ngIf="value.type==2" [nzType]="'heart'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
+                                    <i nz-icon *ngIf="value.type==3" [nzType]="'check-circle'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
+                                    <i nz-icon *ngIf="value.type==4" [nzType]="'calendar'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
+                                    <i nz-icon *ngIf="value.type==5" [nzType]="'car'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
+                                    <i nz-icon *ngIf="value.type==6" [nzType]="'container'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
+                                    <i nz-icon *ngIf="value.type==7" [nzType]="'dollar'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
+                                    <i nz-icon *ngIf="value.type==8" [nzType]="'smile'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
+                                    <i nz-icon *ngIf="value.type==9" [nzType]="'info-circle'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
+                                    <i nz-icon *ngIf="value.type==10" [nzType]="'van'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
+                                    <i nz-icon *ngIf="value.type==11" [nzType]="'home'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
+                                    <i nz-icon *ngIf="value.type==12" [nzType]="'team'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
+                                    <i nz-icon *ngIf="value.type==13" [nzType]="'minus-circle'" [nzTheme]="'outline'"  class="icon"></i>
+                                    <i nz-icon *ngIf="value.type==14" [nzType]="'calendar-circle'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
+                                    
                                     <strong >{{ value.startTime}}-{{ value.endTime }}</strong>
                                       
                                     <i class="material-icons option showOption icon" option-click
@@ -90,4 +102,5 @@
         </clr-alert>
     </div>
 
+    
 </div>

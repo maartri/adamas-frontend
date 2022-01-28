@@ -14,31 +14,39 @@
         </div>
     </div>
     <div>
-        <dm-calendar [startDate]="date" [dayView]="dayView" [reload]="reload" [copyPaste]="toBePasted?.length > 0"
+        <dm-calendar [startDate]="date" [dayView]="dayView" [reload]="reload"  [copyPaste]="toBePasted?.length > 0"
             (showDetail)="showDetail($event)" (showOptions)="showOptions($event)" (highlighted)="highlighted($event)"
             (data)="data($event)" (paste)="pasted($event)"></dm-calendar>
     </div>
 </div>
+<recipientexternal [isVisible]="recipientexternal" [AccountNo]="selected_data" (recipientexternalDone)="cancelRecipientExternal($event)" *ngIf="recipientexternal"></recipientexternal>
+     
+<staffexternal [isVisible]="staffexternal" [AccountNo]="selected_data" (staffexternalDone)="cancelStaffExternal($event)" *ngIf="staffexternal"></staffexternal>
+<shiftdetail (timesheetDone)="shiftChanged($event)" ></shiftdetail>
 
-<nz-modal class="options" [nzStyle]="{ top: '15px' }" [(nzVisible)]="optionsModal" nzTitle="" (nzOnCancel)="optionsModal = false" >
-    <div nz-row>
-        <ul>
-            <li (click)="toMap()">Display Route Map</li>
-            <li (click)="changeViewRecipientDetails.next(1)">View Recipient Details</li>
-            <li>View Service Shift Notes</li>
+
+
+<nz-modal class="options" [nzStyle]="{ top: '15px' }" [(nzVisible)]="optionsModal" nzTitle="Day Manager" (nzOnCancel)="optionsModal = false" 
+    style="background-color: #002060; margin-top: 5px; color: white;">
+   
+    <div  nz-row style="background-color: #fff; margin-top: 5px; ">
+        <ul >
+            <li class="listitem" (click)="toMap()">Display Route Map</li>
+            <li class="listitem"  (click)="ViewRecipientDetails.next(1)">View Recipient Details</li>
+            <li class="listitem" (click)="ViewRecipientDetails.next(2)" >View Service Shift Notes</li>
             <hr/>
-            <li>Qik Allocate</li>
-            <li>Allocate Staff</li>
-            <li>Change Day or Times</li>
+            <li class="listitem"  (click)="AllocateView.next(1)">Un-Allocate Staff</li>
+            <li class="listitem"  (click)="AllocateView.next(2)">Allocate Staff</li>
+            <li class="listitem"  (click)="AllocateView.next(3)"> Change Day or Times</li>
             <hr/>
-            <li>Add NEW Staff Activity / View Shift and Gaps</li>
-            <li>Add NEW Recipient Activity / View Daily Services</li>
-            <li>My Diary / Appointments - Day View</li>
+            <li class="listitem" >Add NEW Staff Activity / View Shift and Gaps</li>
+            <li class="listitem" >Add NEW Recipient Activity / View Daily Services</li>
+            <li class="listitem"  >My Diary / Appointments - Day View</li>
             <hr/>
-            <li>Set Caseload Name</li>
+            <li class="listitem">Set Caseload Name</li>
             <li>Allocate Resource</li>
-            <li>Change <i nz-icon nzType="right" nzTheme="outline"></i>
-                <ul>
+            <li class="listitem">Change <i nz-icon nzType="right" nzTheme="outline"></i>
+                <ul class="listitem">
                     <li (click)="changeModalView.next(1)">Change Output Type</li>
                     <li (click)="changeModalView.next(2)">Change Program</li>
                     <li (click)="changeModalView.next(3)">Change Activity</li>
@@ -50,19 +58,21 @@
                 </ul>
             </li>
             <hr>
-            <li>View <i nz-icon nzType="right" nzTheme="outline"></i>
-                <ul>
-                    <li>View Recipient Details</li>
-                    <li>View Shift/Service Details</li>
-                    <li>View Extra/Additional Info</li>
+            <li class="listitem">View <i nz-icon nzType="right" nzTheme="outline"></i>
+                <ul class="listitem">
+                    <li (click)="ViewDetails.next(1)">View Recipient Details</li>                    
+                    <li (click)="ViewDetails.next(2)">View Staff Details</li>
+                    <li (click)="ViewDetails.next(3)">View Extra/Additional Info</li>
+                    <li (click)="ViewDetails.next(4)">View Shift/Service Details</li>
                 </ul>
             </li>
             <hr>
-            <li>Nudge Up</li>
-            <li>Nudge Down</li>
-            <li>Copy</li>
-            <li>Cut</li>
-            <li>Delete Shift/Service</li>
+            <li class="listitem">Nudge Up</li>
+            <li class="listitem">Nudge Down</li>
+            <li *ngIf="(1>2)" class="listitem" (click)="OperationView.next(1)">Copy</li>
+            <li *ngIf="(1>2)"class="listitem" (click)="OperationView.next(2)">Cut</li>
+            <li class="listitem" (click)="OperationView.next(3)">Make a Copy</li>
+            <li class="listitem" (click)="OperationView.next(4)">Delete Shift/Service</li>
         </ul>
     </div>
     <div *nzModalFooter>
@@ -72,13 +82,102 @@
       </div>
   </nz-modal>
 
+  <nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="ViewAdditionalModal" nzTitle="View Additional Info" (nzOnCancel)="ViewAdditionalModal = false" >
+    <div nz-row>
+        <!-- <div class="form-group" *ngIf="selected?.option === 1"> -->
+           <label for=""> Date: {{date | date : 'dd/MM/yyyy'}}   Start Time: {{defaultStartTime}}  Activity: {{serviceType}}</label>
+           <input type="text" [value]="notes"  style="width:450px; height:200px" id="txtnotes" #box>
+        <!-- </div> -->
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default" (click)="SaveAdditionalInfo(box.value)">Save</button>
+        <button nz-button nzType="default" (click)="ViewAdditionalModal=false">Cancel</button>
+    </div>
+</nz-modal>
 
   
 <nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="recipientDetailsModal" nzTitle="Recipients Details" (nzOnCancel)="recipientDetailsModal = false" >
     <div nz-row>
         sd
     </div>
-    <div *nzModalFooter>
+ <div *nzModalFooter>
         <button nz-button nzType="default" >Cancel</button>
     </div>
   </nz-modal>
+    <nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="show_alert" nzTitle="Alert Staff" (nzOnCancel)="show_alert = false" >
+      
+        <!-- <div class="flexy" style="min-width:21rem; padding-left:20px;">
+            <form [formGroup]="AlertForm" class="form-group">
+         -->
+            <div nz-row >
+                <div nz-col nzSpan="24" style="padding-left: 5px;">                  
+                    <nz-label style="padding: 2px;" >Alert Staff: if Yes: Please review the following message to be sent: </nz-label >              
+                </div>
+            </div>
+        
+            <div nz-row>
+                <div nz-col nzSpan="24" style="padding-top: 10px; padding-left: 5px;" >
+                    <nz-label style="margin-left: 3px;">Subject </nz-label >                                 
+                    <input id="txtSubject"  style="margin-top: 5px;" nz-input [(ngModel)]="txtAlertSubject"/>                       
+                </div>  
+            </div>
+            <div nz-row > 
+            <div nz-col nzSpan="24" style="padding-top: 10px; padding-left: 5px;" > 
+                <nz-label style="margin-left: 3px;" >Message </nz-label >    
+                <textarea id="txtMessage" style="margin-top: 5px; height:200px;" nz-input [(ngModel)]="txtAlertMessage"> </textarea>                 
+               
+            </div>
+        </div>    
+   
+    
+        
+        <div *nzModalFooter>
+                <button nz-button nzType="default"  (click)="generate_alert()">Yes</button>
+                <button nz-button nzType="default"  (click)="show_alert=false">No</button>
+        </div>
+        
+    </nz-modal>
+    <nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="breachRoster" nzTitle="Roster Validation" (nzOnCancel)="breachRoster = false" >
+      
+        <div class="flexy" style="min-height:3rem">
+         
+            <div>
+                <label style="font-size:14px; " > {{Error_Msg}} <br/> Are you sure you want to continue roster addition/change </label>
+               
+            </div>
+        </div>
+   
+    
+    <div *nzModalFooter>
+        <button   nz-button nzType="default"  (click)="ProceedBreachRoster()">Yes</button>
+        <button   nz-button nzType="default"  (click)="Cancel_ProceedBreachRoster()">No</button>
+    </div>
+</nz-modal>
+<nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="AllocateStaffModal" nzTitle="Select Staff from below Staff List" (nzOnCancel)="AllocateStaffModal = false" >
+    <div class="flexy" style="min-height:10rem">
+        <div nz-row>
+            <div nz-col nzSpan="6" style="margin-top: 10px; margin-bottom: 20px; width:400px">
+                <app-search-list [reload]="reloadVal" [view]="1" [(ngModel)]="sample" (ngModelChange)="listChange($event)"></app-search-list>
+            </div>
+            <div>
+                <label *ngIf="selectedCarer" >Re-Allocate Staff : </label>
+                <label  id="lblStaff" >
+                {{selectedCarer}}
+                </label>
+            </div>
+        </div>
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default"  (click)="reAllocate()">Allocate</button>
+        <button nz-button nzType="default"  (click)="AllocateStaffModal=false">Cancel</button>
+    </div>
+</nz-modal>
+<nz-modal [nzStyle]="{ top: '15px' }" [nzWidth]="900" [(nzVisible)]="ViewServiceNoteModal" nzTitle="Service / Shift Notes "   (nzOnCancel)="ViewServiceNoteModal = false" >
+    <div class="flexy" style="min-height:25rem;">
+        <gnotes [user]="Person" [loadNote]="loadingNote" ></gnotes>
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default" (click)="loadNotes()">refresh</button>
+        <button nz-button nzType="default" (click)="ViewServiceNoteModal=false">Cancel</button>
+    </div>
+</nz-modal>

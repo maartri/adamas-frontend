@@ -28,7 +28,7 @@ export class ClinicalMedication implements OnInit, OnDestroy {
     loading: boolean = false;
 
     consentOpen: boolean = false;
-    consentGroup: FormGroup;
+    inputForm: FormGroup;
     medicationList: Array<any> = [];
 
     addOREdit: number;
@@ -74,17 +74,11 @@ export class ClinicalMedication implements OnInit, OnDestroy {
     }
 
     buildForm(){
-        this.consentGroup = this.formBuilder.group({
-            recordNumber: null,
-            personID: null,
-            consent: '',
-            notes: '',
-            expiryDate: null
+        this.inputForm = this.formBuilder.group({
+            recordNumber: '',
+            personID: '',
+            list: '',
          })
-
-        setTimeout(() => {
-            this.consentGroup.controls['consent'].enable();
-        }, 0);
     }
 
     trackByFn(index, item) {
@@ -95,36 +89,25 @@ export class ClinicalMedication implements OnInit, OnDestroy {
         this.search();
     }
 
-    consentProcess(){
-        const group = this.consentGroup.value;
-        // console.log(format(group.expiryDate, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"));
-        // this.competencyGroup.controls['mandatory'].setValue((this.competencyGroup.value.mandatory == null) ? false : this.competencyGroup.value.mandatory)
-        let _consentGroup: Consents = {
-            recordNumber: group.recordNumber,
-            personID: this.user.id,
-            notes: group.notes,
-            date1: group.expiryDate ? group.expiryDate : null,
-            name: group.consent
-        }
-
-        console.log(_consentGroup);
-        // return;
-
+    mediactionProcess(){
+        const group = this.inputForm.value;
+        const {list,recordNumber } = this.inputForm.value;
         if(this.addOREdit == 0){            
-            this.timeS.postconsents(_consentGroup).subscribe(data => {
+            this.timeS.postclinicalmedication({PersonID:this.user.id,Description: list}).subscribe(data => {
                 if(data){
                     this.resetAll();
-                    this.globalS.sToast('Success','Consent Inserted');
+                    this.globalS.sToast('Success','data Inserted');
                     this.handleCancel();
                 }
             })
         }
 
         if(this.addOREdit == 1){
-            this.timeS.updateconsents(_consentGroup).subscribe(data => {
+            this.timeS.updateclinicalmedication({description: list,PersonID:this.user.id,recordNumber:recordNumber
+              },recordNumber).subscribe(data => {
                 if(data){
                     this.resetAll();
-                    this.globalS.sToast('Success','Consent Updated');
+                    this.globalS.sToast('Success','data Updated');
                     this.handleCancel();
                 }
             })
@@ -136,8 +119,6 @@ export class ClinicalMedication implements OnInit, OnDestroy {
         this.buildForm();
         this.consentOpen = true;
         this.listDropDowns();
-
-    
     }
 
     listDropDowns(){
@@ -152,23 +133,19 @@ export class ClinicalMedication implements OnInit, OnDestroy {
         
         this.lists = [data.consent];
 
-        this.consentGroup.patchValue({
+        this.inputForm.patchValue({
             recordNumber: data.recordNumber,
             personID: data.personID,
-            consent: data.consent,
-            notes: data.notes,
-            expiryDate: data.expiryDate
+            list: data.description,
         });
-
-        // this.consentGroup.controls['consent'].disable();
     }
 
     deleteconsent(data: any){
-        this.timeS.deleteconsents(data.recordNumber)
+        this.timeS.deleteclinicalmedication(data.recordNumber)
                     .subscribe(data => {
                         if(data){
                             this.resetAll();
-                            this.globalS.sToast('Success','Consent Deleted')
+                            this.globalS.sToast('Success','Medication Deleted')
                         }
                     })
     }

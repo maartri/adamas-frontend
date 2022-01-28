@@ -56,7 +56,6 @@ export class ClinicalProcedure implements OnInit, OnDestroy {
 
         this.sharedS.changeEmitted$.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (this.globalS.isCurrentRoute(this.router, 'procedure')) {
-                console.log('sasd')
                 this.user = data;
                 this.search(data);
             }
@@ -77,10 +76,6 @@ export class ClinicalProcedure implements OnInit, OnDestroy {
               usercode:'',
               icdcode:'',
             })
-       
-        setTimeout(() => {
-            this.inputForm.controls['consent'].enable();
-        }, 0);
     }
 
     trackByFn(index, item) {
@@ -101,7 +96,7 @@ export class ClinicalProcedure implements OnInit, OnDestroy {
               }).subscribe(data => {
                 if(data){
                     this.resetAll();
-                    this.globalS.sToast('Success','Consent Inserted');
+                    this.globalS.sToast('Success','Procedure Inserted');
                     this.handleCancel();
                 }
             })
@@ -117,7 +112,7 @@ export class ClinicalProcedure implements OnInit, OnDestroy {
               },recordNumber).subscribe(data => {
                 if(data){
                     this.resetAll();
-                    this.globalS.sToast('Success','Consent Updated');
+                    this.globalS.sToast('Success','Procedure Updated');
                     this.handleCancel();
                 }
             })
@@ -127,25 +122,22 @@ export class ClinicalProcedure implements OnInit, OnDestroy {
         this.addOREdit = 0;
         this.buildForm();
         this.consentOpen = true;
-        this.listDropDowns();
+        // this.listDropDowns();
 
     
     }
     listDropDowns(){
         this.listS.getmedicalprocedure(this.user.id).subscribe(data => this.lists = data)
     }
-    updateconsentmodal(data: any){
+    updateprocedure(data: any){
         this.consentOpen = true;
         this.addOREdit = 1;
-
-        this.lists = [data.list];
-
         this.inputForm.patchValue({
             list: data.description,
             icdcode: data.icdcode,
-            usercode:data.code,
             recordNumber: data.recordNumber
         });
+        console.log(data);
     }
 
     deleteconsent(data: any){
@@ -161,11 +153,12 @@ export class ClinicalProcedure implements OnInit, OnDestroy {
     search(user: any = this.user){
         this.cd.reattach();
         this.loading = true;
-        this.listS.getclinicalprocedure(user.id).subscribe(consents => {
+        this.listS.getclinicalprocedure(user.id).subscribe(procedure => {
             this.loading = false;
-            this.procedureList = consents;
+            this.procedureList = procedure;
             this.cd.markForCheck();
-        })        
+        })
+        this.listDropDowns();   
     }
 
     ngOnDestroy(): void {

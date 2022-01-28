@@ -1123,19 +1123,25 @@ export class TimeSheetService {
     deleteclinicalprocedure(id:number):Observable<any>{
         return this.auth.delete(`${timesheet}/clinical/procedure/delete/${id}`)
     }
+    postclinicalmedication(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/clinical/medication/store`,data)
+    }
+    updateclinicalmedication(data: any, id: number): Observable<any> {
+        return this.auth.put(`${timesheet}/clinical/medication/update/${id}`,data)
+    }
+    deleteclinicalmedication(id:number):Observable<any>{
+        return this.auth.delete(`${timesheet}/clinical/medication/delete/${id}`)
+    }
 
     getincidents(name: string): Observable<any> {
         return this.auth.get(`${timesheet}/incidents/${name}`)
     }
-
     getincidentlocation(): Observable<any> {
         return this.auth.get(`${timesheet}/incident/location`)
     }
-
     getdocuments(name: string): Observable<any> {
         return this.auth.get(`${timesheet}/documents/${name}`)
     }
-
     getleaveapplication(name: string): Observable<any> {
         return this.auth.get(`${timesheet}/leaveapplication/${name}`)
     }

@@ -239,7 +239,7 @@ const inputFormDefault = {
         '[style.overflow]': 'hidden'
     },
     styles: [`
-    
+
     
     
         button {
@@ -2073,7 +2073,7 @@ stafftypeArr: Array<any> = constants.types;
 
     handleOk() {
           this.btnid = this.test
-    //    console.log(this.btnid)
+        console.log(this.btnid)
         this.reportRender(this.btnid);
         this.tryDoctype = "";        
         this.btnid = "";

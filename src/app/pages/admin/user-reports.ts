@@ -1691,13 +1691,18 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
         }
         
         //  console.log(event.keys[0])
+        
         if (this.list == null){
           
           this.one  = [event.node.title]
         }
         else{
-          
+         
+          if (this.list.includes(event.node.title.toString())){
+            
+          }else{
           this.one = [ ...this.list  , event.node.title  ]
+          }
           
         }
         
@@ -1723,9 +1728,7 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
         FinalizeArray(node) { 
           this.frm_nodelist = true;  
           this.list = node;
-          
-          
-          
+                              
           this.exportitemsArr = [...this.list,"Service Date", "Service Start Time", "Service Hours", "Service Code", "Service Location/Activity Group", "Service Program", "Service Group", "Service HACCType", "Service Category", "Service Pay Rate", "Service Bill Rate", "Service Bill Qty", "Service Status", "Service Pay Type", "Service Pay Qty", "Service Bill Unit", "Service Funding Source"]
           //this.inputForm.functionsArr
           //.addEventListener('change', SetValueFrame());
@@ -2340,25 +2343,25 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
             break;
             //NOTES
             case 'General Notes':
-                this.ConditionEntity =  ''
+                this.ConditionEntity =  'CONVERT(TEXT, R.[Recipient_Notes]'
                 break;
                 case 'Case Notes Date':
-                this.ConditionEntity =  ''
+                this.ConditionEntity =  'History.[DetailDate]'
                 break;
                 case 'Case Notes Detail':
-                this.ConditionEntity =  ''
+                this.ConditionEntity =  'dbo.RTF2TEXT(History.[Detail])'
                 break;
                 case 'Case Notes Creator':
-                this.ConditionEntity =  ''
+                this.ConditionEntity =  'History.[Creator]'
                 break;
                 case 'Case Notes Alarm':
-                this.ConditionEntity =  ''
+                this.ConditionEntity =  'History.[AlarmDate]'
                 break;
                 case 'Case Notes Program':
-                this.ConditionEntity =  ''
+                this.ConditionEntity =  'History.Program'
                 break;
                 case 'Case Notes Category':
-                this.ConditionEntity =  ''
+                this.ConditionEntity =  'History.ExtraDetail2'
               break;
             //INSURANCE AND PENSION                  
             case 'Medicare Number':

@@ -749,8 +749,17 @@ export class ListService {
     getclinicalnursingdiagnose(personID: string): Observable<any>{
         return this.auth.get(`${list}/clinical/nursingdiagnose/${personID}`)
     }
+    getaddclinicalnursingdiagnose(personID: string): Observable<any>{
+        return this.auth.get(`${list}/clinical/addnursingdiagnose/${personID}`)
+    }
+
+    
+    
     getclinicalmedicationdiagnose(personID: string): Observable<any>{
         return this.auth.get(`${list}/clinical/medicationdiagnose/${personID}`)
+    }
+    getaddclinicalmedicationdiagnose(personID: string): Observable<any>{
+        return this.auth.get(`${list}/clinical/addmedicationdiagnose/${personID}`)
     }
     getclinicalprocedure(personID: string): Observable<any>{
         return this.auth.get(`${list}/clinical/procedure/${personID}`)
@@ -890,6 +899,13 @@ export class ListService {
         return this.auth.get(`${list}/consent/${personId}`)
     }
 
+    getmedicalprocedure(personId: string):Observable<any>{
+        return this.auth.get(`${list}/procedure/${personId}`)
+    }
+
+    getmedication(personId: string):Observable<any>{
+        return this.auth.get(`${list}/medication/${personId}`)
+    }
     getusergroup(personID: string):Observable<any>{
         return this.auth.get(`${list}/group/usergroup/${personID}`)
     }

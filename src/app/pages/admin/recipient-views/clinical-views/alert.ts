@@ -141,7 +141,7 @@ export class ClinicalAlert implements OnInit, OnDestroy {
     }
 
     listDropDowns(){
-        this.listS.getconsents(this.user.id).subscribe(data => this.lists = data)
+        this.listS.getclinicalalert(this.user.id).subscribe(data => this.lists = data)
     }
 
 

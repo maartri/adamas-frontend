@@ -90,6 +90,8 @@ import {
   StaffAdmin,
   TimesheetAdmin,
   ConfigurationAdmin,
+  NDIAAdmin,
+  chspDexAdmin,
   HCPComponent,
   PrintComponent,
   BudgetAdmin, //AHSAN
@@ -744,6 +746,14 @@ const routes: Routes = [
       {
         path: 'configuration',
         component: ConfigurationAdmin
+      },
+      {
+        path: 'ndia',
+        component: NDIAAdmin,
+      },
+      {
+        path: 'chspDex',
+        component:chspDexAdmin,
       },
       {
         path: 'analyse-budget', //AHSAN
@@ -1492,6 +1502,8 @@ export const PAGE_COMPONENTS = [
   StaffAdmin,
   TimesheetAdmin,
   ConfigurationAdmin,
+  NDIAAdmin,
+  chspDexAdmin,
   HCPComponent,
   PrintComponent,
   BudgetAdmin, //AHSAN

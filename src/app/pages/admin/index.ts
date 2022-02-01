@@ -7,6 +7,8 @@ export * from './recipients'
 export * from './reports'
 export * from './user-reports'
 export * from './configuration'
+export * from './ndia'
+export * from './chspDex'
 export * from './billing' //AHSAN
 export * from './timesheet-processing' //AHSAN
 export * from './analyse-budget' //AHSAN

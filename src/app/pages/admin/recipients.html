@@ -62,7 +62,7 @@
                 <nz-tab *ngIf="getPermisson(100) == '1'" nzTitle="Personal" (nzClick)="view(0)"> </nz-tab>
                 <nz-tab *ngIf="getPermisson(101) == '1'" nzTitle="Contacts" (nzClick)="view(1)"> </nz-tab>
                 <nz-tab *ngIf="getPermisson(103) == '1'" nzTitle="Intake Details" (nzClick)="view(2)"></nz-tab>
-                <nz-tab *ngIf="getPermisson(113) == '1'" nzTitle="ONI" (nzClick)="view(17)"> </nz-tab>
+                <nz-tab [nzDisabled]="true" *ngIf="getPermisson(113) == '1'" nzTitle="ONI" (nzClick)="view(17)"> </nz-tab>
                 <nz-tab *ngIf="getPermisson(113) == '1'" nzTitle="Clinical" (nzClick)="view(16)"> </nz-tab>
                 <nz-tab *ngIf="getPermisson(120) == '1'" nzTitle="Reminders" (nzClick)="view(3)"> </nz-tab>
                 <nz-tab *ngIf="getPermisson(121) == '1'" nzTitle="OP Notes" (nzClick)="view(4)"> </nz-tab>

@@ -47,7 +47,7 @@ const inputFormDefault = {
   radiofiletr:['meet'],
   datarow: [[]],  
   
-  drawerVisible:  false,
+  drawerVisible:  false,  
   
   isVisibleprompt : false,
   rptfieldname:0,
@@ -174,6 +174,7 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
   tryDoctype: any;
   pdfTitle: string;
   drawerVisible: boolean ;
+  Applybutton : boolean = true ;
   loading: boolean =  false;
   isVisibleprompt ;
   reportid: string;
@@ -1726,7 +1727,7 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
           });
         }
         FinalizeArray(node) { 
-          this.frm_nodelist = true;  
+          this.frm_nodelist = true;           
           this.list = node;
                               
           this.exportitemsArr = [...this.list,"Service Date", "Service Start Time", "Service Hours", "Service Code", "Service Location/Activity Group", "Service Program", "Service Group", "Service HACCType", "Service Category", "Service Pay Rate", "Service Bill Rate", "Service Bill Qty", "Service Status", "Service Pay Type", "Service Pay Qty", "Service Bill Unit", "Service Funding Source"]
@@ -1734,7 +1735,9 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
           //.addEventListener('change', SetValueFrame());
           
         }
-        
+        EnablerAplyBtn(){
+          this.Applybutton = false;
+        }
         SetValueFrame() {
           if(this.inputForm.value.functionsArr == "BETWEEN")  {
             this.frm_SecondValue = true;
@@ -4312,7 +4315,7 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
             break;
           }
           //  console.log(this.list)
-          this.sqlselect = "Select " + this.ColumnNameAdjuster(this.list)//.join(" as Field"+ this.feildname() +", ")
+          this.sqlselect = "Select Distinct SQLID," + this.ColumnNameAdjuster(this.list)//.join(" as Field"+ this.feildname() +", ")
           
           this.sql = this.sqlselect + this.TablesSetting(this.list);
           this.Saverptsql = this.sqlselect + this.TablesSetting(this.list) ;

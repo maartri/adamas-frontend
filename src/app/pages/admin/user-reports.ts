@@ -148,7 +148,7 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
   condition:Array<any>;
   value:Array<any>;
   titleArr :Array<any>;
-  Filterheck : boolean;
+  Filterheck : boolean = true;
   Endvalue :Array<any>; // = ['title','ASAD','key']
   //data : Array<any> ;= [{'title':'ASAD','key':'00'},{'title':'ASAD','key':'01'},{'title':'ASAD','key':'02'}]
   exportitemsArr: Array<any>;
@@ -4346,7 +4346,7 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
           this.ReportPreview = true;
           this.QueryFormation();
           this.tryDoctype = "";
-          console.log(this.RptFormat.toString())
+          //console.log(this.RptFormat.toString())
           //  if(this.sqlcondition != null || this.sqlcondition != undefined){
           this.ReportRender(this.sql);
           //  console.log(this.sql)
@@ -4498,8 +4498,8 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
           var Title = "User Defined Report"
           //    console.log(this.tocken.user)
           const data = {
-            "template": { "_id": "x8QVE8KhcjiJvD6c" },
-            //"template": { "_id": "qTQEyEz8zqNhNgbU" },
+            "template": { "_id": "qTQEyEz8zqNhNgbU" },
+            //"template": { "_id": "x8QVE8KhcjiJvD6c" },
             //{"shortid":"w1Vify0-uA"}, //
             "options": {
               "reports": { "save": false },

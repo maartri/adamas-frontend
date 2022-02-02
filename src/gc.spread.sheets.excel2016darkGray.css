@@ -45,8 +45,8 @@
   
   .gc-selection {
     background-color: rgba(20, 20, 20, 0.2);
-    border-color: #46129b;
-    color: rgba(240, 240, 240, 0.7);
+    border-color: #3a2a66;
+    color: rgba(38, 37, 100, 0.7);
   }
   
   .gc-drag-indicator {
@@ -2178,7 +2178,7 @@
   
   div[gcUIElement="gcSpread"] .gc-calculator-container .gc-calculator .gc-sub-menu .gc-row .gc-operation:active,
   div[gcUIElement="gcSpread"] .gc-calculator-container .gc-calculator .gc-main-menu .gc-row .gc-operation:active {
-    background: rgba(52, 152, 219, 0.79);
+    background: rgba(76, 66, 170, 0.79);
   }
   
   div[gcUIElement="gcSpread"] .gc-calculator-container .gc-calculator .gc-sub-menu .gc-row .gc-number,

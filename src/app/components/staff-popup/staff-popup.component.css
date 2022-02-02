@@ -1,6 +1,10 @@
 nz-select{
     width: 15rem;
 }
+.disabled{
+    pointer-events:none;
+  
+  }
 i{
     margin-left:10px;
     border-radius:50%;

@@ -1,10 +1,10 @@
-<nz-select nzShowSearch nzAllowClear nzPlaceHolder="" [(ngModel)]="selectedValue" (ngModelChange)="ngModelChange($event)" (nzOnSearch)="nzOnSearch($event)">
+<nz-select nzShowSearch nzAllowClear nzPlaceHolder="" [nzDisabled]="disabled" [(ngModel)]="selectedValue" (ngModelChange)="ngModelChange($event)" (nzOnSearch)="nzOnSearch($event)">
     <nz-option *ngIf="!isDataLoaded" [nzLabel]="selectedValue"></nz-option>
     <nz-option *ngFor="let list of selectList" [nzLabel]="list.accountNo" [nzValue]="list.accountNo"></nz-option>
 </nz-select>
-<i nz-icon (click)="openModal()" nzType="more" nzTheme="outline"></i>
+<i nz-icon (click)="openModal()" [class.disabled]="disabled"  nzType="more" nzTheme="outline"></i>
 
-<nz-modal [nzStyle]="{ top: '20px' }" [nzWidth]="1200" [(nzVisible)]="isVisible" nzTitle="Staff List" [nzFooter]="modalFooter" (nzOnCancel)="handleCancel()">
+<nz-modal [nzStyle]="{ top: '20px' }"  [nzWidth]="1200" [(nzVisible)]="isVisible" nzTitle="Staff List" [nzFooter]="modalFooter" (nzOnCancel)="handleCancel()">
     <div nz-row nzGutter="16">
 
         <div nz-col nzSpan="15">

@@ -770,6 +770,9 @@ export class ListService {
     getclinicalreminder(personID: string): Observable<any>{
         return this.auth.get(`${list}/clinical/reminder/${personID}`)
     }
+    getreminders(personID: string): Observable<any>{
+        return this.auth.get(`${list}/clinical-reminders/${personID}`)
+    }
     getclinicalalert(personID: string): Observable<any>{
         return this.auth.get(`${list}/clinical/alert/${personID}`)
     }

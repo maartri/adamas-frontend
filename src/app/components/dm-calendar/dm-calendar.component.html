@@ -1,32 +1,38 @@
 <div class="daymanager-wrapper">
+    <!-- <div class="div-resizable">
+        <p>Let the user resize only the width of this div element.</p>
+        <p>To resize: Click and drag the bottom right corner of this div element.</p>
+    </div> -->
     <div class="header-wrapper" [class.fixed]="fixedHeader">
         <h3 class="date-month-name noselect header-wrapper">
             <i class="material-icons left" (click)="previousDate()"> keyboard_arrow_left
             </i>{{ startDate | date: 'MMMM yyyy' }}
             <i class="material-icons right" (click)="futureDate()"> keyboard_arrow_right </i>
         </h3>
+       
         <div class="date-wrapper"  >
-            <div *ngFor="let day of days" class="cell" [class.five]="dayView == 5" [class.seven]="dayView == 7"
-                [class.ten]="dayView == 10" [class.fourteen]="dayView == 14" >
+            <div *ngFor="let day of days; let col=index" class="cell" [class.five]="dayView == 5" [class.seven]="dayView == 7"
+                [class.ten]="dayView == 10" [class.fourteen]="dayView == 14" [class.col-highlght]="HighlightColum_index==col">
                 
-                <div class="date-wrapper" [class.dateweekend]="(day| date: 'EEE') == 'Sat' || (day| date: 'EEE') == 'Sun'" >
-                    <div *ngIf="day == null" class="x-cancel">
+                <div  [class.date-wrapper]="HighlightColum_index<0" (click)="HighlightColum(col)"    [class.dateweekend]="((day| date: 'EEE') == 'Sat' || (day| date: 'EEE') == 'Sun') && HighlightColum_index!=col" 
+                 [class.col-highlght]="HighlightColum_index==col">
+                    <div *ngIf="day == null" class="x-cancel" >
                         <span *ngIf="akonani?.length > 0">{{ akonani?.length }} selected</span>
                     </div>
-                    <div *ngIf="day" class="calendar-dates" >
+                    <div *ngIf="day" class="calendar-dates"  >
                         <!-- ng-style ="{ ' background-color' : (Weekday(day)=='sat')? '#73c7af' : '#ffffff' }" -->
-                        <div > 
-                            <h5 >{{ day | date: 'MMM dd' }}</h5>
+                        <div style="font-size:13px; padding: 5px;"> 
+                            <span >{{ day | date: 'MMM dd' }}</span>
                         </div>
-                        <div><span style="font-size:12px; ">{{ day | date: 'EEE' }}</span></div>
+                        <div style="font-size:13px; "><span >{{ day | date: 'EEE' }}</span></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <ng-container *ngIf="!loading">
-        <div class="body-wrapper noselect" *ngFor="let data of daymanager">
-            <ng-container *ngFor="let day of days; let i = index">
+        <div class="body-wrapper noselect"  *ngFor="let data of daymanager">
+            <ng-container *ngFor="let day of days; let i = index" >
                 <div class="cell" [attr.date]="day" [class.roster-container]="i > 0" [class.five]="dayView == 5"
                     [class.seven]="dayView == 7" [class.ten]="dayView == 10" [class.fourteen]="dayView == 14"
                     (mousedown)="deselect(null,$event)" (drop)="drop($event);$event.stopPropagation()"
@@ -38,21 +44,24 @@
                         </div>
                         <div style="font-size:10px;">{{ data?.value[0].staffCategory}}</div>
                     </div>
-                    <ng-container *ngIf="i > 0">
-                        <ng-container *ngFor="let value of data.value | dmz: day ">
+                    <ng-container *ngIf="i > 0" >
+                        <ng-container *ngFor="let value of data.value | dmz: day;  " >
                             <div class="data" *ngIf="!value.isLast && !value.isNone"
                                 (dragstart)="dragStart($event,value)" (dragend)="dragEnd($event)"
                                 (dblclick)="mousedblclick($event,value)"
                                 (mouseenter)="mouseenter($event, value)"
-                                (mousedown)="mousedown($event,value)" (mousemove)="mousemove($event,value)"
-                                [class.selected]="value.isSelected">
+                                (mousedown)="mousedown($event,value)" 
+                                [class.selected]="value.isSelected"
+                                [class.highlight]="HighlightColum_index==i">
 
                                 <!--
+                                    (mousemove)="mousemove($event,value)"
+
                                     (dblclick)="showDetail.emit(value)" 
                                     <div class="approve-logo"><i class="material-icons" *ngIf="value.status == '2'"> done
                                     </i>
                                 </div> -->
-                                <div [class.icon2]="dayView >= 10">
+                                <div [class.icon2]="dayView >= 10" >
                                     <!--  <div class="service-logo" [style.background-position]="getPositionImg(value)"> -->
                                 
                                     <i nz-icon *ngIf="value.type==1" [nzType]="'question-circle'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
@@ -70,17 +79,19 @@
                                     <i nz-icon *ngIf="value.type==13" [nzType]="'minus-circle'" [nzTheme]="'outline'"  class="icon"></i>
                                     <i nz-icon *ngIf="value.type==14" [nzType]="'calendar-circle'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
                                     
-                                    <strong >{{ value.startTime}}-{{ value.endTime }}</strong>
+                                    <strong title="{{ value.startTime}}-{{ value.endTime }}">{{ value.startTime}}-{{ value.endTime }}</strong>
                                       
-                                    <i class="material-icons option showOption icon" option-click
+                                    <i class="material-icons option showOption icon" option-click 
                                         (mousedownEmit)="mouseEmitter(value)" (click)="optionEmitter(value)"> more_horiz
                                     </i>
                                 </div>
-                                <div class="details">{{ value.recipient}} * {{ value.activity}}</div>
+                                <div class="details" title="{{ value.recipient}} * {{ value.activity}} * {{value.notes.toUpperCase()}}"   [class.detail-more]="selectedRecordNo==value.recordno" ngbTooltip="I am Bootstrap Tooltip"
+                                (click)="viewText(value)">{{ value.recipient}} * {{ value.activity}} * {{value.notes.toUpperCase()}} </div>
                             </div>
                             <div class="data total" *ngIf="value.isLast && !value.isNone">
                                 <span>Total Hours: {{ value.total | number: '1.2-2'}} </span>
                             </div>
+                        
                         </ng-container>
                     </ng-container>
                 </div>

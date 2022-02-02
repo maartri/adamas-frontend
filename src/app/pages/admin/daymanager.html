@@ -1,9 +1,10 @@
 <div nz-row>
     <div style="padding:8px" >
+       
         <div nz-row class="dm-input">
             <div nz-col nzSpan="5">
                 <label for="date"> Date</label>
-                <nz-date-picker [(ngModel)]="date"></nz-date-picker>
+                <nz-date-picker nzMode="default" [nzFormat]="dateFormat" [(ngModel)]="date"></nz-date-picker>
             </div>
             <div nz-col nzSpan="5">
                 <label for="dayview">Day View</label>
@@ -11,7 +12,10 @@
                     <nz-option *ngFor="let no of dayViewArr" [nzValue]="no" [nzLabel]="no"></nz-option>
                 </nz-select>
             </div>
+            
         </div>
+    
+       
     </div>
     <div>
         <dm-calendar [startDate]="date" [dayView]="dayView" [reload]="reload"  [copyPaste]="toBePasted?.length > 0"
@@ -174,10 +178,10 @@
 </nz-modal>
 <nz-modal [nzStyle]="{ top: '15px' }" [nzWidth]="900" [(nzVisible)]="ViewServiceNoteModal" nzTitle="Service / Shift Notes "   (nzOnCancel)="ViewServiceNoteModal = false" >
     <div class="flexy" style="min-height:25rem;">
-        <gnotes [user]="Person" [loadNote]="loadingNote" ></gnotes>
+        <gnotes #gn [user]="Person" [loadNote]="loadingNote" ></gnotes>
     </div>
     <div *nzModalFooter>
-        <button nz-button nzType="default" (click)="loadNotes()">refresh</button>
+        <button nz-button nzType="default" (click)="gn.search(Person)">Refresh</button>
         <button nz-button nzType="default" (click)="ViewServiceNoteModal=false">Cancel</button>
     </div>
 </nz-modal>

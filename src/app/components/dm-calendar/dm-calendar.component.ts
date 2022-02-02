@@ -25,6 +25,29 @@ const enum ImageActivity {
   Unavailable = 'UNAVAILABLE'
 }
 
+function makeResizableDiv(div) {
+  const element = document.querySelector(div);
+  const resizers = document.querySelectorAll(div + ' .resizer')
+  for (let i = 0;i < resizers.length; i++) {
+    const currentResizer = resizers[i];
+    currentResizer.addEventListener('mousedown', function(e) {
+      e.preventDefault()
+      window.addEventListener('mousemove', resize)
+      window.addEventListener('mouseup', stopResize)
+    })
+    
+    function resize(e) {
+      if (currentResizer.classList.contains('bottom-right')) {
+        element.style.width = e.pageX - element.getBoundingClientRect().left + 'px'
+      }
+    }
+    
+    function stopResize() {
+      window.removeEventListener('mousemove', resize)
+    }
+  }
+}
+
 @Component({
   selector: 'dm-calendar',
   templateUrl: './dm-calendar.component.html',
@@ -60,7 +83,10 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
   daymanager: Array<any> = [];
 
   loading: boolean = false;
+  HighlightColum_index:number=-1;
   
+  selectedRecordNo:string;
+
   constructor(
     private timeS: TimeSheetService,
     private elem: ElementRef,
@@ -84,19 +110,34 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
           this.akonani.push(data);
       });
   }
-
+ textValue:string='';
+  viewText(value:any){
+    this.textValue=value.recipient +' ' + value.activity;
+    if (this.selectedRecordNo==value.recordno)
+      this.selectedRecordNo="0";
+    else
+      this.selectedRecordNo=value.recordno;
+  }
+ 
+ 
   ngOnInit() {
+    let panel:any=document.getElementById("panel")
     this.days = this.calculateDays(this.startDate, this.dayView);
     this.reload.subscribe(v => { 
       this.alertChange();
      // this.reload.next(false);
     });
+    makeResizableDiv(panel);
   }
 
   private elemMouseUp;
   private documentMouseUp;
- 
 
+panel:any  ; 
+
+HighlightColum(indx:number){
+  this.HighlightColum_index=indx;
+}
   ngOnDestroy() {
     this.paramsSubscription$.unsubscribe();
     this.document.removeEventListener('mouseup', this.documentMouseUp, false);
@@ -106,12 +147,14 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
 
   ngAfterViewInit() {
     this.cd.reattach();
-
+   
     this.ngZone.runOutsideAngular(() => {
 
       this.elemMouseUp = (event) => {
         event.stopPropagation();
         this.isClicked = false;
+        
+        this.HighlightColum_index=-1
         this.highlighted.emit(this.akonani);
       }
 
@@ -127,9 +170,20 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
      
       
       // Will stop highlighting other rosters if mouseup event happened outside of the desired ELEMENT Component
-      this.document.addEventListener('mouseup', this.documentMouseUp, false)
+      // this.document.addEventListener('mouseup', this.documentMouseUp, false)
       
-
+      // this.panel.addEventListener("mousedown", function(e){
+      //   if (e.offsetX < BORDER_SIZE) {
+      //     m_pos = e.x;
+      //     document.addEventListener("mousemove", resize, false);
+      //   }
+      //  }, false);
+       
+      //  document.addEventListener("mouseup", function(){
+      //     document.removeEventListener("mousemove", resize, false);
+      //  }, false);
+       
+      
     });
 
     this.cd.detectChanges();
@@ -166,6 +220,7 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
       }
     }
   }
+
 
   showOptionEvent(value: any): void {
 
@@ -258,10 +313,39 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
     if (activity.indexOf(ImageActivity.Laundry) !== -1) return ImagePosition.LaundryService;
   }
 
+  getMondayDate(date: any){
+    let temp:any=date;
+    let indx=5;
+    let dd=new Date(temp).getDay();
+    while(indx>0 && dd!=1){
+    
+        temp = moment(temp).add('day', -1);
+        dd=new Date(temp).getDay();
+        indx=indx-1;
+    }
+    if (dd!=1){
+      temp = date;
+      indx=6    
+      dd=new Date(temp).getDay();
+      while(indx>0 && dd!=1){   
+
+        temp = moment(temp).add('day', 1);
+        dd=dd=new Date(temp).getDay();
+        indx=indx-1;
+      }
+    }
+    return temp;
+  }
   calculateDays(date: any, dayView: number) {
-    let temp = date;
+  
+    let dd=new Date(date).getDay();
+    date = moment(date).add('day', 1-dd);
+    this.startDate=date;
+    let temp:any=date;
     let tempArr: Array<any> = [];
     tempArr.push(null);
+    
+
     for (var a = 0; a < dayView; a++) {
       tempArr.push(temp);
       temp = moment(temp).add('day', 1);
@@ -319,6 +403,7 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
   mousedown(event: any, data: any) {
     event.preventDefault();
     event.stopPropagation();
+    this.HighlightColum_index=-1
 
     this.isClicked = true;
     this.coordinates = {
@@ -330,6 +415,8 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
   mousedblclick(event: any, value: any) {
     event.preventDefault();
     event.stopPropagation();
+    
+    this.HighlightColum_index=-1
 
     this.isClicked = true;
     this.coordinates = {

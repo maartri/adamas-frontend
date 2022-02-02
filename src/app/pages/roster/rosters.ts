@@ -276,7 +276,8 @@ searchAvaibleModal:boolean=false;
     showDate:boolean=false;
     monthFormat:string="MMM yyyy"
     CalendarMode:any='month'
-    
+    HighlightColum_index:number=-1;
+
     enable_buttons :boolean=false;
     isPaused:boolean;    
     private picked$: Subscription;   

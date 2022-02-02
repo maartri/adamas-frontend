@@ -1,3 +1,15 @@
+.div-resizable {
+    border: 2px solid;
+    border-color: #fff;
+    resize: horizontal;
+    overflow: auto;
+    display: flex; 
+    flex-direction: row; 
+    justify-content: space-around;
+    line-height: 20px;
+    color:#fff;
+    background-color: #002060;
+  }
 .daymanager-wrapper{
     box-shadow:-1px 6px 6px 0px rgba(138,138,138,1);
     display: flex;
@@ -6,6 +18,7 @@
     width: 98%; 
     margin: 0 auto;
     background: #fff;
+    
 }
 .calendar-dates{
     line-height: 10px;
@@ -66,6 +79,28 @@
     line-height:16px;
     font-size:10px;
     position: relative;
+   
+    width: auto;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis
+}
+
+.detail-more{
+    color: #000;
+    font-weight: 500;
+    line-height:16px;
+    font-size:10px;
+    position: relative;   
+    width: auto; 
+    height: auto;
+   
+    white-space: break-spaces;
+    overflow: unset;
+    /* text-overflow: initial;
+    overflow-wrap: break-word;
+    word-break: break-all;
+    word-break:auto; */
 }
 
 .header-wrapper{
@@ -85,6 +120,7 @@
     display: flex;
     width: 100%;
     border-bottom: 1px solid #fff;
+    
 }
 .body-wrapper:nth-child(even){
     background:#e4edee;
@@ -107,15 +143,24 @@
 
 .seven{
     width:12.5%;
+    resize: horizontal;
+    overflow: auto;
+   
 }
 .five{
     width:16.66%;
+    resize: horizontal;
+    overflow: auto;
 }
 .ten{
     width:9.09%;
+    resize: horizontal;
+    overflow: auto;
 }
 .fourteen{
     width:6.66%;
+    resize: horizontal;
+    overflow: auto;
 }
 .data{
     position:relative;
@@ -127,6 +172,10 @@
     border: 1px solid #85B9D5;
     background: #fff;
     color:#fff(158, 17, 17)
+}
+.highlight{
+    background:#dae8f0;
+    color:#000;
 }
 .total{
     background:#002060;
@@ -174,22 +223,32 @@ i.option{
     z-index: 10;
     top: 6rem;
 }
+.col-highlght{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    line-height: 20px;
+    color:#000;
+    font-size: 13px;
+    background-color: #dae8f0;
+   
+    
+}
 .date-wrapper{
     display: flex;
     flex-direction: row;
     justify-content: space-around;
     line-height: 20px;
     color:#fff;
-    background-color: #002060
-    
-}
+    background-color: #002060;
+   }
 .dateweekend{
     display: flex;
     flex-direction: row;
     justify-content: space-around;
     line-height: 20px;
-    background-color: #F18805
-    
+    background-color: #F18805;
+   
 }
 
 .date-month-name{

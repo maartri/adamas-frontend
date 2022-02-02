@@ -7,6 +7,7 @@ import {ShiftDetail} from '../roster/shiftdetail'
 
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { ThrowStmt } from '@angular/compiler';
+import { BrowserModule } from '@angular/platform-browser';
 
 class Address {
     postcode: string;
@@ -95,6 +96,21 @@ class Address {
         background-color: #fff;
     }
     
+    .resizable {
+        background: white;
+        width: 100px;
+        height: 100px;
+        position: absolute;
+        top: 100px;
+        left: 100px;
+      }
+
+      .resizable .resizers{
+        width: 100%;
+        height: 100%;
+        border: 3px solid #4286f4;
+      }
+      
     `],
     templateUrl: './daymanager.html'
 })
@@ -104,7 +120,7 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
     date: any = new Date();
     defaultStartTime:string;
     serviceType:string;
-
+    dateFormat:string="dd/MM/YYYY"
     dayView: number = 7;
     dayViewArr: Array<number> = [5, 7, 10, 14];
     //reload: boolean = false;
@@ -171,16 +187,7 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
                 this.loadNotes();
                
         }
-            // // console.log(data);
-            // this.user = {
-            //     name: this.selectedOption.Recipient,
-            //     code: this.selectedOption.uniqueid,
-            //     startDate: '2019/01/15',
-            //     endDate: '2019/01/29'
-            // }            
-            // // this.tabvrd = data;
-            // this.optionsModal=false;
-            // this.recipientDetailsModal = true;
+           
         });
 
         this.changeModalView.subscribe(data => {

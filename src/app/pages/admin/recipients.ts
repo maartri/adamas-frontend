@@ -29,6 +29,7 @@ import { FormBuilder, Validators } from '@angular/forms';
     background: #85B9D5;
     color: #fff;
   }
+  
   ul{
     list-style:none;
     float:right;

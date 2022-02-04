@@ -37,7 +37,7 @@
             </button>
         </div>
         <div nz-row style="margin-top: 40px; text-align:center;">
-            <button nz-button nzType="default"
+            <button nz-button nzType="default" (click)="view(1)"
                 style="font-size: 10pt; width: 10PC; border: solid; border-color: #A4A4A4; border-width: 2px;">
                 Analyse
             </button>
@@ -430,21 +430,13 @@
                 </nz-row>
             </div>
             <div nz-col nzSpan="5" style="width: 18.7%; border: solid; border-color: #A4A4A4; border-width: 2px;">
-                <div nz-row style="margin-top: 2px;">
-                    <nz-progress [nzPercent]="75" nzType="dashboard"></nz-progress>
+                <div nz-row style="margin-top: 2pc; text-align: center;">
+                    <nz-progress [nzPercent]="staffUtilize" [nzStrokeWidth]="14" nzType="circle">
+                    </nz-progress>
                 </div>
                 <div nz-row style="margin-top: 2px;">
-                    <label style="text-align: right; margin-right: 3px; margin-top: 8px;"> % Staff Utilization</label>
+                    <label style="text-align: center; margin-right: 3px; margin-top: 8px;"> % Staff Utilization</label>
                 </div>
-                <!-- <nz-row style="margin-top: 2px;">
-                    <div nz-col nzSpan="14">
-                        <label style="text-align: right; margin-right: 3px; margin-top: 8px;"> % Staff Utilization
-                        </label>
-                    </div>
-                    <div nz-col nzSpan="10">
-                        <nz-progress [nzPercent]="75" nzType="dashboard"></nz-progress>
-                    </div>
-                </nz-row> -->
             </div>
         </div>
     </div>

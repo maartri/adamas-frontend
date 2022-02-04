@@ -5193,7 +5193,52 @@ th.action{
     border-color: #d9d9d9;
     cursor:not-allowed;
 }
-      
+.pos-left{
+    float:left;
+}
+.pos-right{
+    float:right;
+}
+/* Style the form - display items horizontally */
+.form-inline {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+  }
+/* Add some margins for each label */
+.form-inline label {
+    margin: 5px 10px 5px 0;
+    width: 10rem;
+  }
+/* Style the input fields */
+.form-inline input {
+    vertical-align: middle;
+    margin: 5px 10px 5px 0;
+    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+  }
+/* Style the submit button */
+.form-inline button {
+    padding: 10px 20px;
+    background-color: dodgerblue;
+    border: 1px solid #ddd;
+    color: white;
+  }
+.form-inline button:hover {
+    background-color: royalblue;
+  }
+/* Add responsiveness - display the form controls vertically instead of horizontally on screens that are less than 800px wide */
+@media (max-width: 800px) {
+    .form-inline input {
+      margin: 10px 0;
+    }
+  
+    .form-inline {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
 /**
  ****************************
  * Generic Styles
@@ -6519,7 +6564,7 @@ ag-grid, ag-grid-angular, ag-grid-ng2, ag-grid-polymer, ag-grid-aurelia {
     background-color: #6a6a6a;
   }
 .gc-corner-normal {
-    background-color: #6a6a6a;
+    background-color: #002060;
   }
 .gc-rowHeaderFill {
     background-color: #e4ecf7;
@@ -6535,8 +6580,8 @@ ag-grid, ag-grid-angular, ag-grid-ng2, ag-grid-polymer, ag-grid-aurelia {
   }
 .gc-selection {
     background-color: rgba(20, 20, 20, 0.2);
-    border-color: #217346;
-    color: rgba(240, 240, 240, 0.7);
+    border-color: #3a2a66;
+    color: rgba(38, 37, 100, 0.7);
   }
 .gc-drag-indicator {
     border-color: #217346;
@@ -6614,7 +6659,7 @@ ag-grid, ag-grid-angular, ag-grid-ng2, ag-grid-polymer, ag-grid-aurelia {
 .gc-columnHeader-hover {
     color: #ffffff;
     background-image: none;
-    background-color: #1f224e;
+    background-color: #85B9D5;
     border-style: solid;
     border-left-color: #9c9c9c !important;
     border-right-color: #d2d2d2 !important;
@@ -6622,7 +6667,7 @@ ag-grid, ag-grid-angular, ag-grid-ng2, ag-grid-polymer, ag-grid-aurelia {
   }
 .gc-columnHeader-selected {
     color: #ffffff;
-    background-color: #217346;
+    background-color: #85B9D5;
     background-image: none;
     border-style: solid;
     border-left-color: #9c9c9c !important;
@@ -6630,26 +6675,27 @@ ag-grid, ag-grid-angular, ag-grid-ng2, ag-grid-polymer, ag-grid-aurelia {
     border-bottom-color: #999999 !important;
   }
 .gc-columnHeader-highlight {
-    color: #ffffff;
+    color: #ffffff;    
     background-image: none;
-    background-color: #c2c2da;
+    background-color: #85B9D5;
     border-style: solid;
     border-left-color: #9c9c9c !important;
     border-right-color: #d2d2d2 !important;
     border-bottom-color: #999999 !important;
   }
 .gc-columnHeader-normal {
-    color: #ffffff;
+    color: #eaeef1;
     background-image: none;
-    background-color: #6a6a6a;
+    background-color: #8090b0;
     border-style: solid;
     border-left-color: #9c9c9c !important;
     border-right-color: #d2d2d2 !important;
     border-bottom-color: #999999 !important;
+    padding-left: auto;
   }
 .gc-rowHeader-hover {
     color: #ffffff;
-    background-color: #271b5e;
+    background-color: #f9cf9b;
     background-image: none;
     border-style: solid;
     border-top-color: #9c9c9c !important;
@@ -6658,7 +6704,7 @@ ag-grid, ag-grid-angular, ag-grid-ng2, ag-grid-polymer, ag-grid-aurelia {
   }
 .gc-rowHeader-selected {
     color: #ffffff;
-    background-color: #217346;
+    background-color: #f9cf9b;
     background-image: none;
     border-style: solid;
     border-top-color: #9c9c9c !important;
@@ -6667,7 +6713,7 @@ ag-grid, ag-grid-angular, ag-grid-ng2, ag-grid-polymer, ag-grid-aurelia {
   }
 .gc-rowHeader-highlight {
     color: #ffffff;
-    background-color: #c2c2da;
+    background-color: #f9cf9b;
     background-image: none;
     border-style: solid;
     border-top-color: #9c9c9c !important;
@@ -6676,7 +6722,7 @@ ag-grid, ag-grid-angular, ag-grid-ng2, ag-grid-polymer, ag-grid-aurelia {
   }
 .gc-rowHeader-normal {
     color: #ffffff;
-    background-color: #6a6a6a;
+    background-color: #f0e4e4;
     background-image: none;
     border-style: solid;
     border-top-color: #9c9c9c !important;
@@ -6690,7 +6736,7 @@ ag-grid, ag-grid-angular, ag-grid-ng2, ag-grid-polymer, ag-grid-aurelia {
     /* For old Opera (11.1 to 12.0) */
     background-image: linear-gradient(to bottom, #f0f0f0, #f0f0f0);
     /* Standard syntax; must be last */
-    background-color: #f0f0f0;
+    background-color: #F18805;
     border-style: solid;
     border-left-color: #999999 !important;
     border-right-color: #d3d3d3 !important;
@@ -7419,7 +7465,7 @@ a.gc-filter-check:hover {
     box-shadow: rgba(0, 0, 0, 0.4) 1px 2px 5px;
     font-family: "Segoe UI", Calibri, Thonburi, Arial, Verdana, sans-serif, "Mongolian Baiti", "Microsoft Yi Baiti", "Javanese Text";
     font-size: 9pt;
-    background: #f0f0f0;
+    background: #fcf9f9;
     border: 1px solid #ACACAC;
     color: #444444;
     cursor: default;
@@ -8297,7 +8343,7 @@ div[gcUIElement="gcSpread"] .gc-calculator-container .gc-calculator .gc-sub-menu
   }
 div[gcUIElement="gcSpread"] .gc-calculator-container .gc-calculator .gc-sub-menu .gc-row .gc-operation:active,
   div[gcUIElement="gcSpread"] .gc-calculator-container .gc-calculator .gc-main-menu .gc-row .gc-operation:active {
-    background: rgba(52, 152, 219, 0.79);
+    background: rgba(76, 66, 170, 0.79);
   }
 div[gcUIElement="gcSpread"] .gc-calculator-container .gc-calculator .gc-sub-menu .gc-row .gc-number,
   div[gcUIElement="gcSpread"] .gc-calculator-container .gc-calculator .gc-main-menu .gc-row .gc-number {

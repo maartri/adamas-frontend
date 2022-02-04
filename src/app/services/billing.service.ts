@@ -175,4 +175,29 @@ export class BillingService {
     getActivePeriodTeams(data: any):Observable<any>{
         return this.auth.post(`${billing}/getActivePeriodTeams`, data);
     }
+
+    //Output Hours
+    getOutputHours(data: any):Observable<any>{
+        return this.auth.post(`${billing}/getOutputHours`, data);
+    }
+
+    //Worked Hours
+    getWorkedHours(data: any):Observable<any>{
+        return this.auth.post(`${billing}/getWorkedHours`, data);
+    }
+
+    //Worked Attribute Hours
+    getWorkedAttributeHours(data: any):Observable<any>{
+        return this.auth.post(`${billing}/getWorkedAttributeHours`, data);
+    }
+
+    //Total Staff
+    getTotalStaff(data: any):Observable<any>{
+        return this.auth.post(`${billing}/getTotalStaff`, data);
+    }
+
+    //Total Recipient
+    getTotalRecipient(data: any):Observable<any>{
+        return this.auth.post(`${billing}/getTotalRecipient`, data);
+    }
 }

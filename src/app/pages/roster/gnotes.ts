@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
+import { Component, OnInit, OnDestroy, Input,Output,EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef,AfterViewInit } from '@angular/core'
 
 import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, ClientService } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
@@ -8,6 +8,7 @@ import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, Con
 
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { Filters } from '@modules/modules';
+import { values } from 'lodash';
 
 @Component({
     styles: [`
@@ -45,10 +46,12 @@ import { Filters } from '@modules/modules';
 })
 
 
-export class GNotes implements OnInit, OnDestroy {
+export class GNotes implements OnInit, OnDestroy, AfterViewInit {
     private unsubscribe: Subject<void> = new Subject();
   //  user:any;
     @Input() user:any;    
+    @Input() loadNote: Subject<any>;
+    
     inputForm: FormGroup;
     caseFormGroup: FormGroup;
     tableData: Array<any>;
@@ -117,13 +120,19 @@ export class GNotes implements OnInit, OnDestroy {
 
     ngOnInit(): void {
      
-        //  this.user = this.sharedS.getPicked();
-        
-
-         this.search(this.user);
+        //  this.user = this.sharedS.getPicked();     
+                
+          this.search(this.user);
         this.buildForm();
+        this.loadNote.subscribe(d=>{
+            this.search(d);
+        })
+        
     }
 
+    ngAfterViewInit(){
+      
+    }
     print(){
 
     }
@@ -224,7 +233,8 @@ export class GNotes implements OnInit, OnDestroy {
             discipline: '*VARIOUS',
             careDomain: '*VARIOUS',
             category: ['', [Validators.required]],
-            recordNumber: null
+            recordNumber: null,
+            type:"CASENOTE"
         });
 
         this.caseFormGroup.get('restrictionsStr').valueChanges.subscribe(data => {
@@ -281,6 +291,7 @@ export class GNotes implements OnInit, OnDestroy {
         this.caseFormGroup.controls["alarmDate"].setValue(cleanDate);
         this.caseFormGroup.controls["whocode"].setValue(this.user.code);
         this.caseFormGroup.controls["restrictions"].setValue(restricts ? '' : this.listStringify());
+        this.caseFormGroup.controls["type"].setValue(this.user.noteType);
 
         this.loading = true;
         if (this.addOrEdit == 1) {    

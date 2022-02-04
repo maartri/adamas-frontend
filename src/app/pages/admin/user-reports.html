@@ -32,7 +32,7 @@
             <div nz-row class="margin">
                 <div nz-col nzSpan="10" >
                     <div class="form-group" [formGroup]="inputForm">                                                                     
-                        <nz-select formControlName="exportitemsArr"   >
+                        <nz-select formControlName="exportitemsArr"  (ngModelChange)= "EnablerAplyBtn()" >
                             <nz-option *ngFor="let option of exportitemsArr" [nzLabel]="option" [nzValue]="option"></nz-option> 
                         </nz-select>                             
                     </div>
@@ -70,7 +70,7 @@
                     </div> 
                 </div>
                 <div>
-                    <button nzType="default" class="btn" (click)="apply()">Apply</button>
+                    <button nzType="default" class="btn" (click)="apply()" [disabled] = "Applybutton">Apply</button>
                 </div>
                 <div nz-row   >
                     <div nz-col nzSpan="22"  class="criteria" >                       
@@ -184,11 +184,11 @@
     </div> 
 </div>
 
-<nz-drawer [nzHeight]= "650" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="top" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
+<nz-drawer nzHeight="100vh" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="top" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
     <div class="col-md-12 spinner" *ngIf="loading">
         <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
     </div>
     <div nz-row>
-        <iframe *ngIf="tryDoctype" [src]="tryDoctype" width="950" height="650"></iframe> 
+        <iframe *ngIf="tryDoctype" [src]="tryDoctype"  width="1280" height="650"></iframe> 
     </div>
 </nz-drawer>

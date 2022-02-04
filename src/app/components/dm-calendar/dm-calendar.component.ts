@@ -10,7 +10,7 @@ import { Subscription, Subject } from 'rxjs';
 const enum ImagePosition {
   LaundryService = '-24px 0px',
   PersonalCare = "-4px 0px",
-  CaseManagement = "-71px 0px",
+  CaseManagement = "-4px 0px",
   StaffTravel = "1px -21px",
   Transport = "-98px 0px",
   Unavailable = "-50px 0px"
@@ -23,6 +23,29 @@ const enum ImageActivity {
   StaffTravel = 'STAFF TRAVEL',
   Transport = 'TRANSPORT',
   Unavailable = 'UNAVAILABLE'
+}
+
+function makeResizableDiv(div) {
+  const element = document.querySelector(div);
+  const resizers = document.querySelectorAll(div + ' .resizer')
+  for (let i = 0;i < resizers.length; i++) {
+    const currentResizer = resizers[i];
+    currentResizer.addEventListener('mousedown', function(e) {
+      e.preventDefault()
+      window.addEventListener('mousemove', resize)
+      window.addEventListener('mouseup', stopResize)
+    })
+    
+    function resize(e) {
+      if (currentResizer.classList.contains('bottom-right')) {
+        element.style.width = e.pageX - element.getBoundingClientRect().left + 'px'
+      }
+    }
+    
+    function stopResize() {
+      window.removeEventListener('mousemove', resize)
+    }
+  }
 }
 
 @Component({
@@ -47,7 +70,7 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
 
   @Input() startDate: any
   @Input() dayView: number
-  @Input() reload: number
+  @Input() reload:Subject<boolean>= new Subject()
   @Input() copyPaste: boolean = false
 
   @Output() showDetail = new EventEmitter();
@@ -60,6 +83,9 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
   daymanager: Array<any> = [];
 
   loading: boolean = false;
+  HighlightColum_index:number=-1;
+  
+  selectedRecordNo:string;
 
   constructor(
     private timeS: TimeSheetService,
@@ -84,28 +110,51 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
           this.akonani.push(data);
       });
   }
-
+ textValue:string='';
+  viewText(value:any){
+    this.textValue=value.recipient +' ' + value.activity;
+    if (this.selectedRecordNo==value.recordno)
+      this.selectedRecordNo="0";
+    else
+      this.selectedRecordNo=value.recordno;
+  }
+ 
+ 
   ngOnInit() {
+    let panel:any=document.getElementById("panel")
     this.days = this.calculateDays(this.startDate, this.dayView);
+    this.reload.subscribe(v => { 
+      this.alertChange();
+     // this.reload.next(false);
+    });
+    makeResizableDiv(panel);
   }
 
   private elemMouseUp;
   private documentMouseUp;
 
+panel:any  ; 
+
+HighlightColum(indx:number){
+  this.HighlightColum_index=indx;
+}
   ngOnDestroy() {
     this.paramsSubscription$.unsubscribe();
     this.document.removeEventListener('mouseup', this.documentMouseUp, false);
     this.elem.nativeElement.removeEventListener('mouseup', this.elemMouseUp, false);
+   
   }
 
   ngAfterViewInit() {
     this.cd.reattach();
-
+   
     this.ngZone.runOutsideAngular(() => {
 
       this.elemMouseUp = (event) => {
         event.stopPropagation();
         this.isClicked = false;
+        
+        this.HighlightColum_index=-1
         this.highlighted.emit(this.akonani);
       }
 
@@ -116,11 +165,25 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
           this.deselect(null, e)
       }
 
+    
       this.elem.nativeElement.addEventListener('mouseup', this.elemMouseUp, false);
-
+     
+      
       // Will stop highlighting other rosters if mouseup event happened outside of the desired ELEMENT Component
-      this.document.addEventListener('mouseup', this.documentMouseUp, false)
-
+      // this.document.addEventListener('mouseup', this.documentMouseUp, false)
+      
+      // this.panel.addEventListener("mousedown", function(e){
+      //   if (e.offsetX < BORDER_SIZE) {
+      //     m_pos = e.x;
+      //     document.addEventListener("mousemove", resize, false);
+      //   }
+      //  }, false);
+       
+      //  document.addEventListener("mouseup", function(){
+      //     document.removeEventListener("mousemove", resize, false);
+      //  }, false);
+       
+      
     });
 
     this.cd.detectChanges();
@@ -158,6 +221,7 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
     }
   }
 
+
   showOptionEvent(value: any): void {
 
     if (this.akonani.length < 2) {
@@ -171,6 +235,8 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
     }
 
     this.showOptions.emit({ selected: value, diary: rostersThatDay });
+    
+    
   }
 
   optionEmitter(data: any) {
@@ -233,6 +299,7 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
         this.daymanager = data;
         this.data.emit(data);
         this.loading = false;
+        console.log(data)
       })
   }
 
@@ -246,10 +313,39 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
     if (activity.indexOf(ImageActivity.Laundry) !== -1) return ImagePosition.LaundryService;
   }
 
+  getMondayDate(date: any){
+    let temp:any=date;
+    let indx=5;
+    let dd=new Date(temp).getDay();
+    while(indx>0 && dd!=1){
+    
+        temp = moment(temp).add('day', -1);
+        dd=new Date(temp).getDay();
+        indx=indx-1;
+    }
+    if (dd!=1){
+      temp = date;
+      indx=6    
+      dd=new Date(temp).getDay();
+      while(indx>0 && dd!=1){   
+
+        temp = moment(temp).add('day', 1);
+        dd=dd=new Date(temp).getDay();
+        indx=indx-1;
+      }
+    }
+    return temp;
+  }
   calculateDays(date: any, dayView: number) {
-    let temp = date;
+  
+    let dd=new Date(date).getDay();
+    date = moment(date).add('day', 1-dd);
+    this.startDate=date;
+    let temp:any=date;
     let tempArr: Array<any> = [];
     tempArr.push(null);
+    
+
     for (var a = 0; a < dayView; a++) {
       tempArr.push(temp);
       temp = moment(temp).add('day', 1);
@@ -307,6 +403,7 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
   mousedown(event: any, data: any) {
     event.preventDefault();
     event.stopPropagation();
+    this.HighlightColum_index=-1
 
     this.isClicked = true;
     this.coordinates = {
@@ -315,6 +412,19 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
     };
   }
 
+  mousedblclick(event: any, value: any) {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    this.HighlightColum_index=-1
+
+    this.isClicked = true;
+    this.coordinates = {
+      clientX: event.clientX,
+      clientY: event.clientY
+    };
+    this.showDetail.emit(value);
+  }
   akonani: Array<any> = []
   mousemove(event: any, data: any) {
     event.stopPropagation();

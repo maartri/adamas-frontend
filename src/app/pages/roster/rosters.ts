@@ -1,10 +1,5 @@
-import { Component, Input, ViewChild, ChangeDetectorRef,ElementRef,ViewEncapsulation, 
-    OnChanges,
-    AfterContentChecked,
-    AfterContentInit,
-    AfterViewChecked,
-    AfterViewInit,
-    DoCheck,
+import { Component, Input, ViewChild, ChangeDetectorRef,ElementRef,ViewEncapsulation,    
+    AfterViewInit,   
     OnDestroy,
     OnInit, 
     HostListener} from '@angular/core'
@@ -28,7 +23,7 @@ import { NzStepsModule, NzStepComponent } from 'ng-zorro-antd/steps';
 
 //import parse from 'date-fns/parse';
 import { PROCESS } from '../../modules/modules';
-import { format, formatDistance, formatRelative, subDays } from 'date-fns'
+import { format, formatDistance, formatRelative, nextDay, subDays } from 'date-fns'
 
 import parseISO from 'date-fns/parseISO'
 import addMinutes from 'date-fns/addMinutes'
@@ -86,15 +81,15 @@ IconCellType.prototype.paint = function (ctx, value, x, y, w, h, style, context)
     ctx.clip();
 
     // draw text
-    GC.Spread.Sheets.CellTypes.Base.prototype.paint.apply(this, [ctx, value, x+20, y, w-20, h, style, context]);
+    GC.Spread.Sheets.CellTypes.Base.prototype.paint.apply(this, [ctx, value, x+22, y, w-22, h, style, context]);
     ctx.beginPath();
     // let img = document.getElementById('icon-lock');
-    ctx.drawImage(this.img, x + 2, y + 2, 16, 16);
+  
+    ctx.fillStyle = "#85B9D5";   
+    ctx.fillRect(x, y, 24, 24);       
+    ctx.drawImage(this.img, x+1 , y+1, 22, 22);
     ctx.fill();
-    //ctx.fillStyle = "gray";
     ctx.stroke();
-    
-
     ctx.restore();
 };
 
@@ -119,13 +114,10 @@ IconCellType2.prototype.paint = function (ctx, value, x, y, w, h, style, context
     // draw text
     GC.Spread.Sheets.CellTypes.Base.prototype.paint.apply(this, [ctx, value, x, y, w, h, style, context]);
     ctx.beginPath();
-    // let img = document.getElementById('icon-lock');
-    //ctx.drawImage(this.img, x, y , 20, 20);
-   // ctx.drawImage(this.img, x, y , 20, 20);
-   
+       
     ctx.fill();
     ctx.stroke();
-    
+    ctx.fillStyle = "#85B9D5";
 
     ctx.restore();
 };
@@ -136,38 +128,35 @@ IconCellType2.prototype.paint = function (ctx, value, x, y, w, h, style, context
     selector: 'roster-component',
     styles: [`
                 
-        nz-switch.master-class >>> button.ant-switch-checked{ background-color:red; }; 
+        nz-switch.master-class >>> button.ant-switch-checked{ background-color:#c07417; }, 
        
         nz-table tbody tr.active  {  
             background-color:#48da24 !important;  
             color: white;  
-          }   
+          }   ,
 
           class.selected
           { 
             background-color:#B98F8F !important;  
             color: white; 
       
-          }
+          } ,
 
           .ant-drawer-content {
             height: 100%;
             overflow-y: scroll;
             
-          }   
+          }   ,
           
+          nz-date-picker
       
     `],
     templateUrl: './rosters.html'
 })
 
-export class RostersAdmin implements OnChanges,
-OnInit,
-DoCheck,
-AfterContentInit,
-AfterContentChecked,
+export class RostersAdmin implements OnInit,
+
 AfterViewInit,
-AfterViewChecked,
 OnDestroy  {
 
     spreadBackColor = "white";  
@@ -284,9 +273,13 @@ searchAvaibleModal:boolean=false;
   isVisible: boolean = false;
     hahays = new Subject<any>();
     optionsModal:boolean=false;
-    
+    showDate:boolean=false;
+    monthFormat:string="MMM yyyy"
+    CalendarMode:any='month'
+    HighlightColum_index:number=-1;
+
     enable_buttons :boolean=false;
-    
+    isPaused:boolean;    
     private picked$: Subscription;   
     isConfirmLoading = false;
     changeModalView = new Subject<number>();
@@ -305,10 +298,12 @@ searchAvaibleModal:boolean=false;
     RecurrentServiceForm:FormGroup;
     AlertForm:FormGroup;
     
+    pasting:boolean=true;
     breachRoster:boolean=false;
     Error_Msg:string;
     rDate:any;
-
+    selected_Cell:any;
+    sel:any;
     viewType: any ;
     // start_date:string="";
     // end_date:string=""
@@ -354,6 +349,7 @@ searchAvaibleModal:boolean=false;
     payUnits: any;
     addRecurrent:boolean=false
     promise: any;
+    dblclick:boolean
 
     parserPercent = (value: string) => value.replace(' %', '');
     parserDollar = (value: string) => value.replace('$ ', '');
@@ -544,34 +540,47 @@ setFrequency(d:string){
 Cancel_ProceedBreachRoster(){
     this.breachRoster=false;
     if (this.operation=='copy' ||this.operation=='cut'){
-        this.load_rosters();
+        //this.load_rosters();
+        this.pasting=false;
     }
+    this.isPaused=false;
 }
 ProceedBreachRoster(){
     this.breachRoster=false;
+    if (this.token.role!= "ADMIN USER")
+    {
+        this.globalS.eToast("Permission Denied","You don't have permission to add conflicting rosters");
+        return; 
+    }
+    
     let sheet = this.spreadsheet.getActiveSheet();
     if (this.operation=='copy' ||this.operation=='cut'){
-        if (this.operation=="cut"){
-            this.ProcessRoster("Cut",this.current_roster.recordNo,this.rDate);
-            this.remove_Cells(sheet,this.copy_value.row,this.copy_value.col,this.copy_value.duration)
-        }else
-            this.ProcessRoster("Copy",this.current_roster.recordNo,this.rDate);    
+        // if (this.operation=="cut"){
+        //     this.ProcessRoster("Cut",this.current_roster.recordNo,this.rDate);
+        //     this.remove_Cells(sheet,this.copy_value.row,this.copy_value.col,this.copy_value.duration)
+        // }else
+        //     this.ProcessRoster("Copy",this.current_roster.recordNo,this.rDate);  
+        this.pasting=false;
+        this.Pasting_Records(this.selected_Cell,this.sel)
     }else{
         this.AddRoster_Entry();
     }
 
+    this.isPaused=false;
+
 }
-Check_BreachedRosterRules_Paste(RecNo:number, action:string){
+Check_BreachedRosterRules_Paste(RecNo:number, action:string,row : number, col : number):any{
 
     //It is still not being used
     this.current_roster = this.find_roster(RecNo)
+    let clientCode= this.current_roster.clientCode;
     let sheet = this.spreadsheet.getActiveSheet();
-        let range = sheet.getSelections();
-        let col= range[0].col;
+    //     let range = sheet.getSelections();
+    //     let col= range[0].col;
         let dt= sheet.getTag(0,col,GC.Spread.Sheets.SheetArea.colHeader);                       
         this.rDate = dt.getFullYear() + "/" + this.numStr(dt.getMonth()+1) + "/" + this.numStr(dt.getDate());
   
-        let f_row= range[0].row;             
+        let f_row = row;             
         let startTime =   sheet.getCell(f_row,0,GC.Spread.Sheets.SheetArea.rowHeader).tag();
      
 
@@ -585,39 +594,12 @@ Check_BreachedRosterRules_Paste(RecNo:number, action:string){
         sDuration : this.current_roster.duration, 
         sActivity : this.current_roster.activity,
         sRORecordno : this.current_roster.recordNo, 
-        // sState : '-', 
-        // bEnforceActivityLimits :0, 
-        // bUseAwards:0, 
-        // bDisallowOT :0, 
-        // bDisallowNoBreaks :0, 
-        // bDisallowConflicts :0, 
-        // bForceNote :0, 
-        // sOldDuration : '-', 
-        // sExcludeRecords : '-', 
-        // bSuppressErrorMessages  :0, 
-        // sStatusMsg : '-',
          PasteAction : action=="cut" ? "Cut": "Copy"
     };
 
-    this.timeS.Check_BreachedRosterRules(inputs_breach).subscribe(data=>{
-        let res=data
-        if (res.errorValue>0){
-          
-            this.Error_Msg=res.errorValue +", "+ res.msg;
-            this.breachRoster=true;
-            
-            //this.globalS.eToast('Error', res.errorValue +", "+ res.msg);
-            return; 
-        }else{
-            if (action=="cut"){
-                this.ProcessRoster("Cut",this.current_roster.recordNo,this.rDate);
-                this.remove_Cells(sheet,this.copy_value.row,this.copy_value.col,this.copy_value.duration)
-            }else
-                this.ProcessRoster("Copy",this.current_roster.recordNo,this.rDate);    
-            
-        }
+    return inputs_breach; //    this.timeS.Check_BreachedRosterRules(inputs_breach);
 
-    });
+    
 }
 Check_BreachedRosterRules(){
 
@@ -982,7 +964,9 @@ start_adding_Booking(bCase:any){
     this.resetBookingFormModal();
     this.booking_case=bCase;
     this.isTravel=false;
+    
     if (this.booking_case==1){
+        this.selectedCarer='BOOKED';
         this.serviceType="BOOKED";
          this.bookingForm.patchValue({
             staffCode:"BOOKED"
@@ -1147,10 +1131,12 @@ addBooking(type:any){
                 this.current+=1;
             }
             let status:boolean=false;
-            if (this.viewType=="Recipient"){  
+            if (this.viewType=="Recipient" && this.type_to_add>1){  
               
                // this.getStaffAllocation(startTime);   
-                this.IsStaffAllocated(this.selectedCarer,this.date,startTime,this.durationObject.duration).subscribe(data=>{
+               if (this.selectedCarer=='!MULTIPLE' || this.selectedCarer=='!INTERNAL')
+                    this.addBookingModel=true;   
+               else  this.IsStaffAllocated(this.selectedCarer,this.date,startTime,this.durationObject.duration).subscribe(data=>{
                    
                     if (data.length>0){
                         this.globalS.wToast('Booking', `Staff ${this.selectedCarer} is already allocated in this date and time slot`);
@@ -1222,11 +1208,14 @@ deleteRoster(){
            if (sheet.getTag(data_row,i,GC.Spread.Sheets.SheetArea.viewport)==null ){
             data_row=data_row+1;
             continue;
-           }
-                                       
+           }           
+           
+                         
          if (sheet.getTag(data_row,i,GC.Spread.Sheets.SheetArea.viewport)!=null)
             this.cell_value=sheet.getTag(data_row,i,GC.Spread.Sheets.SheetArea.viewport)
         
+        if (this.cell_value.recordNo==null || this.cell_value.recordNo==0) continue;
+
         if (this.cell_value.recordNo==recdNo)
             continue;
         
@@ -1261,9 +1250,14 @@ reAllocate(){
     this.ProcessRoster("Re-Allocate", this.cell_value.recordNo);
     let sheet=this.spreadsheet.getActiveSheet();
     this.spreadsheet.suspendPaint();
-    this.remove_Cells(sheet,this.cell_value.row,this.cell_value.col,this.cell_value.duration)
-    this.spreadsheet.resumePaint();
+    //this.remove_Cells(sheet,this.cell_value.row,this.cell_value.col,this.cell_value.duration)
+    //this.cell_value.type = this.DETERMINE_SERVICE_TYPE_NUMBER(this.cell_value.service);
+    var text=   this.selectedCarer + " (" + this.cell_value.service.replace('BOOKED','') + ")";            
+    this.cell_value.type= this.DETERMINE_SERVICE_TYPE_NUMBER(this.cell_value.service) ;
+    this.draw_Cells(sheet,this.cell_value.row,this.cell_value.col,this.cell_value.duration,this.cell_value.type,this.cell_value.recordNo,text)
 
+    this.spreadsheet.resumePaint();
+   
 
 }
 
@@ -1274,7 +1268,16 @@ UnAllocate(){
     this.ProcessRoster("Un-Allocate", this.cell_value.recordNo);
     let sheet=this.spreadsheet.getActiveSheet();
     this.spreadsheet.suspendPaint();
-    this.remove_Cells(sheet,this.cell_value.row,this.cell_value.col,this.cell_value.duration)
+    //this.remove_Cells(sheet,this.cell_value.row,this.cell_value.col,this.cell_value.duration)
+    if (this.viewType=='Staff')
+        this.remove_Cells(sheet,this.cell_value.row,this.cell_value.col,this.cell_value.duration)
+    else{
+        this.cell_value.type = 1;
+        var service =this.cell_value.service.split("(")[1];
+        var text=    "BOOKED (" + service + ")"; 
+
+        this.draw_Cells(sheet,this.cell_value.row,this.cell_value.col,this.cell_value.duration,this.cell_value.type,this.cell_value.recordNo,text)
+    }
     this.spreadsheet.resumePaint();
 
 
@@ -1326,17 +1329,21 @@ ClearMultishift(){
     
 
 }
-  load_rosters(){
+  
+load_rosters(){
     
     
     this.spreadsheet.suspendPaint();
     let sheet = this.spreadsheet.getActiveSheet()
     var cell:any;
     
-    if (this.viewType=="Staff")
+    if (this.viewType=="Staff"){
         sheet.name("Staff Rosters");
-    else
+        this.sheetName="Staff Rosters";
+    }else{
         sheet.name("Recipient Rosters");
+        this.sheetName="Recipient Rosters";
+    }
     
         
      cell= sheet.getRange(0, 0, this.time_slot, this.Days_View, GC.Spread.Sheets.SheetArea.viewport)
@@ -1366,9 +1373,7 @@ ClearMultishift(){
             
        // if (r.dayNo>this.Days_View) break;
 
-            if (r.recordNo==258702 || r.shiftbookNo==258702){
-                code= r.carerCode 
-            }
+            
             if (this.Days_View>=30)
                 col=r.dayNo-1;
             else{
@@ -1410,8 +1415,9 @@ ClearMultishift(){
         //this.startRoster="1900/01/01";
        // this.endRoster="1900/01/31";
       }else{        
-        this.date = moment()      
-        this.Master_Roster_label='Current Roster'
+        this.date = moment()  
+        this.CalendarDate = new Date(this.date) ;   
+        this.Master_Roster_label='Current Roster';
         //this.startRoster=this.date;
        // this.endRoster=this.date;
     }
@@ -1633,7 +1639,7 @@ ClearMultishift(){
                  
                   // Create two different selection ranges.
                   sheet.addSelection(row, col, new_duration, 1);
-                //  sheet.addSpan(row, col, new_duration, 1, sheetArea);
+                 // sheet.addSpan(row, col, new_duration,1 ,GC.Spread.Sheets.SheetArea.viewport);
 
                  let len =row+new_duration;
 
@@ -1799,6 +1805,7 @@ ClearMultishift(){
   
           var newMenuData = [];
           var selected_Cell; 
+          
           var copy = {
             iconClass : "gc-spread-copy",
             name : "Copy",
@@ -1928,6 +1935,7 @@ ClearMultishift(){
                         self.operation="copy";
                         console.log("Row=" + sel.row  + ", col=" + sel.col)
                         selected_Cell=sel;
+                        
   
                         if (sheet.getTag(sel.row,sel.col,GC.Spread.Sheets.SheetArea.viewport)!=null)
                           self.copy_value=sheet.getTag(sel.row,sel.col,GC.Spread.Sheets.SheetArea.viewport)
@@ -1972,6 +1980,7 @@ ClearMultishift(){
                         var row = sel.row;
                        
                         selected_Cell=sel;
+                        
   
                         if (sheet.getTag(sel.row,sel.col,GC.Spread.Sheets.SheetArea.viewport)!=null)
                           self.copy_value=sheet.getTag(sel.row,sel.col,GC.Spread.Sheets.SheetArea.viewport)
@@ -1990,6 +1999,7 @@ ClearMultishift(){
                 canUndo: true,
                 execute: function (context, options, isUndo) {
                     var Commands = GC.Spread.Sheets.Commands;
+                    
                                  // add cmd here
                     //options.cmd = "gc.spread.contextMenu.pasteAll";
                     options.cmd = "Paste";
@@ -2009,63 +2019,50 @@ ClearMultishift(){
                         console.log(selected_Cell);     
                         
                         let selected_columns = selected_Cell.col + selected_Cell.colCount;
-                        let dt= new Date(self.date);        
-                        let data_row=0;
-                        let row_iterator=0;
-                        let recdNo=0;
-                   
-                        col=col-1;
-                       for (let i=selected_Cell.col; i<selected_columns; i++)                     
-                        {
-                            data_row=selected_Cell.row;
-                            
-                            col=col+1;
-                         
-                            for ( row_iterator=0; row_iterator<=selected_Cell.rowCount; row_iterator++){
-                               if (sheet.getTag(data_row,i,GC.Spread.Sheets.SheetArea.viewport)==null ){
-                                data_row=data_row+1;
-                                continue;
-                               }
-                                                           
-                             if (sheet.getTag(data_row,i,GC.Spread.Sheets.SheetArea.viewport)!=null)
-                                self.copy_value=sheet.getTag(data_row,i,GC.Spread.Sheets.SheetArea.viewport)
-                            
-                            if (self.copy_value.recordNo==recdNo)
-                                continue;
-                            
-                            recdNo=self.copy_value.recordNo;
-                            var cell_col_text=sheet.getValue(0,col,GC.Spread.Sheets.SheetArea.colHeader);
-                            console.log(cell_col_text);
-                            var col_date= cell_col_text.substring(cell_col_text.length-2,cell_col_text.length);
                         
-                            let rdate = dt.getFullYear() + "/" + self.numStr(dt.getMonth()+1) + "/" + self.numStr(col_date.trim());
-                      
-                            if (self.copy_value==null || self.copy_value.recordNo==null || self.copy_value.recordNo==0){
-                                continue;
+                        col=col-1;
+                        self.selected_Cell=selected_Cell;
+                        self.sel=sel;
+                        var recordsData:Array<any>=[];
+                        self.pasting=true;
+                        let conflict:boolean=false;
+                        (  function(next) {
+                                                                                              
+                            for (let i=selected_Cell.col; i<selected_columns && !conflict; i++){                     
+                                self.copy_value=sheet.getTag(selected_Cell.row,i,GC.Spread.Sheets.SheetArea.viewport)
+                                if (self.copy_value==null) continue;
+                                if (self.copy_value.recordNo==null || self.copy_value.recordNo==0) continue;
+                                    recordsData.push(self.Check_BreachedRosterRules_Paste(self.copy_value.recordNo,self.operation,sel.row,sel.col))
+                                                                  
+                            }    
+                            //let tt=JSON.stringify(recordsData)
+                            self.timeS.pastingRosters(JSON.stringify(recordsData)).subscribe(data=>{
+                            let res=data[0];
+                            if (res.errorValue>0){
+                                self.Error_Msg=res.errorValue +", "+ res.msg ;
+                                self.breachRoster=true; 
+                                self.pasting=false;                              
+                                next(self.pasting);
+                            }else{
+                                self.pasting=true;
+                                next(self.pasting); 
+
                             }
 
-                            self.Check_BreachedRosterRules_Paste(recdNo,self.operation);
-                            //if (self.copy_value.row>=0){
-                               let n_row=row+row_iterator;
-                            self.draw_Cells(sheet,n_row,col,self.copy_value.duration,self.copy_value.type,self.copy_value.recordNo,self.copy_value.service)
-                                                        
+                        })                        
                             
-                            // if (self.operation==="cut"){
-                            //     self.ProcessRoster("Cut",self.copy_value.recordNo,rdate);
-                            //     self.remove_Cells(sheet,self.copy_value.row,self.copy_value.col,self.copy_value.duration)
-                            // }else
-                            //     self.ProcessRoster("Copy",self.copy_value.recordNo,rdate);    
-                            
-                             data_row=data_row+1;                 
-                            }// rows loop
-                            
-                        }
+                    }  
+                    (function(continu:boolean) {
+                           
+                            if (continu){
+                                self.Pasting_Records(selected_Cell,sel)
+                            }else{
+                                self.breachRoster=true;
+                            }
+    
+                    }))
 
-                       // sheet.setValue(row,col,sheet.getCell(selected_Cell.row, selected_Cell.col));
-  
-                       //sheet.getCell(row,col).backColor(sheet.getCell(selected_Cell.row, selected_Cell.col).backColor);
-                      //sheet.getCell(row,col).backgroundImage(sheet.getCell(selected_Cell.row, selected_Cell.col).backgroundImage);
-  
+                  
                         Commands.endTransaction(context, options);
                       //  sheet.options.isProtected = true;
                         spread.resumePaint();
@@ -2102,8 +2099,10 @@ ClearMultishift(){
   
                         if (sheet.getTag(sel.row,sel.col,GC.Spread.Sheets.SheetArea.viewport)==null)                       
                             return;
-                        
-                        self.deleteRosterModal=true;   
+
+                         
+                       // self.deleteRosterModal=true;   
+                        self.showConfirm();
                         self.operation="Delete";    
                         Commands.endTransaction(context, options);
 
@@ -2435,35 +2434,27 @@ ClearMultishift(){
      // Set the default size.
      this.spreadsheet.getHost().style.width = (this.screenWidth - 260) + 'px';
      this.spreadsheet.getHost().style.height = (this.screenHeight - 170) + 'px';
-
-     //Set the default styles.
-     var defaultStyle = new GC.Spread.Sheets.Style();
-     defaultStyle.font = "Segoe UI";
-     defaultStyle.themeFont = "Segoe UI";
-     
-    // defaultStyle.hAlign = GC.Spread.Sheets.HorizontalAlign.center;
-    // defaultStyle.borderLeft = new GC.Spread.Sheets.LineBorder("Green",GC.Spread.Sheets.LineStyle.medium);
-    // defaultStyle.borderTop = new GC.Spread.Sheets.LineBorder("Green",GC.Spread.Sheets.LineStyle.medium);
-    // defaultStyle.borderRight = new GC.Spread.Sheets.LineBorder("Green",GC.Spread.Sheets.LineStyle.medium);
-    // defaultStyle.borderBottom = new GC.Spread.Sheets.LineBorder("Green",GC.Spread.Sheets.LineStyle.medium);
-    sheet.setDefaultStyle(defaultStyle, GC.Spread.Sheets.SheetArea.viewport);
+   
 
     sheet.clearSelection();
 
     var style = new GC.Spread.Sheets.Style();
-    style.backColor = "red";
-    style.borderLeft = new GC.Spread.Sheets.LineBorder("blue",GC.Spread.Sheets.LineStyle.medium);
-    style.borderTop = new GC.Spread.Sheets.LineBorder("blue",GC.Spread.Sheets.LineStyle.medium);
-    style.borderRight = new GC.Spread.Sheets.LineBorder("blue",GC.Spread.Sheets.LineStyle.medium);
-    style.borderBottom = new GC.Spread.Sheets.LineBorder("blue",GC.Spread.Sheets.LineStyle.medium);
-    style.watermark="#3334455";
+    //style.backColor = "red";
+    // style.borderLeft = new GC.Spread.Sheets.LineBorder("blue",GC.Spread.Sheets.LineStyle.medium);
+    // style.borderTop = new GC.Spread.Sheets.LineBorder("blue",GC.Spread.Sheets.LineStyle.medium);
+    // style.borderRight = new GC.Spread.Sheets.LineBorder("blue",GC.Spread.Sheets.LineStyle.medium);
+    // style.borderBottom = new GC.Spread.Sheets.LineBorder("blue",GC.Spread.Sheets.LineStyle.medium);
+    style.font = "10pt Segoe UI";     
+    style.themeFont = "Segoe UI";
+
     // sheet.setStyle(1,1,style,GC.Spread.Sheets.SheetArea.viewport);
     // //row
     // sheet.setStyle(1,-1,style,GC.Spread.Sheets.SheetArea.viewport);
     // //column
     // sheet.setStyle(-1,2,style,GC.Spread.Sheets.SheetArea.viewport);
 
-     
+    sheet.setDefaultStyle(style, GC.Spread.Sheets.SheetArea.viewport);
+
      let date:Date = new Date(this.date);
 
     if (this.startRoster==null){
@@ -2490,7 +2481,7 @@ ClearMultishift(){
     sheet.setColumnResizable(0,true, GC.Spread.Sheets.SheetArea.colHeader);
 
     //This example uses the highlightStyle method.
-
+   var isHoliday:boolean=false;
 
     for (let i=0; i<=this.Days_View ; i++)   
     {
@@ -2506,11 +2497,13 @@ ClearMultishift(){
 
       }
       var col_header = sheet.getRange(i, -1, 1, -1, GC.Spread.Sheets.SheetArea.colHeader);
-      //col_header.backColor("#002060");
-      //row_header.foreColor("#ffffff");
-      //col_header.setBorder(new GC.Spread.Sheets.LineBorder("#000000", GC.Spread.Sheets.LineStyle.double), {all:true}); 
-      col_header.borderTop(new GC.Spread.Sheets.LineBorder("#000000", GC.Spread.Sheets.LineStyle.double));
       
+      col_header.setBorder(new GC.Spread.Sheets.LineBorder("#ffffff", GC.Spread.Sheets.LineStyle.thin), {all:true}); 
+      //col_header.borderTop(new GC.Spread.Sheets.LineBorder("#000000", GC.Spread.Sheets.LineStyle.double));
+     // col_header.borderTop(new GC.Spread.Sheets.LineBorder("#ffffff", GC.Spread.Sheets.LineStyle.thin));
+     // col_header.borderLeft(new GC.Spread.Sheets.LineBorder("#ffffff", GC.Spread.Sheets.LineStyle.thin));
+     // col_header.borderRight(new GC.Spread.Sheets.LineBorder("#FFFFFF", GC.Spread.Sheets.LineStyle.thick));
+     //col_header.borderBottom(new GC.Spread.Sheets.LineBorder("#ffffff", GC.Spread.Sheets.LineStyle.thin));
       sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).tag(date);
 
      var new_width = 100 / this.Days_View;
@@ -2527,23 +2520,53 @@ ClearMultishift(){
     
       if (this.DayOfWeek( date.getDay())=="Sat" || this.DayOfWeek( date.getDay())=="Sun")
       {
-            sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).backColor("#FFDEDB");
-            if (this.Days_View>=30)
-                sheet.setValue(0, i, { richText: [{ style: { font: '10px Tahoma ', foreColor: '#000000' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
-            else
-                sheet.setValue(0, i, { richText: [{ style: { font: '12px Tahoma ', foreColor: '#000000' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
+            if (this.master){
+                sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).backColor("#E0C1A3"); //FFDEDB
+                
+                if (this.Days_View>=28)
+                    sheet.setValue(0, i, { richText: [{ style: { font: '10px Tahoma ', foreColor: '#000000' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
+                else
+                    sheet.setValue(0, i, { richText: [{ style: { font: '12px Tahoma ', foreColor: '#000000' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
+                
+            }else{
+                sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).backColor("#F18805"); //FFDEDB
+                if (this.Days_View>=28)
+                    sheet.setValue(0, i, { richText: [{ style: { font: '10px Tahoma ', foreColor: '#ffffff' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
+                else
+                    sheet.setValue(0, i, { richText: [{ style: { font: '12px Tahoma ', foreColor: '#ffffff' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
+                
+            }    
+            
+    
         }else
         {
-            sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).backColor("#F6F6F6");
-            if (this.Days_View>=28)
-                //sheet.setValue(0, i, { richText: [{ style: { font: '10px Segoe UI ',foreColor: '#FFFFFF' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
-                sheet.setValue(0, i, { richText: [{ style: { font: '10px Tahoma ',foreColor: '#000000' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
-            else
-                //sheet.setValue(0, i, { richText: [{ style: { font: '12px Segoe UI ',foreColor: '#FFFFFF' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
-                sheet.setValue(0, i, { richText: [{ style: { font: '12px Tahoma ',foreColor: '#000000' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
+            if (this.master){
+                sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).backColor("#E0BCB5"); //FFDEDB                
+               
+                if (this.Days_View>=28)
+                    sheet.setValue(0, i, { richText: [{ style: { font: '10px Tahoma',foreColor: '#000000' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
+                else
+                    sheet.setValue(0, i, { richText: [{ style: { font: '12px Tahoma',foreColor: '#000000' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
+
+            }else{
+                sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).backColor("#002060"); //FFDEDB
+               
+                if (this.Days_View>=28)
+                    sheet.setValue(0, i, { richText: [{ style: { font: '10px Tahoma',foreColor: '#ffffff' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
+                else
+                    sheet.setValue(0, i, { richText: [{ style: { font: '12px Tahoma',foreColor: '#ffffff' }, text: head_txt }] }, GC.Spread.Sheets.SheetArea.colHeader);        
+            }
+        
+            isHoliday= this.IsPublicHoliday1(moment(date).format('YYYY/MM/DD'))
+             
+            if (isHoliday){
+                sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).backColor("#87D068"); //FFDEDB
+            }
+           // sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).get('gc-columnHeader-highlight').backgroundColor="#002060";
+           
         }
             date.setDate(date.getDate()+1);
-
+           // sheet.getCell(0, i, GC.Spread.Sheets.SheetArea.colHeader).cell('10 10 10 10');
             //sheet.getCell(0,i,style,GC.Spread.Sheets.SheetArea.colHeader).set
     }
  
@@ -2570,10 +2593,10 @@ ClearMultishift(){
         sheet.getCell(j, 0, GC.Spread.Sheets.SheetArea.rowHeader).tag(this.numStr(time.hours)  + ":" + this.numStr(time.minutes));
 
         this.time_map.set(j,this.numStr(time.hours)  + ":" + this.numStr(time.minutes))
-        sheet.getCell(j, 0, GC.Spread.Sheets.SheetArea.rowHeader).backColor("#ffffff");
+        sheet.getCell(j, 0, GC.Spread.Sheets.SheetArea.rowHeader).backColor("#F18805");
         sheet.getCell(j, 0, GC.Spread.Sheets.SheetArea.rowHeader).foreColor("#000000");
         //setting row height
-       // sheet.setRowHeight(j, 40.0,GC.Spread.Sheets.SheetArea.viewport);
+        sheet.setRowHeight(j, 24.0,GC.Spread.Sheets.SheetArea.viewport);
         //setting row width
         sheet.setColumnWidth(0, 60.0,GC.Spread.Sheets.SheetArea.rowHeader);
         sheet.setRowResizable(j,true, GC.Spread.Sheets.SheetArea.rowHeader);
@@ -2673,6 +2696,7 @@ ClearMultishift(){
             break;
         case 3:
             sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-3')));
+            //<i nz-icon *ngIf="value.type==2" [nzType]="'heart'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
             break;
         case 4:
             sheet.getCell(r,c).text(text).cellType(new IconCellType(document.getElementById('icon-4')));
@@ -2717,7 +2741,8 @@ ClearMultishift(){
            sheet.getCell(r,c).text("").cellType(new IconCellType2(document.getElementById('icon-21')));
             
     }
-       
+    //sheet.getCell(r,c).backgroundColor="#85B9D5";
+    sheet.getCell(r,c).backColor("#85B9D5 ");
     this.spreadsheet.resumePaint();   
        
   }
@@ -2759,7 +2784,8 @@ ClearMultishift(){
      // sheet.options.isProtected = true;
       var cell= sheet.getRange(r, c, duration, 1, GC.Spread.Sheets.SheetArea.viewport);
      // cell.borderRight(new GC.Spread.Sheets.LineBorder("#084F58", GC.Spread.Sheets.LineStyle.thin), {all:true});
-      cell.setBorder(new GC.Spread.Sheets.LineBorder("#CAF0F5", GC.Spread.Sheets.LineStyle.thin), {all:true}); 
+      //cell.setBorder(new GC.Spread.Sheets.LineBorder("#CAF0F5", GC.Spread.Sheets.LineStyle.thin), {all:true}); 
+     // cell.setBorder(new GC.Spread.Sheets.LineBorder("#85B9D5", GC.Spread.Sheets.LineStyle.thin), {all:true}); 
       //sheet.getRange(r, c, duration, 1, GC.Spread.Sheets.SheetArea.viewport).borderRight(new GC.Spread.Sheets.LineBorder("#084F58", GC.Spread.Sheets.LineStyle.thin))
     
     var new_duration:number=0;
@@ -2774,29 +2800,39 @@ ClearMultishift(){
     if (new_duration<1)
         new_duration=1;
 
-      
       for (let m=0; m<new_duration; m++){
       if (m==0) {
-        //sheet.getCell(r,c).backColor("#CAF0F5");
-        //sheet.getCell(r+m,c).backColor({degree: 90, stops: [{position:0, color:"#CAF0F5"},{position:0.5, color:"#0A8598"},{position:1, color:"#80B1B9"},]});
-        sheet.getCell(r+m,c).backColor({degree: 95, stops: [{position:0, color:"#CAF0F5"},{position:0.5, color:"#B3F2FF"},{position:1, color:"#B3F2FF"},]});
-
-      //  sheet.getCell(r,c).backColor("#ffffff");
-       // sheet.getCell(r,c).backgroundImage(rowImage)
-        
-       this.setIcon(r,c,type,RecordNo, service);
-       sheet.getCell(r+m,c, GC.Spread.Sheets.SheetArea.viewport).locked(true);
+           //sheet.getCell(r,c).backColor("#CAF0F5");
+              //sheet.getCell(r+m,c).backColor({degree: 90, stops: [{position:0, color:"#CAF0F5"},{position:0.5, color:"#0A8598"},{position:1, color:"#80B1B9"},]});
+              //sheet.getCell(r+m,c).backColor({degree: 95, stops: [{position:0, color:"#CAF0F5"},{position:0.5, color:"#B3F2FF"},{position:1, color:"#B3F2FF"},]});
+              //sheet.getCell(r+m,c).backColor({degree: 95, stops: [{position:0, color:"White"},{position:0.5, color:"White"},{position:1, color:"#0D76C2"},]});
+              //sheet.getCell(r+m,c).backColor({type: "path", left: 0.2, top: 0.2, right: 0.8, bottom: 0.8, stops: [{ position: 0, color: "White" }, { position: 0.5, color: "white" }, { position: 1, color: "#0D76C2" },] });
+              sheet.getCell(r+m,c).backColor("#85B9D5 ");
+              sheet.getCell(r+m,c).foreColor("Black   ");
+              sheet.getRange(r + m, c, 1, 1, GC.Spread.Sheets.SheetArea.viewport).borderTop( new GC.Spread.Sheets.LineBorder("White",GC.Spread.Sheets.LineStyle.medium));
+              sheet.getRange(r + m, c, 1, 1, GC.Spread.Sheets.SheetArea.viewport).borderLeft( new GC.Spread.Sheets.LineBorder("White",GC.Spread.Sheets.LineStyle.medium));
+              sheet.getRange(r + m, c, 1, 1, GC.Spread.Sheets.SheetArea.viewport).borderRight( new GC.Spread.Sheets.LineBorder("White",GC.Spread.Sheets.LineStyle.medium));
+            //  sheet.getCell(r,c).backColor("#FFFFFF");
+             // sheet.getCell(r,c).backgroundImage(rowImage)
+             this.setIcon(r,c,type,RecordNo, service);
+             sheet.getCell(r+m,c, GC.Spread.Sheets.SheetArea.viewport).locked(true);
        }  
        else{
             
-           sheet.getCell(r+m,c).backColor("#CAF0F5");
-           // sheet.getCell(r+m,c).backColor({degree: 95, stops: [{position:0, color:"#abd8de"},{position:0.5, color:"#CAF0F5"},{position:1, color:"#CAF0F5"},]});
-         //  sheet.getCell(r,c).backColor("#ffffff");
-          //  this.setIcon(r+m,c,20,RecordNo, "");
-          sheet.getRange(r, c, duration, 1, GC.Spread.Sheets.SheetArea.viewport).setBorder(new GC.Spread.Sheets.LineBorder("#c8cccc", GC.Spread.Sheets.LineStyle.thin), {all:true});
+               //sheet.getCell(r+m,c).backColor("#CAF0F5");
+              //  sheet.getCell(r+m,c).backColor("#4D6390");
+            sheet.getCell(r+m,c).backColor("#85B9D5 ");
+            //sheet.getCell(r+m,c).backColor({type: "path", left: 0.2, top: 0.2, right: 0.8, bottom: 0.8, stops: [{ position: 0, color: "White" }, { position: 0.5, color: "#0D76C2" }, { position: 1, color: "#0D76C2" },] });           // sheet.getCell(r+m,c).backColor({degree: 95, stops: [{position:0, color:"#ABD8DE"},{position:0.5, color:"#CAF0F5"},{position:1, color:"#CAF0F5"},]});
+            //  sheet.getCell(r,c).backColor("#FFFFFF");
+            //  this.setIcon(r+m,c,20,RecordNo, "");
+            //sheet.getRange(r, c, duration, 1, GC.Spread.Sheets.SheetArea.viewport).setBorder(new GC.Spread.Sheets.LineBorder("#C8CCCC", GC.Spread.Sheets.LineStyle.thin), {all:true});
+            sheet.getRange(r + m, c, 1, 1, GC.Spread.Sheets.SheetArea.viewport).borderTop( new GC.Spread.Sheets.LineBorder("#85B9D5    ",GC.Spread.Sheets.LineStyle.medium));
+            sheet.getRange(r + m, c, 1, 1, GC.Spread.Sheets.SheetArea.viewport).borderLeft( new GC.Spread.Sheets.LineBorder("White",GC.Spread.Sheets.LineStyle.medium));
+            sheet.getRange(r + m, c, 1, 1, GC.Spread.Sheets.SheetArea.viewport).borderRight( new GC.Spread.Sheets.LineBorder("White",GC.Spread.Sheets.LineStyle.medium));
+    
         }
         //sheet.getCell(r+m,c).field=duration;
-       sheet.getCell(r+m,c, GC.Spread.Sheets.SheetArea.viewport).locked(true);
+        sheet.getCell(r+m,c, GC.Spread.Sheets.SheetArea.viewport).locked(true);
         sheet.getRange(r+m, c, 1, 1).tag(this.cell_value)
 
        }
@@ -2859,7 +2895,87 @@ ClearMultishift(){
       
       return val;
     }
+Pasting_Records(selected_Cell:any,sel:any){
+    let self=this;
+    let sheet=this.spreadsheet.getActiveSheet();
+    
+    var col = sel.col;
+    var row = sel.row;
+    let selected_columns = selected_Cell.col + selected_Cell.colCount;
+                        let dt= new Date(self.date);        
+                        let data_row=0;
+                        let row_iterator=0;
+                        let recdNo=0;
+                        let breachStatus:boolean=false;
+                        col=col-1;
+                        for (let i=selected_Cell.col; i<selected_columns; i++)                     
+                            {
+                                data_row=selected_Cell.row;
+                                
+                                col=col+1;
+                            
+                                for ( row_iterator=0; row_iterator<=selected_Cell.rowCount; row_iterator++){
+                                if (sheet.getTag(data_row,i,GC.Spread.Sheets.SheetArea.viewport)==null ){
+                                    data_row=data_row+1;
+                                    continue;
+                                }
+                                                            
+                                if (sheet.getTag(data_row,i,GC.Spread.Sheets.SheetArea.viewport)!=null)
+                                    self.copy_value=sheet.getTag(data_row,i,GC.Spread.Sheets.SheetArea.viewport)
+                                
+                                if (self.copy_value.recordNo==recdNo)
+                                    continue;
+                                
+                                recdNo=self.copy_value.recordNo;
+                                var cell_col_text=sheet.getValue(0,col,GC.Spread.Sheets.SheetArea.colHeader);
+                                console.log(cell_col_text);
+                                var col_date= cell_col_text.substring(cell_col_text.length-2,cell_col_text.length);
+                            
+                                let rdate = dt.getFullYear() + "/" + self.numStr(dt.getMonth()+1) + "/" + self.numStr(col_date.trim());
+                        
+                                if (self.copy_value==null || self.copy_value.recordNo==null || self.copy_value.recordNo==0){
+                                    continue;
+                                }
 
+                            
+                                //if (self.copy_value.row>=0){
+                                let n_row=row+row_iterator;
+                                self.draw_Cells(sheet,n_row,col,self.copy_value.duration,self.copy_value.type,self.copy_value.recordNo,self.copy_value.service)
+                                self.isPaused=true;
+                            
+                            
+                                                                                
+                                if (self.operation==="cut"){
+                                    self.ProcessRoster("Cut",self.copy_value.recordNo,rdate);
+                                    self.remove_Cells(sheet,self.copy_value.row,self.copy_value.col,self.copy_value.duration)
+                                }else
+                                    self.ProcessRoster("Copy",self.copy_value.recordNo,rdate);    
+                                
+                                data_row=data_row+1;                 
+                                }// rows loop
+                                   
+                            } // column loop
+
+                            
+                      
+}
+showConfirm(): void {
+    //var deleteRoster = new this.deleteRoster();
+    this.modalService.confirm({
+      nzTitle: 'Confirm',
+      nzContent: 'Are you sure you want to delete roster',
+      nzOkText: 'Yes',
+      nzCancelText: 'No',
+      nzOnOk: () =>
+      new Promise((resolve,reject) => {
+        setTimeout(Math.random() > 0.5 ? resolve : reject, 100);
+        this.deleteRoster();
+       
+      }).catch(() => console.log('Oops errors!'))
+
+      
+    });
+  }
     selectedDays(value: string[]): void {
         this.weekDay=value
         console.log(value);
@@ -2942,17 +3058,38 @@ ClearMultishift(){
       
       }
      
-    onItemDbClick(sel: any, i:number, type:string): void {
-
+    onItemDbClick(sel: any, i:number, type:string) : void {
         
         console.log(sel)
         this.HighlightRow=i;               
 
         if (type=="program"){          
             this.defaultProgram=sel;
+            this.dblclick=true;
             this.bookingForm.patchValue({
                  program:sel
              })
+             
+             this.GETSERVICEACTIVITY(sel).subscribe((d: Array<any>) => {
+                this.serviceActivityList = d;
+                this.next_tab();
+                   setTimeout(() => {
+                       this.bookingForm.patchValue({
+                           serviceActivity: this.defaultActivity                         
+                       });                   
+                   }, 0);            
+              
+               if(d && d.length == 1){
+                   this.bookingForm.patchValue({
+                       serviceActivity: d[0]               
+                      
+                   });
+
+                }
+             });
+                   
+                
+               
         }else if (type=="service"){
             this.defaultActivity=sel;
             
@@ -2986,21 +3123,17 @@ ClearMultishift(){
             })
             
         }
-       
-        //this.next_tab();
-        
-       
-        if (this.showDone2 && this.rosterGroup!="" ){
-          //  this.doneBooking();
-            return;
-        }
-        if (this.current==1 && (this.activity_value==12 || this.booking_case==8)){
-            
-        }else if(this.showDone2==false ){
-            this.next_tab();
-        }
- 
-       
+
+         if (this.showDone2 && this.rosterGroup!="" ){
+            //  this.doneBooking();
+              return;
+          }
+          if (this.current==1 && (this.activity_value==12 || this.booking_case==8)){
+              
+          }else if(this.showDone2==false && type!="program" ){              
+              this.next_tab();
+          }
+  
    
   }
 
@@ -3031,7 +3164,7 @@ ClearMultishift(){
       this.addBooking(0);
       this.add_multi_roster=true;
   }
-    ProcessRoster(Option:any, recordNo:string, rdate:string=""):any {
+    ProcessRoster(Option:any, recordNo:string, rdate:string="", start_Time:string=""):any {
         
         
         let dt= new Date(this.date);
@@ -3047,7 +3180,8 @@ ClearMultishift(){
        // let startTime=sheet.getTag(f_row,0,GC.Spread.Sheets.SheetArea.viewport);
         let startTime =   sheet.getCell(f_row,0,GC.Spread.Sheets.SheetArea.rowHeader).tag();
         let endTime =   sheet.getCell(l_row,0,GC.Spread.Sheets.SheetArea.rowHeader).tag();
-
+        if (start_Time!="")
+            startTime=start_Time
 
         if (this.master){
 
@@ -3071,7 +3205,7 @@ ClearMultishift(){
         this.timeS.ProcessRoster(inputs).subscribe(data => {
         //if  (this.ClearMultiShiftModal==false &&  this.SetMultiShiftModal==false) 
              //  this.globalS.sToast('Success', 'Timesheet '  + Option + ' operation has been completed');
-        this.selectedCarer="";
+        //this.selectedCarer="";
         this.searchStaffModal=false;
         this.UnAllocateStaffModal=false;
         
@@ -3098,7 +3232,7 @@ ClearMultishift(){
 
                     this.txtAlertSubject = 'NEW SHIFT ADDED : ' ;
                     this.txtAlertMessage = 'NEW SHIFT ADDED : \n' + date + ' : \n'  + clientCode + '\n'  ;
-                
+                    this.show_alert=true;
                    
                 }
             }
@@ -3293,6 +3427,7 @@ return rst;
     userStream = new Subject<string>();
 
     date:any = moment();
+    CalendarDate:Date;
     options: any;
     recipient: any;
     serviceType:any;
@@ -3320,7 +3455,8 @@ return rst;
         private listS: ListService,
         public datepipe: DatePipe,
         private sharedS: ShareService,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        
       
     ) {
         this.router.routeReuseStrategy.shouldReuseRoute = function () {        
@@ -3524,7 +3660,7 @@ return rst;
     ngOnInit(): void {
 
         this.token = this.globalS.decode(); 
-
+        console.log(this.token);
         if (this.token==null){
 
             this.globalS.eToast("Authentication","Invalid  User, please login again");
@@ -3556,6 +3692,7 @@ return rst;
        
       
         this.date = moment();
+     
         this.AddTime();
         this.buildForm(); 
           
@@ -3565,25 +3702,13 @@ return rst;
       
       
 }
-ngOnChange(change:OnChanges) {
-    console.log("ngOnChanges"+change);
-    
-}
-ngAfterContentInit() {
-    console.log("ngAfterContentInit");
-    
-}
-ngAfterViewChecked(){
-    console.log("ngAfterViewChecked");
- 
-}
-ngAfterContentChecked(){
 
-}
+
 ngAfterViewInit(){
   this.formloading=true;
     console.log("ngAfterViewInit");   
-    
+    this.CalendarDate=  new Date(this.date);
+
     if (this.info.StaffCode!='' && this.info.StaffCode!=null){
         this.defaultCode=this.info.StaffCode
         this.viewType=this.info.ViewType
@@ -3603,9 +3728,20 @@ ngAfterViewInit(){
     }
    
 }
-ngOnChanges() {}
 
-ngDoCheck() {}
+onChange(result: Date): void {
+ 
+    console.log('Selected Time: ', result);
+    this.date = moment(result).format('YYYY/MM/DD');    
+    this.startRoster=this.date;
+    let dt = moment(this.startRoster).add('day', this.Days_View-1);
+    this.endRoster = moment(dt).format('YYYY/MM/DD');
+    this.prepare_Sheet();
+    this.picked(this.selected);
+    this.upORdown.next(true);
+  }
+
+ 
    
 ngOnDestroy(){
     console.log("ngDestroy");
@@ -3711,7 +3847,16 @@ reload(reload: boolean){
                  
      }
 
+selected_person(event:any){
+    this.picked(event);
+    setTimeout(() => {
+        this.prepare_Sheet();
+      }, 1000);
 
+       
+     
+
+}
 picked(data: any) {
         console.log(data);
         this.userStream.next(data);
@@ -3723,12 +3868,12 @@ picked(data: any) {
             return;
         }
         //this.prepare_Sheet(this.spreadsheet);
-
+      
         this.selected = data;
         if (this.master){
             this.startRoster= "1900/01/01"
             this.endRoster= "1900/01/31"
-        }else{
+        }else if (this.startRoster==null){
             
             this.startRoster= moment(this.date).startOf('month').format('YYYY/MM/DD')
             if (this.Days_View>=28)
@@ -3737,7 +3882,7 @@ picked(data: any) {
                 this.date = moment(this.startRoster).add('day', this.Days_View-1);
                 this.endRoster = moment(this.date).format('YYYY/MM/DD');
                 this.date= this.startRoster;
-             
+                
             }
         }  
         this.viewType = this.whatType(data.option);
@@ -3809,7 +3954,7 @@ picked(data: any) {
                 });
                 
                 console.log(this.timesheets);
-            
+               
             });
         
        // this.getComputedPay(data).subscribe(x => this.computeHoursAndPay(x));
@@ -3953,6 +4098,8 @@ picked(data: any) {
              
            }
 
+           this.CalendarDate=new Date(this.date);
+
            this.prepare_Sheet();
 
          
@@ -3983,6 +4130,7 @@ picked(data: any) {
                  this.startRoster = moment(this.date).format('YYYY/MM/DD');
                  
                }
+               this.CalendarDate=new Date(this.date);
                this.prepare_Sheet();
 
          
@@ -4202,6 +4350,7 @@ IsStaffAllocated(s_StaffCode:string, s_Date : string, s_time:string, duration:nu
 {
     let status:any;
    
+    
 
     let sql=`SELECT [Client Code],[Start Time], LEFT(CONVERT(VARCHAR,DATEADD(Minute,[duration]*5,[Start Time]),108),5) as end_time FROM Roster 
     where [date] = '${moment(s_Date).format('YYYY/MM/DD')}' AND [Carer code]= '${s_StaffCode}' and
@@ -4385,7 +4534,7 @@ GETSERVICEACTIVITY(program: any): Observable<any> {
     if (!program) return EMPTY;
     
 
-    if (serviceType != 'ADMINISTRATION' && serviceType != 'ALLOWANCE NON-CHARGEABLE' && serviceType != 'ITEM'  && serviceType != 'SERVICE') {
+    if (serviceType != 'ADMINISTRATION'  && serviceType != 'ALLOWANCE NON-CHARGEABLE' && serviceType != 'ITEM'  && serviceType != 'SERVICE') {
 
         if(typeof _date === 'string'){
             _date = parseISO(_date);
@@ -4398,7 +4547,7 @@ GETSERVICEACTIVITY(program: any): Observable<any> {
             recipient: recipientCode,
             program:program,  
             forceAll: "0", //recipientCode=='!MULTIPLE' || recipientCode=='!INTERNAL' ? "1" : "0",   
-            mainGroup: this.IsGroupShift ? this.GroupShiftCategory : 'ALL',
+            mainGroup: this.IsGroupShift ? this.GroupShiftCategory : serviceType,
             subGroup: '-',           
             viewType: this.viewType,
             AllowedDays: s_DayMask,
@@ -4408,16 +4557,16 @@ GETSERVICEACTIVITY(program: any): Observable<any> {
     else {
         let  sql="";
 
-        // return this.timeS.getActivities({            
-        //     recipient: recipientCode,
-        //     program:program,  
-        //     forceAll: "1", //recipientCode=='!MULTIPLE' || recipientCode=='!INTERNAL' ? "1" : "0",   
-        //     mainGroup: this.IsGroupShift ? this.GroupShiftCategory : 'ALL',
-        //     subGroup: '-',           
-        //     viewType: this.viewType,
-        //     AllowedDays: "0",
-        //     duration: this.durationObject?.duration            
-        // });
+        return this.timeS.getActivities({            
+            recipient: recipientCode,
+            program:program,  
+            forceAll: "1", //recipientCode=='!MULTIPLE' || recipientCode=='!INTERNAL' ? "1" : "0",   
+            mainGroup: this.IsGroupShift ? this.GroupShiftCategory : 'ALL',
+            subGroup: '-',           
+            viewType: this.viewType,
+            AllowedDays: "0",
+            duration: this.durationObject?.duration            
+        });
 
     //   ql =`  SELECT DISTINCT [Service Type] AS Activity,I.RosterGroup,
     //     (CASE WHEN ISNULL(SO.ForceSpecialPrice,0) = 0 THEN
@@ -4457,7 +4606,7 @@ GETSERVICEACTIVITY(program: any): Observable<any> {
         AND ITM.[Status] = 'ATTRIBUTABLE' AND (ITM.EndDate Is Null OR ITM.EndDate >= '${this.currentDate}'))
         ORDER BY [Service Type]`;
     
-        return this.listS.getlist(sql);
+//        return this.listS.getlist(sql);
     }
 }
 
@@ -4902,14 +5051,11 @@ this.bookingForm.get('program').valueChanges.pipe(
         ).subscribe((d: Array<any>) => {
 
             this.serviceActivityList = d;//d.map(x => x.activity);
-          
-           
                 setTimeout(() => {
                     this.bookingForm.patchValue({
                         serviceActivity: this.defaultActivity                     
                         
                     });
-                    //this.next_tab();
                    
                 }, 0);
             
@@ -4922,6 +5068,7 @@ this.bookingForm.get('program').valueChanges.pipe(
                
                 
             }
+            
         });
      
 

@@ -2,9 +2,9 @@
     <nz-card [nzSize]="'small'" nzTitle="NANDA OR AGENCY NURSING DIAGNOSIS" style="border-color:#85B9D5;">
         <div nz-row class="mrg-btm">
             <div nz-col nzSpan="24">
-                <button class="botton success" (click)="showAddModal(1)">Add Diagnose</button>
+                <button class="botton success" (click)="showAddModal(1)">Add Diagnosis</button>
                 <nz-table #headerTable  [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'"
-                [nzFrontPagination]="false" [nzData]="medialDiagnose" [nzScroll]="{ y: '240px' }">
+                [nzFrontPagination]="false" [nzData]="nlist" [nzScroll]="{ y: '240px' }">
                 <thead>
                     <tr>
                         <th nzWidth="5%">#</th>
@@ -21,8 +21,8 @@
                         <td nzWidth="10%">
                             <a (click)="showEditModal(1,i)">Update</a>
                             <nz-divider nzType="vertical"></nz-divider>
-                            <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this Entry from Excluded Staff List?"
-                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data.recordNumber)">Delete</a>
+                            <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this Entry from List?"
+                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data.recordNumber,1)">Delete</a>
                         </td>
                     </tr>
                 </tbody>
@@ -33,9 +33,9 @@
 <nz-card [nzSize]="'small'" nzTitle="ICD 10 OR AGENCY MEDICAL DIAGNOSIS" style="border-color:#85B9D5;">
     <div nz-row>
         <div nz-col nzSpan="24">
-            <button class="botton success" (click)="showAddModal(2)">Add Medical Diagnose</button>
+            <button class="botton success" (click)="showAddModal(2)">Add Medical Diagnosis</button>
             <nz-table #headerTable2  [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'"
-            [nzFrontPagination]="false" [nzData]="dignsose" [nzScroll]="{ y: '240px' }">
+            [nzFrontPagination]="false" [nzData]="mlist" [nzScroll]="{ y: '240px' }">
             <thead>
                 <tr>
                     <th nzWidth="5%">#</th>
@@ -52,8 +52,8 @@
                     <td nzWidth="10%">
                         <a (click)="showEditModal(2,i)">Update</a>
                         <nz-divider nzType="vertical"></nz-divider>
-                        <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this Entry from Approved Staff List?"
-                        nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data.recordNumber)">Delete</a>
+                        <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this Entry from List?"
+                        nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data.recordNumber,2)">Delete</a>
                     </td>
                 </tr>
             </tbody>
@@ -62,7 +62,7 @@
 </div>
 </nz-card>
 </nz-card>
-<nz-modal [(nzVisible)]="modalOpen" [nzTitle]="title" (nzOnCancel)="handleCancel()" >
+<nz-modal [nzWidth]="500" [(nzVisible)]="modalOpen" [nzTitle]="title" (nzOnCancel)="handleCancel()" >
     <nz-tabset [nzTabPosition]="'top'" [nzType]="'card'" [nzSelectedIndex]="tabFindIndex">
         <nz-tab nzTitle="Detail/s" (nzClick)="tabFindChange(0)"> </nz-tab>
     </nz-tabset>
@@ -70,26 +70,26 @@
         <div nz-row [formGroup]="inputForm">
             <div nz-row>
                 <nz-form-item *ngIf="editOrAdd == 1">
-                    <nz-form-label>{{ whatView == 1 ? 'Staff' :  'Staff'}}</nz-form-label>
+                    <nz-form-label>NANDA CODES</nz-form-label>
                     <nz-form-control nzErrorTip="Required Field">
-                        <nz-select formControlName="list" nzAllowClear nzPlaceHolder=""
+                        <nz-select formControlName="list" nzShowSearch nzAllowClear nzPlaceHolder=""
                         [nzDropdownMatchSelectWidth]="false" style="width: 100%;">
-                        <nz-option *ngFor="let list of listStaff" [nzValue]="list" [nzLabel]="list"></nz-option>
+                        <nz-option *ngFor="let list of listDiagnosis" [nzValue]="list.description" [nzLabel]="list.description"></nz-option>
                     </nz-select>
                 </nz-form-control>
             </nz-form-item>
             <div class="form-group" *ngIf="editOrAdd == 2">
-                <nz-form-label>{{ whatView == 1 ? 'Staff' :  'Staff'}}</nz-form-label>
+                <nz-form-label>NANDA CODE</nz-form-label>
                 <input nz-input formControlName="list" disabled />
             </div>
-        </div>
-        <div nz-row>
-            <nz-form-item>
-                <nz-form-label>Notes</nz-form-label>
-                <nz-form-control nzErrorTip="Required Field">
-                    <textarea rows="4" nz-input formControlName="notes"></textarea>                    
-                </nz-form-control>
-            </nz-form-item>
+            <div class="form-group" *ngIf="editOrAdd == 2">
+                <nz-form-label>USER CODE</nz-form-label>
+                <input nz-input formControlName="usercode"/>
+            </div>
+            <div class="form-group" *ngIf="editOrAdd == 2">
+                <nz-form-label>ICD10/NANDA</nz-form-label>
+                <input nz-input formControlName="icdcode"/>
+            </div>
         </div>
     </div>
     <div *nzModalFooter>
@@ -98,7 +98,3 @@
     </div>
 </div>
 </nz-modal>
-
-<!-- <div>
-    diagnose
-</div> -->

@@ -26,10 +26,10 @@
                     <td>{{ data.detailDate | date: 'dd/MM/y' }}</td>
                     <td>{{ data.creator || '-' | uppercase  }}</td>
                     <td>
-                        <a (click)="showEditModal(i)">Update</a>
+                        <a (click)="showEditModal(i)"><i nz-icon nzType="edit" nzTheme="outline"></i></a>
                         <nz-divider nzType="vertical"></nz-divider>
                         <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this group?" nzPopconfirmPlacement="bottom"
-                            (nzOnConfirm)="delete(i)">Delete</a>
+                            (nzOnConfirm)="delete(i)"><i nz-icon nzType="delete" nzTheme="outline"></i></a>
                     </td>
                 </tr>
             </tbody>

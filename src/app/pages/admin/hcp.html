@@ -1,30 +1,69 @@
-<ul nz-menu nzMode="horizontal">
-    <li nz-menu-item >
 
-        <div>
-            <button nz-button nzType="default" id="btn-Systm-Companies" >
-                <i nz-icon nzType="read"></i>
-                Import Medicare Claim
-            </button>
-        </div>
-        <div>
-            <button nz-button nzType="default" id="btn-Systm-Branches">
-                <i nz-icon nzType="read"></i>
-                Print Statements
-            </button>
-        </div>
-        <div>
-            <button nz-button nzType="default"   id="btn-Systm-FundingRegions">
-                <i nz-icon nzType="read"></i>
-                Update HCP Rates
-            </button>
-        </div>
-        <div>
-            <button nz-button nzType="default" id="btn-distribution-list"   >
-                <i nz-icon nzType="read"></i>
-                Sales Journal Export
-            </button>
-        </div>
+<div nz-row nzGutter="64">
+    <div nz-col nzSpan="8">
+        <ul nz-menu nzMode="horizontal">
+            <li>        
+                <div>
+                    <button nz-button nzType="default" id="btn-Systm-Companies" >
+                        <i nz-icon nzType="read"></i>
+                        Import Medicare Claim
+                    </button>
+                </div>
+                <div>
+                    <button nz-button nzType="default" id="btn-Systm-Branches">
+                        <i nz-icon nzType="read"></i>
+                        Print Statements
+                    </button>
+                </div>
+                <div>
+                    <button nz-button nzType="default"   id="btn-Systm-FundingRegions">
+                        <i nz-icon nzType="read"></i>
+                        Update HCP Rates
+                    </button>
+                </div>
+                <div>
+                    <button nz-button nzType="default" id="btn-distribution-list"   >
+                        <i nz-icon nzType="read"></i>
+                        Sales Journal Export
+                    </button>
+                </div>                
+            </li>                
+        </ul>
+    </div>
+
+    <div nz-col nzSpan="8">
+        <ul nz-menu nzMode="horizontal">
+            <li >
         
-    </li>                
-</ul>
+                <div>
+                    <button nz-button nzType="default" id="btn-Systm-Companies" (click)="view('cp')">
+                        <i nz-icon nzType="read"></i>
+                        Claim Preparation
+                    </button>
+                </div>
+                <div>
+                    <button nz-button nzType="default" id="btn-Systm-Branches" (click)="view('cu')">
+                        <i nz-icon nzType="read"></i>
+                        Claim Update
+                    </button>
+                </div>
+
+                <div>
+                    <button nz-button nzType="default" id="btn-Systm-Branches" (click)="view('proda')">
+                        <i nz-icon nzType="read"></i>
+                        PRODA Claim Export
+                    </button>
+                </div>
+     
+                              
+            </li>                
+        </ul>
+    </div>
+
+</div>
+
+<app-cdc-claim-preparation [open]="claimPreparationOpen"></app-cdc-claim-preparation>
+
+<app-cdc-claim-update [open]="claimUpdateOpen"></app-cdc-claim-update>
+
+<app-cdc-proda-claim-update [open]="prodaClaimUpdateOpen"></app-cdc-proda-claim-update>

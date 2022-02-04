@@ -33,6 +33,11 @@ interface UserView{
     @Component({
       selector: 'shiftdetail',
       templateUrl: './shiftdetail.html',
+      styles: [`
+      .disabled{
+        pointer-events:none;
+      
+      }`]
     })
     export class ShiftDetail implements AfterViewInit{
         @Input() timeSheetVisible:boolean=false;

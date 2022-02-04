@@ -43,6 +43,11 @@ const inputFormDefault = {
 
 @Component({
     styles: [`
+
+        li{
+            border:none !important;
+            padding:2rem;
+        }
         
         button{
             width: 200pt !important;
@@ -95,6 +100,10 @@ const inputFormDefault = {
 })
 export class HCPComponent implements OnInit, OnDestroy {
     
+    claimPreparationOpen: any;
+    claimUpdateOpen: any;
+    prodaClaimUpdateOpen: any;
+
     ngOnInit(){
 
     }
@@ -105,6 +114,12 @@ export class HCPComponent implements OnInit, OnDestroy {
 
     constructor(){
 
+    }
+
+    view(val: string){
+        if(val == 'cp') this.claimPreparationOpen = {};
+        if(val == 'cu') this.claimUpdateOpen = {};
+        if(val == 'proda')  this.prodaClaimUpdateOpen = {};
     }
     
 }

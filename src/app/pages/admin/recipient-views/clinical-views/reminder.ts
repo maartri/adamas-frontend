@@ -1,15 +1,32 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 
-import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, ClientService, dateFormat } from '@services/index';
+import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, recurringInt, recurringStr, PrintService } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
-import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
+import { forkJoin, Subscription, Observable, Subject, EMPTY } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
-
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { RECIPIENT_OPTION, ModalVariables, ProcedureRoster, UserToken, CallAssessmentProcedure, Consents } from '@modules/modules';
 
-import format from 'date-fns/format';
+
+import { Reminders } from '@modules/modules';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { DomSanitizer } from '@angular/platform-browser';
+import { isSameDay } from 'date-fns';
+
+const defaultForm: any = {
+    recordNumber: 0,
+    personID: '',
+    listOrder: '',
+    followUpEmail:'',
+    recurring: false,
+    recurrInt: '',
+    recurrStr: '',
+    notes: '',
+    reminderDate: null,
+    dueDate: null,
+    staffAlert: null
+}
+
 
 @Component({
     selector: '',
@@ -25,17 +42,40 @@ import format from 'date-fns/format';
 export class ClinicalReminder implements OnInit, OnDestroy {
     private unsubscribe: Subject<void> = new Subject();
     user: any;
-    loading: boolean = false;
-
-    consentOpen: boolean = false;
-    consentGroup: FormGroup;
-    reminderList: Array<any> = [];
-
+    inputForm: FormGroup;
+    tableData: Array<any>;
+    
+    modalOpen: boolean = false;
     addOREdit: number;
-
-    lists: Array<any>;
-
-    dateFormat: string = dateFormat;
+    isLoading: boolean = false;
+    lists: Array<any> = [];
+    dateFormat: string = 'dd/MM/yyyy';
+    
+    dayInt = recurringInt;
+    dayStr = recurringStr;
+    
+    private default: any = {
+        recordNumber: '',
+        personID: '',
+        listOrder: '',
+        followUpEmail: '',
+        recurring: false,
+        recurrInt: null,
+        recurrStr: null,
+        notes: '',
+        reminderDate: null,
+        dueDate: null,
+        staffAlert: null
+    }
+    loading: boolean = false;
+    ModalS: any;
+    tocken: any;
+    pdfTitle: string;
+    tryDoctype: any;
+    drawerVisible: boolean =  false;
+    rpthttp = 'https://www.mark3nidad.com:5488/api/report';
+    selectedReminders: any;
+    remindersList: any;
     
     constructor(
         private timeS: TimeSheetService,
@@ -45,154 +85,261 @@ export class ClinicalReminder implements OnInit, OnDestroy {
         private globalS: GlobalService,
         private formBuilder: FormBuilder,
         private modalService: NzModalService,
-        private cd: ChangeDetectorRef
-    ) {
-        cd.detach();
-        this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-            if (data instanceof NavigationEnd) {
-                if (!this.sharedS.getPicked()) {
-                    this.router.navigate(['/admin/recipient/personal'])
+        private printS: PrintService,
+        private cd: ChangeDetectorRef,
+        private http: HttpClient,
+        private sanitizer: DomSanitizer,
+        ) {
+            cd.detach();
+            
+            this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+                if (data instanceof NavigationEnd) {
+                    if (!this.sharedS.getPicked()) {
+                        this.router.navigate(['/admin/staff/personal'])
+                    }
                 }
-            }
-        });
-
-        this.sharedS.changeEmitted$.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-            if (this.globalS.isCurrentRoute(this.router, 'reminder')) {
-                console.log('sasd')
-                this.user = data;
-                this.search(data);
-            }
-        });
-    }
-
-    ngOnInit(): void {
-        this.user = this.sharedS.getPicked();        
-        this.buildForm();
-        this.search(this.user);
-
-        this.listDropDowns()
-    }
-
-    buildForm(){
-        this.consentGroup = this.formBuilder.group({
-            recordNumber: null,
-            personID: null,
-            consent: '',
-            notes: '',
-            expiryDate: null
-         })
-
-        setTimeout(() => {
-            this.consentGroup.controls['consent'].enable();
-        }, 0);
-    }
-
-    trackByFn(index, item) {
-        return item.id;
-    }
-
-    resetAll(){
-        this.search();
-    }
-
-    consentProcess(){
-        const group = this.consentGroup.value;
-        // console.log(format(group.expiryDate, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"));
-        // this.competencyGroup.controls['mandatory'].setValue((this.competencyGroup.value.mandatory == null) ? false : this.competencyGroup.value.mandatory)
-        let _consentGroup: Consents = {
-            recordNumber: group.recordNumber,
-            personID: this.user.id,
-            notes: group.notes,
-            date1: group.expiryDate ? group.expiryDate : null,
-            name: group.consent
-        }
-
-        console.log(_consentGroup);
-        // return;
-
-        if(this.addOREdit == 0){            
-            this.timeS.postconsents(_consentGroup).subscribe(data => {
-                if(data){
-                    this.resetAll();
-                    this.globalS.sToast('Success','Consent Inserted');
-                    this.handleCancel();
+            });
+            
+            this.sharedS.changeEmitted$.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+                if (this.globalS.isCurrentRoute(this.router, 'reminders')) {
+                    this.user = data;
+                    this.search(data);
                 }
-            })
+            });
         }
-
-        if(this.addOREdit == 1){
-            this.timeS.updateconsents(_consentGroup).subscribe(data => {
-                if(data){
-                    this.resetAll();
-                    this.globalS.sToast('Success','Consent Updated');
-                    this.handleCancel();
-                }
-            })
-        }
-    }
-
-    showAddModal() {
-        this.addOREdit = 0;
-        this.buildForm();
-        this.consentOpen = true;
-        this.listDropDowns();
-
-    
-    }
-
-    listDropDowns(){
-        this.listS.getconsents(this.user.id).subscribe(data => this.lists = data)
-    }
-
-
-    updateconsentmodal(data: any){
-
-        this.consentOpen = true;
-        this.addOREdit = 1;
         
-        this.lists = [data.consent];
-
-        this.consentGroup.patchValue({
-            recordNumber: data.recordNumber,
-            personID: data.personID,
-            consent: data.consent,
-            notes: data.notes,
-            expiryDate: data.expiryDate
-        });
-
-        // this.consentGroup.controls['consent'].disable();
-    }
-
-    deleteconsent(data: any){
-        this.timeS.deleteconsents(data.recordNumber)
+        ngOnInit(): void {
+            this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
+            this.user = this.sharedS.getPicked();
+            this.loading = false;
+            if(this.user){
+                this.search(this.user);
+                this.buildForm();
+                return;
+            }
+            this.router.navigate(['/admin/staff/personal'])
+        }
+        
+        ngOnDestroy(): void {
+            this.unsubscribe.next();
+            this.unsubscribe.complete();
+        }
+        
+        buildForm() {
+            
+            this.inputForm = this.formBuilder.group({
+                recordNumber: 0,
+                personID: '',
+                listOrder: '',
+                followUpEmail: ['', [Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$")]],
+                recurring: false,
+                recurrInt: '',
+                recurrStr: '',
+                notes: '',
+                reminderDate: null,
+                dueDate: null,
+                staffAlert: ['', [Validators.required]]
+            });
+            
+            this.inputForm.controls['recurrStr'].disable();
+            this.inputForm.controls['recurrInt'].disable();
+            
+            this.inputForm.get('recurring').valueChanges.subscribe(data => {
+                if(!data){
+                    this.inputForm.controls['recurrInt'].setValue(null)
+                    this.inputForm.controls['recurrStr'].setValue(null)
+                    this.inputForm.controls['recurrStr'].disable()
+                    this.inputForm.controls['recurrInt'].disable()
+                } else {
+                    this.inputForm.controls['recurrStr'].enable()
+                    this.inputForm.controls['recurrInt'].enable()
+                }
+            })
+        }
+        
+        resetForm(){
+            this.inputForm.reset(defaultForm);
+        }
+        
+        search(user: any = this.user) {
+            this.cd.reattach();
+            this.loading = true;
+            this.listS.getclinicalreminder(user.id).subscribe(reminders => {
+                    this.loading = false;
+                    this.tableData = reminders;
+                    this.cd.markForCheck();
+            })
+            this.listS.getreminders(this.user.id).subscribe(data => {
+                this.remindersList = data.map(x => {
+                    return {
+                      label: x,
+                      value: x,
+                      checked: false
+                    }
+                  });;
+                  this.cd.markForCheck();
+            });
+        }
+        
+        trackByFn(index, item) {
+            return item.id;
+        }
+        logs(event: any) {
+            this.selectedReminders = event;
+        }
+        save() {
+            if((this.addOREdit == 1 && this.selectedReminders === undefined) || (this.selectedReminders !== undefined && this.selectedReminders.length ===0) ){
+                this.globalS.sToast('Success', 'Please Select Atleast One Reminder ');
+                return
+            }
+            this.globalS.sToast('Success', 'working');
+            
+            if (!this.globalS.IsFormValid(this.inputForm))
+            return;
+            
+            
+            const remGroup = this.inputForm.value;
+            const reminderDate = this.globalS.VALIDATE_AND_FIX_DATETIMEZONE_ANOMALY(remGroup.reminderDate);
+            const dueDate = this.globalS.VALIDATE_AND_FIX_DATETIMEZONE_ANOMALY(remGroup.dueDate);
+            
+            const reminder: Reminders = {
+                recordNumber: remGroup.recordNumber,
+                personID: this.user.id,
+                name: remGroup.staffAlert,
+                address1: remGroup.recurring ? remGroup.recurrInt : '',
+                address2: remGroup.recurring ? remGroup.recurrStr : '',
+                email: remGroup.followUpEmail,  
+                date1: reminderDate,
+                date2: dueDate,
+                state: remGroup.listOrder,
+                notes: remGroup.notes,
+                recurring: remGroup.recurring,
+                sameDate:false,
+                sameDay:false,
+                creator:"",
+            }
+            
+            console.log(reminder)
+            
+            
+            if(this.addOREdit == 1){
+                this.timeS.postreminders(reminder).pipe(
+                    takeUntil(this.unsubscribe))
                     .subscribe(data => {
-                        if(data){
-                            this.resetAll();
-                            this.globalS.sToast('Success','Consent Deleted')
+                        this.globalS.sToast('Success', 'Data added');
+                        this.search();
+                        this.handleCancel();
+                    })
+                }
+                
+                if (this.addOREdit == 0) {
+                    this.timeS.updatereminders(reminder).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+                        this.globalS.sToast('Success', 'Data updated');
+                        this.search();
+                        this.handleCancel();
+                    });
+                }
+            }
+            
+            showAddModal() {
+                this.modalOpen = true;
+                this.resetForm();
+                this.addOREdit = 1;
+            }
+                
+            
+            showEditModal(index: any) {
+                this.addOREdit = 0;
+                const { recordNumber, personID, alert, reminderDate, dueDate, address1, address2, recurring, state, email, notes} = this.tableData[index];
+                
+                this.inputForm.patchValue({
+                    recordNumber: recordNumber,
+                    personID: personID,
+                    staffAlert: alert,
+                    reminderDate: reminderDate,
+                    dueDate: dueDate,
+                    recurrInt: address1,
+                    recurrStr: address2,
+                    recurring: recurring,
+                    listOrder: state,
+                    followUpEmail: email,
+                    notes: notes
+                });
+                
+                this.modalOpen = true;
+            }
+            
+            delete(index: any) {
+                const { recordNumber } = this.tableData[index];
+                
+                this.timeS.deletereminders(recordNumber).pipe(
+                    takeUntil(this.unsubscribe))
+                    .subscribe(data => {
+                        if (data) {
+                            this.globalS.sToast('Success', 'Data delted');
+                            this.handleCancel();
+                            this.search();
+                            
                         }
                     })
-    }
-
-    search(user: any = this.user){
-        this.cd.reattach();
-        this.loading = true;
-
-        this.listS.getclinicalreminder(user.id).subscribe(reminders => {
-            this.loading = false;
-            this.reminderList = reminders;
-            this.cd.markForCheck();
-        })        
-    }
-
-    ngOnDestroy(): void {
-
-    }
-
-    handleCancel(){
-        this.consentOpen = false;
-    }
-
-    handleOk(){
-
-    }
-}
+                }
+                
+                handleCancel() {        
+                    this.inputForm.reset(this.default);
+                    this.isLoading = false;
+                    this.modalOpen = false;
+                }
+                handleOkTop() {
+                    this.generatePdf();
+                    this.tryDoctype = ""
+                    this.pdfTitle = ""
+                }
+                handleCancelTop(): void {
+                    this.drawerVisible = false;
+                    this.pdfTitle = ""
+                }
+                generatePdf(){
+                    
+                    this.drawerVisible = true;
+                    
+                    this.loading = true;
+                    
+                    var fQuery = "Select Name As Field1, CONVERT(varchar, [Date1],105) As Field2, CONVERT(varchar, [Date2],105) as Field3,Notes as Field4 From HumanResources  HR INNER JOIN Staff ST ON ST.[UniqueID] = HR.[PersonID] WHERE ST.[AccountNo] = '"+this.user.code+"' AND HR.DeletedRecord = 0 AND [Group] = 'STAFFALERT' ORDER BY  RecordNumber DESC";
+                    
+                    const data = {
+                        "template": { "_id": "0RYYxAkMCftBE9jc" },
+                        "options": {
+                            "reports": { "save": false },
+                            "txtTitle": "Staff Reminder List",
+                            "sql": fQuery,
+                            "userid":this.tocken.user,
+                            "head1" : "Alert",
+                            "head2" : "Reminder Date",
+                            "head3" : "Expiry Date",
+                            "head4" : "Notes",
+                        }
+                    }
+                    this.printS.printControl(data).subscribe((blob: any) => { 
+                        let _blob: Blob = blob;
+                        let fileURL = URL.createObjectURL(_blob);
+                        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                        this.loading = false;
+                        this.cd.detectChanges();    
+                    }, err => {
+                        this.loading = false;
+                        this.cd.detectChanges();
+                        this.ModalS.error({
+                            nzTitle: 'TRACCS',
+                            nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                            nzOnOk: () => {
+                                this.drawerVisible = false;
+                            },
+                        });
+                    });
+                    
+                    this.cd.detectChanges();
+                    this.loading = true;
+                    this.tryDoctype = "";
+                    this.pdfTitle = "";
+                }
+        }

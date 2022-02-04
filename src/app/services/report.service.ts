@@ -19,8 +19,8 @@ export class ReportService {
     GetReportNames(format: string): Observable<any>{
         return this.auth.get(`${report}/getreportlist/${format}`);
     }
-    GetReportSql(title: string): Observable<any>{
-        return this.auth.get(`${report}/report-sql/${title}`);
+    GetReportSql(title: string,Format : string): Observable<any>{
+        return this.auth.get(`${report}/report-sql/${title}/${Format}`);
     }   
     GetReportFormat(name: string): Observable<any>{
         return this.auth.get(`${report}/report-format/${name}`);

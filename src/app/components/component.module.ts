@@ -53,6 +53,10 @@ import { FilterComponent } from './filter/filter.component';
 import { IntervalQuoteComponent } from './interval-quote/interval-quote.component';
 import { PrintPdfComponent } from './print-pdf/print-pdf.component';
 import { AddQuoteComponent } from './add-quote/add-quote.component';
+import { DexUploadComponent } from './dex-upload/dex-upload.component';
+import { CdcClaimPreparationComponent } from './cdc-claim-preparation/cdc-claim-preparation.component';
+import { CdcClaimUpdateComponent } from './cdc-claim-update/cdc-claim-update.component';
+import { CdcProdaClaimUpdateComponent } from './cdc-proda-claim-update/cdc-proda-claim-update.component';
 
 
 @NgModule({
@@ -93,7 +97,11 @@ import { AddQuoteComponent } from './add-quote/add-quote.component';
     FilterComponent,
     IntervalQuoteComponent,
     PrintPdfComponent,
-    AddQuoteComponent
+    AddQuoteComponent,
+    DexUploadComponent,
+    CdcClaimPreparationComponent,
+    CdcClaimUpdateComponent,
+    CdcProdaClaimUpdateComponent
   ],
   imports: [
     CommonModule,
@@ -140,7 +148,11 @@ import { AddQuoteComponent } from './add-quote/add-quote.component';
     NgSelectModule,
     FilterComponent,
     IntervalQuoteComponent,
-    AddQuoteComponent
+    AddQuoteComponent,
+    DexUploadComponent,
+    CdcClaimPreparationComponent,
+    CdcClaimUpdateComponent,
+    CdcProdaClaimUpdateComponent
   ],
   providers: [
     

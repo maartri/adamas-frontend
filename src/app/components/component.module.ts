@@ -57,6 +57,7 @@ import { DexUploadComponent } from './dex-upload/dex-upload.component';
 import { CdcClaimPreparationComponent } from './cdc-claim-preparation/cdc-claim-preparation.component';
 import { CdcClaimUpdateComponent } from './cdc-claim-update/cdc-claim-update.component';
 import { CdcProdaClaimUpdateComponent } from './cdc-proda-claim-update/cdc-proda-claim-update.component';
+import { NdiaClaimUpdateComponent } from './ndia-claim-update/ndia-claim-update.component';
 
 
 @NgModule({
@@ -101,7 +102,8 @@ import { CdcProdaClaimUpdateComponent } from './cdc-proda-claim-update/cdc-proda
     DexUploadComponent,
     CdcClaimPreparationComponent,
     CdcClaimUpdateComponent,
-    CdcProdaClaimUpdateComponent
+    CdcProdaClaimUpdateComponent,
+    NdiaClaimUpdateComponent
   ],
   imports: [
     CommonModule,
@@ -152,7 +154,8 @@ import { CdcProdaClaimUpdateComponent } from './cdc-proda-claim-update/cdc-proda
     DexUploadComponent,
     CdcClaimPreparationComponent,
     CdcClaimUpdateComponent,
-    CdcProdaClaimUpdateComponent
+    CdcProdaClaimUpdateComponent,
+    NdiaClaimUpdateComponent
   ],
   providers: [
     

@@ -10,7 +10,7 @@
                                     <ul nz-menu nzMode="horizontal">
                                         <li>
                                             <div>                                        
-                                                <button nz-button nzType="default" id="btn-absentclient">
+                                                <button nz-button nzType="default" id="btn-absentclient" (click)="view('ndia-claim')">
                                                 <i nz-icon nzType="printer"></i>
                                                     NDIA Claim Update
                                                 </button> 
@@ -56,4 +56,6 @@
             </div>
         </div>
     </div>
-</div>                                        
+</div>
+
+<app-ndia-claim-update [open]="ndiaClaimUpdateOpen"></app-ndia-claim-update>

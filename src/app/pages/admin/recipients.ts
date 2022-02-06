@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef, AfterViewInit } from '@angular/core'
+import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef, AfterViewInit, Renderer2, ViewChild, ElementRef } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { GlobalService, StaffService,nodes,checkOptionsOne,sampleList,ShareService, leaveTypes, ListService,TimeSheetService } from '@services/index';
@@ -32,16 +32,32 @@ import { FormBuilder, Validators } from '@angular/forms';
     color: #fff;
   }
   
-  ul{
-    list-style:none;
-    float:right;
-    margin:0;
+  ul.options{
+    list-style: none;
+    margin: 0;
+    padding: 1rem 0 0 0;
   }
-  li{
+  ul.options li{
     display: inline-block;
     margin-right: 6px;
     padding: 5px 0;
     font-size: 13px;
+  }
+  .disabled{
+    cursor: not-allowed;
+  }
+  ul.sub-menu{
+    list-style:none;
+    padding:0;
+    margin:0;
+  }
+  ul.sub-menu li{
+    font-size:12px;
+    padding:5px 15px;
+  }
+  ul.sub-menu li:hover:not(.disabled){
+    color:black;
+    background:#edf9ff;
   }
   li div{
     text-align: center;
@@ -65,6 +81,31 @@ import { FormBuilder, Validators } from '@angular/forms';
     border: 0;
     background: #ffffff00;
     float: left;
+  }
+  div.special-btn{
+    padding: 4px 2rem !important;
+    position:relative;
+    display:inline-block;
+  }
+  div.special-btn > div{
+    position: absolute;
+    border: 1px solid #dfdfdf;
+    background: #fff;
+    z-index: 10;
+    top: 34px;
+    left: 0;
+    width: 100%;  
+    border-radius:4px;
+  }
+  .special-btn{
+    flex: 10%;
+    font-size: 1.1rem;
+    padding: 8px;
+    margin-left: 10px;
+    border: 1px solid #dadada;
+    border-radius: 7px;
+    cursor: pointer;
+    color: #afafaf;
   }
   // .status{
   //   font-size: 11px;
@@ -114,6 +155,9 @@ import { FormBuilder, Validators } from '@angular/forms';
   .ant-table-thead>tr>th{
     background:green;
   }
+  .hide{
+    display:none;
+  }
   `],
   templateUrl: './recipients.html',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -122,6 +166,9 @@ import { FormBuilder, Validators } from '@angular/forms';
 
 export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
   
+  @ViewChild('menuSub') menuSub: ElementRef;
+  @ViewChild('toggleMenu') toggleMenu: ElementRef
+
   option: string = 'add';
   
   allBranches:boolean = true;
@@ -317,6 +364,8 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
   selectedCategories: any;
   rights: any;
   tocken: any;
+
+  
   nzEvent(event: NzFormatEmitEvent): void {
     if (event.eventName === 'click') {
       var title = event.node.origin.title;
@@ -413,8 +462,12 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     private globalS:GlobalService,
     private http: HttpClient,
     private msg: NzMessageService,
+    private renderer2: Renderer2
     ) {
       
+
+   
+
       this.sharedS.emitProfileStatus$.subscribe(data => {
         // console.log(data);
         this.selectedRecipient = data;
@@ -467,8 +520,15 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     }
     
     ngAfterViewInit() {
-      
+      // this.renderer2.listen('window', 'click',(e:Event)=>{
+      //     if(e.target !== this.menuSub.nativeElement){
+      //           this.showSubMenu = !this.showSubMenu;
+      //     }
+      // });
     }
+
+    showSubMenu: boolean = false;
+
     searchData() : void{
       this.loading = true;      
       

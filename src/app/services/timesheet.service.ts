@@ -763,6 +763,27 @@ export class TimeSheetService {
     }
 
     /** */
+    /**
+     *  Clinical Reminders Recipient
+     */
+
+    postclinicalreminders(data: any,isSingle:string): Observable<any> {
+        return this.auth.post(`${timesheet}/clinicalReminder/${isSingle}`,data)
+    }
+    deleteclinicalreminders(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/clinicalReminder/${recordNo}`)
+    }
+    /** */
+    /**
+     *  Clinical Alerts Recipient
+     */
+
+    postclinicalalerts(data: any,isSingle:string): Observable<any> {
+        return this.auth.post(`${timesheet}/clinicalAlert/${isSingle}`,data)
+    }
+    deleteclinicalalerts(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/clinicalAlert/${recordNo}`)
+    }
 
     /**
      *  Reminders Staff

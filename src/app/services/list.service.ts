@@ -752,9 +752,6 @@ export class ListService {
     getaddclinicalnursingdiagnose(personID: string): Observable<any>{
         return this.auth.get(`${list}/clinical/addnursingdiagnose/${personID}`)
     }
-
-    
-    
     getclinicalmedicationdiagnose(personID: string): Observable<any>{
         return this.auth.get(`${list}/clinical/medicationdiagnose/${personID}`)
     }
@@ -773,6 +770,10 @@ export class ListService {
     getreminders(personID: string): Observable<any>{
         return this.auth.get(`${list}/clinical-reminders/${personID}`)
     }
+    getalerts(personID: string): Observable<any>{
+        return this.auth.get(`${list}/clinical-alert/${personID}`)
+    }
+    
     getclinicalalert(personID: string): Observable<any>{
         return this.auth.get(`${list}/clinical/alert/${personID}`)
     }

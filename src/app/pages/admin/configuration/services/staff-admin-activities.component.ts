@@ -274,7 +274,6 @@ export class StaffAdminActivitiesComponent implements OnInit {
           this.loading = false;
           this.handleCancel();
           this.loadData();
-          
         });
         this.loading = false;
       }

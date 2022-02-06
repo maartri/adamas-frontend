@@ -24,6 +24,8 @@ import { FormBuilder, Validators } from '@angular/forms';
   nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-nav-scroll div.ant-tabs-nav div div.ant-tabs-tab{
     line-height: 24px;
     height: 25px;
+    border-radius:15px 4px 0 0;
+    margin:0 -10px 0 0;
   }
   nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-nav-scroll div.ant-tabs-nav div div.ant-tabs-tab.ant-tabs-tab-active{
     background: #85B9D5;

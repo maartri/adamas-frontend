@@ -122,6 +122,7 @@ export class GlanceAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.buildForm();
         this.populateDropDown();
         this.getCompanyName();
+        this.refreshValues();
     }
     buildForm() {
         this.inputForm = this.formBuilder.group({

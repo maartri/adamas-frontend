@@ -143,24 +143,19 @@
 
 .seven{
     width:12.5%;
-    resize: horizontal;
-    overflow: auto;
    
 }
 .five{
     width:16.66%;
-    resize: horizontal;
-    overflow: auto;
+   
 }
 .ten{
     width:9.09%;
-    resize: horizontal;
-    overflow: auto;
+   
 }
 .fourteen{
     width:6.66%;
-    resize: horizontal;
-    overflow: auto;
+  
 }
 .data{
     position:relative;

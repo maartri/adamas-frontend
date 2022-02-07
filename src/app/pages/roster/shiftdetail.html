@@ -119,7 +119,9 @@
                     </div>
                     <div class="form-group"  [class.disabled]="viewType === 'Staff' || !editRecord">
                         <label for="">Staff/Contractor</label>
+                      
                         <app-staff-popup [disabled]="viewType === 'Staff' || !editRecord" formControlName="staffCode"></app-staff-popup>
+                        
                     </div>
                 </div>
                 

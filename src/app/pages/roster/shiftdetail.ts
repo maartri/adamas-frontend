@@ -91,7 +91,8 @@ interface UserView{
     durationObject: any;
     today = new Date();
     serviceSetting:string;
-    editRecord:boolean=false;
+    editRecord:boolean;
+    searchStaff:boolean;
     defaultStartTime: Date = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 8, 0, 0);
     defaultEndTime: Date = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 9, 0, 0);
     private unsubscribe = new Subject();
@@ -542,7 +543,9 @@ ngOnInit(){
             return "!INTERNAL"
         }
     }
-    
+    openStaffModal(){
+        this.searchStaff=true;
+    }
 Cancel_ProceedBreachRoster(){
     this.breachRoster=false;
  

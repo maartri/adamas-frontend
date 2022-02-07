@@ -38,14 +38,24 @@
                     (mousedown)="deselect(null,$event)" (drop)="drop($event);$event.stopPropagation()"
                     (dragover)="dragOver($event)" >
                     <div *ngIf="i == 0">
-                        <div>
+                        <div style="font-size:14px; font-weight: bold; text-align: justify-self unset;">
                             <span *ngIf="data?.key.indexOf('BOOKED') > -1">UNASSIGNED BOOKINGS</span>
                             <span *ngIf="!(data?.key.indexOf('BOOKED') > -1)">{{ data?.key }}</span>
+                            
                         </div>
-                        <div style="font-size:10px;">{{ data?.value[0].staffCategory}}</div>
+                        <div style="font-size:12px; text-align: justify-self unset;" *ngIf="!(data?.key.indexOf('BOOKED') > -1)" >
+                            <div >{{ data?.value[0].staffCategory}}</div>
+                            <div >{{ data?.value[0].staffPhone}}</div>
+                            <div >W1-WKD : {{ getWorkHours(data?.key ,'W1') }}</div>
+                            <div >W2-WKD : {{ getWorkHours(data?.key ,'W2') }}</div>
+                            <div >FN-WKD : {{ getWorkHours(data?.key ,'F') }}</div>
+                            <!-- <div >TO-WKD : {{ getWorkHours(data?.key ,'T') }}</div> -->
+                            <div >PP-WKD : {{ getWorkHours(data?.key ,'P') }}</div>
+                        </div>
                     </div>
                     <ng-container *ngIf="i > 0" >
                         <ng-container *ngFor="let value of data.value | dmz: day;  " >
+                           
                             <div class="data" *ngIf="!value.isLast && !value.isNone"
                                 (dragstart)="dragStart($event,value)" (dragend)="dragEnd($event)"
                                 (dblclick)="mousedblclick($event,value)"
@@ -89,6 +99,8 @@
                                 (click)="viewText(value)">{{ value.recipient}} * {{ value.activity}} * {{value.notes.toUpperCase()}} </div>
                             </div>
                             <div class="data total" *ngIf="value.isLast && !value.isNone">
+                                <!-- *ngIf="value.isLast && !value.isNone" -->
+                              
                                 <span>Total Hours: {{ value.total | number: '1.2-2'}} </span>
                             </div>
                         

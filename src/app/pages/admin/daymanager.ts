@@ -133,7 +133,9 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
     changeModalView = new Subject<number>();
     OperationView= new Subject<number>();
     AllocateView= new Subject<number>();
-    
+    openSearchStaffModal:boolean;
+
+   
     ViewServiceNoteModal:boolean    
     Person:any={id:'0',code:'',personType:'Recipient', noteType:'SVCNOTE'};
     loadingNote:Subject<any>=new Subject();
@@ -279,6 +281,12 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
 
 }
 
+openStaffModal(){
+    this.openSearchStaffModal=true;
+}
+onStaffSearch(data:any){
+    this.selectedCarer=data.selected;
+}
 loadNotes(){
     this.Person.id=this.selectedOption.uniqueid;
     this.Person.code=this.selectedOption.recipient;

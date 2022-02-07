@@ -6,6 +6,7 @@ import { distinctUntilChanged, debounceTime } from 'rxjs/operators';
 import * as moment from 'moment';
 import format from "date-fns/format";
 import { Subscription, Subject } from 'rxjs';
+import { stripGeneratedFileSuffix } from '@angular/compiler/src/aot/util';
 
 const enum ImagePosition {
   LaundryService = '-24px 0px',
@@ -81,6 +82,7 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
 
   days: any[] = [];
   daymanager: Array<any> = [];
+  workinghours: Array<any> = [];
 
   loading: boolean = false;
   HighlightColum_index:number=-1;
@@ -301,8 +303,134 @@ HighlightColum(indx:number){
         this.loading = false;
         console.log(data)
       })
-  }
 
+      this.timeS.getStaffWorkingHours({ StartDate: sDate, EndDate: eDate }).pipe(
+        debounceTime(200))
+        .subscribe(data => {
+          this.workinghours = data;
+         
+        })
+      
+  }
+  
+  getWorkHours2(accountNo:string):any
+  {
+      let hrs:string
+      let lstHrs: any;
+      let pp:String='00:00';
+      let workHours:any={AccountNo:'' ,w1:'', w2:'',fn:'',tt:'',pp:''};
+     
+        lstHrs=this.workinghours.find(obj => obj.accountNo === accountNo);
+        if (Array.isArray(lstHrs)){
+              hrs=lstHrs.reduce((accumulator, current) => accumulator + current.total_WrkdHr, 0);
+              pp=lstHrs[0].payprdWrkdHr
+        }else{
+              hrs=this.workinghours.find(obj => obj.accountNo === accountNo).total_WrkdHr;
+              pp=lstHrs.payprdWrkdHr
+        }
+        workHours.AccountNo=accountNo;
+        workHours.tt=hrs;
+        workHours.pp=pp;
+      //case 'W1':
+      
+         lstHrs=this.workinghours.find(obj => obj.accountNo === accountNo && obj.weekNo==1);         
+         if (Array.isArray(lstHrs))
+              hrs=lstHrs.reduce((accumulator, current) => accumulator + current.total_WrkdHr, 0);
+          else if (lstHrs!=null)
+              hrs=lstHrs.total_WrkdHr;
+          else
+            hrs="00:00";
+            workHours.w1=hrs; 
+      // case 'W2':
+      
+        lstHrs=this.workinghours.find(obj => obj.accountNo === accountNo && obj.weekNo==2);
+        if (Array.isArray(lstHrs))
+              hrs=lstHrs.reduce((accumulator, current) => accumulator + current.total_WrkdHr, 0);
+        else if (lstHrs!=null)
+              hrs=lstHrs.total_WrkdHr;
+        else
+          hrs="00:00";
+          workHours.w2=hrs; 
+      // case 'F':
+           lstHrs=this.workinghours.find(obj => obj.accountNo === accountNo && obj.weekNo<=2);
+           if (Array.isArray(lstHrs))
+              hrs=lstHrs.reduce((accumulator, current) => accumulator + current.total_WrkdHr, 0);
+            else if (lstHrs!=null)
+              hrs=lstHrs.total_WrkdHr;
+            else
+              hrs="00:00";
+              workHours.fn=hrs; 
+    
+    
+      return workHours;
+    }
+ 
+  getWorkHours(accountNo:string,wtype:string)
+  {
+      let hrs:string
+      let lstHrs: any;
+      lstHrs=this.workinghours.find(obj => obj.accountNo === accountNo);
+      if (lstHrs==null)
+        return "00:00";
+
+      switch(wtype){
+      case 'T': 
+      {
+        
+        if (Array.isArray(lstHrs))
+              hrs=lstHrs.reduce((accumulator, current) => accumulator + current.total_WrkdHr, 0);
+        else
+              hrs=this.workinghours.find(obj => obj.accountNo === accountNo).total_WrkdHr;
+        
+        break;
+      }
+      case 'W1':
+      {
+         lstHrs=this.workinghours.find(obj => obj.accountNo === accountNo && obj.weekNo==1);         
+         
+         if (Array.isArray(lstHrs))
+              hrs=lstHrs.reduce((accumulator, current) => accumulator + current.total_WrkdHr, 0);
+          else if (lstHrs!=null)
+              hrs=lstHrs.total_WrkdHr;
+          else
+            hrs="00:00";
+         break;
+       } 
+       case 'W2':
+      {
+        lstHrs=this.workinghours.find(obj => obj.accountNo === accountNo && obj.weekNo==2);
+        if (Array.isArray(lstHrs))
+              hrs=lstHrs.reduce((accumulator, current) => accumulator + current.total_WrkdHr, 0);
+        else if (lstHrs!=null)
+              hrs=lstHrs.total_WrkdHr;
+        else
+          hrs="00:00";
+         break;
+       } 
+       case 'F':
+        {
+           lstHrs=this.workinghours.find(obj => obj.accountNo === accountNo && (obj.weekNo==1|| obj.weekNo==2));
+           if (Array.isArray(lstHrs))
+              hrs=lstHrs.reduce((accumulator, current) => accumulator + current.total_WrkdHr, 0);
+            else if (lstHrs!=null)
+              hrs=lstHrs.total_WrkdHr;
+            else
+              hrs="00:00";
+           break;
+         } 
+      case 'P': 
+       {
+        //lstHrs=this.workinghours.find(obj => obj.accountNo === accountNo );
+        if (Array.isArray(lstHrs))
+          hrs=lstHrs[0].payprdWrkdHr;
+        else
+          hrs=hrs=lstHrs.payprdWrkdHr;
+        break;
+       
+      }
+    }
+      return hrs;
+    }
   getPositionImg(data: any) {
     let activity = data.activity;
     if (activity.indexOf(ImageActivity.Unavailable) !== -1) return ImagePosition.Unavailable;
@@ -313,29 +441,6 @@ HighlightColum(indx:number){
     if (activity.indexOf(ImageActivity.Laundry) !== -1) return ImagePosition.LaundryService;
   }
 
-  getMondayDate(date: any){
-    let temp:any=date;
-    let indx=5;
-    let dd=new Date(temp).getDay();
-    while(indx>0 && dd!=1){
-    
-        temp = moment(temp).add('day', -1);
-        dd=new Date(temp).getDay();
-        indx=indx-1;
-    }
-    if (dd!=1){
-      temp = date;
-      indx=6    
-      dd=new Date(temp).getDay();
-      while(indx>0 && dd!=1){   
-
-        temp = moment(temp).add('day', 1);
-        dd=dd=new Date(temp).getDay();
-        indx=indx-1;
-      }
-    }
-    return temp;
-  }
   calculateDays(date: any, dayView: number) {
   
     let dd=new Date(date).getDay();

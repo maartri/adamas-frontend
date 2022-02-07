@@ -157,11 +157,21 @@
         <button   nz-button nzType="default"  (click)="Cancel_ProceedBreachRoster()">No</button>
     </div>
 </nz-modal>
-<nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="AllocateStaffModal" nzTitle="Select Staff from below Staff List" (nzOnCancel)="AllocateStaffModal = false" >
+
+ <nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="AllocateStaffModal" nzTitle="Select Staff from below Staff List" (nzOnCancel)="AllocateStaffModal = false" >
     <div class="flexy" style="min-height:10rem">
         <div nz-row>
             <div nz-col nzSpan="6" style="margin-top: 10px; margin-bottom: 20px; width:400px">
+            
+                <div>
+                    <nz-input-group nzAddOnAfterIcon="search" (click)="openStaffModal()" >
+                        <input placeholder="Search Staff" type="text" nz-input [(ngModel)]="selectedCarer" [disabled]="true"/>
+                      </nz-input-group>               
+                </div>
+          
                 <app-search-list [reload]="reloadVal" [view]="1" [(ngModel)]="sample" (ngModelChange)="listChange($event)"></app-search-list>
+
+                       
             </div>
             <div>
                 <label *ngIf="selectedCarer" >Re-Allocate Staff : </label>
@@ -170,12 +180,14 @@
                 </label>
             </div>
         </div>
-    </div>
+    </div> 
     <div *nzModalFooter>
         <button nz-button nzType="default"  (click)="reAllocate()">Allocate</button>
         <button nz-button nzType="default"  (click)="AllocateStaffModal=false">Cancel</button>
     </div>
-</nz-modal>
+</nz-modal> 
+<staff-search [findModalOpen]="openSearchStaffModal" (searchDone)="onStaffSearch($event)"></staff-search>
+
 <nz-modal [nzStyle]="{ top: '15px' }" [nzWidth]="900" [(nzVisible)]="ViewServiceNoteModal" nzTitle="Service / Shift Notes "   (nzOnCancel)="ViewServiceNoteModal = false" >
     <div class="flexy" style="min-height:25rem;">
         <gnotes #gn [user]="Person" [loadNote]="loadingNote" ></gnotes>

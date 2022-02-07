@@ -170,7 +170,7 @@ import {
 
 
 import {  
-  RostersAdmin,ShiftDetail,AddRoster,RecipientExternal,StaffExternal,GNotes
+  RostersAdmin,ShiftDetail,AddRoster,RecipientExternal,StaffExternal,GNotes,StaffSearch
 } from './pages/roster/index';
 
 import { ExtraComponent } from './pages/extra/extra';
@@ -1009,6 +1009,10 @@ const routes: Routes = [
         path: 'gnotes',
         component:GNotes
       },
+      {
+        path: 'staff-search',
+        component:StaffSearch
+      },
       
       {
         path: 'staff',
@@ -1327,6 +1331,7 @@ export const PAGE_COMPONENTS = [
   RecipientExternal,
   StaffExternal,
   GNotes,
+  StaffSearch,
   //Configuration
   CompaniesComponent,
   BranchesComponent,

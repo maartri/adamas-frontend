@@ -4,4 +4,5 @@ export * from './addroster'
 export * from './RecipientExternal'
 export * from './StaffExternal'
 export * from './gnotes'
+export * from './staffsearch'
 

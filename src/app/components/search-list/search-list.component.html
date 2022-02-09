@@ -17,7 +17,7 @@
 
     <i nz-icon nzType="phone" nzTheme="outline" (click)="phoneModal=true" nz-tooltip nzTooltipTitle="Phone Search"></i>
 
-    <div class="special" (click)="showAll = !showAll">
+    <div class="special" (clickOutside)="clickOutsideMenu($event)" (click)="showAll = !showAll">
         <i  nz-icon nzType="eye" nzTheme="outline"></i>
 
         <div [class.hide]="!showAll">

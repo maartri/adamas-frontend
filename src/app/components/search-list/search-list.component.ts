@@ -282,4 +282,11 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
     this.globalS.sToast('Success', 'Staff Display Sucessfully');
     this.clearPhoneModal();
   }
+
+  clickOutsideMenu(data: any){
+    console.log(data);
+    if(data.value){
+      this.showAll = false;
+    }
+  }
 }

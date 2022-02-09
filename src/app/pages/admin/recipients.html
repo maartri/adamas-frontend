@@ -20,12 +20,12 @@
             <!-- <div *ngIf="recipientType" class="status-program" ><i (click)="programModalOpen = true;loadPrograms()" style="font-size:2.3rem;" nz-icon nzType="dollar" nzTheme="outline"></i></div> -->
             <app-search-list [view]="0" [(ngModel)]="sample" (ngModelChange)="listChange($event)"></app-search-list>           
         </div>
-        <div nz-col nzSpan="4">
+        <div nz-col nzSpan="8">
            
             <i *ngIf="recipientType" class="special-btn" (click)="programModalOpen = true;loadPrograms()" nz-icon nzType="dollar" nzTheme="outline"></i>
             
 
-            <div class="special-btn" (click)="showSubMenu = !showSubMenu">
+            <div class="special-btn" (clickOutside)="clickOutsideMenu($event)" (click)="showSubMenu = !showSubMenu">
                 <span>Menu</span>
                 <div [class.hide]="!showSubMenu">
                     <ul class="sub-menu">
@@ -40,7 +40,7 @@
             </div>
             
 
-            <div *ngIf="recipientType" nz-col nzSpan="24" style="margin-top:10px;font-size:1.4rem;font-weight: 700;margin-left: 10px;">
+            <div class="status-wrapper" *ngIf="recipientType">
                 <span class="status active" *ngIf="recipientStatus && recipientStatus == 'active'"> ACTIVE </span>
                 <span class="status inactive" *ngIf="recipientStatus && recipientStatus == 'inactive'"> INACTIVE </span>
                 <span class="status type">{{ recipientType }} </span>

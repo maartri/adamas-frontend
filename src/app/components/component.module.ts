@@ -155,7 +155,8 @@ import { NdiaClaimUpdateComponent } from './ndia-claim-update/ndia-claim-update.
     CdcClaimPreparationComponent,
     CdcClaimUpdateComponent,
     CdcProdaClaimUpdateComponent,
-    NdiaClaimUpdateComponent
+    NdiaClaimUpdateComponent,
+    ClickOutsideDirective
   ],
   providers: [
     

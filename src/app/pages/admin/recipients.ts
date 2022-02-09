@@ -158,6 +158,16 @@ import { FormBuilder, Validators } from '@angular/forms';
   .hide{
     display:none;
   }
+  .status-wrapper{
+    color: #fff;
+    border-radius: 10px;
+    background: #85b9d5;
+    padding: 5px 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-left: 10px;
+    display: inline-block;
+  }
   `],
   templateUrl: './recipients.html',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -1038,6 +1048,12 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
         this.findModalOpen = false;
         this.referdocument = false;
         this.quicksearch.reset();
+      }
+
+      clickOutsideMenu(data: any){        
+        if(data.value){
+          this.showSubMenu = false;
+        }
       }
       
       

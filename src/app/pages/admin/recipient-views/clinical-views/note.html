@@ -15,7 +15,7 @@
             <tbody>
                 <tr *ngFor="let data of sss.data;let i = index;trackBy: trackByFn">
                     <td>{{data.detailDate | date: 'dd/MM/y' }}</td>
-                    <td>{{data.detail}}</td>
+                    <td>{{data.detail | getTextFromHtml }}</td>
                     <td>
                         <a (click)="showEditModal(i)">Update</a>
                         <nz-divider nzType="vertical"></nz-divider>

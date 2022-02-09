@@ -298,7 +298,7 @@ export class ClinicalNote implements OnInit, OnDestroy {
 
         this.loading = true;
         if (this.addOrEdit == 1) {            
-            this.clientS.postopnotes(this.caseFormGroup.value, this.user.id)
+            this.clientS.postclinicalnotes(this.caseFormGroup.value, this.user.id)
                 .subscribe(data => {
                     this.globalS.sToast('Success', 'Note inserted');
                     this.handleCancel();
@@ -306,7 +306,7 @@ export class ClinicalNote implements OnInit, OnDestroy {
                 });
         }
         if (this.addOrEdit == 2) {
-            this.clientS.updateopnotes(this.caseFormGroup.value, this.caseFormGroup.value.recordNumber)
+            this.clientS.updateclinicalnotes(this.caseFormGroup.value, this.caseFormGroup.value.recordNumber)
                 .subscribe(data => {
                     this.globalS.sToast('Success', 'Note updated');
                     this.handleCancel();
@@ -404,7 +404,7 @@ export class ClinicalNote implements OnInit, OnDestroy {
     delete(index: any) {
         const { recordNumber } = this.tableData[index];
 
-        this.clientS.deleteopnotes(recordNumber).subscribe(data => {
+        this.clientS.deleteclinicalnotes(recordNumber).subscribe(data => {
             this.globalS.sToast('Success', 'Note deleted');
             this.handleCancel();
             this.getNotes(this.user);

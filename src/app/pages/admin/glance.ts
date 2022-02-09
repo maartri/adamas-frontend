@@ -12,11 +12,7 @@ import endOfMonth from 'date-fns/endOfMonth';
 @Component({
     templateUrl: './glance.html',
     styles: [`
-        
-    button{
-        width: 200pt !important;
-        text-align: center !important;
-    }        
+          
     .btn{
         border:none;
         cursor:pointer;
@@ -109,8 +105,6 @@ export class GlanceAdmin implements OnInit, OnDestroy, AfterViewInit {
     teamAIP: number = 0;
 
     totalOutHour: number = 0;
-    funded: number = 0;
-    unfunded: number = 0;
     noRecipient: number = 0;
     totalWorkHour: number = 0;
     totalWorkAttrHour: number = 0;
@@ -128,6 +122,7 @@ export class GlanceAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.buildForm();
         this.populateDropDown();
         this.getCompanyName();
+        this.refreshValues();
     }
     buildForm() {
         this.inputForm = this.formBuilder.group({

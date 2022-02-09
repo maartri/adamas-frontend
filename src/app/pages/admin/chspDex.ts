@@ -56,11 +56,19 @@ import { HttpClient, HttpHeaders, HttpParams, } from '@angular/common/http';
             margin:1rem auto;
             width:1px;
         }
+
+        li{
+            border:none !important;
+            padding:2rem;
+        }
+        
         
     `],
     templateUrl: './chspDex.html'
 })
 export class chspDexAdmin implements OnInit, OnDestroy {
+
+    open: any;
     
     ngOnInit(){
 
@@ -72,6 +80,14 @@ export class chspDexAdmin implements OnInit, OnDestroy {
 
     constructor(){
 
+    }
+
+    openModal(val: string){
+        if(val == 'dex')
+        {
+            console.log('open deex')
+            this.open = {}; 
+        }
     }
     
 }

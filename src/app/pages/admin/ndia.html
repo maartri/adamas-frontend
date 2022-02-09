@@ -8,10 +8,44 @@
                             <div nz-col [nzSpan]="24">
                                 <div nz-col [nzSpan]="6">
                                     <ul nz-menu nzMode="horizontal">
-                                        <li nz-menu-item >
-                                            <div>
-                                                
+                                        <li>
+                                            <div>                                        
+                                                <button nz-button nzType="default" id="btn-absentclient" (click)="view('ndia-claim')">
+                                                <i nz-icon nzType="printer"></i>
+                                                    NDIA Claim Update
+                                                </button> 
                                             </div>
+                                            <div>                                        
+                                                <button nz-button nzType="default" id="btn-absentclient">
+                                                <i nz-icon nzType="printer"></i>
+                                                    NDIA Age / Close Package Period
+                                                </button> 
+                                            </div>
+                                            <div>                                        
+                                                <button nz-button nzType="default" id="btn-absentclient">
+                                                <i nz-icon nzType="printer"></i>
+                                                    NDIA Package Statement Print
+                                                </button> 
+                                            </div>
+                                            <div>                                        
+                                                <button nz-button nzType="default" id="btn-absentclient">
+                                                <i nz-icon nzType="printer"></i>
+                                                    Update NDIA Prices
+                                                </button> 
+                                            </div>
+                                            <div>                                        
+                                                <button nz-button nzType="default" id="btn-absentclient">
+                                                <i nz-icon nzType="printer"></i>
+                                                    NDIA Payment Request Summary
+                                                </button> 
+                                            </div>
+                                            <div>                                        
+                                                <button nz-button nzType="default" id="btn-absentclient">
+                                                <i nz-icon nzType="printer"></i>
+                                                    NDIA Package Request Summary
+                                                </button> 
+                                            </div>
+                                           
                                         </li>
                                     </ul>
                                 </div>
@@ -22,4 +56,6 @@
             </div>
         </div>
     </div>
-</div>                                        
+</div>
+
+<app-ndia-claim-update [open]="ndiaClaimUpdateOpen"></app-ndia-claim-update>

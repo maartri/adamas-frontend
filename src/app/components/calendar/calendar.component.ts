@@ -362,7 +362,13 @@ export class CalendarComponent implements OnInit, OnDestroy, AfterViewInit {
       });
   }
 
+  Weekday(date:string) : string {
 
+    let dt= new Date(date);
+   // return  this.DayOfWeek(dt.toLocaleDateString('en-US', { weekday: 'long' }));
+   return  dt.toLocaleDateString('en-US', { weekday: 'short' });
+
+}
   dateChanged(event: any, view: string = ""): void {
     this.loadDate = true;
 

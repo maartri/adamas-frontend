@@ -961,7 +961,7 @@
         
     </div>
     <div *ngIf="tabFindIndex == 4">
-        <div nz-row [nzGutter]="8" *ngIf="inputForm" [formGroup]="inputForm">
+        <div nz-row [nzGutter]="8" *ngIf="inputForm">
             <div nz-col class="gutter-row" nzSpan="9" >
                 <nz-card [nzSize]="'small'" nzTitle="">
                     <div nz-row nzJustify class="mrg-btm">
@@ -992,25 +992,25 @@
                             <label><b>Personal</b></label>
                         </div>
                         <div nz-col nzSpan="2">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox [ngModel]="checkBoxString[0]  == '1' " (change)="changeCheckbox(0, $event.target.checked)"></label>
                         </div>
                         <div nz-col nzSpan="2">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox [ngModel]="checkBoxString[1]  == '1' " (change)="changeCheckbox(1, $event.target.checked)"></label>
                         </div>
                         <div nz-col nzSpan="2">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox [ngModel]="checkBoxString[2]  == '1' " (change)="changeCheckbox(2, $event.target.checked)"></label>
+                        </div>
+                        <div nz-col nzSpan="2" >
+                            <label nz-checkbox [ngModel]="checkBoxString[3]  == '1' " (change)="changeCheckbox(3, $event.target.checked)"></label>
                         </div>
                         <div nz-col nzSpan="2">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox [ngModel]="checkBoxString[4]  == '1' " (change)="changeCheckbox(4, $event.target.checked)"></label>
                         </div>
                         <div nz-col nzSpan="2">
-                            <label nz-checkbox formControlName="title"></label>
-                        </div>
-                        <div nz-col nzSpan="2">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox [ngModel]="checkBoxString[5]  == '1' " (change)="changeCheckbox(5, $event.target.checked)"></label>
                         </div>
                     </div>
-                    <div nz-row nzJustify class="">
+                    <!-- <div nz-row nzJustify class="">
                         <div nz-col nzSpan="10" nzOffset="2" >
                             <label>Phone Detail</label>
                         </div>
@@ -1124,7 +1124,7 @@
                         <div nz-col nzSpan="2">
                             <label nz-checkbox formControlName="title"></label>
                         </div>
-                    </div>
+                    </div> -->
                 </nz-card>
             </div>
         </div>

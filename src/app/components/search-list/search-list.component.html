@@ -16,13 +16,29 @@
     </ng-select>
 
     <i nz-icon nzType="phone" nzTheme="outline" (click)="phoneModal=true" nz-tooltip nzTooltipTitle="Phone Search"></i>
+
+    <div class="special" (clickOutside)="clickOutsideMenu($event)" (click)="showAll = !showAll">
+        <i  nz-icon nzType="eye" nzTheme="outline"></i>
+
+        <div [class.hide]="!showAll">
+            <ul class="sub-menu" *ngIf="view == 0">
+                <li [class.ant-btn-primary]="!activeInactive" (click)="changeStatus('A')">VIEW RECIPIENTS</li>
+                <li [class.ant-btn-primary]="activeInactive" (click)="changeStatus('B')">VIEW ALL</li>
+            </ul>
+            <ul class="sub-menu" *ngIf="view == 1">
+                <li [class.ant-btn-primary]="!activeInactive" (click)="changeStatus('A')">VIEW STAFF</li>
+                <li [class.ant-btn-primary]="activeInactive" (click)="changeStatus('B')">VIEW ALL</li>
+            </ul>
+        </div>
+
+      
+
+    </div>
+   
     <!-- <i nz-icon nzType="close-circle" nzTheme="outline" nz-tooltip nzTooltipTitle="Clear Phone Filter"></i> -->
 </div>
-<div class="search-container" *ngIf="view == 1">
-    <!-- <nz-radio-group [(ngModel)]="staffType" (ngModelChange)="changeStatus($event)">
-        <label nz-radio nzValue="A"> View {{(view == 1) ? 'Staff' : 'Recipient'}}  </label>
-        <label nz-radio nzValue="B" class="viewAll"> View All {{(view == 1) ? 'Staff' : 'Recipient'}} </label>
-    </nz-radio-group> -->
+
+<!-- <div class="search-container" *ngIf="view == 1">
     <nz-button-group style="margin-top:5px">
         <button nz-button class="special-btns" [class.ant-btn-primary]="!activeInactive" (click)="changeStatus('A')">VIEW STAFF</button>
         <button nz-button class="special-btns" [class.ant-btn-primary]="activeInactive" (click)="changeStatus('B')">VIEW ALL STAFF</button>
@@ -30,15 +46,11 @@
 </div>
 
 <div class="search-container" *ngIf="view == 0">
-    <!-- <nz-radio-group [(ngModel)]="staffType" (ngModelChange)="changeStatus($event)">
-        <label nz-radio nzValue="A"> View {{(view == 1) ? 'Staff' : 'Recipient'}}  </label>
-        <label nz-radio nzValue="B" class="viewAll"> View All {{(view == 1) ? 'Staff' : 'Recipient'}} </label>
-    </nz-radio-group> -->
     <nz-button-group style="margin-top:5px">
         <button nz-button class="special-btns" [class.ant-btn-primary]="!activeInactive" (click)="changeStatus('A')">VIEW RECIPIENTS</button>
         <button nz-button class="special-btns" [class.ant-btn-primary]="activeInactive" (click)="changeStatus('B')">VIEW ALL RECIPIENTS</button>
     </nz-button-group>
-</div>
+</div> -->
 
 
 

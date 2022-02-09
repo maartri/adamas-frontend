@@ -62,6 +62,8 @@ import { HttpClient, HttpHeaders, HttpParams, } from '@angular/common/http';
 })
 export class NDIAAdmin implements OnInit, OnDestroy {
     
+    ndiaClaimUpdateOpen: any;
+
     ngOnInit(){
 
     }
@@ -72,6 +74,11 @@ export class NDIAAdmin implements OnInit, OnDestroy {
 
     constructor(){
 
+    }
+
+
+    view(index: string){
+        if(index == 'ndia-claim')   this.ndiaClaimUpdateOpen = {}
     }
     
 }

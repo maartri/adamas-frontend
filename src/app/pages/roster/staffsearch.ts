@@ -1,6 +1,6 @@
 import { Component,AfterViewInit,Input,Output,EventEmitter,ChangeDetectorRef } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
-import { GlobalService,staffnodes,StaffService,sbFieldsSkill, ShareService,timeSteps,conflictpointList,checkOptionsOne,sampleList,genderList,statusList,leaveTypes, ListService,PrintService, TimeSheetService, SettingsService, LoginService } from '@services/index';
+import { GlobalService,staffnodes,StaffService,sbFieldsSkill, ShareService,timeSteps,conflictpointList,checkOptionsOne,sampleList,genderList,statusList, ListService, TimeSheetService,   } from '@services/index';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 import { filter, switchMap } from 'rxjs/operators';
 import format from 'date-fns/format';

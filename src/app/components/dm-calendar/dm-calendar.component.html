@@ -38,12 +38,12 @@
                     (mousedown)="deselect(null,$event)" (drop)="drop($event);$event.stopPropagation()"
                     (dragover)="dragOver($event)" >
                     <div *ngIf="i == 0">
-                        <div style="font-size:14px; font-weight: bold; text-align: justify-self unset;">
+                        <div style="font-size:14px; font-weight: bold; text-align: left;">
                             <span *ngIf="data?.key.indexOf('BOOKED') > -1">UNASSIGNED BOOKINGS</span>
                             <span *ngIf="!(data?.key.indexOf('BOOKED') > -1)">{{ data?.key }}</span>
                             
                         </div>
-                        <div style="font-size:12px; text-align: justify-self unset;" *ngIf="!(data?.key.indexOf('BOOKED') > -1)" >
+                        <div style="font-size:12px; text-align: left " *ngIf="!(data?.key.indexOf('BOOKED') > -1)" >
                             <div >{{ data?.value[0].staffCategory}}</div>
                             <div >{{ data?.value[0].staffPhone}}</div>
                             <div >W1-WKD : {{ getWorkHours(data?.key ,'W1') }}</div>
@@ -88,16 +88,24 @@
                                     <i nz-icon *ngIf="value.type==12" [nzType]="'team'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
                                     <i nz-icon *ngIf="value.type==13" [nzType]="'minus-circle'" [nzTheme]="'outline'"  class="icon"></i>
                                     <i nz-icon *ngIf="value.type==14" [nzType]="'calendar-circle'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
-                                    
+                                   
+
                                     <strong title="{{ value.startTime}}-{{ value.endTime }}">{{ value.startTime}}-{{ value.endTime }}</strong>
                                       
                                     <i class="material-icons option showOption icon" option-click 
                                         (mousedownEmit)="mouseEmitter(value)" (click)="optionEmitter(value)"> more_horiz
                                     </i>
                                 </div>
-                                <div class="details" title="{{ value.recipient}} * {{ value.activity}} * {{value.notes.toUpperCase()}}"   [class.detail-more]="selectedRecordNo==value.recordno" ngbTooltip="I am Bootstrap Tooltip"
-                                (click)="viewText(value)">{{ value.recipient}} * {{ value.activity}} * {{value.notes.toUpperCase()}} </div>
-                            </div>
+                               
+                                   
+                                    <div class="details" title="{{ value.recipient}} * {{ value.activity}} * {{value.notes.toUpperCase()}}"   [class.detail-more]="selectedRecordNo==value.recordno" ngbTooltip="I am Bootstrap Tooltip"
+                                        (click)="viewText(value)">
+                                        <i nz-icon *ngIf="value.status==2" [nzType]="'check-circle'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#52c41a'" class="icon"></i>
+                                        <!-- <i nz-icon *ngIf="value.status==2" style="color: #52c41a; font-family:  Tahoma, Geneva, Verdana, sans-serif; font-size: 12px; font-weight: bold;"  nzType="check" nzTheme="outline"></i> -->
+                                        {{ value.recipient}} * {{ value.activity}} * {{value.notes.toUpperCase()}} </div>
+                                    </div>
+                                 
+                               
                             <div class="data total" *ngIf="value.isLast && !value.isNone">
                                 <!-- *ngIf="value.isLast && !value.isNone" -->
                               

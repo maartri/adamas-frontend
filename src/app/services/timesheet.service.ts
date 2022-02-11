@@ -177,6 +177,10 @@ export class TimeSheetService {
     updatetimesheet(data: any): Observable<any> {
         return this.auth.put(`${timesheet}/timesheet`, data);
     }
+    
+    getDayManagerResources(data: any): Observable<any> {
+        return this.auth.get(`${timesheet}/dm-resources`, data);
+    }
     ProcessRoster(data: any): Observable<any> {
         return this.auth.get(`${timesheet}/rosterOps`, data);
     }

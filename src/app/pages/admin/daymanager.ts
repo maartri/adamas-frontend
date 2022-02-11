@@ -1,13 +1,17 @@
 import { Component, OnInit, OnDestroy, Output, Input ,ViewChild, AfterViewInit
      
     } from '@angular/core'
-import { GlobalService, ClientService, TimeSheetService,ShareService } from '@services/index';
+import { GlobalService, ClientService, TimeSheetService,ShareService, ListService } from '@services/index';
 import { forkJoin,  Subject ,  Observable } from 'rxjs';
 import {ShiftDetail} from '../roster/shiftdetail'
 
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { ThrowStmt } from '@angular/compiler';
 import { BrowserModule } from '@angular/platform-browser';
+import { FormGroup,FormBuilder,Validators } from '@angular/forms';
+import {takeUntil} from 'rxjs/operators';
+import parseISO from 'date-fns/parseISO'
+import { format, formatDistance, formatRelative, nextDay, subDays } from 'date-fns'
 
 class Address {
     postcode: string;
@@ -29,6 +33,8 @@ class Address {
 }
 
 
+
+  
 @Component({
     styles: [`
     .dm-input{
@@ -110,6 +116,15 @@ class Address {
         height: 100%;
         border: 3px solid #4286f4;
       }
+      .rectangle{
+        margin-top: 10px; 
+        padding-top: 10px; 
+        padding-left: 5px; 
+        border-style:solid; 
+        border-width: 2px; 
+        border-radius: 5px;  
+        border-color: rgb(236, 236, 236);
+   }
       
     `],
     templateUrl: './daymanager.html'
@@ -118,7 +133,7 @@ class Address {
 
 export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
     date: any = new Date();
-    defaultStartTime:string;
+    
     serviceType:string;
     dateFormat:string="dd/MM/YYYY"
     dayView: number = 7;
@@ -133,13 +148,37 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
     changeModalView = new Subject<number>();
     OperationView= new Subject<number>();
     AllocateView= new Subject<number>();
+    ViewNudge= new Subject<number>();
+    ApproveView= new Subject<number>();
+    resourceType:string;
+    txtSearch:string;
     openSearchStaffModal:boolean;
-
+    ViewChangeDayTimeModal:boolean;
    
     ViewServiceNoteModal:boolean    
     Person:any={id:'0',code:'',personType:'Recipient', noteType:'SVCNOTE'};
     loadingNote:Subject<any>=new Subject();
+    loading:boolean;
     operation:string;
+    CaseLoadValue:string;
+    ViewCaseLoadModal:boolean
+    ViewAllocateResourceModal:boolean;
+    ViewAllocateResourceQtyModal:boolean;
+    ResourceValue:number;
+    InputMode:string='decimal';
+    parserPercent = (value: string) => value.replace(' %', '');
+    parserDollar = (value: string) => value.replace('$ ', '');
+    parserValue = (value: string) => value;
+    formatterDollar = (value: number) => `${value > -1 || !value ? `$ ${value}` : ''}`;
+    formatterPercent = (value: number) => `${value > -1 || !value ? `% ${value}` : ''}`;
+    formatterValue = (value: number) => `${value > -1 || `${value}` }`;
+    regex: RegExp = new RegExp(/^\d*\.?\d{0,2}$/g); //"/^[0-9]+(\.[0-9]{1,2})?$/"
+     nzFormatter: (value: number) => string | number = value => value;
+     nzParser = (value: string) => value
+      .trim()
+      .replace(/。/g, '.')
+      .replace(/[^\w\.-]+/g, '');
+
     selectedOption:any;
     rosters:any;
     txtAlertSubject:String;
@@ -149,12 +188,27 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
     breachRoster:Boolean;
     AllocateStaffModal:boolean;
     selectedCarer:string;
+    NudgeValue=0;
+    NudgeStatus:string='Up';
+    ViewNudgeModal:boolean;
+    serviceActivityList: Array<any>;
+    originalList: Array<any>;
+    ServiceSetting:any;
+    HighlightRow2:number
     isFirstLoad:boolean
     _highlighted: Array<any> = [];
     private address: Array<any> = [];
 
     ViewRecipientDetails = new Subject<number>();
     ViewDetails= new Subject<number>();
+    ViewChangeDayTime= new Subject<number>();
+    DateTimeForm:FormGroup;
+    durationObject: any;
+    today = new Date();
+    defaultStartTime: Date = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 8, 0, 0);
+    defaultEndTime: Date = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 9, 0, 0);
+   
+    
     user:any;
     token:any;
     master:boolean=false;
@@ -170,7 +224,9 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
         private clientS: ClientService,
         private timeS:TimeSheetService,
         private modalService: NzModalService,
-        private sharedS:ShareService
+        private sharedS:ShareService,
+        private formBuilder: FormBuilder,
+        private listS:ListService
     ) {
 
         this.ViewRecipientDetails.subscribe(data => {
@@ -192,12 +248,36 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
            
         });
 
+        this.ViewChangeDayTime.subscribe(data => {
+            this.optionsModal=false;
+             let startTime= this.selectedOption.startTime;
+             let endTime= this.selectedOption.endTime;
+             let date =this.selectedOption.date;
+             this.defaultStartTime = parseISO(new Date(date + " " + startTime).toISOString());
+             this.defaultEndTime = parseISO(new Date(date + " " + endTime).toISOString());
+
+            let time:any={startTime:this.defaultStartTime, endTime:this.defaultEndTime}
+            this.DateTimeForm.patchValue({
+                recordNo: this.selectedOption.recordno,
+                rdate: this.selectedOption.date,
+                time:time,
+                payQty:this.selectedOption.payQty,
+                billQty:this.selectedOption.billQty           
+
+            });
+
+           this.ViewChangeDayTimeModal=true;
+            
+        });
+
         this.changeModalView.subscribe(data => {
-            console.log(data);
+
+            this.OpenChangeResources(data)
             
         });
     
 
+        
     this.ViewDetails.subscribe(data => {
         // console.log(data);
         this.optionsModal=false;
@@ -221,18 +301,19 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
                     this.globalS.eToast('Day Manager',`No Staff to view detail!`)
             else
                 this.staffexternal = true;
-    }else if (data==3){                          
+         }else if (data==3){                          
         
-        this.serviceType  =this.selectedOption.activity;                    
-        this.defaultStartTime  =this.selectedOption.startTime;
-        this.notes=this.selectedOption.notes;
-        if (data!=null)
-        this.ViewAdditionalModal=true;  
+            this.serviceType  =this.selectedOption.activity;                    
+            this.defaultStartTime  =this.selectedOption.startTime;
+            this.notes=this.selectedOption.notes;
+            if (data!=null)
+            this.ViewAdditionalModal=true;  
         
-    }else if (data==4){          
-        this.showDetail(this.selectedOption)   ;             
+        }else if (data==4){          
+                this.showDetail(this.selectedOption)   ;             
        
-    }
+         }
+       
         
     });
     this.AllocateView.subscribe(data => {
@@ -249,7 +330,20 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
             //Change Date or Time
         }
     });
+
     
+    this.ViewNudge.subscribe(data => {
+        this.optionsModal=false;
+        if (data==1)
+            this.NudgeStatus="Up";
+        else
+            this.NudgeStatus="Down";
+
+       this.ViewNudgeModal=true;
+        
+    });
+
+
     this.OperationView.subscribe(data => {
         // console.log(data);
         this.optionsModal=false;
@@ -275,12 +369,87 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
         
         this.showConfirm();
           
-    }
+    }  else if (data==5){          
+        this.showConfirm_for_additional()   ;             
+       
+         }
         
     });
 
+    this.ApproveView.subscribe(data => {
+        this.optionsModal=false;
+        if (data==1){ 
+            this.ApproveUnApprove(true);
+         }
+        else{
+            this.ApproveUnApprove(false);
+        }
+    });
+
+}
+private unsubscribe = new Subject();
+buildForm() {
+    this.DateTimeForm = this.formBuilder.group({
+        recordNo: [''],
+        rdate: [''],
+        time: this.formBuilder.group({
+            startTime:  [''],
+            endTime:  [''],
+        }),
+        payQty: [''],
+        billQty: ['']
+        
+    });
+
+    this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
+    this.fixStartTimeDefault();   
+
+    this.DateTimeForm.get('time.startTime').valueChanges.pipe(
+        takeUntil(this.unsubscribe)
+    ).subscribe(d => {
+        
+        this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
+    });
+    this.DateTimeForm.get('time.endTime').valueChanges.pipe(
+        takeUntil(this.unsubscribe)
+    ).subscribe(d => {
+        this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
+    });
+   
 }
 
+fixStartTimeDefault() {
+    const { time } = this.DateTimeForm.value;
+    if (!time.startTime) {
+        this.ngModelChangeStart(this.defaultStartTime)
+    }
+
+    if (!time.endTime) {
+        this.ngModelChangeEnd(this.defaultEndTime)
+    }
+}
+
+ngModelChangeStart(event): void{
+    this.DateTimeForm.patchValue({
+        time: {
+            startTime: event
+        }
+    })
+}
+ngModelChangeEnd(event): void{
+    this.DateTimeForm.patchValue({
+        time: {
+            endTime: event
+        }
+    })
+}
+
+onTextChangeEvent(event:any){
+   // console.log(this.txtSearch);
+    let value = this.txtSearch.toUpperCase();
+    //console.log(this.serviceActivityList[0].description.includes(value));
+    this.serviceActivityList=this.originalList.filter(element=>element.description.includes(value));
+}
 openStaffModal(){
     this.openSearchStaffModal=true;
 }
@@ -433,7 +602,10 @@ load_rosters(){
 }
 ngOnInit(): void {
     this.token = this.globalS.decode(); 
-    }
+    this.buildForm(); 
+   
+   
+}
 
     
 
@@ -460,8 +632,8 @@ ngAfterViewInit(){
      }
      SaveAdditionalInfo(notes:string){
         this.notes=notes;
-        
-        //this.ProcessRoster("Additional", this.cell_value.recordNo);
+        this.ViewAdditionalModal=false;
+        this.ProcessRoster("Additional", this.selectedOption.recordno);
        
     }
     showDetail(data: any) {
@@ -577,13 +749,14 @@ ngAfterViewInit(){
             "isMaster": this.master,
             "roster_Date" : date,
             "start_Time": this.selectedOption.startTime,
-            "carer_code": this.operation='Re-Allocate' ? this.selectedCarer : this.selectedOption.staff,
+            "carer_code": this.operation=='Re-Allocate' ? this.selectedCarer : this.selectedOption.staff,
             "recipient_code" :  this.selectedOption.recipient,
             "notes" : this.notes,
             'clientCodes' : this.selectedOption.recipient
         }
         this.timeS.ProcessRoster(inputs).subscribe(data => {        
         //this.deleteRosterModal=false;
+            
             let res=data;       
             if (res.errorValue>0){
                 this.globalS.eToast('Error', res.errorValue +", "+ res.msg);
@@ -604,7 +777,281 @@ ngAfterViewInit(){
     });
         
 }
+OpenChangeResources(type :number){
+    this.optionsModal=false;
+    let msg:string='';
+    this.txtSearch='';
+    switch(type){
+        case 1:
+            msg='You are running in administration mode - and have elected to force the dataset reporting code (output type) of all tagged shifts/activities to be changed to an alternative value. This is a utility function and bypasses standard error checking any validation against approved services - are you sure this is what you want to do and you wish to proceed??';    
+            this.resourceType='Output';
+            break;
+        case 2:
+            this.resourceType='Program';
+            break;
+        case 3:
+            this.resourceType='Activity';
+            break;
+        case 4:
+            this.resourceType='PayType';
+            break;
+        case 5:
+            this.resourceType='Pay Quantity';
+            break;
+        case 6:
+            this.resourceType='Unit Cost';
+            break;
+        case 7:
+            this.resourceType='Debtor';
+            break;
+        case 8:
+            this.resourceType='Bill Amount';
+            break;
+        case 9:
+            this.resourceType='Bill Quantity';
+            break;
+        case 10:
+            this.resourceType='Dataset Quantity';
+            break;
+    }
+    if (msg=='')
+        msg=`You are running in administration mode - and have elected to force the ${this.resourceType.toLowerCase()} of all tagged shifts/activities to be changed to an alternative value. This is a utility function and bypasses standard error checking any validation against approved services - are you sure this is what you want to do and you wish to proceed??`;
+           
+    this.showConfirm_for_Resources(type,msg);
+     
+   
+}
+ProcessChangeResources(type :number){    
+  
+    if (type>4 && type!=7) {
 
+        this.InputMode = (type==6 || type==8) ? 'decimal' : 'number';
+        this.ResourceValue=0;
+        this.ViewAllocateResourceQtyModal=true;
+        return;
+
+    }
+    let inputs={
+        resourceType:this.resourceType,
+        carerCode : this.selectedOption.staff,
+        rDate: this.selectedOption.date,
+        recipientCode : this.selectedOption.recipient
+    }
+    this.timeS.getDayManagerResources(inputs).subscribe(data => {     
+        this.serviceActivityList=data;
+        this.originalList=data;
+        this.ViewAllocateResourceModal=true;;
+    });
+
+}
+openAllocateResource(){
+    this.resourceType="Resource";
+    this.txtSearch='';
+    let inputs={
+        resourceType:'Resource',
+        carerCode : this.selectedOption.staff,
+        rDate: this.selectedOption.date,
+        recipientCode : this.selectedOption.recipient
+    }
+    this.timeS.getDayManagerResources(inputs).subscribe(data => {     
+        this.serviceActivityList=data;
+        this.originalList=data;
+        this.ViewAllocateResourceModal=true;
+    });
+    this.optionsModal=false;
+   
+}
+openCaseLoad(){
+    this.optionsModal=false;
+    this.ViewCaseLoadModal=true;
+    
+
+}
+onItemSelected(sel: any, i:number): void {
+   this.ServiceSetting=sel.description;    
+    this.HighlightRow2=i;
+
+}
+
+onItemDbClick(sel:any , i:number) : void {
+
+    this.HighlightRow2=i;
+    this.ServiceSetting=sel.description;
+    this.SaveAllocateResource();
+
+}
+
+SaveAllocateResource(){
+    
+    let sql :any= {TableName:'',Columns:'',ColumnValues:'',SetClause:'',WhereClause:''};
+        
+    sql.TableName='Roster ';          
+    
+    switch(this.resourceType){ 
+    case 'Resource':
+        sql.SetClause=`set [ServiceSetting]='${this.ServiceSetting}' `;
+        break;
+    case 'Output':
+        sql.SetClause=`set [HACCType]='${this.ServiceSetting}' `;
+        break;
+    case 'Program':
+        sql.SetClause=`set [Program]='${this.ServiceSetting}' `;
+        break;
+    case 'Activity':
+        sql.SetClause=`set [Service Type]='${this.ServiceSetting}' `;
+        break;
+    case 'PayType':
+         sql.SetClause=` SET [Service Description] = '${this.ServiceSetting}', [Unit Pay Rate] = ISNULL((SELECT TOP 1 Amount FROM ItemTypes it WHERE PROCESSCLASSIFICATION = 'INPUT' AND  it.Title = '${this.ServiceSetting}'),0) `;
+         break;
+    case 'Debtor':
+        sql.SetClause=` SET [BillTo] = '${this.ServiceSetting}' `;
+        break;
+    case 'Pay Quantity':
+        sql.SetClause=` SET [CostQty] = ${this.ResourceValue} `;
+        break; 
+    case 'Unit Cost':
+        sql.SetClause=` SET [Unit Pay Rate] = ${this.ResourceValue} `;
+        break;   
+    case 'Bill Amount':
+        sql.SetClause=` SET  [Unit Bill Rate] = ${this.ResourceValue} `;
+        break;   
+    case 'Bill Quantity':
+        sql.SetClause=` SET  [BillQty] = ${this.ResourceValue} `;
+        break;   
+    case 'Dataset Quantity':
+        sql.SetClause=` SET  [DatasetQty] = ${this.ResourceValue} `;
+        break; 
+    default :
+    
+    }    
+    
+    sql.WhereClause=` where RecordNo=${this.selectedOption.recordno} `;
+
+  
+
+    this.listS.updatelist(sql).subscribe(data=>{
+       // this.globalS.sToast("Day Manager","Record Updated Successfully");
+        this.ViewAllocateResourceModal=false;
+        this.ViewAllocateResourceQtyModal=false;
+      //  this.load_rosters();
+    });
+}
+SaveCaseLoad(){
+    let sql :any= {TableName:'',Columns:'',ColumnValues:'',SetClause:'',WhereClause:''};
+        
+    sql.TableName='Roster ';          
+    
+        sql.SetClause=`set [Shiftname]='${this.CaseLoadValue}' `;
+    
+   sql.WhereClause=` where RecordNo=${this.selectedOption.recordno} `;
+
+  
+
+    this.listS.updatelist(sql).subscribe(data=>{
+       // this.globalS.sToast("Day Manager","Record Updated Successfully");
+        this.ViewCaseLoadModal=false;
+      //  this.load_rosters();
+    });
+
+}
+SaveNudgeUpDown(){
+    
+        let sql :any= {TableName:'',Columns:'',ColumnValues:'',SetClause:'',WhereClause:''};
+            
+            sql.TableName='Roster ';          
+            if (this.NudgeStatus=="Up")
+                sql.SetClause=`set Duration=Duration-${this.NudgeValue}/5`;
+            else
+                sql.SetClause=`set Duration=Duration+${this.NudgeValue}/5`;
+
+           sql.WhereClause=` where RecordNo=${this.selectedOption.recordno} `;
+       
+          
+
+    this.listS.updatelist(sql).subscribe(data=>{
+        //this.globalS.sToast("Day Manager","Record Updated Successfully");
+        this.ViewNudgeModal=false;
+        this.load_rosters();
+    });
+  
+}
+ApproveUnApprove(Approve:boolean){
+    
+    let sql :any= {TableName:'',Columns:'',ColumnValues:'',SetClause:'',WhereClause:''};
+        
+        sql.TableName='Roster ';          
+        if (Approve)
+            sql.SetClause=`set [status]=2`;
+        else
+            sql.SetClause=`set [status]=1`;
+
+       sql.WhereClause=` where RecordNo=${this.selectedOption.recordno} `;
+   
+      
+
+        this.listS.updatelist(sql).subscribe(data=>{
+          //  this.globalS.sToast("Day Manager","Record Updated Successfully");
+            this.ViewNudgeModal=false;
+            this.load_rosters();
+        
+        });
+
+}
+
+showConfirm_for_Resources(type :number, msg:string): void {
+    //var deleteRoster = new this.deleteRoster();
+    this.modalService.confirm({
+      nzTitle: 'Confirm',
+      nzContent: msg,
+      nzOkText: 'Yes',
+      nzCancelText: 'No',
+      nzOnOk: () =>
+      new Promise((resolve,reject) => {
+        setTimeout(Math.random() > 0.5 ? resolve : reject, 100);
+       
+        this.ProcessChangeResources(type);
+      }).catch(() => console.log('Oops errors!'))
+
+      
+    });
+  }
+
+showConfirm_for_additional(): void {
+    //var deleteRoster = new this.deleteRoster();
+    this.modalService.confirm({
+      nzTitle: 'Confirm',
+      nzContent: 'Are you sure you want to delete roster notes',
+      nzOkText: 'Yes',
+      nzCancelText: 'No',
+      nzOnOk: () =>
+      new Promise((resolve,reject) => {
+        setTimeout(Math.random() > 0.5 ? resolve : reject, 100);
+        this.deleteAdditionalInfo();
+       
+      }).catch(() => console.log('Oops errors!'))
+
+      
+    });
+  }
+
+deleteAdditionalInfo(){
+    
+    let sql :any= {TableName:'',Columns:'',ColumnValues:'',SetClause:'',WhereClause:''};
+        
+        sql.TableName='Roster ';          
+       
+        sql.SetClause=`set notes=null`;
+
+       sql.WhereClause=` where RecordNo=${this.selectedOption.recordno} `;
+   
+      
+
+        this.listS.updatelist(sql).subscribe(data=>{
+            this.globalS.sToast("Day Manager","Record Updated Successfully");
+            this.ViewNudgeModal=false;
+            this.load_rosters();
+        });
+}
 generate_alert(){
     this.show_alert=false;
     this.notes= this.txtAlertSubject + "\n" + this.txtAlertMessage;
@@ -612,6 +1059,29 @@ generate_alert(){
     this.ProcessRoster("Alert","1");
 }
 
+SaveDayTime(){
+    const tvalues= this.DateTimeForm.value;
+    let time= format(tvalues.time.startTime,'HH:mm')
+
+        let sql :any= {TableName:'',Columns:'',ColumnValues:'',SetClause:'',WhereClause:''};
+            
+            sql.TableName='Roster ';      
+
+           sql.SetClause=`set [date]='${tvalues.rdate}',[start Time]='${time}'
+                        ,Duration=${this.durationObject.duration}
+                        ,CostQty=${tvalues.payQty}
+                        ,BillQty=${tvalues.billQty} `           
+
+           sql.WhereClause=` where RecordNo=${tvalues.recordNo} `;     
+          
+
+    this.listS.updatelist(sql).subscribe(data=>{
+        this.globalS.sToast("Day Manager","Record Updated Successfully");
+        this.ViewChangeDayTimeModal=false;
+        this.load_rosters();
+    });
+    
+}
 Check_BreachedRosterRules_Paste(action:string):any{
 
     let inputs_breach={
@@ -749,6 +1219,7 @@ ProceedBreachRoster(){
     //this.isPaused=false;
 
 }
+
 
 UnAllocate(){
     

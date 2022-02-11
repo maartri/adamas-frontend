@@ -91,7 +91,7 @@ interface UserView{
     durationObject: any;
     today = new Date();
     serviceSetting:string;
-    editRecord:boolean;
+    editRecord:boolean=false;
     searchStaff:boolean;
     defaultStartTime: Date = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 8, 0, 0);
     defaultEndTime: Date = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 9, 0, 0);

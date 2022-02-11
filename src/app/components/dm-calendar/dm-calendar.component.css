@@ -130,17 +130,30 @@
 }
 .body-wrapper .cell{
     padding:18px 3px;
+    
 }
 .cell:nth-child(1){    
     display: flex;
-    justify-content: center;
+    justify-content: left;
 }
 .cell{
     text-align: center;
     border-right:1px solid #fff;
     flex:1;
+    
 }
 
+
+.container {
+    width: 100%;
+    margin: 0 auto;
+    padding: 5px;
+    text-align: left;
+    background: #f0e68c;
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: middle;
+}
 .seven{
     width:12.5%;
    

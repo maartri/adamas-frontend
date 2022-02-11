@@ -58,10 +58,11 @@
                            
                             <div class="data" *ngIf="!value.isLast && !value.isNone"
                                 (dragstart)="dragStart($event,value)" (dragend)="dragEnd($event)"
-                                (dblclick)="mousedblclick($event,value)"
+                                (dblclick)="mousedblclick($event,value)"                              
                                 (mouseenter)="mouseenter($event, value)"
                                 (mousedown)="mousedown($event,value)" 
                                 [class.selected]="value.isSelected"
+                                (contextmenu)="rightClickMenu($event,value)"
                                 [class.highlight]="HighlightColum_index==i">
 
                                 <!--

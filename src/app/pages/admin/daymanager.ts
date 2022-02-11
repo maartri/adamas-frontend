@@ -170,14 +170,7 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
     parserDollar = (value: string) => value.replace('$ ', '');
     parserValue = (value: string) => value;
     formatterDollar = (value: number) => `${value > -1 || !value ? `$ ${value}` : ''}`;
-    formatterPercent = (value: number) => `${value > -1 || !value ? `% ${value}` : ''}`;
-    formatterValue = (value: number) => `${value > -1 || `${value}` }`;
-    regex: RegExp = new RegExp(/^\d*\.?\d{0,2}$/g); //"/^[0-9]+(\.[0-9]{1,2})?$/"
-     nzFormatter: (value: number) => string | number = value => value;
-     nzParser = (value: string) => value
-      .trim()
-      .replace(/。/g, '.')
-      .replace(/[^\w\.-]+/g, '');
+   
 
     selectedOption:any;
     rosters:any;
@@ -457,7 +450,7 @@ onStaffSearch(data:any){
     this.selectedCarer=data.selected;
 }
 loadNotes(){
-    this.Person.id=this.selectedOption.uniqueid;
+    this.Person.id=this.selectedOption.recordno;
     this.Person.code=this.selectedOption.recipient;
     this.Person.personType="Recipient";
     this.Person.noteType="SVCNOTE";
@@ -821,6 +814,7 @@ OpenChangeResources(type :number){
      
    
 }
+
 ProcessChangeResources(type :number){    
   
     if (type>4 && type!=7) {

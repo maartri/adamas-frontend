@@ -7,6 +7,7 @@ import * as moment from 'moment';
 import format from "date-fns/format";
 import { Subscription, Subject } from 'rxjs';
 import { stripGeneratedFileSuffix } from '@angular/compiler/src/aot/util';
+import { isThisSecond } from 'date-fns';
 
 const enum ImagePosition {
   LaundryService = '-24px 0px',
@@ -517,6 +518,11 @@ HighlightColum(indx:number){
     };
   }
 
+  rightClickMenu(event: any, value: any) {
+    event.preventDefault();
+    this.optionEmitter(value);
+
+  }
   mousedblclick(event: any, value: any) {
     event.preventDefault();
     event.stopPropagation();

@@ -2246,6 +2246,9 @@ export class GlobalService {
     getCurrentDate(){
       return moment().format('yyyy-MM-DD')
     }
+    getCurrentDateTime(){
+      return moment().format('yyyy-MM-DD HH:mm:ss')
+    }
     convertDbDate(date:string,defaultformat:string = 'yyyy/MM/dd'){
       const newDate = format(Date.parse(date),defaultformat);
       return newDate;

@@ -388,7 +388,7 @@ export class TimeSheetService {
     }
 
     postaudithistory(data:any): Observable<any> {
-        return this.auth.get(`${timesheet}/audit-history`,data)
+        return this.auth.post(`${timesheet}/audit-history`,data)
     }
 
     /**

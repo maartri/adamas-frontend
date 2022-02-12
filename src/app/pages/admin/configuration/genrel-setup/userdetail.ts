@@ -73,7 +73,7 @@ export class UserDetail implements OnInit {
     staffjobcategories: any;
 
 
-    checkBoxString: string = '010101';
+    checkBoxString: string = '010101001011001101010111';
 
     constructor(
         private globalS: GlobalService,

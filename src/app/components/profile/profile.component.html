@@ -123,7 +123,7 @@
 
 
 <ng-container *ngIf="isAdmin">
-    <div nz-row style="margin-top:2rem; background:#fff" nzGutter="16">
+    <div nz-row style="background:#fff" nzGutter="16">
 
         <ng-container *ngIf="this.innerValue?.view == 'staff'">
             <div nz-col nzSpan="12">
@@ -290,8 +290,13 @@
             </div>
         </ng-container>
 
-        <ng-container *ngIf="this.innerValue?.view == 'recipient' ">
+        <ng-container *ngIf="this.innerValue?.view == 'recipient' ">          
             <div nz-col nzSpan="24">
+                <div class="status-wrapper" *ngIf="recipientType">
+                    <span class="status active" *ngIf="recipientStatus && recipientStatus == 'active'"> ACTIVE </span>
+                    <span class="status inactive" *ngIf="recipientStatus && recipientStatus == 'inactive'"> INACTIVE </span>
+                    <span class="status type">{{ recipientType }} </span>
+                </div>
                 <div nz-col nzSpan="24">
                    <b style="margin-right:1rem">Active In :</b>
                    <span class="active-programs" *ngFor="let data of activePrograms">{{ data }}</span>

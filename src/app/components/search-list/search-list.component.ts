@@ -61,6 +61,8 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
 
   globalUser: any;
 
+  switchValue: boolean = false;
+
 
   // nzFilterOption  = () => true;
   constructor(
@@ -288,5 +290,10 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
     if(data.value){
       this.showAll = false;
     }
+  }
+
+  changeStatusBool(data: any){
+    this.activeInactive = data;
+    this.search();
   }
 }

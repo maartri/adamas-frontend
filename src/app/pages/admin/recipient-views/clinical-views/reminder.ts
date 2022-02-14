@@ -178,7 +178,7 @@ export class ClinicalReminder implements OnInit, OnDestroy {
                         value: x,
                         checked: false
                     }
-                });;
+                });
                 this.cd.markForCheck();
             });
         }

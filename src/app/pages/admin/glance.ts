@@ -104,12 +104,12 @@ export class GlanceAdmin implements OnInit, OnDestroy, AfterViewInit {
     teamTA: number = 0;
     teamAIP: number = 0;
 
+    staffUtilize: any;
+    noStaff: number = 0;
     totalOutHour: number = 0;
     noRecipient: number = 0;
     totalWorkHour: number = 0;
     totalWorkAttrHour: number = 0;
-    staffUtilize: any;
-    noStaff: number = 0;
 
     constructor(
         private router: Router,

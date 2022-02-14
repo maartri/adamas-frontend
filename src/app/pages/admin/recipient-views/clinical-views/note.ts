@@ -152,46 +152,12 @@ export class ClinicalNote implements OnInit, OnDestroy {
     getNotes(user:any) {
         this.loading = true;
 
-        // this.clientS.getopnoteswithfilters(user.id, this.filters).subscribe(data => {
-        //     let list: Array<any> = data.list || [];
-            
-        //     if (list.length > 0) {
-        //         list.forEach(x => {
-        //             if (!this.globalS.IsRTF2TextRequired(x.detailOriginal)) {
-        //                 x.detail = x.detailOriginal
-        //             }
-        //         });
-        //         this.tableData = list;
-        //     } else {
-        //         this.tableData = list;
-        //     }
-            
             this.listS.getclinicalnotes(user.id).subscribe(data=> {
                 this.tableData = data;
                 this.loading = false;
                 this.cd.markForCheck();
                 this.cd.detectChanges();
             });
-
-            
-        // })
-
-        // this.clientS.getopnotes(user.id).subscribe(data => {
-        //     let list: Array<any> = data.list || [];
-            
-        //     if (list.length > 0) {
-        //         list.forEach(x => {
-        //             if (!this.globalS.IsRTF2TextRequired(x.detailOriginal)) {
-        //                 x.detail = x.detailOriginal
-        //             }
-        //         });
-        //         this.tableData = list;
-        //     }
-            
-        //     this.loading = false;
-        //     this.cd.markForCheck();
-        // });
-
     }
 
     patchData(data: any) {

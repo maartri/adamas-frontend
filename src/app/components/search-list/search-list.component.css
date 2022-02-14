@@ -99,3 +99,19 @@ ul.sub-menu{
   .hide{
       display:none;
   }
+
+  .switch{
+    padding: 6px 10px;
+    margin-left: 10px;
+    background: #85b9d5;
+    color: #fff;
+    border-radius: 5px;
+    width:12rem;
+  }
+  .switch > div > span{
+    width: 5rem;
+    font-weight:500;
+  }
+  nz-switch >>> button.ant-switch-checked {
+        background-color: #85b9d5 !important;
+ }

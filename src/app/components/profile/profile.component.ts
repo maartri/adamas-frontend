@@ -131,6 +131,9 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
   topBelow = { top: '20px' }
 
+  recipientStatus: string;
+  recipientType: any;
+
 
   constructor(
     private globalS: GlobalService,
@@ -144,8 +147,21 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     private cd: ChangeDetectorRef,
     private uploadS: UploadService,
     private shareS: ShareService,
-    private ds: DomSanitizer
+    private ds: DomSanitizer,
+    private sharedS: ShareService,
   ) {
+
+    this.sharedS.emitProfileStatus$.subscribe(data => {
+      console.log(data);
+      this.recipientType = data.type == null || data.type.trim() == "" ? null : data.type; 
+      
+      if(data.admissionDate != null && data.dischargeDate == null){
+        this.recipientStatus = 'active';
+      } else {
+        this.recipientStatus ='inactive';
+      }
+      
+    })
 
   }
 

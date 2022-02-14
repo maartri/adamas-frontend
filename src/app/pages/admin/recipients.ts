@@ -257,6 +257,8 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
   currentDate = new Date();
   longMonth = this.currentDate.toLocaleString('en-us', { month: 'long' });
   sampleModel: any;
+
+  switchValue: boolean = false;
   
   columns: Array<any> = [
     {
@@ -479,7 +481,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
    
 
       this.sharedS.emitProfileStatus$.subscribe(data => {
-        // console.log(data);
+        console.log(data);
         this.selectedRecipient = data;
         this.recipientType = data.type == null || data.type.trim() == "" ? null : data.type;
         // if(data.admissionDate == null && data.dischargeDate == null){

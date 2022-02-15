@@ -577,7 +577,9 @@ export interface Consents {
     personID?: string,
     name?: string,
     date1?: string,
-    notes?: string
+    notes?: string,
+    Creator?:string,
+    selectedConsent?:Array<any>,
 }
 
 export interface IntakeCompetency {

@@ -107,6 +107,7 @@ export class IntakeGroups implements OnInit, OnDestroy {
             date1: new FormControl(null),
             date2: new FormControl(null),
             email: new FormControl(''),
+            selectedGroup:new FormControl(''),
          })
          
          this.preferenceForm = this.formBuilder.group({
@@ -127,7 +128,7 @@ export class IntakeGroups implements OnInit, OnDestroy {
     }
 
     handleCancel(view: number) {
-        
+        this.selectedGroups = {}
         this.addOREdit = 1;
         if (view == 1){
             this.definedOpen = false;
@@ -205,7 +206,12 @@ export class IntakeGroups implements OnInit, OnDestroy {
     }
     userGroupProcess(){
         this.userGroupForm.controls['personID'].setValue(this.user.id)
+        this.userGroupForm.controls['selectedGroup'].setValue(this.selectedGroups)
         const userGroup = this.userGroupForm.value;
+        if((this.addOREdit == 1 && this.selectedGroups === undefined) || (this.selectedGroups !== undefined && this.selectedGroups.length ===0) ){
+            this.globalS.sToast('Success', 'Please Select Atleast One Group ');
+            return
+        }
         if(this.addOREdit == 1){
             this.timeS.postusergroup(userGroup)
                         .subscribe(data => {

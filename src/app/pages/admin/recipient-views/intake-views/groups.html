@@ -64,13 +64,7 @@
     <div>
         
         <div nz-row nzGutter="16" class="mrg-btm" >
-            <!-- <div nz-col nzSpan="12" [formGroup]="userGroupForm" *ngIf="addOREdit == 1">
-                <label for="End Date">Group:</label>
-                <nz-select style="width:100%" nzAllowClear formControlName="group">
-                    <nz-option *ngFor="let data of dropDowns?.userGroups"  [nzValue]="data" [nzLabel]="data"></nz-option>
-                </nz-select>
-            </div> -->
-            <div nz-row nzGutter="16" *ngIf="addOREdit == 1">
+            <div nz-col nzSpan="24" *ngIf="addOREdit == 1">
                 <div class="staff-wrapper" style="height: 10rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
                     <h4 style="text-align:center;color:#1890FF">Tick The Checkbox Next To The Group</h4>
                     <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="logs($event)">
@@ -113,13 +107,12 @@
                 <textarea nz-input cols="30" rows="5" formControlName="notes"></textarea>
             </div>
         </div>
-
         <div *nzModalFooter>
             <ng-container>
                 <button nz-button nzType="default" (click)="handleCancel(1)">
                     <span>Cancel</span>
                 </button>
-                <button nz-button nzType="primary" (click)="userGroupProcess()" [disabled]="!this.userGroupForm.get('group').value">
+                <button nz-button nzType="primary" (click)="userGroupProcess()">
                     <span>Save</span>
                 </button>
             </ng-container>

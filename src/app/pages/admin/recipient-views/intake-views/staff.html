@@ -98,7 +98,7 @@
         </div>
         <div *nzModalFooter>
             <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
-            <button nz-button nzType="primary" (click)="processBtn()" [disabled]="!this.inputForm.get('list').value" [nzLoading]="isLoading">Save</button>
+            <button nz-button nzType="primary" (click)="processBtn()" [nzLoading]="isLoading">Save</button>
         </div>
     </div>
 </nz-modal>

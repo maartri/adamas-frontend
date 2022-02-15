@@ -158,16 +158,18 @@ export class IntakeStaff implements OnInit, OnDestroy {
       
       if((this.editOrAdd == 1 && this.selectedStaff === undefined) || (this.selectedStaff !== undefined && this.selectedStaff.length ===0) ){
         this.globalS.sToast('Success', 'Please Select Atleast One Staff ');
+        this.isLoading = false;
         return
       }
-
+      
       if (index == 1) {    
         this.timeS.postintakestaff({
           Notes: (notes == null) ? '' : notes,
           PersonID: this.user.id,
           Name: list,
           StaffCategory:0,
-          Creater:this.user,
+          Creater:'SYSMGR',
+          selectedStaff:this.selectedStaff,
           DateCreated: this.globalS.getCurrentDate()
         }).pipe(takeUntil(this.unsubscribe))
         .subscribe(data => {
@@ -185,7 +187,8 @@ export class IntakeStaff implements OnInit, OnDestroy {
           personID: this.user.id,
           name: list,
           staffCategory:1,
-          Creater:this.user,
+          Creater:'SYSMGR',
+          selectedStaff:this.selectedStaff,
           dateCreated: this.globalS.getCurrentDate()
         }).pipe(takeUntil(this.unsubscribe))
         .subscribe(data => {
@@ -286,6 +289,7 @@ export class IntakeStaff implements OnInit, OnDestroy {
         
         handleCancel() {
           this.inputForm.reset();
+          this.selectedStaff = {};
           this.isLoading = false;
           this.modalOpen = false;
         }

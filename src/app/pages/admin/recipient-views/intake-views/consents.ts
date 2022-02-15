@@ -94,6 +94,7 @@ export class IntakeConsents implements OnInit, OnDestroy {
 
     resetAll(){
         this.search();
+        this.selectedConsent = {};
     }
 
     consentProcess(){
@@ -104,14 +105,14 @@ export class IntakeConsents implements OnInit, OnDestroy {
         }
 
         const group = this.consentGroup.value;
-        // console.log(format(group.expiryDate, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"));
-        // this.competencyGroup.controls['mandatory'].setValue((this.competencyGroup.value.mandatory == null) ? false : this.competencyGroup.value.mandatory)
         let _consentGroup: Consents = {
             recordNumber: group.recordNumber,
             personID: this.user.id,
             notes: group.notes,
             date1: group.expiryDate ? group.expiryDate : null,
-            name: group.consent
+            name: group.consent,
+            Creator:"SYSMGR",
+            selectedConsent:this.selectedConsent,
         }
 
         console.log(_consentGroup);

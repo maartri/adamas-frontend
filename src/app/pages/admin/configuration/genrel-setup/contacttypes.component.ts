@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { ListService, MenuService, PrintService,GlobalService} from '@services/index';
+import { ListService, MenuService, PrintService,GlobalService, TimeSheetService} from '@services/index';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -44,6 +44,7 @@ export class ContacttypesComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private listS:ListService,
     private menuS:MenuService,
+    private timeS:TimeSheetService,
     private switchS:SwitchService,
     private formBuilder: FormBuilder,
     private http: HttpClient,
@@ -173,7 +174,7 @@ export class ContacttypesComponent implements OnInit {
           }
           this.switchS.updateData(  
             this.modalVariables={
-              title: 'Funding Regions'
+              title: 'Contact Type'
             }, 
             this.inputVariables = {
               display: group.get('title').value,
@@ -183,10 +184,23 @@ export class ContacttypesComponent implements OnInit {
               domain: 'CONTACTSUBGROUP',
             }
             ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-              if (data) 
-              this.globalS.sToast('Success', 'Updated successful');     
-              else
-              this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
+              if (data)
+              {
+                this.timeS.postaudithistory({
+                  Operator:this.tocken.user,
+                  actionDate:this.globalS.getCurrentDateTime(),
+                  auditDescription:'Contact Type Changed',
+                  actionOn:'CONTACTSUBGROUP',
+                  whoWhatCode:group.get('recordNumber').value, //inserted
+                  TraccsUser:this.tocken.user,
+                }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+                    this.globalS.sToast('Success', 'Update successful');
+                  }
+                );
+              }else
+              {
+                this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
+              }
               this.loadData();
               this.isUpdate = false;
               this.postLoading = false;          
@@ -199,14 +213,24 @@ export class ContacttypesComponent implements OnInit {
     delete(data: any) {
       this.postLoading = true;     
       const group = this.inputForm;
-      this.menuS.deleteDomain(data.recordNumber)
-      .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-        if (data) {
-          this.globalS.sToast('Success', 'Data Deleted!');
-          this.loadData();
-          return;
-        }
-      });
+        this.menuS.deleteDomain(data.recordNumber)
+          .pipe(takeUntil(this.unsubscribe)).subscribe(datas => {
+            if (datas) {
+              this.timeS.postaudithistory({
+                Operator:this.tocken.user,
+                actionDate:this.globalS.getCurrentDateTime(),
+                auditDescription:'Contact Type Deleted',
+                actionOn:'CONTACTSUBGROUP',
+                whoWhatCode:data.recordNumber, //inserted
+                TraccsUser:this.tocken.user,
+              }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+                  this.globalS.sToast('Success', 'Deleted successful');
+                }
+              );
+              this.loadData();
+              return;
+            }
+          });
     }
     
     loadData(){

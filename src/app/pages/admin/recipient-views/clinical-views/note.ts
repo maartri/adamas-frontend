@@ -151,7 +151,6 @@ export class ClinicalNote implements OnInit, OnDestroy {
 
     getNotes(user:any) {
         this.loading = true;
-
             this.listS.getclinicalnotes(user.id).subscribe(data=> {
                 this.tableData = data;
                 this.loading = false;

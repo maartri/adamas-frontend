@@ -37,6 +37,7 @@ export class IntakeGroups implements OnInit, OnDestroy {
         userGroups: Array<string>,
         preferences: Array<string>
     }
+    selectedGroups: any;
 
     constructor(
         private timeS: TimeSheetService,
@@ -141,15 +142,24 @@ export class IntakeGroups implements OnInit, OnDestroy {
         this.search()
         this.listDropDowns()
     }
-
+    logs(event: any) {
+        this.selectedGroups = event;
+    }
     listDropDowns(){
         forkJoin([
             this.listS.getusergroup(this.user.id),
             this.listS.getrecipientpreference(this.user.id)
         ]).subscribe(data => {
             this.loading = false;
+            let usergroup = data[0].map(x => {
+                return {
+                    label: x,
+                    value: x,
+                    checked: false
+                }
+            });
             this.dropDowns = {
-                userGroups: data[0],
+                userGroups: usergroup,
                 preferences: data[1]
             }
         });
@@ -169,7 +179,6 @@ export class IntakeGroups implements OnInit, OnDestroy {
             }else{
                 this.globalS.iToast('Info','There Is No Preference');
             }
-        
         }
     }
 

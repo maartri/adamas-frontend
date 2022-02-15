@@ -142,6 +142,8 @@ export class IntakeStaff implements OnInit, OnDestroy {
     }
     save() {
 
+      console.log(this.user);
+
       for (const i in this.inputForm.controls) {
         this.inputForm.controls[i].markAsDirty();
         this.inputForm.controls[i].updateValueAndValidity();
@@ -160,7 +162,6 @@ export class IntakeStaff implements OnInit, OnDestroy {
       }
 
       if (index == 1) {    
-        console.log(this.user);
         this.timeS.postintakestaff({
           Notes: (notes == null) ? '' : notes,
           PersonID: this.user.id,

@@ -7,6 +7,8 @@ import { BillingService, TimeSheetService, GlobalService, ListService, MenuServi
 import { debounceTime, timeout } from 'rxjs/operators';
 import { setDate, toDate } from 'date-fns';
 import { FormsModule } from '@angular/forms';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { formatDate } from '@angular/common';
 import { first } from 'lodash';
 
@@ -37,6 +39,7 @@ export class DebtorComponent implements OnInit {
   categoriesList: Array<any>;
   batchHistoryList: Array<any>;
   debtorRecordList: Array<any>;
+  weeksList: Array<any>;
   tableData: Array<any>;
   PayPeriodLength: number;
   PayPeriodEndDate: any;
@@ -70,14 +73,33 @@ export class DebtorComponent implements OnInit {
   id: string;
   btnid: any;
   btnid1: any;
+  private unsubscribe: Subject<void> = new Subject();
   selectedBranches: any;
   selectedPrograms: any[];
   selectedCategories: any;
+  selectedWeeks: any;
   allBranchesChecked: boolean;
   allProgramsChecked: boolean;
   allCategoriesChecked: boolean;
   filteredResult: any;
-
+  allChecked = false;
+  indeterminate = true;
+  
+  // checkOptionsOne = [
+  //   { label: 'Apple', value: 'Apple', checked: true },
+  //   { label: 'Pear', value: 'Pear', checked: false },
+  //   { label: 'Orange', value: 'Orange', checked: false }
+  // ];
+  allWeeksChecked: boolean ;
+  checkedWeekly: boolean;
+  checkedFornightly: boolean;
+  checkedMonthly: boolean;
+  checked4Weekly: boolean;
+  checkedMonthly1: boolean;
+  checkedWeekly1: boolean;
+  batchNumber: any;
+  operatorID: any;
+  
   constructor(
     private cd: ChangeDetectorRef,
     private router: Router,
@@ -90,13 +112,14 @@ export class DebtorComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.token = this.globalS.decode();
     this.buildForm();
 
     this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA) : this.globalS.decode();
     this.userRole = this.tocken.role;
-    
-    this.GetPayPeriodEndDate();
-    this.GetPayPeriodLength();
+
+    // this.GetPayPeriodEndDate();
+    // this.GetPayPeriodLength();
     this.loadBranches();
     this.loadPrograms();
     this.loadCategories();
@@ -125,9 +148,22 @@ export class DebtorComponent implements OnInit {
       name: null,
       invoiceDate: new Date(),
       invType: null,
-      dtpEndDate: null,
-      dtpStartDate: null,
+      // dtpEndDate: null,
+      // dtpStartDate: null,
+      billingUpdate: true,
+
+      dtpStartDate: new Date(),
+      dtpEndDate: new Date(),
     });
+    
+    this.allWeeksChecked = true;
+    this.checkedWeekly = true;
+    this.checkedFornightly =  true;
+    this.checkedMonthly =  true;
+    this.checked4Weekly =  true;
+    this.checkedMonthly1 =  true;
+    this.checkedWeekly1 =  true;
+
   }
 
   log(event: any, index: number) {
@@ -137,6 +173,8 @@ export class DebtorComponent implements OnInit {
       this.selectedPrograms = event;
     if (index == 3)
       this.selectedCategories = event;
+    // if (index == 4)
+    //   this.selectedWeeks = event;
   }
 
   checkAll(index: number): void {
@@ -161,6 +199,13 @@ export class DebtorComponent implements OnInit {
         this.allCategoriesChecked = true;
       });
     }
+    // if (index == 4) {
+    //   this.weeksList.forEach(x => {
+    //     x.checked = true;
+    //     this.allWeeksChecked = x.description;
+    //     this.allWeeksChecked = true;
+    //   });
+    // }
   }
 
   uncheckAll(index: number): void {
@@ -185,6 +230,13 @@ export class DebtorComponent implements OnInit {
         this.selectedCategories = [];
       });
     }
+    // if (index == 4) {
+    //   this.weeksList.forEach(x => {
+    //     x.checked = false;
+    //     this.allWeeksChecked = false;
+    //     this.selectedWeeks = [];
+    //   });
+    // }
   }
 
   // uncheckAll(e){
@@ -212,6 +264,53 @@ export class DebtorComponent implements OnInit {
     this.AccountPackage = ['TEST 1', 'TEST 2'];
     this.invType = ['CDC Homecare Package Invoices', 'NDIA Claim Update Invoices', 'General', 'Re-Export Existing Batch', 'ALL'];
   }
+
+  checkedStatus() : void {
+    if (this.allWeeksChecked == true) {
+      this.checkedWeekly = true;
+      this.checkedFornightly = true;
+      this.checkedMonthly = true;
+      this.checked4Weekly = true;
+      this.checkedMonthly1 = true;
+      this.checkedWeekly1 = true;
+    } else {
+      this.checkedWeekly = false;
+      this.checkedFornightly = false;
+      this.checkedMonthly = false;
+      this.checked4Weekly = false;
+      this.checkedMonthly1 = false;
+      this.checkedWeekly1 = false;
+      this.allWeeksChecked = true
+    }
+  }
+
+
+  // updateAllChecked(): void {
+  //   this.indeterminate = false;
+  //   if (this.allChecked) {
+  //     this.checkOptionsOne = this.checkOptionsOne.map(item => ({
+  //       ...item,
+  //       checked: true
+  //     }));
+  //   } else {
+  //     this.checkOptionsOne = this.checkOptionsOne.map(item => ({
+  //       ...item,
+  //       checked: false
+  //     }));
+  //   }
+  // }
+
+  // updateSingleChecked(): void {
+  //   if (this.checkOptionsOne.every(item => !item.checked)) {
+  //     this.allChecked = false;
+  //     this.indeterminate = false;
+  //   } else if (this.checkOptionsOne.every(item => item.checked)) {
+  //     this.allChecked = true;
+  //     this.indeterminate = false;
+  //   } else {
+  //     this.indeterminate = true;
+  //   }
+  // }
 
   loadBranches() {
     this.loading = true;
@@ -244,26 +343,15 @@ export class DebtorComponent implements OnInit {
       this.allCategoriesChecked = true;
       this.checkAll(3);
     });
-  }
+  };
 
-  // loadDebtorRecords() {
-  //   let sql = "SELECT [Recordno], [Type], [Anal], [Client Code], [BillTo], [Date], [Start Time], [Dayno], [Monthno], [Yearno], [Service type], [Carer code], [Service Description], [Program], [Duration],  [Unit Bill Rate], [Taxamount] FROM Roster where [Service Type] = 'SCA WD'";
-  //   this.loading = true;
-  //     this.listS.getlist(sql).subscribe(data => {
-  //       this.debtorRecordList = data;
-  //       console.log(this.debtorRecordList);
-  //       this.loading = false;
-  //     });
-  // }  getDebtorRecords
-  
-  
   loadDebtorRecords() {
     this.loading = true;
     this.billingS.getDebtorRecords(null).subscribe(data => {
-        this.debtorRecordList = data;
-        this.loading = false;
-      });
-  }  
+      this.debtorRecordList = data;
+      this.loading = false;
+    });
+  }
 
   loadBatchHistory() {
     let sql = "Select pay_bill_batch.RecordNumber, pay_bill_batch.OperatorID, pay_bill_batch.BatchDate, pay_bill_batch.BatchNumber, pay_bill_batch.BatchDetail, pay_bill_batch.BatchType, pay_bill_batch.CDCBilled, pay_bill_batch.Date1, pay_bill_batch.Date2, pay_bill_batch.BillBatch# as BillBatch, pay_bill_batch.xDeletedRecord, pay_bill_batch.xEndDate FROM pay_bill_batch INNER JOIN batch_record on batchnumber = batch_record.BCH_NUM WHERE batch_record.bch_type in ('B','S') ORDER BY convert(int, batchnumber) DESC";
@@ -287,13 +375,44 @@ export class DebtorComponent implements OnInit {
       allProgarms: this.allBranchesChecked,
       selectedBranches: (this.allBranchesChecked == false) ? this.selectedBranches : '',
     }
+    this.getBatchRecord()
+    this.operatorID = this.token.nameid;
 
-    this.billingS.postdebtorbilling({}).subscribe(data => {
-      this.filteredResult = data;
-      this.loading = false;
-      this.cd.detectChanges();
+    console.log("OperatorID:", this.operatorID)
+    console.log("BatchDate:", new Date())
+    console.log("BatchNumber:", this.batchNumber)
+    console.log("BatchDetail:", 'Invoice Update')
+    console.log("BatchType:", 'B')
+    console.log("Date1:", "")
+    console.log("Date2:", "")
+
+    // this.billingS.insertPayBillBatch({
+    //   OperatorID: this.operatorID,
+    //   BatchDate: new Date(),
+    //   BatchNumber: this.batchNumber,
+    //   BatchDetail: "'Invoice Update'",
+    //   BatchType: "'B'",
+    //   Date1: "",
+    //   Date2: "",
+    // }).pipe(
+    //   takeUntil(this.unsubscribe)).subscribe(data => {
+    //     if (data) {
+    //       // this.globalS.sToast('Success', 'Date Updated')
+    //       this.postLoading = false;
+    //       this.ngOnInit();
+    //       return false;
+    //     }
+    //   });
+  }
+
+  getBatchRecord() {
+    this.loading = true;
+    this.billingS.getBatchRecord(null).subscribe(data => {
+      this.batchNumber = data[0].batchRecordNumber;
+      this.loading = false
     });
   }
+
   GetPayPeriodEndDate() {
     let sql = "SELECT convert(varchar, PayPeriodEndDate, 101) AS PayPeriodEndDate FROM SysTable"
     this.loading = true;
@@ -312,7 +431,7 @@ export class DebtorComponent implements OnInit {
       }
     });
   }
-  GetPayPeriodLength(){
+  GetPayPeriodLength() {
     let fsql = "SELECT DefaultPayPeriod as DefaultPayPeriod FROM Registration";
     this.listS.getlist(fsql).subscribe(fdata => {
       if (fdata[0].defaultPayPeriod != "") {
@@ -320,10 +439,10 @@ export class DebtorComponent implements OnInit {
       }
       else {
         this.PayPeriodLength = 14
-      }      
+      }
       var firstDate = new Date(this.dtpEndDate);
       firstDate.setDate(firstDate.getDate() - (this.PayPeriodLength - 1));
-      this.dtpStartDate = formatDate(firstDate, 'MM-dd-yyyy','en_US');
+      this.dtpStartDate = formatDate(firstDate, 'MM-dd-yyyy', 'en_US');
       this.inputForm.patchValue({
         dtpStartDate: this.dtpStartDate,
       });

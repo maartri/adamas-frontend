@@ -20,8 +20,9 @@ export class BillingService {
     ) { }
 
     postdebtorbilling(data: any): Observable<any> {
-        return this.auth.post(`${billing}/post-debtor-billing`, data)
+        return this.auth.post(`${billing}/postDebtorBilling`, data)
     }
+
     getlistProgramPackagesFilter(is_where: boolean):Observable<any>{
         return this.auth.get(`${billing}/programPackagesFilter/${is_where}`)
     }
@@ -175,4 +176,37 @@ export class BillingService {
     getActivePeriodTeams(data: any):Observable<any>{
         return this.auth.post(`${billing}/getActivePeriodTeams`, data);
     }
+
+    //Output Hours
+    getOutputHours(data: any):Observable<any>{
+        return this.auth.post(`${billing}/getOutputHours`, data);
+    }
+
+    //Worked Hours
+    getWorkedHours(data: any):Observable<any>{
+        return this.auth.post(`${billing}/getWorkedHours`, data);
+    }
+
+    //Worked Attribute Hours
+    getWorkedAttributeHours(data: any):Observable<any>{
+        return this.auth.post(`${billing}/getWorkedAttributeHours`, data);
+    }
+
+    //Total Staff
+    getTotalStaff(data: any):Observable<any>{
+        return this.auth.post(`${billing}/getTotalStaff`, data);
+    }
+
+    //Total Recipient
+    getTotalRecipient(data: any):Observable<any>{
+        return this.auth.post(`${billing}/getTotalRecipient`, data);
+    }
+
+    getBatchRecord(is_where: boolean):Observable<any>{
+        return this.auth.get(`${billing}/getBatchRecord/${is_where}`)
+    }
+    insertPayBillBatch(data: any): Observable<any> {
+        return this.auth.put(`${billing}/payBillBatch`, data);
+    }
+
 }

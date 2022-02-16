@@ -38,6 +38,7 @@ export class IntakeGroups implements OnInit, OnDestroy {
         preferences: Array<string>
     }
     selectedGroups: any;
+    selectedPrefernces: any;
 
     constructor(
         private timeS: TimeSheetService,
@@ -114,7 +115,8 @@ export class IntakeGroups implements OnInit, OnDestroy {
             preference: new FormControl('', [Validators.required]),
             notes: new FormControl(''),
             personID: new FormControl(''),
-            recordNumber: new FormControl(0)
+            recordNumber: new FormControl(0),
+            selectedPrefernces:new FormControl('')
          })
     }
 
@@ -128,12 +130,14 @@ export class IntakeGroups implements OnInit, OnDestroy {
     }
 
     handleCancel(view: number) {
-        this.selectedGroups = {}
+        
         this.addOREdit = 1;
         if (view == 1){
+            this.selectedGroups = {}
             this.definedOpen = false;
             // this.userGroupForm.reset();
         }else{
+            this.selectedPrefernces = {};
             this.preferenceOpen = false;
             // this.preferenceForm.reset();
         }
@@ -145,6 +149,9 @@ export class IntakeGroups implements OnInit, OnDestroy {
     }
     logs(event: any) {
         this.selectedGroups = event;
+    }
+    logs2(event: any) {
+        this.selectedPrefernces = event;
     }
     listDropDowns(){
         forkJoin([
@@ -159,9 +166,16 @@ export class IntakeGroups implements OnInit, OnDestroy {
                     checked: false
                 }
             });
+           let preference = data[1].map(x => {
+                return {
+                    label: x,
+                    value: x,
+                    checked: false
+                }
+            });
             this.dropDowns = {
                 userGroups: usergroup,
-                preferences: data[1]
+                preferences: preference
             }
         });
     }
@@ -208,11 +222,12 @@ export class IntakeGroups implements OnInit, OnDestroy {
         this.userGroupForm.controls['personID'].setValue(this.user.id)
         this.userGroupForm.controls['selectedGroup'].setValue(this.selectedGroups)
         const userGroup = this.userGroupForm.value;
-        if((this.addOREdit == 1 && this.selectedGroups === undefined) || (this.selectedGroups !== undefined && this.selectedGroups.length ===0) ){
-            this.globalS.sToast('Success', 'Please Select Atleast One Group ');
-            return
-        }
+        
         if(this.addOREdit == 1){
+            if((this.addOREdit == 1 && this.selectedGroups === undefined) || (this.selectedGroups !== undefined && this.selectedGroups.length ===0) ){
+                this.globalS.sToast('Success', 'Please Select Atleast One Group ');
+                return
+            }
             this.timeS.postusergroup(userGroup)
                         .subscribe(data => {
                             if(data){
@@ -237,10 +252,14 @@ export class IntakeGroups implements OnInit, OnDestroy {
 
     preferenceProcess(){
         this.preferenceForm.controls['personID'].setValue(this.user.id)
-
+        this.preferenceForm.controls['selectedPrefernces'].setValue(this.selectedPrefernces)
         const preferences = this.preferenceForm.value;
 
         if(this.addOREdit == 1){
+            if((this.addOREdit == 1 && this.selectedPrefernces === undefined) || (this.selectedPrefernces !== undefined && this.selectedPrefernces.length ===0) ){
+                this.globalS.sToast('Success', 'Please Select Atleast One Preference ');
+                return
+            }
             this.timeS.postrecipientpreference(preferences)
                         .subscribe(data => {
                             if(data){

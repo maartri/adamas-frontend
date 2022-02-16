@@ -304,9 +304,7 @@ export class ClinicalReminder implements OnInit, OnDestroy {
                 }
                 
                 delete(index: any) {
-                    const { recordNumber } = this.tableData[index];
-                    
-                    this.timeS.deleteclinicalreminders(recordNumber).pipe(
+                    this.timeS.deleteclinicalreminders(index).pipe(
                         takeUntil(this.unsubscribe))
                         .subscribe(data => {
                             if (data) {

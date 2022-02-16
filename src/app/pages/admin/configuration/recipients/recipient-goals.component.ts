@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
-import { GlobalService, ListService, MenuService, PrintService } from '@services/index';
+import { GlobalService, ListService, MenuService, PrintService, TimeSheetService } from '@services/index';
 import { SwitchService } from '@services/switch.service';
 import { NzModalService } from 'ng-zorro-antd';
 import { Subject } from 'rxjs';
@@ -45,12 +45,10 @@ export class RecipientGoalsComponent implements OnInit {
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
     private switchS:SwitchService,
-    private listS:ListService,
+    private timeS:TimeSheetService,
     private printS:PrintService,
     private menuS:MenuService,
     private formBuilder: FormBuilder,
-    private http: HttpClient,
-    private fb: FormBuilder,
     private sanitizer: DomSanitizer,
     private ModalS: NzModalService,
     ){}
@@ -189,11 +187,23 @@ this.buildForm();
             }
             
             ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-              if (data) 
-              this.globalS.sToast('Success', 'Updated successful');     
-              else
-              this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
-              this.loadData();
+              if (data)
+              {
+                this.timeS.postaudithistory({
+                  Operator:this.tocken.user,
+                  actionDate:this.globalS.getCurrentDateTime(),
+                  auditDescription:'Recipient Goals Changed',
+                  actionOn:'GOALOFCARE',
+                  whoWhatCode:group.get('recordNumber').value, //inserted
+                  TraccsUser:this.tocken.user,
+                }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+                  this.globalS.sToast('Success', 'Update successful');
+                }
+                );
+              }else
+              {
+                this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
+              }
           
               this.postLoading = false;          
               this.handleCancel();
@@ -208,9 +218,19 @@ this.buildForm();
           this.postLoading = true;     
           const group = this.inputForm;
           this.menuS.deleteDomain(data.recordNumber)
-          .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-            if (data) {
-              this.globalS.sToast('Success', 'Data Deleted!');
+          .pipe(takeUntil(this.unsubscribe)).subscribe(datas => {
+            if (datas) {
+              this.timeS.postaudithistory({
+                Operator:this.tocken.user,
+                actionDate:this.globalS.getCurrentDateTime(),
+                auditDescription:'Recipient Goals Deleted',
+                actionOn:'GOALOFCARE',
+                whoWhatCode:data.recordNumber, //inserted
+                TraccsUser:this.tocken.user,
+              }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+                  this.globalS.sToast('Success', 'Deleted successful');
+                }
+              );
               this.loadData();
               return;
             }

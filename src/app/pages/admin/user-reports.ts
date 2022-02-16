@@ -4494,8 +4494,8 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
           
           var fQuery = this.QueryFinlization(this.sql) 
           
-        //  console.log(fQuery)
-          //  console.log(this.inputForm.value.printaslabel)
+        //console.log(fQuery)
+        //console.log(this.inputForm.value.printaslabel)
           
           
           var Title = "User Defined Report"
@@ -4887,13 +4887,13 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
                   break; 
                   case 'Group Start Date':
                   if(columnNames != []){
-                    columnNames = columnNames.concat(['UserGroup.[Date1]  '])
-                  }else{columnNames = (['UserGroup.[Date1]  '])}  
+                    columnNames = columnNames.concat(['UserGroup.[Date1] As [Group Start Date] '])
+                  }else{columnNames = (['UserGroup.[Date1] as [Group Start Date] '])}  
                   break;                      
                   case 'Group End Date':
                   if(columnNames != []){
-                    columnNames = columnNames.concat(['UserGroup.[Date2]  '])
-                  }else{columnNames = (['UserGroup.[Date2]  '])} 
+                    columnNames = columnNames.concat(['UserGroup.[Date2] As [Group End Date] '])
+                  }else{columnNames = (['UserGroup.[Date2] [Group End Date] '])} 
                   break;
                   case 'Group Email':
                   if(columnNames != []){
@@ -4920,14 +4920,14 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
                   break;
                   case 'Event Date':
                   if(columnNames != []){
-                    columnNames = columnNames.concat(['Remind.[Date2]  '])
-                  }else{columnNames = (['Remind.[Date2]  '])}  
+                    columnNames = columnNames.concat(['Remind.[Date2] as [Event Date] '])
+                  }else{columnNames = (['Remind.[Date2] as [Event Date] '])}  
                   break;
                   
                   case 'Reminder Date':
                   if(columnNames != []){
-                    columnNames = columnNames.concat(['Remind.[Date1]  '])
-                  }else{columnNames = (['Remind.[Date1]  '])}  
+                    columnNames = columnNames.concat(['Remind.[Date1] as [Reminder Date] '])
+                  }else{columnNames = (['Remind.[Date1] as [Reminder Date] '])}  
                   break;
                   case 'Reminder Notes':
                   if(columnNames != []){
@@ -4947,13 +4947,13 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
                   break;
                   case 'Loan Item Date Loaned/Installed':
                   if(columnNames != []){
-                    columnNames = columnNames.concat(['HRLoan.[Date1]  '])
-                  }else{columnNames = (['HRLoan.[Date1]  '])}
+                    columnNames = columnNames.concat(['HRLoan.[Date1] as [Loan Item Installed] '])
+                  }else{columnNames = (['HRLoan.[Date1] as [Loan Item Installed] '])}
                   break;                      
                   case 'Loan Item Date Collected':
                   if(columnNames != []){
-                    columnNames = columnNames.concat(['HRLoan.[Date2]  '])
-                  }else{columnNames = (['HRLoan.[Date2]  '])}
+                    columnNames = columnNames.concat(['HRLoan.[Date2] as [Loan Item Collected Date] '])
+                  }else{columnNames = (['HRLoan.[Date2] as [Loan Item Collected Date] '])}
                   break;
                   //  service information Fields                      
                   case 'Staff Code':
@@ -5135,7 +5135,7 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
                     break;
                     case 'Date Of Birth':
                     if(columnNames != []){
-                      columnNames = columnNames.concat(['R.DateOfBirth as [DOB] '])
+                      columnNames = columnNames.concat(["FORMAT(convert(datetime,R.DateOfBirth), 'dd/MM/yyyy')  as [DOB] "])
                     }else{columnNames = (['R.DateOfBirth as [DOB] '])}        
                     break;
                     case 'Age':
@@ -5649,13 +5649,13 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
                     break;                     
                     case 'Consent Start Date':
                     if(columnNames != []){
-                      columnNames = columnNames.concat(['Cons.[Date1]  '])
-                    }else{columnNames = (['Cons.[Date1]  '])}  
+                      columnNames = columnNames.concat(['Cons.[Date1] as [Consent Start Date] '])
+                    }else{columnNames = (['Cons.[Date1] as [Consent Start Date] '])}  
                     break;
                     case 'Consent Expiry':
                     if(columnNames != []){
-                      columnNames = columnNames.concat(['Cons.[Date2]  '])
-                    }else{columnNames = (['Cons.[Date2]  '])}  
+                      columnNames = columnNames.concat(['Cons.[Date2] as [Consent Expiry] '])
+                    }else{columnNames = (['Cons.[Date2] as [Consent Expiry] '])}  
                     break;
                     case 'Consent Notes':
                     if(columnNames != []){
@@ -5680,8 +5680,8 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
                     break;                      
                     case 'Anticipated Achievement Date':
                     if(columnNames != []){
-                      columnNames = columnNames.concat(['Goalcare.[Date1]  '])
-                    }else{columnNames = (['Goalcare.[Date1]  '])}  
+                      columnNames = columnNames.concat(['Goalcare.[Date1] as [Anticipated Achievement Date] '])
+                    }else{columnNames = (['Goalcare.[Date1] as [Anticipated Achievement Date] '])}  
                     break;
                     case 'Date Achieved':
                     if(columnNames != []){
@@ -5690,8 +5690,8 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
                     break;
                     case 'Last Reviewed':
                     if(columnNames != []){
-                      columnNames = columnNames.concat(['Goalcare.[Date2]  '])
-                    }else{columnNames = (['Goalcare.[Date2]  '])}  
+                      columnNames = columnNames.concat(['Goalcare.[Date2] as [Last Reviewed] '])
+                    }else{columnNames = (['Goalcare.[Date2] as [Last Reviewed] '])}  
                     break;              
                     case 'Logged By':
                     if(columnNames != []){
@@ -5706,14 +5706,14 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
                     break;
                     case 'Event Date':
                     if(columnNames != []){
-                      columnNames = columnNames.concat(['Remind.[Date2]  '])
-                    }else{columnNames = (['Remind.[Date2]  '])}  
+                      columnNames = columnNames.concat(['Remind.[Date2]  as [Event Date]'])
+                    }else{columnNames = (['Remind.[Date2] as [Event Date] '])}  
                     break;
                     
                     case 'Reminder Date':
                     if(columnNames != []){
-                      columnNames = columnNames.concat(['Remind.[Date1]  '])
-                    }else{columnNames = (['Remind.[Date1]  '])}  
+                      columnNames = columnNames.concat(['Remind.[Date1] as [Reminder Date] '])
+                    }else{columnNames = (['Remind.[Date1] as [Reminder Date] '])}  
                     break;
                     case 'Reminder Notes':
                     if(columnNames != []){
@@ -5733,13 +5733,13 @@ export class UserReports implements OnInit, OnDestroy, AfterViewInit {
                     break; 
                     case 'Group Start Date':
                     if(columnNames != []){
-                      columnNames = columnNames.concat(['UserGroup.[Date1]  '])
-                    }else{columnNames = (['UserGroup.[Date1]  '])}  
+                      columnNames = columnNames.concat(['UserGroup.[Date1] as [Group Start Date] '])
+                    }else{columnNames = (['UserGroup.[Date1] as [Group Start Date] '])}  
                     break;                      
                     case 'Group End Date':
                     if(columnNames != []){
-                      columnNames = columnNames.concat(['UserGroup.[Date2]  '])
-                    }else{columnNames = (['UserGroup.[Date2]  '])} 
+                      columnNames = columnNames.concat(['UserGroup.[Date2] as [Group End Date] '])
+                    }else{columnNames = (['UserGroup.[Date2] as [Group End Date] '])} 
                     break;
                     case 'Group Email':
                     if(columnNames != []){
@@ -8202,13 +8202,13 @@ break;
                     break;
                     case 'Loan Item Date Loaned/Installed':
                     if(columnNames != []){
-                      columnNames = columnNames.concat(['HRLoan.[Date1]  '])
-                    }else{columnNames = (['HRLoan.[Date1]  '])}
+                      columnNames = columnNames.concat(['HRLoan.[Date1] as [Loan Item Installed] '])
+                    }else{columnNames = (['HRLoan.[Date1] as [Loan Item Installed] '])}
                     break;                      
                     case 'Loan Item Date Collected':
                     if(columnNames != []){
-                      columnNames = columnNames.concat(['HRLoan.[Date2]  '])
-                    }else{columnNames = (['HRLoan.[Date2]  '])}
+                      columnNames = columnNames.concat(['HRLoan.[Date2] as [loan Item Collected Date] '])
+                    }else{columnNames = (['HRLoan.[Date2] as [loan Item Collected Date] '])}
                     break;
                     //  service information Fields                      
                     case 'Staff Code':
@@ -9190,13 +9190,13 @@ break;
                     break;
                     case 'Placement Start':
                     if(columnNames != []){
-                      columnNames = columnNames.concat(['HRPlacements.[Date1]  '])
-                    }else{columnNames = (['HRPlacements.[Date1]  '])}  
+                      columnNames = columnNames.concat(['HRPlacements.[Date1] as [Placement Start] '])
+                    }else{columnNames = (['HRPlacements.[Date1] as [Placement Start] '])}  
                     break;
                     case 'Placement End':
                     if(columnNames != []){
-                      columnNames = columnNames.concat(['HRPlacements.[Date2]  '])
-                    }else{columnNames = (['HRPlacements.[Date2]  '])}  
+                      columnNames = columnNames.concat(['HRPlacements.[Date2] as [Placement End] '])
+                    }else{columnNames = (['HRPlacements.[Date2] as [Placement End] '])}  
                     break;
                     case 'Placement Referral':
                     var placementrefferal = " CASE HRPlacements.[Recurring]  WHEN 1 THEN 'True' else 'False' END "

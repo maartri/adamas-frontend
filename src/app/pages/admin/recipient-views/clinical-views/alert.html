@@ -17,7 +17,7 @@
                     <td>{{ data.alert}}</td>
                     <td>{{ data.notes }}</td>
                     <td>
-                        <a (click)="showEditModal(data.recordNumber)">Update</a>
+                        <a (click)="showEditModal(i)">Update</a>
                         <nz-divider nzType="vertical"></nz-divider>
                         <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this Alert from the List?" nzPopconfirmPlacement="bottom"
                             (nzOnConfirm)="delete(data.recordNumber)">Delete</a>

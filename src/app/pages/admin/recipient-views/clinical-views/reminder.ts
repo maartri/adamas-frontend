@@ -190,46 +190,73 @@ export class ClinicalReminder implements OnInit, OnDestroy {
         }
         process(){
             
-            if((this.addOREdit == 1 && this.selectedReminders === undefined) || (this.selectedReminders !== undefined && this.selectedReminders.length ===0) ){
-                this.globalS.sToast('Success', 'Please Select Atleast One Reminder ');
-                return
-            }
-            let data = {};
-            let status = '';
-            
-            if(this.selectedReminders.length == 1){
-                data = {
-                    PersonID:this.user.id,
-                    Name:this.selectedReminders[0],
-                    Notes:'',
-                };
-                status = "single"; 
-            }else{
-                data = {
-                    PersonID:this.user.id,
-                    Name:'',
-                    Notes:'',
-                    selectedReminders:this.selectedReminders,
-                };
-                status = "multi"; 
-            }
-            
-            this.timeS.postclinicalreminders(data,status).pipe(
-                takeUntil(this.unsubscribe))
-                .subscribe(data => {
-                    console.log(data);
-                    this.inputForm.controls.staffAlert.setValue(this.selectedReminders[0]);
-                    this.globalS.sToast('Success', 'Data added');
-                    if(status == "single"){
-                        this.addOREdit = 0;
-                        this.cd.detectChanges();
-                    }else{
-                        this.handleCancel();
-                        this.cd.detectChanges();
+            if(this.addOREdit == 1){
+                if((this.addOREdit == 1 && this.selectedReminders === undefined) || (this.selectedReminders !== undefined && this.selectedReminders.length ===0) ){
+                    this.globalS.sToast('Success', 'Please Select Atleast One Reminder ');
+                    return
+                }
+                let data = {};
+                let status = '';
+                
+                if(this.selectedReminders.length == 1){
+                    data = {
+                        PersonID:this.user.id,
+                        Name:this.selectedReminders[0],
+                        Notes:'',
+                    };
+                    status = "single"; 
+                }else{
+                    data = {
+                        PersonID:this.user.id,
+                        Name:'',
+                        Notes:'',
+                        selectedReminders:this.selectedReminders,
+                    };
+                    status = "multi"; 
+                }
+                
+                this.timeS.postclinicalreminders(data,status).pipe(
+                    takeUntil(this.unsubscribe))
+                    .subscribe(data => {
+                        console.log(data);
+                        this.inputForm.controls.staffAlert.setValue(this.selectedReminders[0]);
+                        this.globalS.sToast('Success', 'Data added');
+                        if(status == "single"){
+                            this.addOREdit = 0;
+                            this.cd.detectChanges();
+                        }else{
+                            this.handleCancel();
+                            this.cd.detectChanges();
+                        }
+                        
+                    })
+                }else{
+                    const remGroup = this.inputForm.value;
+                    const reminderDate = this.globalS.VALIDATE_AND_FIX_DATETIMEZONE_ANOMALY(remGroup.reminderDate);
+                    const dueDate = this.globalS.VALIDATE_AND_FIX_DATETIMEZONE_ANOMALY(remGroup.dueDate);
+                    
+                    const reminder: Reminders = {
+                        recordNumber: remGroup.recordNumber,
+                        personID: this.user.id,
+                        name: remGroup.staffAlert,
+                        address1: remGroup.recurring ? remGroup.recurrInt : '',
+                        address2: remGroup.recurring ? remGroup.recurrStr : '',
+                        email: remGroup.followUpEmail,  
+                        date1: reminderDate,
+                        date2: dueDate,
+                        state: remGroup.listOrder,
+                        notes: remGroup.notes,
+                        recurring: remGroup.recurring,
+                        sameDate:false,
+                        sameDay:false,
+                        creator:"",
                     }
-                
-                })
-                
+                    this.timeS.updateclinicalreminders(reminder).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+                        this.globalS.sToast('Success', 'Data updated');
+                        this.search();
+                        this.handleCancel();
+                    });
+                }
             }
             
             
@@ -284,6 +311,7 @@ export class ClinicalReminder implements OnInit, OnDestroy {
                 
                 showEditModal(index: any) {
                     this.addOREdit = 0;
+                    console.log(this.tableData[index]);
                     const { recordNumber, personID, alert, reminderDate, dueDate, address1, address2, recurring, state, email, notes} = this.tableData[index];
                     
                     this.inputForm.patchValue({

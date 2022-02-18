@@ -57,6 +57,7 @@ interface UserView{
       defaultProgram: any = null;
       serviceType:string;
        recipientCode:string
+       recordNo:string
        debtor:string;
        viewType:string;
        multipleRecipientShow: boolean = false;
@@ -81,11 +82,20 @@ interface UserView{
     formatterDollar = (value: number) => `${value > -1 || !value ? `$ ${value}` : ''}`;
     formatterPercent = (value: number) => `${value > -1 || !value ? `% ${value}` : ''}`;
     token:any;
+    loading:boolean
     rosterGroup: string;
     rosterForm:FormGroup;
     IsGroupShift:boolean;
     Select_Pay_Type:string;
     current:number=0;
+    showMore:number=-1;
+    ViewServiceNoteModal:boolean
+    ViewServiceTaskModal:boolean;
+    ViewExtraInfoModal:boolean;
+    Person:any={id:'0',code:'',personType:'Recipient', noteType:'SVCNOTE'};
+    loadingNote:Subject<any>=new Subject();
+    loadingTasks:Subject<any>=new Subject();
+    loadingExtraInfo:Subject<any>=new Subject();
     nextDisabled: boolean = false;
     activity_value: number;
     durationObject: any;
@@ -93,6 +103,9 @@ interface UserView{
     serviceSetting:string;
     editRecord:boolean=false;
     searchStaff:boolean;
+    HighlightRow:number;
+     ViewAuditHistoryModal:boolean;
+     listAuditHistory:Array<any>=[];
     defaultStartTime: Date = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 8, 0, 0);
     defaultEndTime: Date = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 9, 0, 0);
     private unsubscribe = new Subject();
@@ -167,7 +180,7 @@ ngOnInit(){
 
         console.log('Data in ngAfterViewInit of detail');
         console.log(this.data);
-
+        this.current=0;
         this.isConfirmLoading=true;
           if (this.data!=null){
               this.details(this.data);
@@ -610,6 +623,53 @@ ProceedBreachRoster(){
         this.Check_BreachedRosterRules();
         
     }
+    ShowMoreOptions(option:number){
+        this.showMore=option;
+        this.current=0;
+        switch(option){
+            case 0:
+                break;
+            case 1:
+                //load Task
+               this.loadTasks();
+                break
+            case 2:
+                //load extra info
+                this.loadRosterExtrInfo();
+                break;
+            case 3:
+                //load extra charges
+                //this.loadRosterExtrInfo();
+                break;
+            case 4:
+                this.loadNotes();
+                break;
+            case 5:
+         
+                break;
+            case 6:
+                this.load_AuditHistory();
+                break;
+        }
+    }
+
+    loadNotes(){
+        this.ViewServiceNoteModal=true;
+        this.Person.id=this.recordNo;
+        this.Person.code=this.recipientCode;
+        this.Person.personType="Recipient";
+        this.Person.noteType="SVCNOTE";       
+        this.loadingNote.next(this.Person);
+        }
+
+loadTasks(){
+    this.ViewServiceTaskModal=true;                          
+    this.loadingTasks.next(this.recordNo);
+ }
+ loadRosterExtrInfo(){
+    this.ViewExtraInfoModal=true;                          
+    this.loadingExtraInfo.next({recordNo:this.recordNo,apmtTime: this.defaultStartTime});
+ }
     EditRoster_Entry(): void {
         this.fixStartTimeDefault();
         this.editRecord=false;
@@ -1201,7 +1261,7 @@ GETSERVICEACTIVITY(program: any): Observable<any> {
         
         } = index;
 
-
+        this.recordNo=recordNo;
         this.recipientCode= recipientCode,
         this.FetchCode=recipientCode;
         this.debtor=debtor;
@@ -1331,7 +1391,26 @@ GETSERVICEACTIVITY(program: any): Observable<any> {
 
                  
      }
+     
+     load_AuditHistory(){
+         this.loading=true;
+        this.ViewAuditHistoryModal=true;
+         this.getAuditHistory().pipe(takeUntil(this.unsubscribe)).subscribe(d=>{
+             this.listAuditHistory=d;
+             this.loading=false;
 
-  
+         })
+     }
+     onAuditItemSelected(data:any, i:number){
+        this.HighlightRow=i;
+     }
+     getAuditHistory(): Observable<any> {
+        let sql;            
+       
+            sql = `SELECT Operator as WindowsUser, TraccsUser , ActionDate AS [Date], AuditDescription as [Detail] FROM Audit WHERE ActionOn IN ('ROSTER', 'DAYMANAGER') AND WhoWhatCode = '${this.recordNo}' ORDER BY ActionDate DESC`
+            
+        if (!sql) return EMPTY;
+        return this.listS.getlist(sql);
+    }
     }
     

@@ -4,7 +4,7 @@ import { Component, OnInit, OnDestroy, Output, Input ,ViewChild, AfterViewInit
 import { GlobalService, ClientService, TimeSheetService,ShareService, ListService } from '@services/index';
 import { forkJoin,  Subject ,  Observable } from 'rxjs';
 import {ShiftDetail} from '../roster/shiftdetail'
-
+//import {DMRoster} from '../roster/dm-roster'
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { ThrowStmt } from '@angular/compiler';
 import { BrowserModule } from '@angular/platform-browser';
@@ -12,6 +12,8 @@ import { FormGroup,FormBuilder,Validators } from '@angular/forms';
 import {takeUntil} from 'rxjs/operators';
 import parseISO from 'date-fns/parseISO'
 import { format, formatDistance, formatRelative, nextDay, subDays } from 'date-fns'
+import { forEach } from 'lodash';
+import * as moment from 'moment';
 
 class Address {
     postcode: string;
@@ -140,10 +142,14 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
     dayViewArr: Array<number> = [5, 7, 10, 14];
     //reload: boolean = false;
     reload:Subject<boolean> = new Subject();
-    toBePasted: Array<any>;
-    @ViewChild(ShiftDetail) detail!:ShiftDetail;
+    loadingRoster :Subject<any> = new Subject() 
 
+    toBePasted: Array<any>=[];
+    @ViewChild(ShiftDetail) detail!:ShiftDetail;
+   // @ViewChild(DMRoster) dmroster:DMRoster;
     optionsModal: boolean = false;
+    displayOption:boolean=true;
+    pastePosition:any;
     recipientDetailsModal: boolean = false;
     changeModalView = new Subject<number>();
     OperationView= new Subject<number>();
@@ -154,7 +160,7 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
     txtSearch:string;
     openSearchStaffModal:boolean;
     ViewChangeDayTimeModal:boolean;
-   
+    AddRosterModel:boolean;
     ViewServiceNoteModal:boolean    
     Person:any={id:'0',code:'',personType:'Recipient', noteType:'SVCNOTE'};
     loadingNote:Subject<any>=new Subject();
@@ -171,14 +177,16 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
     parserValue = (value: string) => value;
     formatterDollar = (value: number) => `${value > -1 || !value ? `$ ${value}` : ''}`;
    
-
+    info = {StaffCode:'', ViewType:'',IsMaster:false,date:''}; 
     selectedOption:any;
     rosters:any;
+    selectedStaff:string='';
     txtAlertSubject:String;
     txtAlertMessage:String;
     show_alert:Boolean
     Error_Msg:String;
     breachRoster:Boolean;
+    record_being_pasted:any;
     AllocateStaffModal:boolean;
     selectedCarer:string;
     NudgeValue=0;
@@ -200,7 +208,8 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
     today = new Date();
     defaultStartTime: Date = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 8, 0, 0);
     defaultEndTime: Date = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 9, 0, 0);
-   
+    selectedPersonType:any ;
+    personTypeList:Array<any>=[];
     
     user:any;
     token:any;
@@ -343,29 +352,31 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
         if (data==1){  
             //Copy Operation                        
            
-           // this.toBePasted.push(this.selectedOption)
+            this.toBePasted.push(this.selectedOption)
             this.operation="Copy"
             
         }else if (data==2){ 
             //Cut Operation                         
           
             this.operation="cut"
-           // this.toBePasted.push(this.selectedOption)
+            this.toBePasted.push(this.selectedOption)
             
-    }else if (data==3){                          
-        //Paste Operation
+         }else if (data==3){                          
+            //Paste Operation
+            
+            this.optionsModal=false;
+            //this.pasting_records();
+            this.pasteSelectedRecords(this.pastePosition);
+
+        }else if (data==4){   
+            //delete Operation 
+            
+            this.showConfirm();
+            
+        }  else if (data==5){          
+            this.showConfirm_for_additional()   ;             
         
-        this.optionsModal=false;
-        this.pasting_records(); 
-    }else if (data==4){   
-        //delete Operation 
-        
-        this.showConfirm();
-          
-    }  else if (data==5){          
-        this.showConfirm_for_additional()   ;             
-       
-         }
+            }
         
     });
 
@@ -436,7 +447,37 @@ ngModelChangeEnd(event): void{
         }
     })
 }
+data(event:any){
+    console.log(event);
+}
+pasted(event:any){
+}
+pasteSelectedRecords(event:any){
+    console.log(event);
+    if (this.toBePasted==null || this.toBePasted==null)    return;     
 
+    if (this._highlighted.length<=0)
+        this._highlighted=this.toBePasted;
+
+    // this._highlighted.forEach(function (value) {
+    //     //console.log(value);
+    //     value.date=moment(event.selected).format('YYYY/MM/DD');
+    //     setTimeout(() => {
+    //         this.pasting_records(value)                 
+    //     }, 100);  
+    //   });
+
+    
+    for ( let v of this._highlighted){  
+        v.date=moment(event.selected.date).format('YYYY/MM/DD');
+        v.staff = event.selected.carerCode;
+        v.carercode = event.selected.carerCode;
+        setTimeout(() => {
+            this.pasting_records(v)                 
+        }, 100);   
+    }
+
+}
 onTextChangeEvent(event:any){
    // console.log(this.txtSearch);
     let value = this.txtSearch.toUpperCase();
@@ -458,27 +499,28 @@ loadNotes(){
     this.loadingNote.next(this.Person);
     }
     
-pasting_records() {
-    if (this.selectedOption==null || this.selectedOption==null)    return;
-        
-       
-        this.Check_BreachedRosterRules_Paste(this.operation).subscribe(d=>{
+pasting_records(record:any) {
+    
+        if (record==null) return;
+
+        this.Check_BreachedRosterRules_Paste(this.operation, record).subscribe(d=>{
             
             let res=d;
             if (res.errorValue>0){
                // this.globalS.eToast('Error', res.errorValue +", "+ res.msg);
                //this.addBookingModel=false;
                 this.Error_Msg=res.errorValue +", "+ res.msg ;
+                this.record_being_pasted=record;
                 this.breachRoster=true;
                 return; 
             }else{
           
                 if (this.operation==="cut"){
                     
-                    this.ProcessRoster("Cut",this.selectedOption.recordno,this.selectedOption.date);
+                    this.ProcessRoster("Cut",record,record.date);
                     //this.remove_Cells(sheet,this.selectedOption.row,this.selectedOption.col,this.selectedOption.duration)
                 }else  
-                    this.ProcessRoster("Copy",this.selectedOption.recordno,this.selectedOption.date);   
+                    this.ProcessRoster("Copy",record,record.date);   
             }
         
         })
@@ -491,7 +533,7 @@ selected_roster(r:any):any{
     rst = {
         "shiftbookNo": r.recordno,
         "date": r.date,
-        "startTime": r.startTime,
+        "startTime": r.starttime,
         "endTime":    r.endTime,
         "duration": r.duration,
         "durationNumber": r.dayno,
@@ -596,11 +638,10 @@ load_rosters(){
 ngOnInit(): void {
     this.token = this.globalS.decode(); 
     this.buildForm(); 
-   
-   
+   this.selectedPersonType ='Staff Management';
+    this.setPersonTypes();
 }
-
-    
+  
 
 ngAfterViewInit(){
     console.log("ngAfterViewInit");   
@@ -626,7 +667,7 @@ ngAfterViewInit(){
      SaveAdditionalInfo(notes:string){
         this.notes=notes;
         this.ViewAdditionalModal=false;
-        this.ProcessRoster("Additional", this.selectedOption.recordno);
+        this.ProcessRoster("Additional", this.selectedOption);
        
     }
     showDetail(data: any) {
@@ -649,7 +690,15 @@ ngAfterViewInit(){
 
     showOptions(data: any) {
         console.log(data);
+        if (data.selected.staff==null){
+            this.pastePosition=data;
+            this.optionsModal = true;
+            this.displayOption=false;
+            return
+        }
+        this.displayOption=true;
         this.selectedOption = data.selected; 
+        this.selectedStaff=this.selectedOption.staff.trim();
         this.rosters=data.diary;
         var uniqueIds = this._highlighted.reduce((acc, data) => {
             acc.push(data.uniqueid);
@@ -659,11 +708,36 @@ ngAfterViewInit(){
         var sss = uniqueIds.length > 0 ? uniqueIds : [this.selectedOption.uniqueid]
     
         this.clientS.gettopaddress(sss)
-            .subscribe(data => this.address = data)           
-
+            .subscribe(data => this.address = data)          
 
         this.optionsModal = true;
     }
+
+    setPersonTypes(){
+        this.personTypeList.push('Unallocated Bookings');
+        this.personTypeList.push('------------------------------');
+        this.personTypeList.push('Staff Management');
+        this.personTypeList.push('------------------------------');
+        this.personTypeList.push('Transport Recipients');
+        this.personTypeList.push('Transport Staff');
+        this.personTypeList.push('Transport Daily Planner');
+        this.personTypeList.push('------------------------------');
+        this.personTypeList.push('Facilities Recipients');
+        this.personTypeList.push('Facilities Staff');
+        this.personTypeList.push('------------------------------');
+        this.personTypeList.push('Group Recipients');
+        this.personTypeList.push('Group Staff');
+        this.personTypeList.push('------------------------------');
+        this.personTypeList.push('Grp/Trns/Facility- Recipients');
+        this.personTypeList.push('Grp/Trns/Facility-Staff');
+        this.personTypeList.push('------------------------------');
+        this.personTypeList.push('Recipient Management');
+         
+       }
+    personTypeChange(event:any){
+        console.log(event);
+       // this.reload.next(true);
+       }
 
     highlighted(data: any) {
         this._highlighted = data;
@@ -712,20 +786,30 @@ ngAfterViewInit(){
         }
      }
      
-    data(data: any) {
-
-    }
-
-    pasted(data: any) {
-
-    }
+  
     numStr(n:number):string {
         let val="" + n;
         if (n<10) val = "0" + n;
         
         return val;
       }
-    ProcessRoster(Option:any, recordNo:string, rdate:string="", start_Time:string=""):any {
+
+      AddRoster(){
+        this.info.IsMaster=false;
+        this.info.ViewType=this.viewType;
+        this.info.StaffCode=this.selectedOption.staff;
+        this.info.date=this.selectedOption.date;
+
+          this.optionsModal=false;
+          this.AddRosterModel=true;
+          
+          this.loadingRoster.next(this.info);
+         //this.dmroster.info = this.info;
+         //this.dmroster.ngAfterViewInit();
+      }
+
+     
+      ProcessRoster(Option:any, record:any, rdate:string="", start_Time:string=""):any {
         
         
         let dt= new Date(this.date);
@@ -738,14 +822,14 @@ ngAfterViewInit(){
         let inputs = {
             "opsType": Option,
             "user": this.token.user,
-            "recordNo": recordNo,
+            "recordNo": record.recordno,
             "isMaster": this.master,
-            "roster_Date" : date,
-            "start_Time": this.selectedOption.startTime,
-            "carer_code": this.operation=='Re-Allocate' ? this.selectedCarer : this.selectedOption.staff,
-            "recipient_code" :  this.selectedOption.recipient,
+            "roster_Date" : record.date,
+            "start_Time": record.startTime,
+            "carer_code": this.operation=='Re-Allocate' ? this.selectedCarer : record.staff,
+            "recipient_code" :  record.recipient,
             "notes" : this.notes,
-            'clientCodes' : this.selectedOption.recipient
+            'clientCodes' : record.recipient
         }
         this.timeS.ProcessRoster(inputs).subscribe(data => {        
         //this.deleteRosterModal=false;
@@ -1050,7 +1134,7 @@ generate_alert(){
     this.show_alert=false;
     this.notes= this.txtAlertSubject + "\n" + this.txtAlertMessage;
     
-    this.ProcessRoster("Alert","1");
+    this.ProcessRoster("Alert",this.selectedOption);
 }
 
 SaveDayTime(){
@@ -1076,17 +1160,17 @@ SaveDayTime(){
     });
     
 }
-Check_BreachedRosterRules_Paste(action:string):any{
+Check_BreachedRosterRules_Paste(action:string, record:any):any{
 
     let inputs_breach={
         sMode : 'Add', 
-        sStaffCode: this.selectedOption.carercode, 
-        sClientCode: this.selectedOption.recipient, 
-        sProgram: this.selectedOption.rProgram, 
-        sDate : this.selectedOption.date, 
-        sStartTime :this.selectedOption.startTime, 
-        sDuration : this.selectedOption.duration, 
-        sActivity : this.selectedOption.activity,
+        sStaffCode: record.carercode, 
+        sClientCode: record.recipient, 
+        sProgram: record.rProgram, 
+        sDate : record.date, 
+        sStartTime :record.startTime, 
+        sDuration : record.duration, 
+        sActivity : record.activity,
         PasteAction : action=="cut" ? "Cut": "Copy"
     };
 
@@ -1094,46 +1178,47 @@ Check_BreachedRosterRules_Paste(action:string):any{
 
     
 }
-Check_BreachedRosterRules(){
 
-    let inputs_breach={
-        sMode : 'Edit', 
-        sStaffCode: this.selectedOption.carerCode, 
-        sClientCode: this.selectedOption.recipient, 
-        sProgram: this.selectedOption.rprogram, 
-        sDate : this.selectedOption.date, 
-        sStartTime :this.selectedOption.startTime, 
-        sDuration : this.selectedOption.duration, 
-        sActivity : this.selectedOption.activity,
-        // sRORecordno : '-', 
-        // sState : '-', 
-        // bEnforceActivityLimits :0, 
-        // bUseAwards:0, 
-        // bDisallowOT :0, 
-        // bDisallowNoBreaks :0, 
-        // bDisallowConflicts :0, 
-        // bForceNote :0, 
-        // sOldDuration : '-', 
-        // sExcludeRecords : '-', 
-        // bSuppressErrorMessages  :0, 
-        // sStatusMsg : '-',
-        // PasteAction :'-'
-    };
+// Check_BreachedRosterRules(){
 
-    this.timeS.Check_BreachedRosterRules(inputs_breach).subscribe(data=>{
-        let res=data
-        if (res.errorValue>0){
-           // this.globalS.eToast('Error', res.errorValue +", "+ res.msg);
-           //this.addBookingModel=false;
-            this.Error_Msg=res.errorValue +", "+ res.msg ;
-            this.breachRoster=true;
-            return; 
-        }else{
-            //this.AddRoster_Entry();
-        }
+//     let inputs_breach={
+//         sMode : 'Edit', 
+//         sStaffCode: this.selectedOption.carerCode, 
+//         sClientCode: this.selectedOption.recipient, 
+//         sProgram: this.selectedOption.rprogram, 
+//         sDate : this.selectedOption.date, 
+//         sStartTime :this.selectedOption.startTime, 
+//         sDuration : this.selectedOption.duration, 
+//         sActivity : this.selectedOption.activity,
+//         // sRORecordno : '-', 
+//         // sState : '-', 
+//         // bEnforceActivityLimits :0, 
+//         // bUseAwards:0, 
+//         // bDisallowOT :0, 
+//         // bDisallowNoBreaks :0, 
+//         // bDisallowConflicts :0, 
+//         // bForceNote :0, 
+//         // sOldDuration : '-', 
+//         // sExcludeRecords : '-', 
+//         // bSuppressErrorMessages  :0, 
+//         // sStatusMsg : '-',
+//         // PasteAction :'-'
+//     };
+
+//     this.timeS.Check_BreachedRosterRules(inputs_breach).subscribe(data=>{
+//         let res=data
+//         if (res.errorValue>0){
+//            // this.globalS.eToast('Error', res.errorValue +", "+ res.msg);
+//            //this.addBookingModel=false;
+//             this.Error_Msg=res.errorValue +", "+ res.msg ;
+//             this.breachRoster=true;
+//             return; 
+//         }else{
+//             //this.AddRoster_Entry();
+//         }
          
-    });
-}
+//     });
+// }
 
 showConfirm(): void {
     //var deleteRoster = new this.deleteRoster();
@@ -1154,7 +1239,7 @@ showConfirm(): void {
   }
 
   deleteRoster(){
-    this.ProcessRoster("Delete",this.selectedOption.recordno);
+    this.ProcessRoster("Delete",this.selectedOption);
   }
 handleCancel(): void{
         this.optionsModal = false;
@@ -1196,19 +1281,14 @@ ProceedBreachRoster(){
         this.globalS.eToast("Permission Denied","You don't have permission to add conflicting rosters");
         return; 
     }
-    
-    
-    if (this.operation=='copy' ||this.operation=='cut'){
-        // if (this.operation=="cut"){
-        //     this.ProcessRoster("Cut",this.current_roster.recordNo,this.rDate);
-        //     this.remove_Cells(sheet,this.selectedOption.row,this.selectedOption.col,this.selectedOption.duration)
-        // }else
-        //     this.ProcessRoster("Copy",this.current_roster.recordNo,this.rDate);  
-        //this.pasting=false;
-        //this.Pasting_Records(this.selected_Cell,this.sel)
-    }else{
-       // this.AddRoster_Entry();
-    }
+    if(this.record_being_pasted==null) return;
+
+    if (this.operation==="cut"){
+                    
+        this.ProcessRoster("Cut",this.record_being_pasted,this.record_being_pasted.date);
+        //this.remove_Cells(sheet,this.selectedOption.row,this.selectedOption.col,this.selectedOption.duration)
+    }else  
+        this.ProcessRoster("Copy",this.record_being_pasted,this.record_being_pasted.date);   
 
     //this.isPaused=false;
 
@@ -1219,7 +1299,7 @@ UnAllocate(){
     
     if (this.selectedOption==null || this.selectedOption.RecordNo==0) return;
  
-     this.ProcessRoster("Un-Allocate", this.selectedOption.recordno);
+     this.ProcessRoster("Un-Allocate", this.selectedOption);
     this.AllocateStaffModal=false;
         //  this.cell_value.type = 1;
         //  var service =this.cell_value.service.split("(")[1];
@@ -1233,7 +1313,7 @@ UnAllocate(){
 reAllocate(){
     if (this.selectedOption==null || this.selectedOption.recordNo==0) return;
 
-    this.ProcessRoster("Re-Allocate", this.selectedOption.recordno);
+    this.ProcessRoster("Re-Allocate", this.selectedOption);
   
     var text=   this.selectedCarer + " (" + this.selectedOption.activity + ")";            
    

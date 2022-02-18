@@ -1,7 +1,13 @@
 <div nz-row>
-    <div style="padding:8px" >
-       
+    <div style="padding-left:8px" >
+        
         <div nz-row class="dm-input">
+            <div nz-col nzSpan="5" style="margin-left: 5px; font-size: 12px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+                <label for="" > Day Manager Filter</label>
+                <nz-select [(ngModel)]="selectedPersonType" (ngModelChange)="personTypeChange($event)" style="width: 200px;">
+                    <nz-option *ngFor="let p of personTypeList" [nzValue]="p"  [nzLabel]="p"></nz-option>
+                </nz-select>
+            </div>
             <div nz-col nzSpan="5">
                 <label for="date"> Date</label>
                 <nz-date-picker nzMode="default" [nzFormat]="dateFormat" [(ngModel)]="date"></nz-date-picker>
@@ -18,9 +24,9 @@
        
     </div>
     <div>
-        <dm-calendar [startDate]="date" [dayView]="dayView" [reload]="reload"  [copyPaste]="toBePasted?.length > 0"
+        <dm-calendar [startDate]="date" [dayView]="dayView" [reload]="reload" [personType]="selectedPersonType"  [copyPaste]="toBePasted?.length > 0"
             (showDetail)="showDetail($event)" (showOptions)="showOptions($event)" (highlighted)="highlighted($event)"
-            (data)="data($event)" (paste)="pasted($event)"></dm-calendar>
+            (data)="data($event)" (paste)="pasteSelectedRecords($event)"></dm-calendar>
     </div>
 </div>
 <recipientexternal [isVisible]="recipientexternal" [AccountNo]="selected_data" (recipientexternalDone)="cancelRecipientExternal($event)" *ngIf="recipientexternal"></recipientexternal>
@@ -35,22 +41,22 @@
    
     <div  nz-row style="background-color: #fff; margin-top: 5px; ">
         <ul >
-            <li class="listitem" (click)="toMap()">Display Route Map</li>
-            <li class="listitem"  (click)="ViewRecipientDetails.next(1)">View Recipient Details</li>
-            <li class="listitem" (click)="ViewRecipientDetails.next(2)" >View Service Shift Notes</li>
+            <li class="listitem" *ngIf="selectedOption" (click)="toMap()">Display Route Map</li>
+            <li class="listitem" *ngIf="displayOption"  (click)="ViewRecipientDetails.next(1)">View Recipient Details</li>
+            <li class="listitem" *ngIf="displayOption" (click)="ViewRecipientDetails.next(2)" >View Service Shift Notes</li>
             <hr/>
-            <li class="listitem"  (click)="AllocateView.next(1)">Un-Allocate Staff</li>
-            <li class="listitem"  (click)="AllocateView.next(2)">Allocate Staff</li>
-            <li class="listitem"  (click)="ViewChangeDayTime.next(1)"> Change Day or Times</li>
+            <li class="listitem" *ngIf="selectedStaff!='BOOKED' && displayOption" (click)="AllocateView.next(1)">Un-Allocate Staff</li>
+            <li class="listitem" *ngIf="displayOption" (click)="AllocateView.next(2)">Allocate Staff</li>
+            <li class="listitem" *ngIf="displayOption" (click)="ViewChangeDayTime.next(1)"> Change Day or Times</li>
             <hr/>
-            <li class="listitem" >Add NEW Staff Activity / View Shift and Gaps</li>
-            <li class="listitem" >Add NEW Recipient Activity / View Daily Services</li>
-            <li class="listitem"  >My Diary / Appointments - Day View</li>
+            <li class="listitem" (click)="AddRoster()" >Add NEW Staff Activity / View Shift and Gaps</li>
+            <li class="listitem" (click)="AddRoster()">Add NEW Recipient Activity / View Daily Services</li>
+            <li class="listitem" (click)="AddRoster()" >My Diary / Appointments - Day View</li>
             <hr/>
-            <li class="listitem" (click)="openCaseLoad()">Set Caseload Name</li>
-            <li (click)="openAllocateResource()">Allocate Resource</li>
-            <li class="listitem">Change <i nz-icon nzType="right" nzTheme="outline"></i>
-                <ul class="listitem">
+            <li class="listitem" *ngIf="displayOption" (click)="openCaseLoad()">Set Caseload Name</li>
+            <li *ngIf="displayOption" (click)="openAllocateResource()">Allocate Resource</li>
+            <li class="listitem" *ngIf="displayOption" >Change <i nz-icon nzType="right" nzTheme="outline"></i>
+                <ul class="listitem" >
                     <li (click)="changeModalView.next(1)">Change Output Type</li>
                     <li (click)="changeModalView.next(2)">Change Program</li>
                     <li (click)="changeModalView.next(3)">Change Activity</li>
@@ -64,8 +70,8 @@
                    
                 </ul>
             </li>
-            <hr>
-            <li class="listitem" >View <i nz-icon nzType="right" nzTheme="outline"></i>
+            <hr *ngIf="displayOption">
+            <li *ngIf="displayOption" class="listitem" >View <i nz-icon nzType="right" nzTheme="outline"></i>
                 <ul class="listitem">
                     <li (click)="ViewDetails.next(1)">View Recipient Details</li>                    
                     <li (click)="ViewDetails.next(2)">View Staff Details</li>
@@ -75,16 +81,16 @@
                 </ul>
             </li>
             <hr>
-            <li class="listitem" (click)="ViewNudge.next(1)">Nudge Up</li>
-            <li class="listitem" (click)="ViewNudge.next(2)">Nudge Down</li>
-            <li *ngIf="(1>2)" class="listitem" (click)="OperationView.next(1)">Copy</li>
-            <li *ngIf="(1>2)"class="listitem" (click)="OperationView.next(2)">Cut</li>
-            <li class="listitem" (click)="OperationView.next(3)">Make a Copy</li>
-            <li class="listitem" (click)="OperationView.next(4)">Delete Shift/Service</li>
-            <li class="listitem" (click)="OperationView.next(5)">Delete Additional Information(Xtra Info) </li>
+            <li *ngIf="displayOption" class="listitem" (click)="ViewNudge.next(1)">Nudge Up</li>
+            <li *ngIf="displayOption" class="listitem" (click)="ViewNudge.next(2)">Nudge Down</li>
+            <li *ngIf="displayOption" class="listitem" (click)="OperationView.next(1)">Copy</li>
+            <li *ngIf="displayOption" class="listitem" (click)="OperationView.next(2)">Cut</li>
+            <li *ngIf="selectedOption" class="listitem" (click)="OperationView.next(3)">Paste</li>
+            <li *ngIf="displayOption" class="listitem" (click)="OperationView.next(4)">Delete Shift/Service</li>
+            <li *ngIf="displayOption" class="listitem" (click)="OperationView.next(5)">Delete Additional Information(Xtra Info) </li>
             <hr>
-            <li class="listitem" (click)="ApproveView.next(1)">Approve</li>
-            <li class="listitem" (click)="ApproveView.next(2)">Un-Approve</li>
+            <li *ngIf="displayOption" class="listitem" (click)="ApproveView.next(1)">Approve</li>
+            <li *ngIf="displayOption" class="listitem" (click)="ApproveView.next(2)">Un-Approve</li>
            
             
         </ul>
@@ -407,5 +413,15 @@
     <div *nzModalFooter>
         <button nz-button nzType="default" (click)="SaveAllocateResource()">OK</button>
         <button nz-button nzType="default" (click)="ViewAllocateResourceQtyModal=false">Cancel</button>
+    </div>
+</nz-modal>
+
+<nz-modal [nzStyle]="{ top: '15px' }"  hasBackdrop [nzWidth]="450" [(nzVisible)]="AddRosterModel" nzTitle="Day Manager "   (nzOnCancel)="AddRosterModel = false" >
+    <div  class="flexy" style="min-height:20rem;" >
+        <dm-roster [loadRoster]="loadingRoster" ></dm-roster>    
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default" (click)="AddRosterModel=false">OK</button>
+        <button nz-button nzType="default" (click)="AddRosterModel=false">Cancel</button>
     </div>
 </nz-modal>

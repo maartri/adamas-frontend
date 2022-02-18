@@ -1,14 +1,14 @@
 .div-resizable {
     border: 2px solid;
     border-color: #fff;
+    padding-inline-start: 5px;
     resize: horizontal;
     overflow: auto;
     display: flex; 
     flex-direction: row; 
     justify-content: space-around;
     line-height: 20px;
-    color:#fff;
-    background-color: #002060;
+    background-color: transparent;
   }
 .daymanager-wrapper{
     box-shadow:-1px 6px 6px 0px rgba(138,138,138,1);
@@ -30,9 +30,12 @@
     padding-top: 4px;
 }
 .icon2{
-    font-size: 12px;
-   padding-right: 2px;    
-   padding-top: 4px;
+   font-size: 12px;
+   padding-right: 0px;    
+   padding-top: 0px;
+   width: 20px;
+   height: 20px;
+   background-color: transparent;
 }
 .service-logo{
     background: #fff;
@@ -123,7 +126,8 @@
     
 }
 .body-wrapper:nth-child(even){
-    background:#e4edee;
+    /* background:#e4edee; */
+    background:#d6edf0; 
 }
 .body-wrapper:last-child{
     border:none;
@@ -138,7 +142,7 @@
 }
 .cell{
     text-align: center;
-    border-right:1px solid #fff;
+    border-right:1px solid rgb(217, 243, 247);
     flex:1;
     
 }
@@ -207,6 +211,9 @@ i.option{
 .listitem{
     border: 1px solid #bdd5e2;
     background-color: #d9e8f0;
+}
+.listitem-invisible{
+   visibility: hidden;
 }
 .selected {
     background:#8cc9ff  !important;

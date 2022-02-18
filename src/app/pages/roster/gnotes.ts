@@ -121,7 +121,7 @@ export class GNotes implements OnInit, OnDestroy, AfterViewInit {
     ngOnInit(): void {
      
         //  this.user = this.sharedS.getPicked();     
-                
+             
           this.search(this.user);
         this.buildForm();
         this.loadNote.subscribe(d=>{
@@ -143,7 +143,7 @@ export class GNotes implements OnInit, OnDestroy, AfterViewInit {
     }
 
     search(user: any = this.user) {
-        
+        if (user.id=='0' || user.id==null) return;
         this.filters.type=this.user.noteType;
         this.getNotes(this.user);
         this.getSelect();

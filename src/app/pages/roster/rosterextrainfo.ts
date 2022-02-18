@@ -3,7 +3,7 @@ import { ChangeDetectorRef, Component, OnInit,Input,Output } from '@angular/core
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { GlobalService, ListService, MenuService, PrintService, TimeSheetService } from '@services/index';
-import { SwitchService } from '@services/switch.service';
+
 import { NzModalService } from 'ng-zorro-antd';
 import { EMPTY } from 'rxjs';
 import { Observable } from 'rxjs';

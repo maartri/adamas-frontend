@@ -770,6 +770,9 @@ export class TimeSheetService {
     postclinicalreminders(data: any,isSingle:string): Observable<any> {
         return this.auth.post(`${timesheet}/clinicalReminder/${isSingle}`,data)
     }
+    updateclinicalreminders(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/clinicalReminder`, data);
+    }
     deleteclinicalreminders(recordNo: number): Observable<any> {
         return this.auth.delete(`${timesheet}/clinicalReminder/${recordNo}`)
     }
@@ -780,6 +783,9 @@ export class TimeSheetService {
 
     postclinicalalerts(data: any,isSingle:string): Observable<any> {
         return this.auth.post(`${timesheet}/clinicalAlert/${isSingle}`,data)
+    }
+    updateclinicalalerts(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/clinicalAlert`,data)
     }
     deleteclinicalalerts(recordNo: number): Observable<any> {
         return this.auth.delete(`${timesheet}/clinicalAlert/${recordNo}`)

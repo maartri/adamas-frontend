@@ -9,7 +9,7 @@
                                         <ul nz-menu nzMode="horizontal">
                                             <li nz-menu-item >
                                                 <i nz-icon nzType="user" ></i>
-                                                <strong>STANDARD LISTINGS</strong> 
+                                                <strong>STANDARD LISTINGS</strong>                                                
                                                 <div>                                        
                                                     <button nz-button nzType="default" id="btn-absentclient" (click)="showModal(this.id)" >
                                                     <i nz-icon nzType="printer"></i>
@@ -1238,6 +1238,7 @@
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_include_unavailability" ><label class="checks" nz-checkbox formControlName="include_unavailability"   >Include Unavailability</label></div>
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_activeStaffonly" ><label class="checks" nz-checkbox formControlName="activeStaffonly"   >Active Staff Only</label></div>
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_activeClientsonly"><label class="checks" nz-checkbox formControlName="activeclientsonly"   >Active Clients Only</label></div>
+                                        <div nz-col nzSpan = "20" *ngIf="chkbx_CSVExport"><label class="checks" nz-checkbox formControlName="csvExport"   >Only Export to CSV</label></div>
                                         
                                        
                                     </div>
@@ -1272,7 +1273,7 @@
         
                     </div>
                 </div>                                                  
-            </div>
+            </div>            
             </nz-modal>            
         </div>
 

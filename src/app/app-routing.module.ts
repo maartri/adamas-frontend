@@ -1737,4 +1737,5 @@ export const PAGE_COMPONENTS = [
   StaffLoansAdminRedirect,
 
   ProfileAccounting,
+  AccountingHistory
 ]

@@ -292,16 +292,15 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
 
   searchStaff(): void {
     this.listStaff = []
-    this.timeS.getstaff({
-      User: this.globalS.decode().nameid,
-      SearchString: ''
-    }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-      this.listStaff = data.map(x => {
-        return {
-          accountNo: x.accountNo,
-          checked: false
-        }
-      });
+    this.listS.getlistcasemanagers().pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+      // console.log(data);
+      this.listStaff = data;
+      // this.listStaff = data.map(x => {
+      //   return {
+      //     accountNo: x.accountNo,
+      //     checked: false
+      //   }
+      // });
     });
   }
 
@@ -827,6 +826,7 @@ updateCheckBoxesInStep1(defaultString: string){
       endTimeOfIncident, 
       commentsStaff, 
       incidentNotes,
+      organisation,
       otherspecify, } = this.incidentForm.value;
 
       if (this.current == 1 && endTimeOfIncident != null && format(startTimeOfIncident, 'HH:mm') > format(endTimeOfIncident, 'HH:mm') ){
@@ -896,6 +896,8 @@ updateCheckBoxesInStep1(defaultString: string){
           IncidentNotes: incidentNotes,
           NewRelationship: this.listNewPeople
     };
+
+
     
     if(this.operation.process === Mode.UPDATE){
       // console.log('update')

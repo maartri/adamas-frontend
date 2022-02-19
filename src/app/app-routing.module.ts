@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { LoginComponent } from './pages/login/login.component';
 
-import {  
+import {
   ProfilePage
 } from '@components/index';
 
@@ -125,6 +125,7 @@ import {
   RecipientIncidentAdmin,
   RecipientIntakeAdmin,
   RecipientClinicalAdmin,
+  RecipientDatasetAdmin,
   RecipientOpnoteAdmin,
   RecipientPensionAdmin,
   RecipientPermrosterAdmin,
@@ -157,6 +158,11 @@ import {
   IntakeServices,
   IntakeStaff
 } from '@intakes/index';
+
+import
+{
+  DatasetQccsmda,
+} from './pages/admin/recipient-views/dataset-views/index';
 
 import {
   ClinicalDiagnose,
@@ -284,8 +290,6 @@ import { CloseRosterComponent } from '@admin/billing/closeRoster.component'; //A
 import { MediaList } from '@admin/recipient-views/mediaList';
 import { UserDetail } from '@admin/configuration/genrel-setup/userdetail';
 import { Checklist } from '@admin/configuration/genrel-setup/checklist';
-
-
 import { RecipientComponent } from './pages/standalone-app/recipient/recipient.component';
 
 const routes: Routes = [
@@ -374,6 +378,21 @@ const routes: Routes = [
                 path: 'staff',
                 component: IntakeStaff
               }
+            ]
+          },
+          {
+            path: 'dataset',
+            component: RecipientDatasetAdmin,
+            children: [
+              {
+                path: '',
+                redirectTo: 'qccsmds',
+                pathMatch: 'full'
+              },
+              {
+                path: 'qccsmds',
+                component: DatasetQccsmda
+              },
             ]
           },
           {
@@ -1367,6 +1386,21 @@ const routes: Routes = [
             ]
           },
           {
+            path: 'dataset',
+            component: RecipientDatasetAdmin,
+            children: [
+              {
+                path: '',
+                redirectTo: 'qccsmds',
+                pathMatch: 'full'
+              },
+              {
+                path: 'qccsmds',
+                component: DatasetQccsmda
+              },
+            ]
+          },
+          {
             path: 'clinical',
             component: RecipientClinicalAdmin,
             children: [
@@ -1670,6 +1704,7 @@ export const PAGE_COMPONENTS = [
   RecipientIncidentAdmin,
   RecipientIntakeAdmin,
   RecipientClinicalAdmin,
+  RecipientDatasetAdmin,
   RecipientOpnoteAdmin,
   RecipientPensionAdmin,
   RecipientPermrosterAdmin,
@@ -1693,6 +1728,10 @@ export const PAGE_COMPONENTS = [
   IntakePlans,
   IntakeServices,
   IntakeStaff,
+  
+  //dataset
+  DatasetQccsmda,
+
 
   ExtraComponent,
   UnauthorizedComponent,

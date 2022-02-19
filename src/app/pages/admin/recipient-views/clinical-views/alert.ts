@@ -199,10 +199,11 @@ export class ClinicalAlert implements OnInit, OnDestroy {
 
             this.timeS.postclinicalalerts(data, status).pipe(
                 takeUntil(this.unsubscribe))
-                .subscribe(data => {
+                .subscribe(insertedInd => {
                     this.inputForm.controls.staffAlert.setValue(this.selectedReminders[0]);
                     this.globalS.sToast('Success', 'Data added');
                     if (status == "single") {
+                        this.inputForm.controls['recordNumber'].setValue(insertedInd)
                         this.addOREdit = 0;
                         this.cd.detectChanges();
                     } else {

@@ -59,7 +59,7 @@
                                                 <label for="">Case Manager</label>
                                                 <div>
                                                     <nz-select class="nzselect-min" formControlName="recipient" [nzDropdownMatchSelectWidth]="false" nzShowSearch nzAllowClear>
-                                                        <nz-option *ngFor="let d of listStaff" [nzLabel]="d.accountNo" [nzValue]="d.accountNo"></nz-option>
+                                                        <nz-option *ngFor="let d of listStaff" [nzLabel]="d" [nzValue]="d"></nz-option>
                                                     </nz-select>
                                                 </div>
                                             </div>

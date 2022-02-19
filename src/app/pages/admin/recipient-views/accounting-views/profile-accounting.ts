@@ -44,6 +44,37 @@ import { NzModalService } from 'ng-zorro-antd/modal';
         .layer2 > *:last-child > *{
             width:12rem;
         }
+
+        .mk-group{
+            display:flex;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            padding: 0 1rem;
+        }
+        .mk-group label{
+            padding-top: calc(0.15rem + 1px);
+            padding-bottom: calc(0.15rem + 1px);
+            margin-bottom: 0;
+            font-size: inherit;
+            flex: 0 0 30%;
+            max-width: 30%;
+        }
+        .mk-group div{
+            flex: 0 0 70%;
+            max-width: 70%;
+        }
+        .mk-group div > *{
+            width:100%;
+        }
+        .check-group{
+            display: flex;
+            flex-wrap: wrap;
+            padding: 1rem 0;
+        }
+        .check-group > *{
+            padding:10px;
+            margin:0;
+        }
         `
     ],
     templateUrl: './profile-accounting.html',
@@ -54,6 +85,8 @@ export class ProfileAccounting implements OnInit, OnDestroy {
 
     private unsubscribe: Subject<void> = new Subject();
     profileForm: FormGroup;
+
+    checked: boolean = true;
 
     user: any;
     loading: boolean = false;

@@ -177,6 +177,10 @@ export class TimeSheetService {
     updatetimesheet(data: any): Observable<any> {
         return this.auth.put(`${timesheet}/timesheet`, data);
     }
+    
+    getDayManagerResources(data: any): Observable<any> {
+        return this.auth.get(`${timesheet}/dm-resources`, data);
+    }
     ProcessRoster(data: any): Observable<any> {
         return this.auth.get(`${timesheet}/rosterOps`, data);
     }
@@ -1043,6 +1047,9 @@ export class TimeSheetService {
         return this.auth.get(`${timesheet}/phone-search-staff/${phoneno}`);
     }
     
+    getQualifiedStaff(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/getqualified-staff`, data)
+    }
     postrecipientquicksearch(data: any): Observable<any> {
         return this.auth.post(`${timesheet}/search-recipient`, data)
     }
@@ -1063,7 +1070,10 @@ export class TimeSheetService {
     getdaymanager(dto: DayManager): Observable<any> {
         return this.auth.get(`${timesheet}/dmanager`, dto)
     }
-
+    getStaffWorkingHours(dto: DayManager): Observable<any> {
+        return this.auth.get(`${timesheet}/staffworkhrs`, dto)
+    }
+    
     getlistcategories(): Observable<any> {
         return this.auth.get(`${timesheet}/categories`)
     }

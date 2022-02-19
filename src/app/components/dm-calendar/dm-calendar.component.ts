@@ -6,6 +6,8 @@ import { distinctUntilChanged, debounceTime } from 'rxjs/operators';
 import * as moment from 'moment';
 import format from "date-fns/format";
 import { Subscription, Subject } from 'rxjs';
+import { stripGeneratedFileSuffix } from '@angular/compiler/src/aot/util';
+import { isThisSecond } from 'date-fns';
 
 const enum ImagePosition {
   LaundryService = '-24px 0px',
@@ -67,11 +69,13 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
 
   fixedHeader: boolean = false
   optionIsClicked: boolean = false;
+  checked:boolean;
 
   @Input() startDate: any
   @Input() dayView: number
   @Input() reload:Subject<boolean>= new Subject()
   @Input() copyPaste: boolean = false
+  @Input() personType: string;
 
   @Output() showDetail = new EventEmitter();
   @Output() showOptions = new EventEmitter();
@@ -81,11 +85,20 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
 
   days: any[] = [];
   daymanager: Array<any> = [];
+  dmOriginal: Array<any> = [];
+  dmOriginal_Recipient: Array<any> = [];
+  
+  workinghours: Array<any> = [];
+  personsList: Array<any> = [];
+  personValue:any;
+  currentFilter:number;
 
   loading: boolean = false;
   HighlightColum_index:number=-1;
   
   selectedRecordNo:string;
+  optionMenuDisplayed:boolean
+  dmType:string="0";
 
   constructor(
     private timeS: TimeSheetService,
@@ -123,6 +136,7 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
   ngOnInit() {
     let panel:any=document.getElementById("panel")
     this.days = this.calculateDays(this.startDate, this.dayView);
+   
     this.reload.subscribe(v => { 
       this.alertChange();
      // this.reload.next(false);
@@ -144,7 +158,13 @@ HighlightColum(indx:number){
     this.elem.nativeElement.removeEventListener('mouseup', this.elemMouseUp, false);
    
   }
-
+  
+  RosterClick(event:any, value:any){
+    value.isSelected=true;
+    this.akonani=[];
+    this.akonani.push(value);
+    console.log(value)
+  }
   ngAfterViewInit() {
     this.cd.reattach();
    
@@ -153,7 +173,7 @@ HighlightColum(indx:number){
       this.elemMouseUp = (event) => {
         event.stopPropagation();
         this.isClicked = false;
-        
+                
         this.HighlightColum_index=-1
         this.highlighted.emit(this.akonani);
       }
@@ -189,6 +209,169 @@ HighlightColum(indx:number){
     this.cd.detectChanges();
   }
 
+  resetDayManager(val:any){
+    if (!val)
+      this.daymanager= this.dmOriginal
+  }
+  applyStaffFilters(StaffFilter:any){
+    
+    if (StaffFilter!=null && StaffFilter!=''){
+      this.daymanager= this.dmOriginal.filter(x => x.key === StaffFilter)
+     }
+  }
+  applyFilters(PersonTypeFilter:any){
+    
+    if (PersonTypeFilter!=null && PersonTypeFilter!=''){
+      this.daymanager=[];
+      this.currentFilter=this.getfilterType(PersonTypeFilter);
+      this.dmType=""+this.currentFilter;
+      let sDate = moment(this.startDate).format('YYYY/MM/DD');
+      let eDate = moment(this.startDate).add(this.dayView - 1, 'days').format('YYYY/MM/DD');
+    
+      this.timeS.getStaffWorkingHours({StartDate: sDate, EndDate: eDate, dmType: this.dmType }).pipe(
+        debounceTime(200))
+        .subscribe(data => {
+          this.workinghours = data;         
+        });
+
+       switch(this.currentFilter){
+        case 1: 
+            //'Unallocated Bookings'
+            this.daymanager = this.dmOriginal.filter(x=>x.key.trim() === 'BOOKED');
+            break;
+        case 2:    
+         //'Staff Management'    
+          this.dmOriginal.forEach(v=>{
+            let filtered=v.value.filter(x => v.key!=x.servicesetting &&  (x.type == 7 || x.type == 2 || x.type == 8 || x.type == 3 || x.type == 5 || x.type == 10 || x.type == 11 || x.type == 12 || x.type == 1 || x.type == 13 || (x.type == 6 && x.minorGroup != 'LEAVE') || (x.minorGroup == 'LEAVE')))
+            if (filtered.length>0 && v.key!='ADMIN' )
+              this.daymanager.push({key:v.key, value:filtered});
+          })
+          break;      
+        case 3:         
+          //'Transport Recipients'
+            this.dmOriginal_Recipient.forEach(v=>{
+            let filtered=v.value.filter(x => (x.rosterGroup === 'TRANSPORT'))
+            if (filtered.length>0)
+                this.daymanager.push({key:v.key, value:filtered});
+            })        
+            
+            break;
+        case 4:
+          //'Transport Staff'
+            this.dmOriginal.forEach(v=>{
+              let filtered=v.value.filter(x => (x.rosterGroup === 'TRANSPORT'))
+              if (filtered.length>0)
+                this.daymanager.push({key:v.key, value:filtered});
+            })
+          
+           break;
+        case 5:
+            //'Transport Daily Planner'
+
+          break;
+        case 6:
+          //'Facilities Recipients'
+          this.dmOriginal_Recipient.forEach(v=>{
+            let filtered=v.value.filter(x => (x.rosterGroup === 'CENTREBASED'))
+            if (filtered.length>0)
+              this.daymanager.push({key:v.key, value:filtered});
+          })
+          break;
+        case 7:
+          //'Facilities Staff'
+          this.dmOriginal.forEach(v=>{
+            let filtered=v.value.filter(x => (x.rosterGroup === 'CENTREBASED'))
+            if (filtered.length>0)
+              this.daymanager.push({key:v.key, value:filtered});
+          })
+          break;
+        case 8:
+          //'Group Recipients'
+          this.dmOriginal_Recipient.forEach(v=>{
+            let filtered=v.value.filter(x => (x.rosterGroup === 'GROUPACTIVITY'))
+            if (filtered.length>0)
+              this.daymanager.push({key:v.key, value:filtered});
+          })
+          break;
+        case 9:
+          //'Group Staff'
+          this.dmOriginal.forEach(v=>{
+            let filtered=v.value.filter(x => (x.rosterGroup === 'GROUPACTIVITY'))
+            if (filtered.length>0)
+              this.daymanager.push({key:v.key, value:filtered});
+          })
+          break;
+        case 10:
+          //'Grp/Trns/Facility- Recipients'
+          this.dmOriginal_Recipient.forEach(v=>{
+            let filtered=v.value.filter(x => (x.type == 10 || x.type == 11 || x.type == 12))
+            if (filtered.length>0)
+              this.daymanager.push({key:v.key, value:filtered});
+          })
+          break;
+        case 11:
+          //'Grp/Trns/Facility-Staff'
+          //AND ([ro].[Type] = 7 OR [ro].[Type] = 2 OR [ro].[Type] = 8 OR [ro].[Type] = 3 OR [ro].[Type] = 5 OR [ro].[Type] = 10 OR [ro].[Type] = 11 OR [ro].[Type] = 12 OR [ro].[Type] = 1 OR [ro].[Type] = 13 OR ([ro].[Type] = 6 AND [ItemTypes].[MinorGroup] <> 'LEAVE') OR ([ItemTypes].[MinorGroup] = 'LEAVE') 
+          
+          this.dmOriginal.forEach(v=>{
+            let filtered=v.value.filter(x => (x.type == 7 || x.type == 2 || x.type == 8 || x.type == 3 || x.type == 5|| x.type == 10 || x.type == 11 || x.type == 12 || x.type == 1 || x.type == 13 || x.type == 6  && x.minorGroup != 'LEAVE') || (x.minorGroup == 'LEAVE'))
+            if (filtered.length>0)
+              this.daymanager.push({key:v.key, value:filtered});
+          })
+          break;
+        case 12:
+          
+          // //'Recipient Management'
+          // //([ro].[Type] = 7 OR [ro].[Type] = 2 OR [ro].[Type] = 8 OR [ro].[Type] = 10 OR [ro].[Type] = 11 OR [ro].[Type] = 12 )
+
+          this.dmOriginal_Recipient.forEach(v=>{
+            let filtered=v.value.filter(x => x.recipient!='!MULTIPLE' && x.recipient!='!INTERNAL' && (x.type == 7 || x.type == 2 || x.type == 8 || x.type == 10 || x.type == 11 || x.type == 12))
+            if (filtered.length>0)
+              this.daymanager.push({key:v.key, value:filtered});
+          })
+          
+         
+          break;
+       
+        default:
+          this.daymanager=this.dmOriginal;
+          break;
+      }
+    }
+}
+
+getfilterType(type:String)
+{
+  switch(type){
+  case 'Unallocated Bookings':
+        return 1;       
+  case 'Staff Management':
+        return 2;    
+  case 'Transport Recipients':         
+        return 3;
+  case 'Transport Staff':
+        return 4;
+  case 'Transport Daily Planner':
+        return 5;
+  case 'Facilities Recipients':
+        return 6;
+  case 'Facilities Staff':
+        return 7;
+  case 'Group Recipients':
+        return 8    
+  case 'Group Staff':
+        return 9
+  case 'Grp/Trns/Facility- Recipients':
+        return 10;
+  case 'Grp/Trns/Facility-Staff':
+        return 11;
+  case 'Recipient Management':
+        return 12;  
+  default:
+        return 0;
+  }
+}
+
   ngOnChanges(changes: SimpleChanges) {
     let date;
     if (changes['dayView']) {
@@ -197,15 +380,18 @@ HighlightColum(indx:number){
 
     if (changes['startDate']) {
       date = changes['startDate'].currentValue;
+     
     }
-
+    
     if (changes['copyPaste'] && !changes['copyPaste'].isFirstChange()) {
       this.copyPaste = changes['copyPaste'].currentValue
       this.highLightCopyWrappers(this.copyPaste)
       return;
     }
-
-    this.alertChange(date);
+    if (changes['personType'].previousValue==null )
+      this.alertChange(date);
+    else if (changes['personType']!=null || changes['personType'].currentValue!=this.personType) 
+      this.applyFilters(this.personType)
   }
 
   highLightCopyWrappers(show: boolean) {
@@ -229,6 +415,7 @@ HighlightColum(indx:number){
       for (var a = 0, len = this.daymanager.length; a < len; a++) {
         if (this.daymanager[a] && this.daymanager[a].key === value.carercode) {
           rostersThatDay = this.daymanager[a].value.filter(x => x.date === value.date)
+         
           break;
         }
       }
@@ -249,13 +436,14 @@ HighlightColum(indx:number){
   }
 
   alertChange(date: any = this.startDate) {
-    console.log(date);
-    if (moment(date).isValid()) {
-      this.loading = true;
-      this.startDate = moment(date);
-      this.days = this.calculateDays(this.startDate, this.dayView);
-      this.someChange.next()
-    }
+      console.log(this.personType);
+      if (moment(date).isValid()) {
+        this.loading = true;
+        this.startDate = moment(date);
+        this.days = this.calculateDays(this.startDate, this.dayView);
+        this.someChange.next()
+      } 
+         
   }
 
   previousDate() {
@@ -266,6 +454,7 @@ HighlightColum(indx:number){
     this.alertChange(moment(this.startDate).add(this.dayView, 'day'))
   }
 
+ 
   deselect(data: any = null, $event: any = null): void {
 
     if ($event && $event.button == 0) {
@@ -293,16 +482,153 @@ HighlightColum(indx:number){
   search(date: any, dayView: number) {
     let sDate = moment(date).format('YYYY/MM/DD');
     let eDate = moment(date).add(dayView - 1, 'days').format('YYYY/MM/DD');
-    this.timeS.getdaymanager({ StartDate: sDate, EndDate: eDate }).pipe(
+    this.timeS.getdaymanager({ StartDate: sDate, EndDate: eDate,dmType:this.dmType }).pipe(
       debounceTime(200))
       .subscribe(data => {
         this.daymanager = data;
+        this.dmOriginal = data;
         this.data.emit(data);
         this.loading = false;
-        console.log(data)
+        //console.log(data)
+        this.personsList = this.daymanager.map(x => x.key )
+        if (this.personType!=null && this.personType!='')
+          this.applyFilters(this.personType)
       })
-  }
+    
+      
+      this.timeS.getStaffWorkingHours({ StartDate: sDate, EndDate: eDate,dmType:this.dmType }).pipe(
+        debounceTime(200))
+        .subscribe(data => {
+          this.workinghours = data;
+         
+        })
+        this.dmType="12";
+        this.timeS.getdaymanager({ StartDate: sDate, EndDate: eDate,dmType:this.dmType }).pipe(
+          debounceTime(200))
+          .subscribe(data => {            
+            this.dmOriginal_Recipient = data;           
+          })
 
+  }
+  
+  getWorkHours2(accountNo:string):any
+  {
+      let hrs:string
+      let lstHrs: any;
+      let pp:String='00:00';
+      let workHours:any={AccountNo:'' ,w1:'', w2:'',fn:'',tt:'',pp:''};
+     
+        lstHrs=this.workinghours.find(obj => obj.accountNo === accountNo);
+        if (Array.isArray(lstHrs)){
+              hrs=lstHrs.reduce((accumulator, current) => accumulator + current.total_WrkdHr, 0);
+              pp=lstHrs[0].payprdWrkdHr
+        }else{
+              hrs=this.workinghours.find(obj => obj.accountNo === accountNo).total_WrkdHr;
+              pp=lstHrs.payprdWrkdHr
+        }
+        workHours.AccountNo=accountNo;
+        workHours.tt=hrs;
+        workHours.pp=pp;
+      //case 'W1':
+      
+         lstHrs=this.workinghours.find(obj => obj.accountNo === accountNo && obj.weekNo==1);         
+         if (Array.isArray(lstHrs))
+              hrs=lstHrs.reduce((accumulator, current) => accumulator + current.total_WrkdHr, 0);
+          else if (lstHrs!=null)
+              hrs=lstHrs.total_WrkdHr;
+          else
+            hrs="00:00";
+            workHours.w1=hrs; 
+      // case 'W2':
+      
+        lstHrs=this.workinghours.find(obj => obj.accountNo === accountNo && obj.weekNo==2);
+        if (Array.isArray(lstHrs))
+              hrs=lstHrs.reduce((accumulator, current) => accumulator + current.total_WrkdHr, 0);
+        else if (lstHrs!=null)
+              hrs=lstHrs.total_WrkdHr;
+        else
+          hrs="00:00";
+          workHours.w2=hrs; 
+      // case 'F':
+           lstHrs=this.workinghours.find(obj => obj.accountNo === accountNo && obj.weekNo<=2);
+           if (Array.isArray(lstHrs))
+              hrs=lstHrs.reduce((accumulator, current) => accumulator + current.total_WrkdHr, 0);
+            else if (lstHrs!=null)
+              hrs=lstHrs.total_WrkdHr;
+            else
+              hrs="00:00";
+              workHours.fn=hrs; 
+    
+    
+      return workHours;
+    }
+ 
+  getWorkHours(accountNo:string,wtype:string)
+  {
+      let hrs:string
+      let lstHrs: any;
+      lstHrs=this.workinghours.find(obj => obj.accountNo === accountNo);
+      if (lstHrs==null)
+        return "00:00";
+
+      switch(wtype){
+      case 'T': 
+      {
+        
+        if (Array.isArray(lstHrs))
+              hrs=lstHrs.reduce((accumulator, current) => accumulator + current.total_WrkdHr, 0);
+        else
+              hrs=this.workinghours.find(obj => obj.accountNo === accountNo).total_WrkdHr;
+        
+        break;
+      }
+      case 'W1':
+      {
+         lstHrs=this.workinghours.find(obj => obj.accountNo === accountNo && obj.weekNo==1);         
+         
+         if (Array.isArray(lstHrs))
+              hrs=lstHrs.reduce((accumulator, current) => accumulator + current.total_WrkdHr, 0);
+          else if (lstHrs!=null)
+              hrs=lstHrs.total_WrkdHr;
+          else
+            hrs="00:00";
+         break;
+       } 
+       case 'W2':
+      {
+        lstHrs=this.workinghours.find(obj => obj.accountNo === accountNo && obj.weekNo==2);
+        if (Array.isArray(lstHrs))
+              hrs=lstHrs.reduce((accumulator, current) => accumulator + current.total_WrkdHr, 0);
+        else if (lstHrs!=null)
+              hrs=lstHrs.total_WrkdHr;
+        else
+          hrs="00:00";
+         break;
+       } 
+       case 'F':
+        {
+           lstHrs=this.workinghours.find(obj => obj.accountNo === accountNo && (obj.weekNo==1|| obj.weekNo==2));
+           if (Array.isArray(lstHrs))
+              hrs=lstHrs.reduce((accumulator, current) => accumulator + current.total_WrkdHr, 0);
+            else if (lstHrs!=null)
+              hrs=lstHrs.total_WrkdHr;
+            else
+              hrs="00:00";
+           break;
+         } 
+      case 'P': 
+       {
+        //lstHrs=this.workinghours.find(obj => obj.accountNo === accountNo );
+        if (Array.isArray(lstHrs))
+          hrs=lstHrs[0].payprdWrkdHr;
+        else
+          hrs=hrs=lstHrs.payprdWrkdHr;
+        break;
+       
+      }
+    }
+      return hrs;
+    }
   getPositionImg(data: any) {
     let activity = data.activity;
     if (activity.indexOf(ImageActivity.Unavailable) !== -1) return ImagePosition.Unavailable;
@@ -313,29 +639,6 @@ HighlightColum(indx:number){
     if (activity.indexOf(ImageActivity.Laundry) !== -1) return ImagePosition.LaundryService;
   }
 
-  getMondayDate(date: any){
-    let temp:any=date;
-    let indx=5;
-    let dd=new Date(temp).getDay();
-    while(indx>0 && dd!=1){
-    
-        temp = moment(temp).add('day', -1);
-        dd=new Date(temp).getDay();
-        indx=indx-1;
-    }
-    if (dd!=1){
-      temp = date;
-      indx=6    
-      dd=new Date(temp).getDay();
-      while(indx>0 && dd!=1){   
-
-        temp = moment(temp).add('day', 1);
-        dd=dd=new Date(temp).getDay();
-        indx=indx-1;
-      }
-    }
-    return temp;
-  }
   calculateDays(date: any, dayView: number) {
   
     let dd=new Date(date).getDay();
@@ -377,6 +680,7 @@ HighlightColum(indx:number){
 
   draggedObject: any;
   dragStart(event: DragEvent | any, value: any) {
+    this.akonani=[];
     this.draggedObject = value;
     event.target.setAttribute('id', 'selectedCell')
     event.dataTransfer.setData("text", event.target.id);
@@ -389,15 +693,16 @@ HighlightColum(indx:number){
   dragEnd(event: DragEvent | any) {
     event.target.setAttribute('id', '')
     this.draggedObject = ""
+    console.log(this.akonani);
   }
 
   mouseenter(event: any, data: any) {
-    // if(this.isClicked){
-    //     console.log(this.akonani.indexOf(data) === -1)
-    //     if(this.akonani.indexOf(data) === -1) {
-    //         this.akonani.push(data);
-    //     }
-    // }
+    if(this.isClicked){
+        console.log(this.akonani.indexOf(data) === -1)
+        if(this.akonani.indexOf(data) === -1) {
+            this.akonani.push(data);
+        }
+    }
   }
 
   mousedown(event: any, data: any) {
@@ -412,12 +717,28 @@ HighlightColum(indx:number){
     };
   }
 
+  rightClickMenuOut(event: any, value: any, staffCode:any) {
+    event.preventDefault();
+    let new_position = {date:value._d,  carerCode:staffCode}
+    if (!this.optionMenuDisplayed)
+      this.optionEmitter(new_position);
+    
+      this.optionMenuDisplayed = false;
+
+  }
+  rightClickMenu(event: any, value: any) {
+    this.optionMenuDisplayed=true;
+    event.preventDefault();
+    this.optionEmitter(value);
+    
+
+  }
   mousedblclick(event: any, value: any) {
     event.preventDefault();
     event.stopPropagation();
     
     this.HighlightColum_index=-1
-
+    
     this.isClicked = true;
     this.coordinates = {
       clientX: event.clientX,

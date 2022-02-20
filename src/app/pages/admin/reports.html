@@ -1238,10 +1238,10 @@
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_include_unavailability" ><label class="checks" nz-checkbox formControlName="include_unavailability"   >Include Unavailability</label></div>
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_activeStaffonly" ><label class="checks" nz-checkbox formControlName="activeStaffonly"   >Active Staff Only</label></div>
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_activeClientsonly"><label class="checks" nz-checkbox formControlName="activeclientsonly"   >Active Clients Only</label></div>
-                                        <div nz-col nzSpan = "20" *ngIf="chkbx_CSVExport"><label class="checks" nz-checkbox formControlName="csvExport"   >Only Export to CSV</label></div>
+                                        
                                         
                                        
-                                    </div>
+                                    </div>                                    
                             </fieldset>                             
                         </div> 
         
@@ -1271,6 +1271,12 @@
                             </fieldset>                             
                          
         
+                    </div>
+                    
+                    <div nz-row *ngIf="chkbx_CSVExport">
+                        <div nz-col nzSpan = "20" >
+                            <label class="checks" nz-checkbox formControlName="csvExport"   >Only Export to CSV</label>
+                        </div>
                     </div>
                 </div>                                                  
             </div>            
@@ -1604,6 +1610,7 @@
                         </div>
                     </div>
                 </div>
+                <div nz-col nzSpan = "20" *ngIf="chkbx_CSVExport"><label class="checks" nz-checkbox formControlName="csvExport"   >Only Export to CSV</label></div>
             </ng-template>                            
                <ng-template #modalFooter> 
                    <div class="modalFooter">
@@ -1658,6 +1665,9 @@
                     &nbsp;&nbsp;<label class="checks" nz-checkbox formControlName="incl_unapproved_services"  >Include UNAPPROVED services in actuals calculation</label>
                     &nbsp;&nbsp;<label class="checks" nz-checkbox formControlName="incl_actuals"  >include Allowance in Actuals Calculations</label>
                     &nbsp;&nbsp;<label class="checks" nz-checkbox formControlName="Incl_inactive"  >Include Inactive Recipients</label>
+                </div>
+                <div nz-col nzSpan = "20" *ngIf="chkbx_CSVExport">
+                    &nbsp;&nbsp;<label class="checks" nz-checkbox formControlName="csvExport"   >Only Export to CSV</label>
                 </div>
             </div>
             <div>

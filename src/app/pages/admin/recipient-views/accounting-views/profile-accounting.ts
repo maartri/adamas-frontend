@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 
-import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, ClientService } from '@services/index';
+import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, ClientService, BILLING_CYCLE, BILLING_RATE_IS } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
 import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -96,6 +96,11 @@ export class ProfileAccounting implements OnInit, OnDestroy {
     tableData: Array<any> = [];
     alist: Array<any> = [];
 
+    contributionActivities: Array<string> = [];
+    billingCycleList: Array<string> = BILLING_CYCLE;
+    billingrateList: Array<string> = BILLING_RATE_IS;
+    
+
     constructor(
         private timeS: TimeSheetService,
         private sharedS: ShareService,
@@ -147,6 +152,10 @@ export class ProfileAccounting implements OnInit, OnDestroy {
         this.listS.getaccountingprofile(user.id).subscribe(data => {
             this.profileForm.patchValue(data);
             this.cd.markForCheck();
+        });
+
+        this.listS.getcontributionactivity().subscribe(data => {
+            this.contributionActivities = data.map(x => x).filter(x => x != '');
         });
     }
 

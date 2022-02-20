@@ -17,6 +17,10 @@ export class ListService {
         public auth: AuthService
     ) { }
 
+    getcontributionactivity(): Observable<any>{
+        return this.auth.get(`${list}/contribution-activity`);
+    }
+
     getstaffcompetencylist(data: any): Observable<any>{
         return this.auth.get(`${list}/staff-competency-list`, data);
     }

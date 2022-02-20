@@ -47,6 +47,25 @@ export const view = {
   recipient: 'recipient',
   admin: 'admin'
 }
+export const BILLING_CYCLE = [
+  "<FORTNIGHTLY>",
+  "<MONTHLY>",
+  "<WEEKLY>",
+  "BROKERAGE",
+  "DAILY NDIA",
+  "HCP"
+]
+
+export const BILLING_RATE_IS = [
+  "COMMERCIAL",
+  "LEVEL1",
+  "LEVEL2",
+  "LEVEL3",
+  "LEVEL4",
+  "LEVEL5",
+  "FIXED",
+  "PERCENTAGE"
+]
 
 export const ROSTER_TYPE = {
   2: "ONEONONE",

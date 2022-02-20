@@ -26,21 +26,29 @@
             <div class="mk-group">
                 <label for="" class="col-md-2">Billing Cycle</label>
                 <div class="col-md-10">
-                    <input type="text" nz-input >
+                    <nz-select formControlName="billingCycle">
+                        <nz-option *ngFor="let c of billingCycleList" [nzValue]="c" [nzLabel]="c"></nz-option>
+                    </nz-select>
+                    <!-- <input type="text" formControlName="billingCycle" nz-input > -->
                 </div>
             </div>
 
             <div class="mk-group">
                 <label for="" class="col-md-2">Billing Rate Is</label>
                 <div class="col-md-10">
-                    <input type="text" nz-input >
+                    <nz-select formControlName="billingMethod">
+                        <nz-option *ngFor="let c of billingrateList" [nzValue]="c" [nzLabel]="c"></nz-option>
+                    </nz-select>
+                    <!-- <input type="text" formControlName="billingMethod" nz-input > -->
                 </div>
             </div>
 
             <div class="mk-group">
                 <label for="" class="col-md-2">Contribution Activity Code</label>
                 <div class="col-md-10">
-                    <input type="text" nz-input >
+                    <nz-select formControlName="title">
+                        <nz-option *ngFor="let c of contributionActivities" [nzValue]="c" [nzLabel]="c"></nz-option>
+                    </nz-select>
                 </div>
             </div>
 

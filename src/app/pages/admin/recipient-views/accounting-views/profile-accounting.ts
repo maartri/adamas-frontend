@@ -78,9 +78,15 @@ import { NzModalService } from 'ng-zorro-antd/modal';
         }
         .mk-group-inline{
             display:flex;
+            padding: 0 1rem;
         }
         .mk-group-inline > div > *{
-            padding: 4px 0;
+            padding: 4px 5px;
+        }
+        .mk-group-inline > div{
+            margin-right:10px;
+            background: #efefef;
+            border-radius: 5px;
         }
         `
     ],

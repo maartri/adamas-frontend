@@ -113,18 +113,40 @@
             </div>
 
             <div class="mk-group">
-                <label for="" class="col-md-2">Accounting Debtor Code</label>
+                <label for="" class="col-md-2">BPay Reference</label>
                 <div class="col-md-10">
                     <input type="text" nz-input >
                 </div>
             </div>
 
             <div class="mk-group">
-                <label for="" class="col-md-2">Accounting Debtor Code</label>
+                <!-- <label for="" class="col-md-2">Accounting Debtor Code</label>
                 <div class="col-md-10">
                     <textarea nz-input></textarea>
+                </div> -->
+            </div>
+
+            <div class="mk-group"></div>
+            <div class="mk-group"></div>
+            <div class="mk-group"></div>
+            <div class="mk-group"></div>
+            <div class="mk-group"></div>
+   
+
+            <div class="mk-group-inline">
+                <div style="display:flex">
+                    <span>%</span><input type="text" nz-input style="width: 5rem;">
+                </div>
+                <div>
+                    <span>Capped</span>
+                    <label nz-checkbox [(ngModel)]="checked"></label>
+                </div>
+                <div>
+                    <span>Amount</span>
+                    <label nz-checkbox [(ngModel)]="checked"></label>
                 </div>
             </div>
+            
         </div>
 
 </div>

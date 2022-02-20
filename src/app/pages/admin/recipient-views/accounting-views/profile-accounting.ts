@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 
-import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, ClientService, BILLING_CYCLE, BILLING_RATE_IS } from '@services/index';
+import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, ClientService, 
+    BILLING_CYCLE, BILLING_RATE_IS, CREDITCARD } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
 import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -75,6 +76,12 @@ import { NzModalService } from 'ng-zorro-antd/modal';
             padding:10px;
             margin:0;
         }
+        .mk-group-inline{
+            display:flex;
+        }
+        .mk-group-inline > div > *{
+            padding: 4px 0;
+        }
         `
     ],
     templateUrl: './profile-accounting.html',
@@ -99,7 +106,7 @@ export class ProfileAccounting implements OnInit, OnDestroy {
     contributionActivities: Array<string> = [];
     billingCycleList: Array<string> = BILLING_CYCLE;
     billingrateList: Array<string> = BILLING_RATE_IS;
-    
+
 
     constructor(
         private timeS: TimeSheetService,

@@ -47,6 +47,14 @@ export const view = {
   recipient: 'recipient',
   admin: 'admin'
 }
+
+export const CREDITCARD = [
+  "Visa",
+  "MasterCard",
+  "American Express",
+  "Other"
+]
+
 export const BILLING_CYCLE = [
   "<FORTNIGHTLY>",
   "<MONTHLY>",

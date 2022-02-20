@@ -217,11 +217,12 @@ export class ClinicalReminder implements OnInit, OnDestroy {
                 
                 this.timeS.postclinicalreminders(data,status).pipe(
                     takeUntil(this.unsubscribe))
-                    .subscribe(data => {
-                        console.log(data);
+                    .subscribe(insertedInd => {
+                        console.log(insertedInd + "inserted ID");
                         this.inputForm.controls.staffAlert.setValue(this.selectedReminders[0]);
                         this.globalS.sToast('Success', 'Data added');
                         if(status == "single"){
+                            this.inputForm.controls.recordNumber.setValue(insertedInd)
                             this.addOREdit = 0;
                             this.cd.detectChanges();
                         }else{
@@ -347,6 +348,7 @@ export class ClinicalReminder implements OnInit, OnDestroy {
                         this.inputForm.reset(this.default);
                         this.isLoading = false;
                         this.modalOpen = false;
+                        this.addOREdit = 1;
                         this.search();
                     }
                     handleOkTop() {

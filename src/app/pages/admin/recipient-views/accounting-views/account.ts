@@ -46,15 +46,20 @@ export class AccountingHistory implements OnInit, OnDestroy {
         });
 
         this.sharedS.changeEmitted$.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-            if (this.globalS.isCurrentRoute(this.router, 'plans')) {
-                this.user = data;
-                this.search(data);
+            if (this.globalS.isCurrentRoute(this.router, 'accounting')) {
+         
+                if('code' in data){
+                    this.user = data;
+                    this.search(this.user);
+                }
             }
         });
     }
 
     ngOnInit(): void {
         this.user = this.sharedS.getPicked();
+        console.log(this.user);
+
         this.search(this.user);
         this.buildForm();
     }
@@ -78,7 +83,6 @@ export class AccountingHistory implements OnInit, OnDestroy {
 
         this.listS.getaccountinghistory(user.code).subscribe(plans => {
             this.tableData = plans;
-            console.log(plans);
             this.loading = false;
             this.cd.markForCheck();
         });

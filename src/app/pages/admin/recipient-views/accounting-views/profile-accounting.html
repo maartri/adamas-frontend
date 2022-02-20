@@ -1,4 +1,190 @@
-<div>
+<div nz-row>
+
+    <div nz-col nzSpan="12" [formGroup]="profileForm">
+
+            <div class="mk-group">
+                <label for="">TRACCS Billing Client</label>
+                <div>
+                    <input type="text" nz-input >
+                </div>
+            </div>
+
+            <div class="mk-group">
+                <label for="" class="col-md-2">Accounting Debtor Code</label>
+                <div class="col-md-10">
+                    <input type="text" formControlName="accountingIdentifier" nz-input >
+                </div>
+            </div>
+
+            <div class="mk-group">
+                <label for="" class="col-md-2">Contract ID #</label>
+                <div class="col-md-10">
+                    <input type="text" formControlName="orderNo" nz-input >
+                </div>
+            </div>
+
+            <div class="mk-group">
+                <label for="" class="col-md-2">Billing Cycle</label>
+                <div class="col-md-10">
+                    <nz-select formControlName="billingCycle">
+                        <nz-option *ngFor="let c of billingCycleList" [nzValue]="c" [nzLabel]="c"></nz-option>
+                    </nz-select>
+                    <!-- <input type="text" formControlName="billingCycle" nz-input > -->
+                </div>
+            </div>
+
+            <div class="mk-group">
+                <label for="" class="col-md-2">Billing Rate Is</label>
+                <div class="col-md-10">
+                    <nz-select formControlName="billingMethod">
+                        <nz-option *ngFor="let c of billingrateList" [nzValue]="c" [nzLabel]="c"></nz-option>
+                    </nz-select>
+                    <!-- <input type="text" formControlName="billingMethod" nz-input > -->
+                </div>
+            </div>
+
+            <div class="mk-group">
+                <label for="" class="col-md-2">Contribution Activity Code</label>
+                <div class="col-md-10">
+                    <nz-select formControlName="title">
+                        <nz-option *ngFor="let c of contributionActivities" [nzValue]="c" [nzLabel]="c"></nz-option>
+                    </nz-select>
+                </div>
+            </div>
+
+            <div>
+                <div class="check-group">
+                    <label nz-checkbox [(ngModel)]="checked">Hide Fare On Transparent</label>
+                    <label nz-checkbox [(ngModel)]="checked">Print Invoice</label>
+                    <label nz-checkbox [(ngModel)]="checked">Print Statement</label>
+                    <label nz-checkbox [(ngModel)]="checked">Email Invoice</label>
+                    <label nz-checkbox [(ngModel)]="checked">Email Statement</label>
+                </div>
+            </div>
+
+            <div class="mk-group">
+                <label for="" class="col-md-2">Payment Terms</label>
+                <div class="col-md-10">
+                    <input type="text" nz-input >
+                </div>
+            </div>
+
+
+            <div class="mk-group">
+                <label for="" class="col-md-2">Billing Profile</label>
+                <div class="col-md-10">
+                    <textarea nz-input></textarea>
+                </div>
+            </div>
+
+            <div>
+                <div class="check-group">
+                    <label nz-checkbox [(ngModel)]="checked">Financially Dependent</label>
+                    <label nz-checkbox [(ngModel)]="checked">Direct Debit</label>
+                    <label nz-checkbox [(ngModel)]="checked">DVA CO-Biller</label>
+                </div>
+            </div>
+
+            <div class="mk-group">
+                <label for="">Credit Card Type</label>
+                <div>
+                    <nz-select formControlName="creditCardType"></nz-select>
+                </div>
+            </div>
+
+            <div class="mk-group">
+                <label for="" class="col-md-2">Credit Card Number</label>
+                <div class="col-md-10">
+                    <input type="text" nz-input  formControlName="creditCardNumber">
+                </div>
+            </div>
+
+            <div class="mk-group">
+                <label for="" class="col-md-2">Name of Credit Card</label>
+                <div class="col-md-10">
+                    <input type="text" nz-input formControlName="creditCardName">
+                </div>
+            </div>
+    </div>
+
+    <div nz-col nzSpan="12">
+            <div class="mk-group">
+                <label nz-checkbox [(ngModel)]="checked">Allow Different Biller</label>
+            </div>
+
+            <div class="mk-group">
+                <label for="" class="col-md-2">BPay Reference</label>
+                <div class="col-md-10">
+                    <input type="text" nz-input >
+                </div>
+            </div>
+
+            <div class="mk-group" style="height: 2rem;">
+            </div>
+
+            <div class="mk-group" style="height: 2rem;">
+            </div>   
+
+            <div class="mk-group-inline">
+                <div style="display:flex">
+                    <span>%</span><input type="text" nz-input style="width: 5rem;">
+                </div>
+                <div>
+                    <span>Capped</span>
+                    <label nz-checkbox [(ngModel)]="checked"></label>
+                </div>
+                <div>
+                    <span>Amount</span>
+                    <label nz-checkbox [(ngModel)]="checked"></label>
+                </div>
+            </div>
+            
+
+            <div class="mk-group" style="height: 2rem;">
+            </div>
+
+            <div class="mk-group" style="height: 2rem;">
+            </div>
+
+            <div class="mk-group" style="height: 2rem;">
+            </div>
+
+            <div class="mk-group" style="height: 2rem;">
+            </div>
+
+            <div class="mk-group" style="height: 2rem;">
+            </div>
+
+            <div class="mk-group" style="height: 2rem;">
+            </div>
+
+            <div class="mk-group" style="height: 2rem;">
+            </div>
+            <div class="mk-group" style="height: 2rem;">
+            </div>
+
+            <div class="mk-group" style="height: 1rem;">
+            </div>
+
+            <div class="mk-group">
+                <label for="" class="col-md-2">CCV Number</label>
+                <div class="col-md-10">
+                    <input type="text" nz-input style="width:5rem;">
+                </div>
+            </div>
+
+            <div class="mk-group">
+                <label for="" class="col-md-2">Expiry Date</label>
+                <div class="col-md-10">
+                    <nz-date-picker></nz-date-picker>
+                </div>
+            </div>
+
+        </div>
+
+</div>
+
+<!-- <div>
     <div nz-row>
         <div nz-col nzSpan="18">
             <div nz-row [formGroup]="profileForm">
@@ -144,4 +330,4 @@
     </div>
 
 
-</div>
+</div> -->

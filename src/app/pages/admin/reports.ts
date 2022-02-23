@@ -133,6 +133,8 @@ const inputFormDefault = {
     frm_RosterInclusion: [false],
 
     frm_CustomRptbtn : [false],
+
+    EnableCSVExport : [false],
     
 
     whowhat: [''],
@@ -445,6 +447,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     frm_RosterInclusion:boolean;
 
     frm_CustomRptbtn: boolean;
+    EnableCSVExport : boolean;
 
     
 
@@ -605,6 +608,8 @@ stafftypeArr: Array<any> = constants.types;
     mta_time_late: string;
     mta_time_overstayed: string;
     mta_time_early: string;
+
+   CSV_String: any;
 
     ModalName: string;
     FORptModelTitle: string;
@@ -1122,7 +1127,7 @@ stafftypeArr: Array<any> = constants.types;
         this.UserRptFormatlist = [];
         this.UserRptSQLlist = [];
 
-
+        this.EnableCSVExport = false;
 
         this.ModalName = " CRITERIA "
         
@@ -21218,9 +21223,16 @@ CustomReportSetting(){
 
 FetchRuntimeReport(strtitle){
 //    console.log("TITLE:  " +strtitle)
-    this.tryDoctype = ""; 
-    this.drawerVisible = true; 
-    this.loading = true;
+this.EnableCSVExport = true;
+//this.RptFormat = ;
+    this.CSV_String = strtitle;
+    if(strtitle != 'CSVStr'){        
+        this.GlobalS.var2 = strtitle;
+    }else{
+        strtitle = this.GlobalS.var2.toString()
+        
+    }
+   
     var strFilter  = strtitle.toString().substring(0,1)
  //   console.log(strFilter)
     var title = strtitle.toString().substring(1,strtitle.length)
@@ -21241,6 +21253,7 @@ FetchRuntimeReport(strtitle){
         default: 
             break;
     }
+
    // console.log(this.Rptformat);
   const temp =  forkJoin([
     //    this.ReportS.GetReportFormat(title),
@@ -21252,7 +21265,7 @@ FetchRuntimeReport(strtitle){
         //this.UserRptFormatlist = data[0];
         this.UserRptSQLlist = data[0];   
         var re = /~/gi;    
-     //   console.log((this.UserRptSQLlist.toString()).replace(re,"'"))
+     //console.log((this.UserRptSQLlist.toString()).replace(re,"'"),title)
     
         this.RenderRunTimeReport((this.UserRptSQLlist.toString()).replace(re,"'"),title)
 
@@ -21265,23 +21278,43 @@ FetchRuntimeReport(strtitle){
 }
 RenderRunTimeReport(strSQL,RptTitle){
     //console.log(strSQL)
+    
     const data = {
         
         //"template": { "_id": "qTQEyEz8zqNhNgbU" },
         "template": { "_id": "x8QVE8KhcjiJvD6c" },
                     
         "options": {
-            "reports": { "save": false },
-            
+            "reports": { "save": false },            
             "sql": strSQL,            
             "userid": this.tocken.user,
-            "txtTitle":RptTitle,
-            
-                                                                                         
+            "txtTitle":RptTitle,                                                                                                     
         }
     }
     this.loading = true;
     
+    if(this.CSV_String == 'CSVStr'){
+
+        this.tryDoctype = ""; 
+        this.drawerVisible = false; 
+        this.loading = false;
+                   
+        this.listS.getlist(strSQL).subscribe((blob) => {
+            
+            const headings = Object.keys(blob[0]);
+            
+            let testArr:Array<any> = [];
+            for(let i=0; i < blob.length-1; i++){
+                testArr = [...testArr ,blob[i]]               
+            }
+           
+            this.downloadFile(testArr,RptTitle,headings)
+        });
+
+    }else{
+        this.tryDoctype = ""; 
+        this.drawerVisible = true; 
+        this.loading = true;
 
     this.printS.printControl(data).subscribe((blob: any) => {
         this.pdfTitle = "User Custom Report.pdf"
@@ -21302,7 +21335,8 @@ RenderRunTimeReport(strSQL,RptTitle){
             },
         });
     });
-
+    
+    }
     return;
 
 }

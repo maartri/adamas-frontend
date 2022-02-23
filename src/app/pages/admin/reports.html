@@ -1693,10 +1693,15 @@
     <!-- [nzScroll]="{ x:'1000px',y:'calc(100vh-238px)'}" [nzHeight]= "650" width="1224"  height="calc(100vh-300px)" -->
         
     <nz-drawer  nzHeight="100vh"  [nzClosable]="true"  class="drawer"  [nzVisible]="drawerVisible" nzPlacement="top" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()" >
+        <div *ngIf="EnableCSVExport">   
+            <button nz-button nzType="default" class="btn" (click)="FetchRuntimeReport('CSVStr')" >Export CSV</button> 
+        </div>
         <div class="col-md-12 spinner" *ngIf="loading">
             <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
-        </div>
+        </div>        
+        
         <div nz-row>   
             <iframe *ngIf="tryDoctype" class="iframe" [src]="tryDoctype" scrolling="auto" width="1280" height="650"  ></iframe> 
         </div>
+        
     </nz-drawer>

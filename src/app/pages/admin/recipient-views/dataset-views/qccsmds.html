@@ -124,14 +124,268 @@
             </div>    
         </div>    
     </div>
-
+    
     <div *ngIf="tabFindIndexScope == 1">
-        <nz-divider nzText="QCSS MDS - Functional Status" nzOrientation="left"></nz-divider>
+        <div nz-row >
+            <div nz-col nzSpan="24" [formGroup]="inputForm">
+                <nz-divider nzText="QCSS MDS - Functional Status" nzOrientation="left"></nz-divider>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                        <label>Housework :</label>
+                    </div>
+                    <div nz-col nzSpan="18">
+                        <nz-select nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        </nz-select>
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                        <label>Transport :</label>
+                    </div>
+                    <div nz-col nzSpan="18">
+                        <nz-select nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        </nz-select>
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                        <label>Shopping :</label>
+                    </div>
+                    <div nz-col nzSpan="18">
+                        <nz-select nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        </nz-select>
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                        <label>Shopping :</label>
+                    </div>
+                    <div nz-col nzSpan="18">
+                        <nz-select nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        </nz-select>
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                        <label>Medication :</label>
+                    </div>
+                    <div nz-col nzSpan="18">
+                        <nz-select nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        </nz-select>
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                        <label>Money :</label>
+                    </div>
+                    <div nz-col nzSpan="18">
+                        <nz-select nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        </nz-select>
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                        <label>Walking :</label>
+                    </div>
+                    <div nz-col nzSpan="18">
+                        <nz-select nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        </nz-select>
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                        <label>Bath/Shower :</label>
+                    </div>
+                    <div nz-col nzSpan="18">
+                        <nz-select nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        </nz-select>
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                        <label>Memory Probs/Confusion :</label>
+                    </div>
+                    <div nz-col nzSpan="4">
+                        <nz-select nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        </nz-select>
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                        <label>Behavioural Problems :</label>
+                    </div>
+                    <div nz-col nzSpan="4">
+                        <nz-select nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        </nz-select>
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                        <label>Communication :</label>
+                    </div>
+                    <div nz-col nzSpan="18">
+                        <nz-select nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        </nz-select>
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                        <label>Communication :</label>
+                    </div>
+                    <div nz-col nzSpan="18">
+                        <nz-select nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        </nz-select>
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                        <label>Dressing :</label>
+                    </div>
+                    <div nz-col nzSpan="18">
+                        <nz-select nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        </nz-select>
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                        <label>Eating :</label>
+                    </div>
+                    <div nz-col nzSpan="18">
+                        <nz-select nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        </nz-select>
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                        <label>Toileting :</label>
+                    </div>
+                    <div nz-col nzSpan="18">
+                        <nz-select nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        </nz-select>
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                        <label>Getting Up/Moving :</label>
+                    </div>
+                    <div nz-col nzSpan="18">
+                        <nz-select nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        </nz-select>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <div *ngIf="tabFindIndexScope == 2">
-        <nz-divider nzText="QCSS MDS - Carer Data" nzOrientation="left"></nz-divider>
+        <div nz-row >
+            <div nz-col nzSpan="24" [formGroup]="inputForm">
+                <nz-divider nzText="QCSS MDS - Carer Data" nzOrientation="left"></nz-divider>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="8" class="text-right pad-r-5">
+                        <label>Carer-Existance Of :</label>
+                    </div>
+                    <div nz-col nzSpan="12">
+                        <nz-select nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        </nz-select>
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="8" class="text-right pad-r-5">
+                        <label>Primary Carer :</label>
+                    </div>
+                    <div nz-col nzSpan="12">
+                        <nz-select nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        </nz-select>
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="8" class="text-right pad-r-5">
+                        <label>Residency Status :</label>
+                    </div>
+                    <div nz-col nzSpan="12">
+                        <nz-select nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        </nz-select>
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="8" class="text-right pad-r-5">
+                        <label>Relationship to Recipient :</label>
+                    </div>
+                    <div nz-col nzSpan="12">
+                        <nz-select nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        </nz-select>
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="8" class="text-right pad-r-5">
+                        <label>Carer For More Than 1 :</label>
+                    </div>
+                    <div nz-col nzSpan="12">
+                        <label nz-checkbox formControlName="flag"></label>
+                    </div>
+                </div>
+            </div>
+        </div>        
     </div>
     <div *ngIf="tabFindIndexScope == 3">
-        <nz-divider nzText="QCSS Data" nzOrientation="left"></nz-divider>
+        <div nz-row >
+            <div nz-col nzSpan="24" [formGroup]="inputForm">
+                <nz-divider nzText="QCSS Data" nzOrientation="left"></nz-divider>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                        <label nz-checkbox formControlName="flag">Has Disabilities </label>
+                    </div>
+                    <div nz-col nzSpan="8" style="border: 1px solid #e8e8e8;">
+                        <div class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem;">
+                            <div nz-col nzSpan="24">
+                                <label nz-checkbox formControlName="flag">Psychiatric</label>
+                            </div>
+                            <div nz-col nzSpan="24">
+                                <label nz-checkbox formControlName="flag">Sensory</label>
+                            </div>
+                            <div nz-col nzSpan="24">
+                                <label nz-checkbox formControlName="flag">Physical</label>
+                            </div>
+                            <div nz-col nzSpan="24">
+                                <label nz-checkbox formControlName="flag">Chronic</label>
+                            </div>
+                            <div nz-col nzSpan="24">
+                                <label nz-checkbox formControlName="flag">Not Stated/Inadequately described</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                        <label> Residency Visa / Status : </label>
+                    </div>
+                    <div nz-col nzSpan="4">
+                        <nz-select nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        </nz-select>
+                    </div>
+                </div>    
+            </div>
+        </div>
     </div>
 </div>

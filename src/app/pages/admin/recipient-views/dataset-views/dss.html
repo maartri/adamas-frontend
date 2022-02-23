@@ -9,6 +9,42 @@
         </div>
     </div>
     <div *ngIf="tabFindIndexScope == 1">
-        <nz-divider nzText="Disabilities" nzOrientation="left"></nz-divider>
-    </div>
+        <div nz-row >
+            <div nz-col nzSpan="24" [formGroup]="inputForm">
+                <nz-divider nzText="Disabilities" nzOrientation="left"></nz-divider>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="6" class="text-right pad-r-5" style="padding: 7px 0px;">
+                        <label class="redColor"><b>(M)</b></label>
+                    </div>
+                    <div nz-col nzSpan="18" style="padding: .5rem 1rem;">
+                        <label nz-checkbox formControlName="flag" disabled>Has Disabilities </label>
+                    </div>
+                </div>    
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="6">
+                        
+                    </div>
+                    <div nz-col nzSpan="12" style="border: 1px solid #e8e8e8;">
+                        <div class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem;">
+                            <div nz-col nzSpan="24">
+                                <label nz-checkbox formControlName="flag">Psychiatric</label>
+                            </div>
+                            <div nz-col nzSpan="24">
+                                <label nz-checkbox formControlName="flag">Sensory/Speech</label>
+                            </div>
+                            <div nz-col nzSpan="24">
+                                <label nz-checkbox formControlName="flag">Physical/diverse</label>
+                            </div>
+                            <div nz-col nzSpan="24">
+                                <label nz-checkbox formControlName="flag">Chronic</label>
+                            </div>
+                            <div nz-col nzSpan="24">
+                                <label nz-checkbox formControlName="flag">Not Stated/Inadequately described</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>        
 </div>

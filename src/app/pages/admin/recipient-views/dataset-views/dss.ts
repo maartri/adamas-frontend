@@ -15,6 +15,9 @@ import { NzModalService } from 'ng-zorro-antd/modal';
         .ant-divider-horizontal.ant-divider-with-text-center, .ant-divider-horizontal.ant-divider-with-text-left, .ant-divider-horizontal.ant-divider-with-text-right {
             margin:1px 0
         }
+        .redColor{
+            color:red
+        }
         nz-tabset >>> div > div.ant-tabs-nav-container{
             height: 25px !important;
             font-size: 13px !important;

@@ -1,0 +1,14 @@
+<div nz-row >
+    <nz-tabset *ngIf="user" [nzTabPosition]="'top'" [nzType]="'card'">
+        <nz-tab nzTitle="General" (nzClick)="view(0)"> </nz-tab>
+        <nz-tab nzTitle="Disabilities"    (nzClick)="view(1)"> </nz-tab>        
+    </nz-tabset>
+    <div *ngIf="tabFindIndexScope == 0">
+        <div nz-row nzJustify>
+            <nz-divider nzText="DSS Data Exchange" nzOrientation="left"></nz-divider>
+        </div>
+    </div>
+    <div *ngIf="tabFindIndexScope == 1">
+        <nz-divider nzText="Disabilities" nzOrientation="left"></nz-divider>
+    </div>
+</div>

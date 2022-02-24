@@ -172,6 +172,8 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
     ViewAllocateResourceQtyModal:boolean;
     ResourceValue:number;
     InputMode:string='decimal';
+    size: any = 'large';
+
     parserPercent = (value: string) => value.replace(' %', '');
     parserDollar = (value: string) => value.replace('$ ', '');
     parserValue = (value: string) => value;
@@ -495,7 +497,7 @@ openStaffModal(){
     this.openSearchStaffModal=true;
 }
 onStaffSearch(data:any){
-    this.selectedCarer=data.selected;
+    this.selectedCarer=data.accountno;
 }
 loadNotes(){
     this.Person.id=this.selectedOption.recordno;
@@ -690,7 +692,7 @@ ngAfterViewInit(){
         this.optionsModal=false;
         this.detail.isVisible=true;
         this.detail.data=index;
-       this.detail.viewType =this.viewType;
+        this.detail.viewType =this.viewType;
         this.detail.editRecord=false;
         this.detail.ngAfterViewInit();
         

@@ -167,7 +167,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let result of fixedTable.data">
+                  <tr *ngFor="let result of fixedTable.data" (click)="onItemSelected(result)" (dblclick)="onItemDbClick(result)">
                     <td  nzLeft="0PX">{{result.id}}</td>
                     <td  nzLeft="100PX">{{result.hfmin}}</td>
                     <td  nzLeft="150PX">{{result.hfmax}}</td>

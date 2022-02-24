@@ -16,7 +16,29 @@ import { forEach } from 'lodash';
     .disabled{
       pointer-events:none;
     
-    }`]
+    }
+    nz-tabset{
+      margin-top:1rem;
+    }
+    nz-tabset >>> div > div.ant-tabs-nav-container{
+      height: 25px !important;
+      font-size: 13px !important;
+    }
+    
+    nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-nav-scroll div.ant-tabs-nav div div.ant-tabs-tab{
+      line-height: 24px;
+      height: 25px;
+    }
+    nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-nav-scroll div.ant-tabs-nav div div.ant-tabs-tab.ant-tabs-tab-active{
+      background: #85B9D5;
+      color: #fff;
+    }
+    nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-nav-scroll div.ant-tabs-nav div div.ant-tabs-tab{
+      border-radius: 4px 4px 0 0;
+    }
+    
+    
+    `]
   })
   export class StaffSearch implements AfterViewInit{
       @Input() findModalOpen:boolean=false;
@@ -115,7 +137,7 @@ import { forEach } from 'lodash';
 
     handleOk(){ 
 
-      this.searchDone.emit({selected:this.selectedStaff});
+      this.searchDone.emit(this.selectedStaff);
     }
     buildForms(){
         
@@ -231,7 +253,7 @@ import { forEach } from 'lodash';
           brokers:this.quicksearch.value.brokers,
           volunteers:this.quicksearch.value.volunteers,
           onleaveStaff:this.quicksearch.value.onleaveStaff,
-          searchText:this.quicksearch.value.searchText,
+          searchText:this.txtSearch,
           
           allTeamAreas      : this.allProgarms,
           selectedTeamAreas : (this.allProgarms == false) ? this.selectedPrograms : [],
@@ -273,6 +295,19 @@ import { forEach } from 'lodash';
          this.filteredResult=this.originalList.filter(element=>element.name.includes(value));
      }
 
+     onItemSelected(sel:any ) : void {
+
+      this.selectedStaff=sel;     
+  
+  }
+  onItemDbClick(sel:any ) : void {
+
+      this.selectedStaff=sel;
+      this.searchDone.emit(sel);
+      this.findModalOpen=false;
+  
+  }
+  
       allcompetencieschecked(): void {
         console.log("added");
         this.skillsList = this.skillsList.map(item => 

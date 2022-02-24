@@ -4,7 +4,7 @@
     </div>
                       
      <div >
-             <shiftdetail (timesheetDone)="shiftChanged($event)" ></shiftdetail>
+             <shiftdetail (timesheetDone)="shiftChanged($event)" [dayMask]="s_DayMask" ></shiftdetail>
      </div>
        <div nz-row nz-col nzSpan="24" *ngIf="formloading" style="padding:2px; background-color: white;">
           

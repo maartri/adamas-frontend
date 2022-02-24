@@ -46,18 +46,16 @@
                     <div *ngIf="i == 0">
                         <div style="font-size:14px; font-weight: bold; text-align: left;">
                             <span *ngIf="data?.key.indexOf('BOOKED') > -1">UNASSIGNED BOOKINGS</span>
-                            <span *ngIf="!(data?.key.indexOf('BOOKED') > -1) && !(currentFilter>=3 && currentFilter<=7)">{{ data?.key }}</span>
-                            <span *ngIf="currentFilter>=3 && currentFilter<=7">{{ data?.value[0].servicesetting }}</span>
-                            
+                            <span *ngIf="!(data?.key.indexOf('BOOKED') > -1) ">{{ data?.key }}</span> 
                         </div>
                         <div style="font-size:12px; text-align: left " *ngIf="!(data?.key.indexOf('BOOKED') > -1)" >
                             <div *ngIf="!(currentFilter==3 || currentFilter==4  || currentFilter==7 ||  currentFilter==12)">
-                                <div  >{{ data?.value[0].staffCategory}}</div>
-                                <div >{{ data?.value[0].staffPhone}}</div>
+                                <div>{{ data?.value[0].staffCategory}}</div>
+                                <div>{{ data?.value[0].staffPhone}}</div>
                             </div>
                             <div *ngIf="currentFilter==3 || currentFilter==4  || currentFilter==7 ||  currentFilter==12">
-                                <div  >{{ data?.value[0].recipient_Category}}</div>
-                                <!-- <div >{{ data?.value[0].staffPhone}}</div> -->
+                                <div  >{{ data?.value[0].category}}</div>
+                        
                             </div>
                             
                             <div >W1-WKD : {{ getWorkHours(data?.key ,'W1') }}</div>
@@ -82,28 +80,7 @@
                                 (click)="RosterClick($event,value)"
                                 >
 
-                            
-                                    <!-- <div class="approve-logo"><i class="material-icons" *ngIf="value.status == '2'"> done
-                                    </i> -->
-                                <!-- </div>  -->
-                                <div [class.icon2]="dayView >= 10" >
-                                    <!--  <div class="service-logo" [style.background-position]="getPositionImg(value)"> -->
-                                
-                                    <!-- <i nz-icon *ngIf="value.type==1" [nzType]="'question-circle'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
-                                    <i nz-icon *ngIf="value.type==2" [nzType]="'heart'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
-                                    <i nz-icon *ngIf="value.type==3" [nzType]="'check-circle'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
-                                    <i nz-icon *ngIf="value.type==4" [nzType]="'calendar'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
-                                    <i nz-icon *ngIf="value.type==5" [nzType]="'car'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
-                                    <i nz-icon *ngIf="value.type==6" [nzType]="'container'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
-                                    <i nz-icon *ngIf="value.type==7" [nzType]="'dollar'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
-                                    <i nz-icon *ngIf="value.type==8" [nzType]="'smile'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
-                                    <i nz-icon *ngIf="value.type==9" [nzType]="'info-circle'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
-                                    <i nz-icon *ngIf="value.type==10" [nzType]="'van'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
-                                    <i nz-icon *ngIf="value.type==11" [nzType]="'home'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
-                                    <i nz-icon *ngIf="value.type==12" [nzType]="'team'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
-                                    <i nz-icon *ngIf="value.type==13" [nzType]="'minus-circle'" [nzTheme]="'outline'"  class="icon"></i>
-                                    <i nz-icon *ngIf="value.type==14" [nzType]="'calendar-circle'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'" class="icon"></i>
-                                    -->
+                                <div class="icon" [class.icon2]="dayView===10" [class.icon3]="dayView > 10"  >
                                         <img id="icon-1" class="icon2" *ngIf="value.type==1" style=" background-color: #D5D6DE;"  src="/media/r1.png"/>
                                         <img id="icon-2" class="icon2" *ngIf="value.type==2" style=" background-color: #D5D6DE;"  src="/media/r2.png"/>
                                         <img id="icon-3" class="icon2" *ngIf="value.type==3" style=" background-color: #D5D6DE;"  src="/media/r3.png"/>
@@ -123,23 +100,24 @@
                                         <img id="icon-21" class="icon2" *ngIf="value.type==21" style=" background-color: #D5D6DE;" src="/media/r21.jpg"/>
                                         <img id="icon-22" class="icon2" *ngIf="value.type==22" style=" background-color: #D5D6DE;" src="/media/r22.jpg"/>
                                         
-                                    <strong title="{{ value.startTime}}-{{ value.endTime }}">{{ value.startTime}}-{{ value.endTime }}</strong>
                                       
-                                    <i class="material-icons option showOption icon" option-click 
+                                    <!-- <i class="material-icons option showOption icon" option-click 
                                         (mousedownEmit)="mouseEmitter(value)" (click)="optionEmitter(value)"> more_horiz
-                                    </i>
+                                    </i> -->
                                 </div>
-                               
+                                <div class="time" [class.time2]="dayView > 10" >
+                                    <strong  title="{{ value.startTime}}-{{ value.endTime }}">{{ value.startTime}}-{{ value.endTime }}</strong>
+                                </div> 
                                    
                                     <div class="details" title="{{ value.recipient}} * {{ value.activity}} * {{value.notes.toUpperCase()}}"   [class.detail-more]="selectedRecordNo==value.recordno" ngbTooltip=""
-                                        (click)="viewText(value)">
+                                        (click)="viewText(value)"  [class.time2]="dayView >= 10" >
                                         <i nz-icon *ngIf="value.status==2" [nzType]="'check-circle'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#52c41a'" class="icon"></i>
                                         <!-- <i nz-icon *ngIf="value.status==2" style="color: #52c41a; font-family:  Tahoma, Geneva, Verdana, sans-serif; font-size: 12px; font-weight: bold;"  nzType="check" nzTheme="outline"></i> -->
                                         {{ value.recipient}} * {{ value.activity}} * {{value.notes.toUpperCase()}} </div>
                                     </div>
                                  
                                
-                            <div class="data total" *ngIf="value.isLast && !value.isNone">
+                            <div class="data total" *ngIf="value.isLast && !value.isNone" >
                                 <!-- *ngIf="value.isLast && !value.isNone" -->
                               
                                 <span>Total Hours: {{ value.total | number: '1.2-2'}} </span>

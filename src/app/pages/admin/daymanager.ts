@@ -467,11 +467,18 @@ pasteSelectedRecords(event:any){
     //     }, 100);  
     //   });
 
+    let dmType=event.selected.dmType;
     
     for ( let v of this._highlighted){  
         v.date=moment(event.selected.date).format('YYYY/MM/DD');
-        v.staff = event.selected.carerCode;
-        v.carercode = event.selected.carerCode;
+        if (dmType=="1" || dmType=="2" || dmType=="11"){
+         
+            v.carercode = event.selected.carercode;
+        }else if (dmType=="10" || dmType=="12" ){
+          
+            v.recipient = event.selected.carercode;       
+         
+        }
         setTimeout(() => {
             this.pasting_records(v)                 
         }, 100);   
@@ -538,13 +545,12 @@ selected_roster(r:any):any{
         "duration": r.duration,
         "durationNumber": r.dayno,
         "recipient": r.recipient,
-        "program": r.rProgram,
+        "program": r.rprogram,
         "activity": r.activity,
         "payType": {paytype : r.shiftType },   
-        "paytype": r.shiftType,   
-             
-        "pay": {pay_Unit: r.billunit,
-                pay_Rate: '0',
+        "paytype": r.shiftType,  
+        "pay": {pay_Unit: r.costUnit,
+                pay_Rate: r.payRate,
                 quantity: r.payQty,
                 position: ''
             },                   
@@ -552,20 +558,21 @@ selected_roster(r:any):any{
                 pay_Unit: r.billunit,
                 bill_Rate: r.billRate,
                 quantity: r.billQty,
-                tax: '0'
+                tax: r.taxAmount
             },           
         "approved": '0',
-        "billto":r.billTo,
-        "debtor": r.billTo,
+        "billto":r.billto,
+        "debtor": r.billto,
         "notes": r.notes,
         "selected": false,
         "serviceType": r.type,
         "recipientCode": r.recipient,            
         "staffCode": r.carercode,  
         "serviceActivity": r.activity,
-        "serviceSetting": r['setting/Location'],
-        "analysisCode": r['recipientCategory/Region'],
+        "serviceSetting": r.servicesetting,
+        "analysisCode": r.analysisCode,
         "serviceTypePortal": "",
+        "daymask":r.daymask,       
         "recordNo": r.recordno
         
     }
@@ -599,17 +606,18 @@ find_roster(RecordNo:number):any{
         "activity": r.activity,
         "payType": r.shiftType ,  
         "paytype": r.payType,        
-        "pay": {pay_Unit: r.billunit,
-                pay_Rate: '0',
-                quantity: r.payQty,
-                position: ''
-            },                   
+        "pay": {
+            pay_Unit: r.costUnit,
+            pay_Rate: r.payRate,
+            quantity: r.payQty,
+            position: ''
+        },                   
         "bill":  {
-                pay_Unit: r.billunit,
-                bill_Rate: r.billRate,
-                quantity: r.billQty,
-                tax: '0'
-            },           
+            pay_Unit: r.billunit,
+            bill_Rate: r.billRate,
+            quantity: r.billQty,
+            tax: r.taxPercent
+        },           
         "approved": '0',
         "billto":'',
         "debtor": '',
@@ -619,8 +627,8 @@ find_roster(RecordNo:number):any{
         "recipientCode": r.recipient,            
         "staffCode": r.carercode,  
         "serviceActivity": r.activity,
-        "serviceSetting": r['setting/Location'],
-        "analysisCode": r['recipientCategory/Region'],
+        "serviceSetting": r.servicesetting,
+        "analysisCode": r.analysisCode,
         "serviceTypePortal": "",
         "recordNo": r.recordno
         
@@ -682,7 +690,7 @@ ngAfterViewInit(){
         this.optionsModal=false;
         this.detail.isVisible=true;
         this.detail.data=index;
-        this.detail.viewType ='Staff'
+       this.detail.viewType =this.viewType;
         this.detail.editRecord=false;
         this.detail.ngAfterViewInit();
         
@@ -736,6 +744,11 @@ ngAfterViewInit(){
        }
     personTypeChange(event:any){
         console.log(event);
+        let val:string=this.selectedPersonType;
+        if (val=='Staff Management' || val.indexOf('Staff')>=0)
+            this.viewType='Staff'
+        else if (val=='Recipient Management' || val.indexOf('Recipient')>=0)
+            this.viewType='Recipient'
        // this.reload.next(true);
        }
 
@@ -826,7 +839,7 @@ ngAfterViewInit(){
             "isMaster": this.master,
             "roster_Date" : record.date,
             "start_Time": record.startTime,
-            "carer_code": this.operation=='Re-Allocate' ? this.selectedCarer : record.staff,
+            "carer_code": this.operation=='Re-Allocate' ? this.selectedCarer : record.carercode,
             "recipient_code" :  record.recipient,
             "notes" : this.notes,
             'clientCodes' : record.recipient
@@ -841,14 +854,18 @@ ngAfterViewInit(){
                     //this.load_rosters();
                 return; 
             }
-            this.load_rosters();
+            
             if( Option=='Copy' ||Option=='Cut'){
                 this.showAlertForm('Add')
-               
+                if (this._highlighted[this._highlighted.length-1].recordno==record.recordno)
+                    this.load_rosters();
             }else if (Option=='Delete'){
                 this.showAlertForm('Delete')
+                if (this._highlighted[this._highlighted.length-1].recordno==record.recordno)
+                    this.load_rosters();
                 
-                
+            }else{
+                this.load_rosters();
             }
                 
     });
@@ -1239,7 +1256,12 @@ showConfirm(): void {
   }
 
   deleteRoster(){
-    this.ProcessRoster("Delete",this.selectedOption);
+    for ( let v of this._highlighted){        
+        setTimeout(() => {
+            this.ProcessRoster("Delete",v);                
+        }, 100);   
+    }
+    
   }
 handleCancel(): void{
         this.optionsModal = false;

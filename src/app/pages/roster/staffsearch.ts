@@ -6,6 +6,8 @@ import { filter, switchMap } from 'rxjs/operators';
 import format from 'date-fns/format';
 import { NzFormatEmitEvent } from 'ng-zorro-antd/core';
 import { EMPTY, forkJoin } from 'rxjs';
+import { stringify } from '@angular/compiler/src/util';
+import { forEach } from 'lodash';
 
 @Component({
     selector: 'staff-search',
@@ -25,6 +27,7 @@ import { EMPTY, forkJoin } from 'rxjs';
       allBranches:boolean = true;
       allBranchIntermediate:boolean = false;
       filteredResult: any;
+      originalList: any;
       selectedTypes:any;
       selectedbranches: any[];
       testcheck : boolean = false;
@@ -32,7 +35,8 @@ import { EMPTY, forkJoin } from 'rxjs';
       selectedCordinators: any;
       selectedCategories: any;
       selectedSkills:any;
-      
+      txtSearch:string;
+
       loading: boolean;    
       allProgarms:boolean = true;
       allprogramIntermediate:boolean = false;
@@ -222,7 +226,7 @@ import { EMPTY, forkJoin } from 'rxjs';
         
         var postdata = {
           status:this.quicksearch.value.status,
-          gender:this.quicksearch.value.gender,
+          gender:this.quicksearch.value.gender=="Any Gender"? "MALE,FEMALE" : this.quicksearch.value.gender,
           staff:this.quicksearch.value.staff,
           brokers:this.quicksearch.value.brokers,
           volunteers:this.quicksearch.value.volunteers,
@@ -230,29 +234,45 @@ import { EMPTY, forkJoin } from 'rxjs';
           searchText:this.quicksearch.value.searchText,
           
           allTeamAreas      : this.allProgarms,
-          selectedTeamAreas : (this.allProgarms == false) ? this.selectedPrograms : '',
+          selectedTeamAreas : (this.allProgarms == false) ? this.selectedPrograms : [],
           
           allcat:this.allcat,
-          selectedCategories:(this.allcat == false) ? this.selectedCategories : '',
+          selectedCategories:(this.allcat == false) ? this.selectedCategories : [],
           
           allBranches:this.allBranches,
-          selectedbranches:(this.allBranches == false) ? this.selectedbranches : '',
+          selectedbranches:(this.allBranches == false) ? this.selectedbranches : [],
           
           allCordinatore:this.allCordinatore,
-          selectedCordinators:(this.allCordinatore == false) ? this.selectedCordinators : '',
+          selectedCordinators:(this.allCordinatore == false) ? this.selectedCordinators : [],
           
           allSkills:(this.selectedSkills.length) ? false : true,
-          selectedSkills: (this.selectedSkills.length) ? this.selectedSkills : '',
+          selectedSkills: (this.selectedSkills.length) ? this.selectedSkills : [],
           criterias:this.cariteriaList
           // list of rules
         }
         
+            
+        //console.log (this.selectedSkills);
         this.timeS.getQualifiedStaff(postdata).subscribe(data => {
+          
           this.filteredResult = data;
+          this.originalList=data;
           this.loading = false;
           this.cd.detectChanges();
         });
       }
+    
+      onTextChangeEvent(event:any){
+        // console.log(this.txtSearch);
+        let value = this.txtSearch.toUpperCase();
+        if (this.originalList==null){
+          this.searchData();
+        }
+         
+         //console.log(this.serviceActivityList[0].description.includes(value));
+         this.filteredResult=this.originalList.filter(element=>element.name.includes(value));
+     }
+
       allcompetencieschecked(): void {
         console.log("added");
         this.skillsList = this.skillsList.map(item => 

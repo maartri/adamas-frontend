@@ -4,9 +4,9 @@
         <div nz-col class="gutter-row" nzSpan="6" style="background: #002060;padding: 4px;">
           <h3 class="text-center" style="color:white">Search Worker</h3>
         </div>
-        <div nz-col class="gutter-row" nzSpan="17" [formGroup]="quicksearch">
-          <nz-input-group nzSearch nzSize="large" [nzAddOnAfter]="suffixButton">
-              <input type="text" nz-input formControlName="searchText" placeholder="" />
+        <div nz-col class="gutter-row" nzSpan="17" > 
+          <nz-input-group nzSearch nzSize="large" [nzAddOnAfter]="suffixButton"> <!-- formControlName="searchText" -->
+              <input type="text" nz-input [(ngModel)]="txtSearch" (ngModelChange)="onTextChangeEvent($event)"  placeholder="input search text of staff name" />
           </nz-input-group>
           <ng-template #suffixButton>
               <button nz-button nzType="primary" nzSize="large" nzSearch (click)="searchData()">Search</button>
@@ -183,7 +183,7 @@
                     <td>{{result.alerts}}</td>
                     <td>{{result.lastKnownLocation}}</td>
                     <td>{{result.rating}}</td>
-                    <td nzRight="0px">{{result.jobWeighting}}</td>
+                    <td nzRight="0px">{{result.costFactor}}</td>
                   </tr>
                 </tbody>
               </nz-table>

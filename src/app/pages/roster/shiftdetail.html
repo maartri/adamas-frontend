@@ -139,10 +139,8 @@
                         </div>
                     </div>
                     <div class="form-group"  [class.disabled]="viewType === 'Staff' || !editRecord">
-                        <label for="">Staff/Contractor</label>
-                      
-                        <app-staff-popup [disabled]="viewType === 'Staff' || !editRecord" formControlName="staffCode"></app-staff-popup>
-                        
+                        <label for="">Staff/Contractor</label>                      
+                        <app-staff-popup [disabled]="viewType === 'Staff' || !editRecord" formControlName="staffCode"></app-staff-popup>                        
                     </div>
                 </div>
                 
@@ -226,7 +224,7 @@
                                 <div class="form-group">
                                     <label for="">Unit</label>
                                     <nz-select formControlName="pay_Unit" [nzDisabled]="!editRecord" [nzDropdownMatchSelectWidth]="false">
-                                        <nz-option *ngFor="let list of unitsArr" [nzValue]="list" [nzLabel]="list">
+                                         <nz-option *ngFor="let list of unitsArr" [nzValue]="list" [nzLabel]="list">
                                         </nz-option>
                                     </nz-select>
                                 </div>
@@ -361,7 +359,7 @@
     <div class="flexy" style="min-height:25rem;">
         
         <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading"
-        [nzData]="listAuditHistory"   [nzScroll]="listAuditHistory.length>6 ? {y: '400px'} : 'none'">
+        [nzData]="listAuditHistory"  *ngIf="listAuditHistory.length>0" [nzScroll]="listAuditHistory.length>6 ? {y: '400px'} : 'none'">
         <thead>
             <tr>
                 <th class="left">Window User</th>
@@ -393,5 +391,71 @@
     <div *nzModalFooter>
         <button nz-button nzType="default" (click)="ViewAuditHistoryModal=false" >OK</button>     
         <button nz-button nzType="default" (click)="ViewAuditHistoryModal=false">Cancel</button>
+    </div>
+</nz-modal>
+
+<nz-modal [nzStyle]="{ top: '15px' }" [nzWidth]="600" [(nzVisible)]="ViewExtraChargeModal" nzTitle="Extra Charges "   (nzOnCancel)="ViewExtraChargeModal = false" >
+    <div class="flexy" style="min-height:20rem;">
+        Extra Charges
+        <textarea id="txtNote" nz-input > </textarea>
+            
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default" >Save</button>      
+        <button nz-button nzType="default" (click)="ViewExtraChargeModal=false">Cancel</button>
+    </div>
+</nz-modal>
+
+<nz-modal [nzStyle]="{ top: '15px' }" [nzWidth]="900" [(nzVisible)]="ViewDatasetModal" nzTitle="Dataset Information "   (nzOnCancel)="ViewDatasetModal = false" >
+    <div class="flexy" style="min-height:25rem;" *ngIf="dataset" >
+        <div nz-row nzGutter="8" style=" width:900px; padding-top: 5px;">
+           
+            <div nz-row nzGutter="8">
+                    <div nz-col nzSpan="8" style=" text-align: right;">Program :</div>
+                    <div nz-col nzSpan="16" style="font-weight: bold; text-align: left;">{{dataset.program}}</div>
+                </div>
+                <div nz-row nz-row nzGutter="8" style="padding-top: 10px;">
+                    <div nz-col nzSpan="8" style="text-align: right;">Funding Source :</div>
+                    <div nz-col nzSpan="8" style=" font-weight: bold; text-align: left;">{{dataset.fundingSource}}
+                    </div>
+                    <div nz-col nzSpan="8" >
+                        <span style=" padding-left: 5px; text-align: left;">Service OutletID (For CSTDA) :</span>
+                        <span style="font-weight: bold; padding-left: 5px;">{{dataset.outletID}}</span>
+                    </div>
+                </div>
+                
+                <div nz-row nz-row nzGutter="8" style="padding-top: 10px;">
+                    <div nz-col nzSpan="8" style="text-align: right;">Traccs Activity Code :</div>
+                    <div nz-col nzSpan="16" style="font-weight: bold; text-align: left;">{{dataset.activity}}</div>
+                </div>
+                <div nz-row nz-row nzGutter="8" style="padding-top: 10px;">
+                    <div nz-col nzSpan="8" style=" text-align: right;">Dataset this Activity will report Under :</div>
+                    <div nz-col nzSpan="16" style="font-weight: bold; text-align: left;">{{dataset.dataset}}</div>
+                </div>
+                <div nz-row nz-row nzGutter="8" style="padding-top: 10px;">
+                    <div nz-col nzSpan="8" style="text-align: right;">Dataset this Activity will report Under :</div>
+                    <div nz-col nzSpan="16" style="font-weight: bold; text-align: left;">{{dataset.dataset}}</div>
+                </div>
+                <div nz-row nz-row nzGutter="8" style="padding-top: 10px;">
+                    <div nz-col nzSpan="8" style="text-align: right;">Dataset Group :</div>
+                    <div nz-col nzSpan="16" style="font-weight: bold;text-align: left;">{{dataset.datasetGroup}}</div>
+                </div>
+                <div nz-row nz-row nzGutter="8" style="padding-top: 10px;">
+                    <div nz-col nzSpan="8" style="text-align: right;">Activity Code (For Dataset Reporting Purpose) :</div>
+                    <div nz-col nzSpan="16" style="font-weight: bold; text-align: left;">{{dataset.haccType}}</div>
+                </div>
+                <div nz-row nz-row nzGutter="8" style="padding-top: 10px;">
+                    <div nz-col nzSpan="8" style="text-align: right;">Carer (For Dataset Reporting Purpose) :</div>
+                    <div nz-col nzSpan="16" style="font-weight: bold; text-align: left;">{{dataset.client}}</div>
+                </div>
+                <div nz-row nz-row nzGutter="8" style="padding-top: 25px;">
+                    <div nz-col nzSpan="8" style="text-align: right;">NDIA ID :</div>
+                    <div nz-col nzSpan="16" style="font-weight: bold; text-align: left;">{{dataset.ndiA_ID}}</div>
+                </div>
+        </div>
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default" (click)="ViewDatasetModal=false" >OK</button>      
+        <button nz-button nzType="default" (click)="ViewDatasetModal=false">Cancel</button>
     </div>
 </nz-modal>

@@ -193,6 +193,9 @@ export class TimeSheetService {
     getActivities(data: any): Observable<any> {
         return this.auth.get(`${timesheet}/getActivities`, data);
     }
+    determinePayType(data: any): Observable<any> {
+        return this.auth.get(`${timesheet}/determinePayType`, data);
+    }
     
     postsamplereport(data: any) {
         return this.auth.post(`${timesheet}/sample-report`, data);

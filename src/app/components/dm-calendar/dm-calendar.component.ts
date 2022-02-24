@@ -95,10 +95,10 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
 
   loading: boolean = false;
   HighlightColum_index:number=-1;
-  
+  load_from_server:boolean=true;
   selectedRecordNo:string;
   optionMenuDisplayed:boolean
-  dmType:string="0";
+  dmType:string = "2";
 
   constructor(
     private timeS: TimeSheetService,
@@ -222,12 +222,16 @@ HighlightColum(indx:number){
   applyFilters(PersonTypeFilter:any){
     
     if (PersonTypeFilter!=null && PersonTypeFilter!=''){
+      
       this.daymanager=[];
+      
       this.currentFilter=this.getfilterType(PersonTypeFilter);
       this.dmType=""+this.currentFilter;
       let sDate = moment(this.startDate).format('YYYY/MM/DD');
       let eDate = moment(this.startDate).add(this.dayView - 1, 'days').format('YYYY/MM/DD');
-    
+      
+      this.loading=true;
+      
       this.timeS.getStaffWorkingHours({StartDate: sDate, EndDate: eDate, dmType: this.dmType }).pipe(
         debounceTime(200))
         .subscribe(data => {
@@ -241,11 +245,8 @@ HighlightColum(indx:number){
             break;
         case 2:    
          //'Staff Management'    
-          this.dmOriginal.forEach(v=>{
-            let filtered=v.value.filter(x => v.key!=x.servicesetting &&  (x.type == 7 || x.type == 2 || x.type == 8 || x.type == 3 || x.type == 5 || x.type == 10 || x.type == 11 || x.type == 12 || x.type == 1 || x.type == 13 || (x.type == 6 && x.minorGroup != 'LEAVE') || (x.minorGroup == 'LEAVE')))
-            if (filtered.length>0 && v.key!='ADMIN' )
-              this.daymanager.push({key:v.key, value:filtered});
-          })
+         this.daymanager = this.dmOriginal.filter(x=>x.key.trim() != 'ADMIN');
+          
           break;      
         case 3:         
           //'Transport Recipients'
@@ -259,7 +260,8 @@ HighlightColum(indx:number){
         case 4:
           //'Transport Staff'
             this.dmOriginal.forEach(v=>{
-              let filtered=v.value.filter(x => (x.rosterGroup === 'TRANSPORT'))
+              
+              let filtered=v.value.filter(x => (x.rosterGroup === 'TRANSPORT' && x.carercode !='!MULTIPLE'))
               if (filtered.length>0)
                 this.daymanager.push({key:v.key, value:filtered});
             })
@@ -324,19 +326,22 @@ HighlightColum(indx:number){
           // //'Recipient Management'
           // //([ro].[Type] = 7 OR [ro].[Type] = 2 OR [ro].[Type] = 8 OR [ro].[Type] = 10 OR [ro].[Type] = 11 OR [ro].[Type] = 12 )
 
-          this.dmOriginal_Recipient.forEach(v=>{
-            let filtered=v.value.filter(x => x.recipient!='!MULTIPLE' && x.recipient!='!INTERNAL' && (x.type == 7 || x.type == 2 || x.type == 8 || x.type == 10 || x.type == 11 || x.type == 12))
-            if (filtered.length>0)
-              this.daymanager.push({key:v.key, value:filtered});
-          })
+          // this.dmOriginal_Recipient.forEach(v=>{
+          //   let filtered=v.value.filter(x => x.recipient!='!MULTIPLE' && x.recipient!='!INTERNAL' && (x.type == 7 || x.type == 2 || x.type == 8 || x.type == 10 || x.type == 11 || x.type == 12))
+          //   if (filtered.length>0)
+          //     this.daymanager.push({key:v.key, value:filtered});
+          // })
           
          
+          this.daymanager=this.dmOriginal_Recipient;
+
           break;
        
         default:
           this.daymanager=this.dmOriginal;
           break;
       }
+      this.loading=false;
     }
 }
 
@@ -383,15 +388,27 @@ getfilterType(type:String)
      
     }
     
+   
     if (changes['copyPaste'] && !changes['copyPaste'].isFirstChange()) {
       this.copyPaste = changes['copyPaste'].currentValue
       this.highLightCopyWrappers(this.copyPaste)
       return;
     }
-    if (changes['personType'].previousValue==null )
-      this.alertChange(date);
-    else if (changes['personType']!=null || changes['personType'].currentValue!=this.personType) 
-      this.applyFilters(this.personType)
+    this.dmType="2";
+    if (this.personType!=null){
+      this.currentFilter=this.getfilterType(this.personType);
+      this.dmType=""+this.currentFilter;
+      if (this.currentFilter!=2 && this.currentFilter!=12){
+        this.load_from_server=true;
+      }
+    }
+     
+     this.alertChange(date);
+     
+   // if (changes['personType'].previousValue==null )
+     // this.alertChange(date);
+   // else if (changes['personType']!=null || changes['personType'].currentValue!=this.personType) 
+      //this.applyFilters(this.personType)
   }
 
   highLightCopyWrappers(show: boolean) {
@@ -436,7 +453,7 @@ getfilterType(type:String)
   }
 
   alertChange(date: any = this.startDate) {
-      console.log(this.personType);
+      //console.log(this.personType);
       if (moment(date).isValid()) {
         this.loading = true;
         this.startDate = moment(date);
@@ -458,7 +475,9 @@ getfilterType(type:String)
   deselect(data: any = null, $event: any = null): void {
 
     if ($event && $event.button == 0) {
+        this.akonani = []
       if ($event.target.classList.contains('toCopy')) {
+        
         var date = $event.target.getAttribute('date')
         this.paste.emit({ date: format(new Date(date), 'YYYY/MM/DD') })
         return;
@@ -482,6 +501,16 @@ getfilterType(type:String)
   search(date: any, dayView: number) {
     let sDate = moment(date).format('YYYY/MM/DD');
     let eDate = moment(date).add(dayView - 1, 'days').format('YYYY/MM/DD');
+    // if (!this.load_from_server){
+
+    //   if (this.personType!=null && this.personType!=''){
+    //        this.applyFilters(this.personType);
+      
+    //   }
+    //   this.data.emit(this.daymanager);
+    //   this.loading=false;
+    //   return;
+    // } 
     this.timeS.getdaymanager({ StartDate: sDate, EndDate: eDate,dmType:this.dmType }).pipe(
       debounceTime(200))
       .subscribe(data => {
@@ -489,10 +518,10 @@ getfilterType(type:String)
         this.dmOriginal = data;
         this.data.emit(data);
         this.loading = false;
+        this.load_from_server=false;
         //console.log(data)
         this.personsList = this.daymanager.map(x => x.key )
-        if (this.personType!=null && this.personType!='')
-          this.applyFilters(this.personType)
+         
       })
     
       
@@ -502,12 +531,13 @@ getfilterType(type:String)
           this.workinghours = data;
          
         })
-        this.dmType="12";
-        this.timeS.getdaymanager({ StartDate: sDate, EndDate: eDate,dmType:this.dmType }).pipe(
-          debounceTime(200))
-          .subscribe(data => {            
-            this.dmOriginal_Recipient = data;           
-          })
+
+        // this.dmType="12";
+        // this.timeS.getdaymanager({ StartDate: sDate, EndDate: eDate,dmType:this.dmType }).pipe(
+        //   debounceTime(200))
+        //   .subscribe(data => {            
+        //     this.dmOriginal_Recipient = data;           
+        //   })
 
   }
   
@@ -719,7 +749,7 @@ getfilterType(type:String)
 
   rightClickMenuOut(event: any, value: any, staffCode:any) {
     event.preventDefault();
-    let new_position = {date:value._d,  carerCode:staffCode}
+    let new_position = {date:value._d,  carercode:staffCode, dmType:this.dmType}
     if (!this.optionMenuDisplayed)
       this.optionEmitter(new_position);
     
@@ -736,10 +766,10 @@ getfilterType(type:String)
   mousedblclick(event: any, value: any) {
     event.preventDefault();
     event.stopPropagation();
-    
+    this.deselect(null, event);
     this.HighlightColum_index=-1
-    
-    this.isClicked = true;
+    //value.isSelected=true;
+    //this.isClicked = false;
     this.coordinates = {
       clientX: event.clientX,
       clientY: event.clientY

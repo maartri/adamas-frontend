@@ -58,6 +58,7 @@ import { CdcClaimPreparationComponent } from './cdc-claim-preparation/cdc-claim-
 import { CdcClaimUpdateComponent } from './cdc-claim-update/cdc-claim-update.component';
 import { CdcProdaClaimUpdateComponent } from './cdc-proda-claim-update/cdc-proda-claim-update.component';
 import { NdiaClaimUpdateComponent } from './ndia-claim-update/ndia-claim-update.component';
+import { GlobalAlertsComponent } from './global-alerts/global-alerts.component';
 
 
 @NgModule({
@@ -103,7 +104,8 @@ import { NdiaClaimUpdateComponent } from './ndia-claim-update/ndia-claim-update.
     CdcClaimPreparationComponent,
     CdcClaimUpdateComponent,
     CdcProdaClaimUpdateComponent,
-    NdiaClaimUpdateComponent
+    NdiaClaimUpdateComponent,
+    GlobalAlertsComponent
   ],
   imports: [
     CommonModule,
@@ -156,7 +158,8 @@ import { NdiaClaimUpdateComponent } from './ndia-claim-update/ndia-claim-update.
     CdcClaimUpdateComponent,
     CdcProdaClaimUpdateComponent,
     NdiaClaimUpdateComponent,
-    ClickOutsideDirective
+    ClickOutsideDirective,
+    GlobalAlertsComponent
   ],
   providers: [
     

@@ -112,6 +112,7 @@ export class ProfileAccounting implements OnInit, OnDestroy {
     contributionActivities: Array<string> = [];
     billingCycleList: Array<string> = BILLING_CYCLE;
     billingrateList: Array<string> = BILLING_RATE_IS;
+    creditCardList: Array<string> = CREDITCARD;
 
 
     constructor(
@@ -160,8 +161,8 @@ export class ProfileAccounting implements OnInit, OnDestroy {
 
     search(user: any = this.user) {
         this.cd.reattach();
-
         this.loading = true;
+
         this.listS.getaccountingprofile(user.id).subscribe(data => {
             this.profileForm.patchValue(data);
             this.cd.markForCheck();
@@ -219,11 +220,18 @@ export class ProfileAccounting implements OnInit, OnDestroy {
             terms: null,
             title: null,
             type:null,
-            whs:null
+            whs:null,
+            uniqueID: null
         })
     }
 
     save() {
+        const profileForm = this.profileForm.value;
+
+        console.log(profileForm);
+
+        this.listS.updateaccountingprofile(profileForm, profileForm.uniqueID)
+            .subscribe(data => console.log(data));
 
     }
 

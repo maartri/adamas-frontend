@@ -1247,6 +1247,9 @@ showConfirm(): void {
     handleCancel(): void{
             this.optionsModal = false;
             this.recipientDetailsModal = false;
+
+            this.workflowVisible = false;
+            
     }
     
     toMap(){

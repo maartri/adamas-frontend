@@ -987,7 +987,7 @@ export class ListService {
         return this.auth.get(`${list}/GetCountries`)
     }
     GetHaccSex():Observable<any>{
-        return this.auth.get(`${list}/hacc-sex`)
+        return this.auth.get(`${list}/haccSex`)
     }
     
     

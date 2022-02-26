@@ -609,6 +609,10 @@ stafftypeArr: Array<any> = constants.types;
     mta_time_overstayed: string;
     mta_time_early: string;
 
+    Viewfilter_Branches: string;
+    Viewfilter_Programs: string;
+    Viewfilter_Coordinater: string;
+
    CSV_String: any;
 
     ModalName: string;
@@ -959,6 +963,21 @@ stafftypeArr: Array<any> = constants.types;
         
 
 
+    
+       
+        forkJoin([ 
+            this.ReportS.GetBranchFilters(this.tocken.user.toString()) ,                                    
+            this.ReportS.GetProgramFilters(this.tocken.user.toString()),
+            this.ReportS.GetCoordinaterFilters(this.tocken.user.toString()),
+            
+        ]).subscribe(data => { 
+            this.Viewfilter_Branches= data[0];
+            this.Viewfilter_Programs= data[1];
+            this.Viewfilter_Coordinater= data[2];   
+                                     
+        });
+       
+    
     }//ngOninit  
 
     /*   hello(data: any){
@@ -996,12 +1015,14 @@ stafftypeArr: Array<any> = constants.types;
             listType: 'PROGRAMS',
             includeInactive:false
         }).subscribe(x => this.programsArr = x);
-        
+    /*    
         this.listS.getreportcriterialist({
             listType: 'BRANCHES',
             includeInactive: false
         }).subscribe(x => this.branchesArr = x);
-
+    */
+        this.listS.getlisttimeattendancefilter("BRANCHES").subscribe(x => this.branchesArr = x);
+        
         this.listS.getcasenotecategory(0).subscribe(x => this.casenotesArr = x);
         this.listS.getcasenotecategory(1).subscribe(x => this.OPnotesArr = x);
         this.listS.Getrptincidents().subscribe(x => this.incidentArr = x);
@@ -2848,6 +2869,7 @@ stafftypeArr: Array<any> = constants.types;
         if (this.inputForm.value.printaslabel == true){fQuery = fQuery + "  join NamesAndAddresses NA on NA.PersonID = R.UniqueID   "} 
         fQuery = fQuery + "WHERE R.[AccountNo] > '!MULTIPLE'   AND (R.DischargeDate is NULL)"
         
+       
         
 
         if (branch != "") {
@@ -2855,10 +2877,24 @@ stafftypeArr: Array<any> = constants.types;
             if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
 
         }
+        else { 
+           if( this.Viewfilter_Branches != ""){
+            var re = /Recipients/gi;                        
+            this.s_BranchSQL = this.Viewfilter_Branches.toString().replace(re, "R");
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+            }
+
+        }
         if (manager != "") {
             this.s_CoordinatorSQL = "R.[RECIPIENT_COOrdinator] in ('" + manager.join("','") + "')";
             if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
 
+        }else{
+        if( this.Viewfilter_Coordinater != ""){  
+            var re = /Recipients/gi;                        
+            this.s_CoordinatorSQL = this.Viewfilter_Coordinater.toString().replace(re, "R");                                             
+            if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+            }
         }
         if (region != "") {
             this.s_CategorySQL = "R.[AgencyDefinedGroup] in ('" + region.join("','") + "')";
@@ -2867,6 +2903,11 @@ stafftypeArr: Array<any> = constants.types;
         if (program != "") {
             this.s_ProgramSQL = " (RecipientPrograms.[Program] in ('" + program.join("','") + "'))";
             if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+        }else{
+        if( this.Viewfilter_Programs != ""){                                   
+            this.s_ProgramSQL = this.Viewfilter_Programs.toString().substring(87,this.Viewfilter_Programs.toString().length);            
+            if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+            }
         }
 
 
@@ -2913,7 +2954,7 @@ stafftypeArr: Array<any> = constants.types;
             var Title = "RECIPIENT REFERRAL LISTING"
 
            
-            //    console.log(this.tocken.user)
+                //console.log(fQuery)
                 const data = {
         
                     "template": { "_id": this.reportid },                                
@@ -2946,6 +2987,7 @@ stafftypeArr: Array<any> = constants.types;
                     });
 
                 }else{
+                    this.drawerVisible = true; 
                 this.printS.printControl(data).subscribe((blob: any) => {
                    
                     this.drawerVisible = true;                   
@@ -3000,7 +3042,7 @@ stafftypeArr: Array<any> = constants.types;
                     }); */                                                             
                  //   this.drawerVisible = true;                  
         }        
-        //console.log(fQuery)
+       
         //  console.log(this.inputForm.value.printaslabel)                    
         }
     Waiting_list(branch, manager, region, program) {
@@ -20880,6 +20922,7 @@ CompetencyRegister(branch, Staff,stfgroup,competency) {
                     });
 
                 }else{
+                    this.drawerVisible = true;
                 this.printS.printControl(data).subscribe((blob: any) => {
                     this.pdfTitle = Title + ".pdf"
                     this.drawerVisible = true;                   

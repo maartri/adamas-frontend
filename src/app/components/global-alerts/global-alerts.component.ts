@@ -22,7 +22,7 @@ export class GlobalAlertsComponent implements OnInit {
       //   'This is the content of the notification. This is the content of the notification. This is the content of the notification.'
       // );
 
-        this.notification.template(this.template)
+        // this.notification.template(this.template)
     })
   }
 

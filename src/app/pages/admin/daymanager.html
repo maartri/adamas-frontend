@@ -1,6 +1,5 @@
 <div nz-row>
-    <div style="padding-left:8px" >
-        
+    <div style="padding-left:8px" >        
         <div nz-row class="dm-input">
             <div nz-col nzSpan="5" style="margin-left: 5px; font-size: 12px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
                 <label for="" > Day Manager Filter</label>
@@ -17,18 +16,29 @@
                 <nz-select [(ngModel)]="dayView">
                     <nz-option *ngFor="let no of dayViewArr" [nzValue]="no" [nzLabel]="no"></nz-option>
                 </nz-select>
-            </div>
-            
+            </div>     
+            <div nz-col nzSpan="5">
+                <button nz-button style="margin-top:1rem" (click)="workflowVisible = true" nzType="primary">Workflow</button>
+            </div>          
         </div>
-    
-       
     </div>
     <div>
         <dm-calendar [startDate]="date" [dayView]="dayView" [reload]="reload" [personType]="selectedPersonType"  [copyPaste]="toBePasted?.length > 0"
             (showDetail)="showDetail($event)" (showOptions)="showOptions($event)" (highlighted)="highlighted($event)"
-            (data)="data($event)" (paste)="pasteSelectedRecords($event)"></dm-calendar>
+            (data)="data($event)" (paste)="pasteSelectedRecords($event)">
+        </dm-calendar>
     </div>
 </div>
+
+
+
+<nz-modal [(nzVisible)]="workflowVisible" nzTitle="Worflow Modal" (nzOnCancel)="handleCancel()" nzWidth="1120">
+   <div nz-row>
+    <app-workflows></app-workflows>
+   </div>
+</nz-modal>
+
+
 <recipientexternal [isVisible]="recipientexternal" [AccountNo]="selected_data" (recipientexternalDone)="cancelRecipientExternal($event)" *ngIf="recipientexternal"></recipientexternal>
      
 <staffexternal [isVisible]="staffexternal" [AccountNo]="selected_data" (staffexternalDone)="cancelStaffExternal($event)" *ngIf="staffexternal"></staffexternal>

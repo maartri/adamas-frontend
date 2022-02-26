@@ -17,6 +17,10 @@ export class ListService {
         public auth: AuthService
     ) { }
 
+    updateaccountingprofile(data: any, id: string):Observable<any>{
+        return this.auth.put(`${list}/accounting-profile/${id}`, data);
+    }
+
     getcontributionactivity(): Observable<any>{
         return this.auth.get(`${list}/contribution-activity`);
     }

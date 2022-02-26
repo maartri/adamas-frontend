@@ -6,7 +6,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { TimeSheetService, GlobalService, view, ClientService, ShareService , StaffService, ListService, UploadService, months, days, gender, types, titles, caldStatuses, roles, SettingsService } from '@services/index';
 import * as _ from 'lodash';
 import { mergeMap, takeUntil, concatMap, switchMap, map, debounceTime } from 'rxjs/operators';
-import { forkJoin, Observable, EMPTY } from 'rxjs';
+import { forkJoin, Observable, EMPTY, Subscription } from 'rxjs';
 
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { RemoveFirstLast } from '@pipes/pipes';
@@ -57,6 +57,8 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   
   private onTouchedCallback: () => void = noop;
   private onChangeCallback: (_: any) => void = noop;
+
+  typeSub$: Subscription;
 
 
   coordinator$: Observable<any>;
@@ -188,6 +190,8 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     this.buildForms();
     this.POPULATE_DATE_DROPDOWNS();
     this.POPULATE_OTHER_DROPDOWNS();
+
+    this.POPULATE_CONTACTS();
   }
 
   ngOnDestroy() {
@@ -211,7 +215,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     this.contactForm = this.formBuilder.group({
       id: [''],
       type: ['', [Validators.required]],
-      details: [null, [Validators.required]],
+      details: [''],
       personId: [''],
       primaryPhone: [false]
     });
@@ -269,7 +273,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
     this.resetEmailCoordinator();
 
-    this.contactForm.get('type').valueChanges.pipe(debounceTime(100)).subscribe(x => this.contactForm.patchValue({ details: null }))
+    // this.contactForm.get('type').valueChanges.pipe(debounceTime(100)).subscribe(x => this.contactForm.patchValue({ details: null }))
 
   }
 
@@ -627,8 +631,11 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
   }
 
   handleCancel(): void {
+    // this.typeSub$.unsubscribe();
     
     this.addressForm.reset();
+    this.contactForm.reset();
+    
     this.editModalOpen = false;
     this.profileStaffModal = false;
     this.profileStaffOptionsModal = false;
@@ -638,6 +645,8 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
     this.loadPhoto = false;
     this.addCaseStaffModal = false;
     this.src = '';
+
+    
   }
 
   formatDate(data: any): string {
@@ -871,11 +880,10 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
 
   edit(): void {
+    
 
     if (this.window == 1) {
       this.loading = true;
-      // console.log(this.addressForm.value);
-      // return;
       this.clientS.updateuseraddress(this.formatAddress(this.addressForm))
         .subscribe(data => {
           if (data.success) {
@@ -885,8 +893,10 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
         }, (err) => {
 
         }, () => {
+          // this.typeSub$.unsubscribe();
           this.loading = false;
           this.editModalOpen = false;
+          this.handleCancel();
         })
     }
 
@@ -899,8 +909,9 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
       }, (err) => {
 
       }, () => {
+        // this.typeSub$.unsubscribe();
         this.loading = false;
-        this.editModalOpen = false;
+        this.handleCancel();
       });
     }
 
@@ -1002,6 +1013,8 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
   editContactOpen(contact: any): void {
 
+    console.log(contact);
+
     this.editModalOpen = true;
     this.window = 2;
 
@@ -1014,7 +1027,14 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
       primaryPhone: contact.primaryPhone
     });
 
-    this.POPULATE_CONTACTS();
+    this.detectChanges();
+
+    console.log(this.contactForm.value);
+
+   
+      this.typeSub$ = this.contactForm.get('type').valueChanges
+                .subscribe(x => this.contactForm.patchValue({ details: null }));
+
   }
 
   POPULATE_ADDRESS(): void {
@@ -1153,8 +1173,7 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
       )
       .subscribe(() => {
         
-      });
-    
+      });    
   }
 
   saveTab() {
@@ -1259,6 +1278,10 @@ export class ProfileComponent implements OnInit, OnDestroy, ControlValueAccessor
 
         this.handleCancel();
       });
+  }
+  
+  isEmail(data: any){
+    return data == "EMAIL" || data == "EMAIL-SMS"
   }
 
   isMobile(data: any){

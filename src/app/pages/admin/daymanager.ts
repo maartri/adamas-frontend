@@ -221,6 +221,8 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
     ViewAdditionalModal:boolean;
     notes:string="";
 
+    workflowVisible: boolean = false;
+
     constructor(
         private globalS: GlobalService,
         private clientS: ClientService,
@@ -1238,13 +1240,17 @@ showConfirm(): void {
     });
   }
 
-  deleteRoster(){
-    this.ProcessRoster("Delete",this.selectedOption);
-  }
-handleCancel(): void{
-        this.optionsModal = false;
-        this.recipientDetailsModal = false;
-}
+    deleteRoster(){
+        this.ProcessRoster("Delete",this.selectedOption);
+    }
+
+    handleCancel(): void{
+            this.optionsModal = false;
+            this.recipientDetailsModal = false;
+
+            this.workflowVisible = false;
+            
+    }
     
     toMap(){
 

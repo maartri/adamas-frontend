@@ -56,7 +56,7 @@ export class DSS implements OnInit, OnDestroy {
         recordNumber: '',
         personID: '',
         branch: null,
-        notes: ''
+        notes: '',
     }
     constructor(
         private timeS: TimeSheetService,
@@ -105,7 +105,9 @@ export class DSS implements OnInit, OnDestroy {
             recordNumber: '',
             personID: '',
             branch: [null, [Validators.required]],
-            notes: ''
+            notes: '',
+            title:'',
+            flag:false,
         });
     }
 

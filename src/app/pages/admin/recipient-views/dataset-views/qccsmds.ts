@@ -59,6 +59,21 @@ export class DatasetQccsmda implements OnInit, OnDestroy {
         branch: null,
         notes: ''
     }
+
+    carerRecipientList: any;
+    carerRelationshipList: any;
+    carerAvailabilityList: any;
+    carerResidencyList: any;
+    genderlist: any;
+    countries: any;
+    languages: any;
+    indigniousStatus: any;
+    livingArrangemnts: any;
+    accomodationSetting: any;
+    pensionAll: any;
+    dvaCardStatus: any;
+    referalSource: any;
+
     constructor(
         private timeS: TimeSheetService,
         private sharedS: ShareService,
@@ -90,10 +105,14 @@ export class DatasetQccsmda implements OnInit, OnDestroy {
         ngOnInit(): void {
             this.user = this.sharedS.getPicked();
             this.search(this.user);
+            this.getGeneralDataLists();
             this.buildForm();
         }   
         tabFindIndexScope: number = 0;
         view(index: number){
+            if(index == 2){
+                this.getCarerDataLists();
+            }
             this.tabFindIndexScope = index;
         }
         ngOnDestroy(): void {
@@ -129,7 +148,44 @@ export class DatasetQccsmda implements OnInit, OnDestroy {
             this.listS.getintakebranches(user.id)
             .subscribe(data => this.branches = data)
         }
-        
+        getGeneralDataLists(){
+            return forkJoin([
+                this.listS.GetHaccSex(),
+                this.listS.GetCountries(),
+                this.listS.GetLanguages(),
+                this.listS.GetIndigniousStatus(),
+                this.listS.GetLivingArrangments(),
+                this.listS.GetAccomodationSetting(),
+                this.listS.getpensionall(),
+                this.listS.GetHACCVaCardStatus(),
+                this.listS.GetHACCReferralSource(),
+
+            ]).subscribe(x => {
+                this.genderlist             = x[0];
+                this.countries              = x[1];
+                this.languages              = x[2];
+                this.indigniousStatus       = x[3];
+                this.livingArrangemnts      = x[4];
+                this.accomodationSetting    = x[5];
+                this.pensionAll             = x[6];
+                this.dvaCardStatus          = x[7];
+                this.referalSource          = x[8];
+            });
+
+        }
+        getCarerDataLists(){
+            return forkJoin([
+                this.listS.GetCarerDataRecipientcarer(),
+                this.listS.GetCarerDataRelationship(),
+                this.listS.GetCarerDataAvailability(),
+                this.listS.GetCarerDataResidency(),
+            ]).subscribe(x => {
+                this.carerRecipientList     = x[0];
+                this.carerRelationshipList  = x[1];
+                this.carerAvailabilityList  = x[2];
+                this.carerResidencyList     = x[3];
+            });
+        }
         save() {
             
             if (!this.globalS.IsFormValid(this.inputForm))

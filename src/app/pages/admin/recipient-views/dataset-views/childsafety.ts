@@ -36,7 +36,9 @@ export class ChildSafety implements OnInit, OnDestroy {
         recordNumber: '',
         personID: '',
         branch: null,
-        notes: ''
+        notes: '',
+        title:'',
+        flag:false,
     }
     constructor(
         private timeS: TimeSheetService,

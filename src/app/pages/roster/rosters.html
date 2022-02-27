@@ -193,13 +193,21 @@
     </nz-modal>
 
     <!-- Search staff model -->
-    
+   
+    <staff-search [findModalOpen]="openSearchStaffModal" [bookingData]="bookingData"  (searchDone)="onStaffSearch($event)"></staff-search>
+
     <nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="searchStaffModal" nzTitle="Select Staff from below Staff List" (nzOnCancel)="searchStaffModal = false" >
         <div class="flexy" style="min-height:10rem">
             <div nz-row>
                 <div nz-col nzSpan="6" style="margin-top: 10px; margin-bottom: 20px; width:400px">
-                    <app-search-list [reload]="reloadVal" [view]="1" [(ngModel)]="sample" (ngModelChange)="listChange($event)"></app-search-list>
+                    <!-- <app-search-list [reload]="reloadVal" [view]="1" [(ngModel)]="sample" (ngModelChange)="listChange($event)"></app-search-list> -->
+                    <div>
+                        <nz-input-group nzAddOnAfterIcon="search" (click)="openStaffModal()" >
+                            <input placeholder="Search Staff" type="text" nz-input [(ngModel)]="selectedCarer" [disabled]="true"/>
+                          </nz-input-group>               
+                    </div>
                 </div>
+                
                 <div>
                     <label *ngIf="selectedCarer" >Re-Allocate Staff : </label>
                     <label  id="lblStaff" >
@@ -374,7 +382,12 @@
         <div class="flexy" style="min-height:10rem">
             <div nz-row>
                 <div nz-col nzSpan="6"  style="margin-top: 10px; margin-bottom: 20px; width:400px">
-                    <app-search-list [reload]="reloadVal" [view]="1" [(ngModel)]="sample"  (ngDbClick)="listChange($event)" (ngModelChange)="listChange($event)"></app-search-list>
+                    <!-- <app-search-list [reload]="reloadVal" [view]="1" [(ngModel)]="sample"  (ngDbClick)="listChange($event)" (ngModelChange)="listChange($event)"></app-search-list> -->
+                    <div>
+                        <nz-input-group nzAddOnAfterIcon="search" (click)="openStaffModal()" >
+                            <input placeholder="Search Staff" type="text" nz-input [(ngModel)]="selectedCarer" [disabled]="true"/>
+                          </nz-input-group>               
+                    </div>
                 </div>
                 
             </div>

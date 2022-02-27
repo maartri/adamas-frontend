@@ -15,6 +15,7 @@ import { format, formatDistance, formatRelative, nextDay, subDays } from 'date-f
 import { forEach } from 'lodash';
 import * as moment from 'moment';
 
+
 class Address {
     postcode: string;
     address: string;
@@ -143,8 +144,13 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
     //reload: boolean = false;
     reload:Subject<boolean> = new Subject();
     loadingRoster :Subject<any> = new Subject() 
-
+    applyFilter: Subject<any>= new Subject()
+    CustomFilters: Array<any> = [];
     toBePasted: Array<any>=[];
+    lstStartWith: Array<any>=[];
+    addInExisting:boolean;
+    nzFilterPlaceHolder:string="Input to Search";
+    showSimpleFilterInput:boolean;
     @ViewChild(ShiftDetail) detail!:ShiftDetail;
    // @ViewChild(DMRoster) dmroster:DMRoster;
     optionsModal: boolean = false;
@@ -159,6 +165,18 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
     resourceType:string;
     txtSearch:string;
     openSearchStaffModal:boolean;
+    openSearchRecipientModal:boolean;
+
+    booking:{
+        recipientCode: 'TT',
+        userName:'sysmgr',
+        date:'2022/01/01',
+        startTime:'07:00',
+        endTime:'17:00',
+        endLimit:'20:00'
+      };
+    bookingData = new Subject<any>();
+    bookingDataRecipient = new Subject<any>();
     ViewChangeDayTimeModal:boolean;
     AddRosterModel:boolean;
     ViewServiceNoteModal:boolean    
@@ -172,7 +190,12 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
     ViewAllocateResourceQtyModal:boolean;
     ResourceValue:number;
     InputMode:string='decimal';
+    
     size: any = 'large';
+    showMenu:boolean;
+    LimitTo:string;
+    startWith:string;
+    
 
     parserPercent = (value: string) => value.replace(' %', '');
     parserDollar = (value: string) => value.replace('$ ', '');
@@ -191,6 +214,7 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
     record_being_pasted:any;
     AllocateStaffModal:boolean;
     selectedCarer:string;
+    selectedRecipient:string;
     NudgeValue=0;
     NudgeStatus:string='Up';
     ViewNudgeModal:boolean;
@@ -222,7 +246,16 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
     staffexternal:boolean;
     ViewAdditionalModal:boolean;
     notes:string="";
-
+    HideW1W2:boolean;
+    IncludeDuration:boolean;
+    AutoPrviewNote:boolean;
+    CustomFilter:boolean;
+    ViewExistingFilter:boolean;
+    SortOrder:string;
+    lstGroup:Array<any>=[];
+    viewQuickFilter:boolean;
+    OpenSearchOfStaff:boolean;
+    OpenSearchOfRecipient:boolean;
     constructor(
         private globalS: GlobalService,
         private clientS: ClientService,
@@ -454,6 +487,143 @@ data(event:any){
 }
 pasted(event:any){
 }
+ApplyCustomFilter(){
+    this.applyFilter.next(this.CustomFilters);
+}
+
+AddCustomFilter(){
+    if (this.addInExisting){
+        let fltr= this.CustomFilters.find(a => a.key == this.LimitTo && a.value==this.startWith)        
+        if (!fltr)
+            this.CustomFilters.push({key:this.LimitTo, value:this.startWith});
+    }else{
+        this.CustomFilters=[];
+        this.CustomFilters.push({key:this.LimitTo, value:this.startWith});
+        return;
+    } 
+   
+}
+CloseCustomFilter(){
+    this.CustomFilter=false;
+    
+    
+}
+ViewCustomFilter(){
+    this.ViewExistingFilter=true;
+    
+}
+ViewQuickFilterDisplay(){
+    this.viewQuickFilter=true;
+}
+
+removeCustomFilter(){
+    this.CustomFilter=false;   
+    this.CustomFilters=[];
+    this.applyFilter.next(this.CustomFilters)
+}
+showCustomFilter(){
+    this.SortOrder=this.selectedPersonType;
+    this.CustomFilter=!this.CustomFilter;
+    this.lstGroup=[];
+    this.lstGroup.push('STAFF');
+    this.lstGroup.push('STAFF JOB CATEGORY');
+    this.lstGroup.push('STAFF TEAM');
+    this.lstGroup.push('RECIPIENT');
+    this.lstGroup.push('RECIPIENT CATEGORY/REGION');
+    this.lstGroup.push('ACTIVITY');
+    this.lstGroup.push('PROGRAM');
+    this.lstGroup.push('COORDINATOR');
+    this.lstGroup.push('SERVICE ORDER/GRID NO');
+    switch(this.SortOrder.toUpperCase()){
+        case  'RECIPIENT MANAGEMENT':
+            this.lstGroup.push('FACILITY');
+            this.lstGroup.push('VEHICLE');
+            this.lstGroup.push('ACTIVITY GROUP');
+            break;
+        case  'RECIPIENT MANAGEMENT' :
+            this.lstGroup.push('FACILITY');
+            this.lstGroup.push('VEHICLE');
+            this.lstGroup.push('ACTIVITY GROUP');
+            break;
+        case "FACILITIES - RECIPIENTS":
+             this.lstGroup.push('FACILITY');
+             break;
+        case  "FACILITIES - STAFF":
+            this.lstGroup.push('FACILITY');
+            break;
+        case "TRANSPORT - RECIPIENTS":
+             "TRANSPORT - STAFF"
+             this.lstGroup.push('VEHICLE');
+             break;
+        case "TRANSPORT - STAFF":
+            this.lstGroup.push('VEHICLE');
+            break;
+        case "GROUPS - RECIPIENTS":            
+             this.lstGroup.push('ACTIVITY GROUP');
+             break;
+        case  "GROUPS - STAFF":
+            this.lstGroup.push('ACTIVITY GROUP');
+            break;  
+   
+    }
+}
+
+FillLimitTo(){
+    let sql;
+    this.lstStartWith=[];
+    this.startWith='';
+    this.showSimpleFilterInput=false;
+    switch (this.LimitTo.toUpperCase())
+    {
+        
+            case "STAFF":
+                this.lstStartWith=[];
+                this.nzFilterPlaceHolder="TYPE FIRST PART OF STAFF CODE";
+                this.showSimpleFilterInput=true;
+                return;
+                
+            case "RECIPIENT":
+                this.nzFilterPlaceHolder="TYPE FIRST PART OF RECIP CODE";
+                this.showSimpleFilterInput=true;
+                return;
+                
+            case "STAFF JOB CATEGORY":
+                sql=`SELECT UPPER([Description]) as Title FROM DataDomains WHERE [Domain] = 'STAFFGROUP' ORDER BY Description`;
+                break;           
+            case "STAFF TEAM":
+                sql=`SELECT UPPER([Description]) as Title FROM DataDomains WHERE [Domain] = 'STAFFTEAM' ORDER BY Description`;
+                break;                       
+            case "RECIPIENT CATEGORY/REGION":
+                sql=`SELECT UPPER([Description]) as Title FROM DataDomains WHERE [Domain] = 'GROUPAGENCY' ORDER BY Description`;
+                break;            
+            case "ACTIVITY":
+                sql=`SELECT Title FROM ItemTypes WHERE   ProcessClassification = 'OUTPUT'`;
+                break;
+            case "ACTIVITY GROUP":
+                sql=`SELECT UPPER([Description]) as Title FROM DataDomains WHERE [Domain] = 'ACTIVITYGROUPS' ORDER BY Description`;
+                break;
+            case "FACILITY":
+                sql=`SELECT UPPER([Name]) as Title FROM CSTDAOutlets ORDER BY [Name]`;
+                break;    
+            case "PROGRAM":
+                sql=`SELECT UPPER([Name]) as Title FROM HumanResourceTypes WHERE [Group] = 'PROGRAMS'`;
+                break;  
+            case "COORDINATOR":
+                sql=`SELECT UPPER([Description]) as Title FROM DataDomains WHERE [Domain] = 'CASE MANAGERS' ORDER BY Description`;
+                break;  
+            case "SERVICE ORDER/GRID NO":
+                this.nzFilterPlaceHolder="TYPE IN GRID OR ORDER";
+                this.showSimpleFilterInput=true;
+               
+                return;
+                  
+    }
+
+    this.listS.getlist(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        this.lstStartWith=data;
+    });
+    
+}
 pasteSelectedRecords(event:any){
     console.log(event);
     if (this.toBePasted==null || this.toBePasted==null)    return;     
@@ -493,11 +663,74 @@ onTextChangeEvent(event:any){
     //console.log(this.serviceActivityList[0].description.includes(value));
     this.serviceActivityList=this.originalList.filter(element=>element.description.includes(value));
 }
-openStaffModal(){
-    this.openSearchStaffModal=true;
+
+openStaffModal(OpenSearch:boolean=false){
+
+    if (OpenSearch)
+     this.OpenSearchOfStaff=OpenSearch;
+    
+     this.openSearchStaffModal=true;
+    
+    if (this.selectedOption!=null) //&& !OpenSearch
+        this.booking = {
+                     recipientCode: this.selectedOption.recipient,
+                     userName:this.token.user,
+                     date:this.selectedOption.date,
+                     startTime:this.selectedOption.startTime,
+                     endTime:this.selectedOption.endTime,
+                     endLimit:'20:00'
+                    };
+                
+    this.bookingData.next(this.booking) ;               
 }
 onStaffSearch(data:any){
-    this.selectedCarer=data.accountno;
+    this.openSearchStaffModal=false;
+    this.selectedStaff=data.accountno;
+    if (this.OpenSearchOfStaff){
+        this.LimitTo='STAFF';
+        this.startWith=data.accountno;
+        this.AddCustomFilter();
+        this.ApplyCustomFilter();
+    }
+}
+
+openRecipientModal(OpenSearch:boolean=false){
+
+    if (OpenSearch)
+     this.OpenSearchOfRecipient=OpenSearch;
+    
+     this.openSearchRecipientModal=true;
+    
+    if (this.selectedOption!=null ) //&& !OpenSearch
+        this.booking = {
+                     recipientCode: this.selectedOption.recipient,
+                     userName:this.token.user,
+                     date:this.selectedOption.date,
+                     startTime:this.selectedOption.startTime,
+                     endTime:this.selectedOption.endTime,
+                     endLimit:'20:00'
+                    };
+                
+    this.bookingDataRecipient.next(this.booking) ;               
+}
+onRecipientSearch(data:any){
+    this.openSearchRecipientModal=false;
+    this.selectedRecipient=data.accountNo;
+    if (this.OpenSearchOfRecipient){
+        this.LimitTo='RECIPIENT';
+        this.startWith=data.accountNo;
+        this.AddCustomFilter();
+        this.ApplyCustomFilter();
+    }
+}
+openMenu(){
+    this.showMenu=true;
+}
+menuAction(){
+    this.showMenu=false;
+}
+change(event:any){
+
 }
 loadNotes(){
     this.Person.id=this.selectedOption.recordno;
@@ -756,6 +989,7 @@ ngAfterViewInit(){
 
     highlighted(data: any) {
         this._highlighted = data;
+        this.selectedOption=data[0];
     }
 
     shiftChanged(value:any){

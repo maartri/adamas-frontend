@@ -74,6 +74,7 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
   @Input() startDate: any
   @Input() dayView: number
   @Input() reload:Subject<boolean>= new Subject()
+  @Input() applyFilter: Subject<any>= new Subject()
   @Input() copyPaste: boolean = false
   @Input() personType: string;
 
@@ -82,16 +83,22 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
   @Output() highlighted = new EventEmitter();
   @Output() paste = new EventEmitter();
   @Output() data = new EventEmitter();
-
+  
+  
+    
+  
   days: any[] = [];
   daymanager: Array<any> = [];
   dmOriginal: Array<any> = [];
   dmOriginal_Recipient: Array<any> = [];
-  
+ 
+
   workinghours: Array<any> = [];
   personsList: Array<any> = [];
   personValue:any;
   currentFilter:number;
+
+  Filters: Array<any> = [];
 
   loading: boolean = false;
   HighlightColum_index:number=-1;
@@ -141,6 +148,11 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
       this.alertChange();
      // this.reload.next(false);
     });
+    this.applyFilter.subscribe(data=>{
+      this.Filters=data;
+      this.applyCustomFilters(this.Filters);
+      //this.alertChange();
+    });
     makeResizableDiv(panel);
   }
 
@@ -163,6 +175,7 @@ HighlightColum(indx:number){
     value.isSelected=true;
     this.akonani=[];
     this.akonani.push(value);
+   
     console.log(value)
   }
   ngAfterViewInit() {
@@ -213,136 +226,253 @@ HighlightColum(indx:number){
     if (!val)
       this.daymanager= this.dmOriginal
   }
+ 
   applyStaffFilters(StaffFilter:any){
     
     if (StaffFilter!=null && StaffFilter!=''){
       this.daymanager= this.dmOriginal.filter(x => x.key === StaffFilter)
      }
   }
-  applyFilters(PersonTypeFilter:any){
+  applyCustomFilters(Filters:any){
     
-    if (PersonTypeFilter!=null && PersonTypeFilter!=''){
+    if (Filters==null || Filters.length<=0 || Filters==''){
+      this.daymanager=this.dmOriginal;
+      this.data.emit(this.daymanager) 
+      this.loading=false;
+    
+      return;
+    } 
       
       this.daymanager=[];
-      
-      this.currentFilter=this.getfilterType(PersonTypeFilter);
-      this.dmType=""+this.currentFilter;
-      let sDate = moment(this.startDate).format('YYYY/MM/DD');
-      let eDate = moment(this.startDate).add(this.dayView - 1, 'days').format('YYYY/MM/DD');
+     
       
       this.loading=true;
       
-      this.timeS.getStaffWorkingHours({StartDate: sDate, EndDate: eDate, dmType: this.dmType }).pipe(
-        debounceTime(200))
-        .subscribe(data => {
-          this.workinghours = data;         
-        });
-
-       switch(this.currentFilter){
-        case 1: 
-            //'Unallocated Bookings'
-            this.daymanager = this.dmOriginal.filter(x=>x.key.trim() === 'BOOKED');
-            break;
-        case 2:    
-         //'Staff Management'    
-         this.daymanager = this.dmOriginal.filter(x=>x.key.trim() != 'ADMIN');
-          
-          break;      
-        case 3:         
-          //'Transport Recipients'
-            this.dmOriginal_Recipient.forEach(v=>{
-            let filtered=v.value.filter(x => (x.rosterGroup === 'TRANSPORT'))
+      let zees='zzzzzzzzzzzz';
+      
+      Filters.forEach(element => {
+        if (element.key=='STAFF')  {
+          this.dmOriginal.forEach(v=>{
+            let filtered=v.value.filter(x => x.carercode.includes(element.value) )
             if (filtered.length>0)
                 this.daymanager.push({key:v.key, value:filtered});
-            })        
-            
-            break;
-        case 4:
-          //'Transport Staff'
+            }) 
+        }
+        if (element.key=='STAFF JOB CATEGORY')  {
+          this.dmOriginal.forEach(v=>{
+            let filtered=v.value.filter(x => (x.staffcategory >= element.value && x.staffcategory <= (element.value +zees)))
+            if (filtered.length>0)
+                this.daymanager.push({key:v.key, value:filtered});
+            }) 
+        }
+        if (element.key=='STAFF TEAM')  {
+          this.dmOriginal.forEach(v=>{
+            let filtered=v.value.filter(x => (x.team >= element.value && x.team <= (element.value + zees)))
+            if (filtered.length>0)
+                this.daymanager.push({key:v.key, value:filtered});
+            }) 
+        }       
+        
+          if (element.key=='RECIPIENT')  {
             this.dmOriginal.forEach(v=>{
-              
-              let filtered=v.value.filter(x => (x.rosterGroup === 'TRANSPORT' && x.carercode !='!MULTIPLE'))
+              let filtered=v.value.filter(x => (x.recipient >= x.recipient.includes(element.value) ))
               if (filtered.length>0)
-                this.daymanager.push({key:v.key, value:filtered});
-            })
+                  this.daymanager.push({key:v.key, value:filtered});
+              }) 
+          }
+          if (element.key=='RECIPIENT CATEGORY/REGION')  {
+            this.dmOriginal.forEach(v=>{
+              let filtered=v.value.filter(x => (x.recipient_Category >= element.value && x.recipient_Category <= (element.value+zees)))
+              if (filtered.length>0)
+                  this.daymanager.push({key:v.key, value:filtered});
+              }) 
+          }
+          if (element.key=='ACTIVITY')  {
+            this.dmOriginal.forEach(v=>{
+              let filtered=v.value.filter(x => (x.activity >= element.value && x.activity <= (element.value+zees)))
+              if (filtered.length>0)
+                  this.daymanager.push({key:v.key, value:filtered});
+              }) 
+          }
+          if (element.key=='ACTIVITY GROUP')  {
+            this.dmOriginal.forEach(v=>{
+              let filtered=v.value.filter(x => (x.rosterGroup >= element.value && x.rosterGroup <= (element.value+zees)))
+              if (filtered.length>0)
+                  this.daymanager.push({key:v.key, value:filtered});
+              }) 
+          }
           
-           break;
-        case 5:
-            //'Transport Daily Planner'
-
-          break;
-        case 6:
-          //'Facilities Recipients'
-          this.dmOriginal_Recipient.forEach(v=>{
-            let filtered=v.value.filter(x => (x.rosterGroup === 'CENTREBASED'))
-            if (filtered.length>0)
-              this.daymanager.push({key:v.key, value:filtered});
-          })
-          break;
-        case 7:
-          //'Facilities Staff'
-          this.dmOriginal.forEach(v=>{
-            let filtered=v.value.filter(x => (x.rosterGroup === 'CENTREBASED'))
-            if (filtered.length>0)
-              this.daymanager.push({key:v.key, value:filtered});
-          })
-          break;
-        case 8:
-          //'Group Recipients'
-          this.dmOriginal_Recipient.forEach(v=>{
-            let filtered=v.value.filter(x => (x.rosterGroup === 'GROUPACTIVITY'))
-            if (filtered.length>0)
-              this.daymanager.push({key:v.key, value:filtered});
-          })
-          break;
-        case 9:
-          //'Group Staff'
-          this.dmOriginal.forEach(v=>{
-            let filtered=v.value.filter(x => (x.rosterGroup === 'GROUPACTIVITY'))
-            if (filtered.length>0)
-              this.daymanager.push({key:v.key, value:filtered});
-          })
-          break;
-        case 10:
-          //'Grp/Trns/Facility- Recipients'
-          this.dmOriginal_Recipient.forEach(v=>{
-            let filtered=v.value.filter(x => (x.type == 10 || x.type == 11 || x.type == 12))
-            if (filtered.length>0)
-              this.daymanager.push({key:v.key, value:filtered});
-          })
-          break;
-        case 11:
-          //'Grp/Trns/Facility-Staff'
-          //AND ([ro].[Type] = 7 OR [ro].[Type] = 2 OR [ro].[Type] = 8 OR [ro].[Type] = 3 OR [ro].[Type] = 5 OR [ro].[Type] = 10 OR [ro].[Type] = 11 OR [ro].[Type] = 12 OR [ro].[Type] = 1 OR [ro].[Type] = 13 OR ([ro].[Type] = 6 AND [ItemTypes].[MinorGroup] <> 'LEAVE') OR ([ItemTypes].[MinorGroup] = 'LEAVE') 
-          
-          this.dmOriginal.forEach(v=>{
-            let filtered=v.value.filter(x => (x.type == 7 || x.type == 2 || x.type == 8 || x.type == 3 || x.type == 5|| x.type == 10 || x.type == 11 || x.type == 12 || x.type == 1 || x.type == 13 || x.type == 6  && x.minorGroup != 'LEAVE') || (x.minorGroup == 'LEAVE'))
-            if (filtered.length>0)
-              this.daymanager.push({key:v.key, value:filtered});
-          })
-          break;
-        case 12:
-          
-          // //'Recipient Management'
-          // //([ro].[Type] = 7 OR [ro].[Type] = 2 OR [ro].[Type] = 8 OR [ro].[Type] = 10 OR [ro].[Type] = 11 OR [ro].[Type] = 12 )
-
-          // this.dmOriginal_Recipient.forEach(v=>{
-          //   let filtered=v.value.filter(x => x.recipient!='!MULTIPLE' && x.recipient!='!INTERNAL' && (x.type == 7 || x.type == 2 || x.type == 8 || x.type == 10 || x.type == 11 || x.type == 12))
-          //   if (filtered.length>0)
-          //     this.daymanager.push({key:v.key, value:filtered});
-          // })
-          
-         
-          this.daymanager=this.dmOriginal_Recipient;
-
-          break;
-       
-        default:
-          this.daymanager=this.dmOriginal;
-          break;
-      }
+          if (element.key=='ACTIVITY GROUP')  {
+            this.dmOriginal.forEach(v=>{
+              let filtered=v.value.filter(x => (x.rosterGroup >= element.value && x.rosterGroup <= (element.value+zees)))
+              if (filtered.length>0)
+                  this.daymanager.push({key:v.key, value:filtered});
+              }) 
+          }
+          if (element.key=='FACILITY')  {
+            this.dmOriginal.forEach(v=>{
+              let filtered=v.value.filter(x => (x.servicesetting >= element.value && x.servicesetting <= (element.value+zees)))
+              if (filtered.length>0)
+                  this.daymanager.push({key:v.key, value:filtered});
+              }) 
+          }
+          if (element.key=='PROGRAM')  {
+            this.dmOriginal.forEach(v=>{
+              let filtered=v.value.filter(x => (x.rprogram >= element.value && x.rprogram <= (element.value+zees)))
+              if (filtered.length>0)
+                  this.daymanager.push({key:v.key, value:filtered});
+              }) 
+          }
+          if (element.key=='PROGRAM')  {
+            this.dmOriginal.forEach(v=>{
+              let filtered=v.value.filter(x => (x.rprogram >= element.value && x.rprogram <= (element.value+zees)))
+              if (filtered.length>0)
+                  this.daymanager.push({key:v.key, value:filtered});
+              }) 
+          }
+          if (element.key=='COORDINATOR')  {
+            this.dmOriginal.forEach(v=>{
+              let filtered=v.value.filter(x => (x.rosterGroup >= element.value && x.rosterGroup <= (element.value+zees)))
+              if (filtered.length>0)
+                  this.daymanager.push({key:v.key, value:filtered});
+              }) 
+          }
+          if (element.key=='SERVICE ORDER/GRID NO')  {
+            this.dmOriginal.forEach(v=>{
+              let filtered=v.value.filter(x => ( x.serviceOrderGridNo.includes(element.value)))
+              if (filtered.length>0)
+                  this.daymanager.push({key:v.key, value:filtered});
+              }) 
+          }
+      });
+      this.data.emit(this.daymanager) 
       this.loading=false;
+    
+}
+applyDMFilters(PersonTypeFilter:any){
+    
+  if (PersonTypeFilter!=null && PersonTypeFilter!=''){
+    
+    this.daymanager=[];
+    
+    this.currentFilter=this.getfilterType(PersonTypeFilter);
+    this.dmType=""+this.currentFilter;
+    let sDate = moment(this.startDate).format('YYYY/MM/DD');
+    let eDate = moment(this.startDate).add(this.dayView - 1, 'days').format('YYYY/MM/DD');
+    
+    this.loading=true;
+    
+    this.timeS.getStaffWorkingHours({StartDate: sDate, EndDate: eDate, dmType: this.dmType }).pipe(
+      debounceTime(200))
+      .subscribe(data => {
+        this.workinghours = data;         
+      });
+
+     switch(this.currentFilter){
+      case 1: 
+          //'Unallocated Bookings'
+          this.daymanager = this.dmOriginal.filter(x=>x.key.trim() === 'BOOKED');
+          break;
+      case 2:    
+       //'Staff Management'    
+       this.daymanager = this.dmOriginal.filter(x=>x.key.trim() != 'ADMIN');
+        
+        break;      
+      case 3:         
+        //'Transport Recipients'
+          this.dmOriginal_Recipient.forEach(v=>{
+          let filtered=v.value.filter(x => (x.rosterGroup === 'TRANSPORT'))
+          if (filtered.length>0)
+              this.daymanager.push({key:v.key, value:filtered});
+          })        
+          
+          break;
+      case 4:
+        //'Transport Staff'
+          this.dmOriginal.forEach(v=>{
+            
+            let filtered=v.value.filter(x => (x.rosterGroup === 'TRANSPORT' && x.carercode !='!MULTIPLE'))
+            if (filtered.length>0)
+              this.daymanager.push({key:v.key, value:filtered});
+          })
+        
+         break;
+      case 5:
+          //'Transport Daily Planner'
+
+        break;
+      case 6:
+        //'Facilities Recipients'
+        this.dmOriginal_Recipient.forEach(v=>{
+          let filtered=v.value.filter(x => (x.rosterGroup === 'CENTREBASED'))
+          if (filtered.length>0)
+            this.daymanager.push({key:v.key, value:filtered});
+        })
+        break;
+      case 7:
+        //'Facilities Staff'
+        this.dmOriginal.forEach(v=>{
+          let filtered=v.value.filter(x => (x.rosterGroup === 'CENTREBASED'))
+          if (filtered.length>0)
+            this.daymanager.push({key:v.key, value:filtered});
+        })
+        break;
+      case 8:
+        //'Group Recipients'
+        this.dmOriginal_Recipient.forEach(v=>{
+          let filtered=v.value.filter(x => (x.rosterGroup === 'GROUPACTIVITY'))
+          if (filtered.length>0)
+            this.daymanager.push({key:v.key, value:filtered});
+        })
+        break;
+      case 9:
+        //'Group Staff'
+        this.dmOriginal.forEach(v=>{
+          let filtered=v.value.filter(x => (x.rosterGroup === 'GROUPACTIVITY'))
+          if (filtered.length>0)
+            this.daymanager.push({key:v.key, value:filtered});
+        })
+        break;
+      case 10:
+        //'Grp/Trns/Facility- Recipients'
+        this.dmOriginal_Recipient.forEach(v=>{
+          let filtered=v.value.filter(x => (x.type == 10 || x.type == 11 || x.type == 12))
+          if (filtered.length>0)
+            this.daymanager.push({key:v.key, value:filtered});
+        })
+        break;
+      case 11:
+        //'Grp/Trns/Facility-Staff'
+        //AND ([ro].[Type] = 7 OR [ro].[Type] = 2 OR [ro].[Type] = 8 OR [ro].[Type] = 3 OR [ro].[Type] = 5 OR [ro].[Type] = 10 OR [ro].[Type] = 11 OR [ro].[Type] = 12 OR [ro].[Type] = 1 OR [ro].[Type] = 13 OR ([ro].[Type] = 6 AND [ItemTypes].[MinorGroup] <> 'LEAVE') OR ([ItemTypes].[MinorGroup] = 'LEAVE') 
+        
+        this.dmOriginal.forEach(v=>{
+          let filtered=v.value.filter(x => (x.type == 7 || x.type == 2 || x.type == 8 || x.type == 3 || x.type == 5|| x.type == 10 || x.type == 11 || x.type == 12 || x.type == 1 || x.type == 13 || x.type == 6  && x.minorGroup != 'LEAVE') || (x.minorGroup == 'LEAVE'))
+          if (filtered.length>0)
+            this.daymanager.push({key:v.key, value:filtered});
+        })
+        break;
+      case 12:
+        
+        // //'Recipient Management'
+        // //([ro].[Type] = 7 OR [ro].[Type] = 2 OR [ro].[Type] = 8 OR [ro].[Type] = 10 OR [ro].[Type] = 11 OR [ro].[Type] = 12 )
+
+        // this.dmOriginal_Recipient.forEach(v=>{
+        //   let filtered=v.value.filter(x => x.recipient!='!MULTIPLE' && x.recipient!='!INTERNAL' && (x.type == 7 || x.type == 2 || x.type == 8 || x.type == 10 || x.type == 11 || x.type == 12))
+        //   if (filtered.length>0)
+        //     this.daymanager.push({key:v.key, value:filtered});
+        // })
+        
+       
+        this.daymanager=this.dmOriginal_Recipient;
+
+        break;
+     
+      default:
+        this.daymanager=this.dmOriginal;
+        break;
     }
+    this.loading=false;
+  }
 }
 
 getfilterType(type:String)
@@ -521,6 +651,8 @@ getfilterType(type:String)
         this.load_from_server=false;
         //console.log(data)
         this.personsList = this.daymanager.map(x => x.key )
+        if (this.Filters.length>0)
+          this.applyCustomFilters(this.Filters)
          
       })
     

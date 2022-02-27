@@ -74,6 +74,19 @@ interface UserView{
     
        breachRoster:boolean;
        Error_Msg:string;
+       openSearchStaffModal:boolean;
+    
+       booking:{
+        recipientCode: 'TT',
+        userName:'sysmgr',
+        date:'2022/01/01',
+        startTime:'07:00',
+        endTime:'17:00',
+        endLimit:'20:00'
+      };
+    @Input() bookingData = new Subject<any>();
+
+
     defaultActivity: any = null;
     selectedActivity: any = null;
     defaultCategory: any = null;
@@ -211,7 +224,7 @@ ngOnInit(){
             program: ['', Validators.required],
             serviceActivity: ['', Validators.required],
             payType: ['', Validators.required],
-            analysisCode: [''],
+            analysisCode: [''],            
             recipientCode:  [''],
             haccType: '',
             staffCode:  [''],
@@ -374,9 +387,11 @@ ngOnInit(){
             this.programsList = d[2].map(x => x.progName);
 
             if(this.viewType == 'Recipient'){
-                this.rosterForm.patchValue({
-                    analysisCode: this.agencyDefinedGroup
-                });
+              
+                // this.rosterForm.patchValue({
+                //     analysisCode: this.agencyDefinedGroup
+                // });
+                
             }
         });
         this.rosterForm.get('program').valueChanges.pipe(
@@ -565,9 +580,7 @@ ngOnInit(){
             return "!INTERNAL"
         }
     }
-    openStaffModal(){
-        this.searchStaff=true;
-    }
+  
 Cancel_ProceedBreachRoster(){
     this.breachRoster=false;
  
@@ -1287,7 +1300,7 @@ GETSERVICEACTIVITY(program: any): Observable<any> {
             recordNo,
             staffCode,
             endTime,
-            daymask           
+            daymask 
         
         } = index;
 
@@ -1296,11 +1309,20 @@ GETSERVICEACTIVITY(program: any): Observable<any> {
         this.FetchCode=recipientCode;
         this.staffCode=staffCode;
         this.debtor=debtor;
+       
         this.defaultStartTime = parseISO(new Date(date + " " + startTime).toISOString());
         this.defaultEndTime = parseISO(new Date(date + " " + endTime).toISOString());
         let time:any={startTime:this.defaultStartTime, endTime:this.defaultEndTime}
         //this.defaultStartTime = parseISO( "2020-11-20T" + startTime + ":01.516Z");
         //this.defaultEndTime = parseISO( "2020-11-20T" + endTime + ":01.516Z");;
+        this.booking={
+            recipientCode: recipientCode,
+            userName:this.token.user,
+            date:date,
+            startTime:startTime,
+            endTime:endTime,
+            endLimit:'20:00'
+          };
         this.current = 0;
         if (daymask!=null)
             this.dayMask=daymask;
@@ -1311,8 +1333,6 @@ GETSERVICEACTIVITY(program: any): Observable<any> {
          
          this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
       //  this.durationObject = this.globalS.computeTimeDATE_FNS(startTime, endTime);
-
-        
             
             this.defaultProgram = program;
             this.defaultActivity = activity;
@@ -1335,11 +1355,14 @@ GETSERVICEACTIVITY(program: any): Observable<any> {
                 debtor: debtor,
                 type: serviceType,
                 recipientCode: recipientCode,
-                staffCode:staffCode                
+                staffCode:staffCode   
+                
                 
             });
-
             this.rosterForm.enable();
+
+           
+
         
     }
     DETERMINE_SERVICE_TYPE(index: any): any{
@@ -1475,6 +1498,20 @@ GETSERVICEACTIVITY(program: any): Observable<any> {
             
         if (!sql) return EMPTY;
         return this.listS.getlist(sql);
+    
     }
+
+    openStaffModal(){
+        this.openSearchStaffModal=true;
+         this.bookingData.next(this.booking) ;               
+    }
+    onStaffSearch(data:any){
+        this.openSearchStaffModal=false;
+        this.staffCode=data.accountno;
+        this.rosterForm.patchValue({
+            staffCode:data.accountno
+        })
+    }
+
     }
     

@@ -315,7 +315,18 @@ searchAvaibleModal:boolean=false;
     EndTime:String=""
     Duration:String="5";
     EnforceActivityLimits:boolean=true;
-   
+
+    openSearchStaffModal:boolean;
+    booking:{
+        recipientCode: 'TT',
+        userName:'sysmgr',
+        date:'2022/01/01',
+        startTime:'07:00',
+        endTime:'17:00',
+        endLimit:'20:00'
+      };
+    @Input() bookingData = new Subject<any>();
+
     master:boolean=false;
     Master_Roster_label="Current Roster";
     tval:number;
@@ -3160,6 +3171,27 @@ showConfirm(): void {
 
     
   }
+  
+  openStaffModal(){
+    this.openSearchStaffModal=true;
+    
+    if (this.selectedOption!=null)
+        this.booking = {
+                     recipientCode: this.current_roster.recipientCode,
+                     userName:this.token.user,
+                     date:this.current_roster.date,
+                     startTime:this.current_roster.startTime,
+                     endTime:this.current_roster.endTime,
+                     endLimit:'20:00'
+                    };
+                
+    this.bookingData.next(this.booking) ;               
+}
+onStaffSearch(data:any){
+    this.openSearchStaffModal=false;
+    this.selectedCarer=data.accountno;
+}
+
   addGroupShift(){
       this.showGroupShiftModal=false;
       this.addBooking(0);
@@ -3245,16 +3277,19 @@ showConfirm(): void {
 
     find_roster(RecordNo:number):any{
         let rst:any;
-        for(var r of this.rosters)
-       {
-                if (r.recordNo == RecordNo){
-                    rst= r;
-                    break;
-                }
+    //     for(var r of this.rosters)
+    //    {
+    //             if (r.recordNo == RecordNo){
+    //                 rst= r;
+    //                 break;
+    //             }
             
-        } 
+    //     } 
+
+    let r = this.rosters.filter(x=>x.recordNo==RecordNo)[0];
         
         rst = {
+         
             "shiftbookNo": r.recordNo,
             "date": r.roster_Date,
             "startTime": r.start_Time,

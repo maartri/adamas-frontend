@@ -2,13 +2,13 @@
     <div style="padding-left:8px" >
         
         <div nz-row class="dm-input">
-            <div nz-col nzSpan="5" style="margin-left: 5px; font-size: 12px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+            <div nz-col nzSpan="5" style="margin-left: 5px; ">
                 <label for="" > Day Manager Filter</label>
                 <nz-select [(ngModel)]="selectedPersonType" (ngModelChange)="personTypeChange($event)" style="width: 200px;">
                     <nz-option *ngFor="let p of personTypeList" [nzValue]="p"  [nzLabel]="p"></nz-option>
                 </nz-select>
             </div>
-            <div nz-col nzSpan="5">
+            <div nz-col nzSpan="4">
                 <label for="date"> Date</label>
                 <nz-date-picker nzMode="default" [nzFormat]="dateFormat" [(ngModel)]="date"></nz-date-picker>
             </div>
@@ -18,26 +18,134 @@
                     <nz-option *ngFor="let no of dayViewArr" [nzValue]="no" [nzLabel]="no"></nz-option>
                 </nz-select> 
             </div>
-            <div nz-col nzSpan="8" style="margin-top: 20px;" > 
+            <div nz-col nzSpan="10" style="margin-top: 20px;" > 
                
-                    <button nz-button nzType="primary"  [nzSize]="size" nzShape="circle"><i nz-icon nzType="filter" nzTheme="outline"></i></button>
-                    <button nz-button nzType="primary"  [nzSize]="size" nzShape="circle"><i nz-icon nzType="close-circle" nzTheme="outline"></i></button>
-                    <button nz-button nzType="primary"  [nzSize]="size" nzShape="circle"><i nz-icon nzType="question-circle" nzTheme="outline"></i></button>
-                    <button nz-button nzType="primary"  [nzSize]="size" nzShape="circle"><i nz-icon nzType="reload" nzTheme="outline"></i></button>
-                    <button nz-button nzType="primary"  [nzSize]="size" nzShape="circle"><i nz-icon nzType="printer" nzTheme="outline"></i></button>
-                    <button nz-button nzType="primary"  (click)="openStaffModal()" [nzSize]="size" nzShape="circle"><i nz-icon nzType="team" nzTheme="outline"></i></button>
-                    <button nz-button nzType="primary"  [nzSize]="size" nzShape="circle"><i nz-icon nzType="user" nzTheme="outline"></i></button>
-                    <button nz-button nzType="default"  [nzSize]="size" nzShape="round"><i nz-icon nzType="menu" nzTheme="outline"></i></button>
+                    <button nz-button nzType="default"  (click)="showCustomFilter()" [nzSize]="size" nzShape="circle" nz-tooltip nzTooltipTitle="Create a new custom filter to limit activities to operator requirements"><i nz-icon nzType="filter" nzTheme="outline" ></i></button>
+                    <button nz-button nzType="default"  (click)="removeCustomFilter()" [disabled]="CustomFilters.length<=0" [nzSize]="size" nzShape="circle" nz-tooltip nzTooltipTitle="Delete ALL custom filters"><i nz-icon nzType="close-circle" nzTheme="outline" ></i></button>
+                    <button nz-button nzType="default"  (click)="ViewCustomFilter()" [disabled]="CustomFilters.length<=0" [nzSize]="size" nzShape="circle" nz-tooltip nzTooltipTitle="View existing custom filters"><i nz-icon nzType="question-circle" nzTheme="outline" ></i></button>
+                    <button nz-button nzType="default"  (click)="load_rosters()" [nzSize]="size" nzShape="circle" nz-tooltip nzTooltipTitle="Refresh the current Day Manager view"><i nz-icon nzType="reload" nzTheme="outline" ></i></button>
+                    <button nz-button nzType="default"  (click)="ViewQuickFilterDisplay()" [nzSize]="size" nzShape="circle" nz-tooltip nzTooltipTitle="Quiick Filters"><i nz-icon nzType="interaction" nzTheme="outline" ></i></button>
+                    <button nz-button nzType="default"  [nzSize]="size" nzShape="circle" nz-tooltip nzTooltipTitle="Print the Day Manager"><i nz-icon nzType="printer" nzTheme="outline" ></i></button>                   
+                    <button nz-button nzType="default"  (click)="openStaffModal(true)" [nzSize]="size" nzShape="circle" nz-tooltip nzTooltipTitle="Display Staff Inquiry Screen"><i nz-icon nzType="team" nzTheme="outline" ></i></button>
+                    <button nz-button nzType="default"  (click)="openRecipientModal(true)" [nzSize]="size" nzShape="circle" nz-tooltip nzTooltipTitle="Display Recipient Inquiry Screen"><i nz-icon nzType="user" nzTheme="outline" ></i></button>
+                    <button nz-button nzType="default"  (click)="openMenu()"  [nzSize]="size" nzShape="round"><i nz-icon nzType="menu" nzTheme="outline"></i></button>
               
-            </div>     
+            </div>
+            <div *ngIf="CustomFilter" >
+             
+                <div nz-col nzSpan="5" style="margin-left: 2px;">
+                    <label for="dayview">Limit To</label>
+                    <nz-select [(ngModel)]="LimitTo" style="width: 200px;" (ngModelChange)="FillLimitTo()">
+                        <nz-option *ngFor="let grp of lstGroup" [nzValue]="grp" [nzLabel]="grp"></nz-option>
+                    </nz-select> 
+                </div>
+              
+                <div nz-col nzSpan="6">
+                    <label for="">Starting With</label>
+                    <nz-select [(ngModel)]="startWith"  *ngIf="!showSimpleFilterInput"   style="width: 250px;" (ngModelChange)="AddCustomFilter()">
+                        <nz-option *ngFor="let t of lstStartWith" [nzValue]="t.title" [nzLabel]="t.title"></nz-option>
+                    </nz-select> 
+                    <nz-input-group *ngIf="showSimpleFilterInput" >                      
+                        <input nz-input  placeholder="{{nzFilterPlaceHolder}}" [(ngModel)]="startWith" style="width: 230px;" />
+                        
+                            <button nz-button nzType="default"  (click)="AddCustomFilter()"  [nzSize]="'default'" nz-tooltip nzTooltipTitle="Add in Filter">
+                                <i nz-icon nzType="border-inner" nzTheme="outline" ></i>
+                            </button>
+                         
+                    </nz-input-group >
+                    <!-- <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
+                        <input type="text" nz-input placeholder="input search text" />
+                      </nz-input-group>
+                      <ng-template #suffixIconButton>
+                        <button nz-button nzType="default" nzSearch><i nz-icon nzType="border-inner"></i></button>
+                      </ng-template> -->
+                </div>
+                <div nz-col nzSpan="6" style="margin-top: 10px;">
+                    <div>
+                        <label nz-checkbox [(ngModel)]="addInExisting" style="margin-right: 10px;">Add in existing filter</label> 
+                    </div>
+                    <button nz-button nzType="primary"  (click)="ApplyCustomFilter()"  [nzSize]="'small'" nzShape="round"><i nz-icon nzType="filter" nzTheme="outline"></i>Apply</button>
+                    <button nz-button nzType="primary"  (click)="CloseCustomFilter()"  [nzSize]="'small'" nzShape="round"><i nz-icon nzType="close" nzTheme="outline"></i>Close</button>
+                    <button nz-button nzType="primary"  (click)="ViewCustomFilter()"  [nzSize]="'small'" nzShape="round"><i nz-icon nzType="view" nzTheme="outline"></i>View</button>
+                </div>
+               
+            </div>
         </div>
-    
+        
+        <nz-modal  [nzStyle]="{ top: '10px' }" hasBackdrop [nzWidth]="500" [(nzVisible)]="ViewExistingFilter" nzTitle="Day Manager Filters"   (nzOnCancel)="ViewExistingFilter = false" >
+            <div  class="flexy" style="min-height:25rem; margin-top: 5px;" >
+                <div nz-row >
+                    <div nz-row *ngFor="let fltr of CustomFilters; let i=index">
+                        <div>
+                                {{i+1}} - {{fltr.key}} = {{fltr.value}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div *nzModalFooter>
+                <button  nz-button nzType="default" (click)="ViewExistingFilter=false">OK</button>
+                <button  nz-button nzType="default" (click)="ViewExistingFilter=false">Cancel</button>
+            </div>
+        </nz-modal>                 
+           
+        <nz-modal  [nzStyle]="{ top: '10px' }" hasBackdrop [nzWidth]="500" [(nzVisible)]="showMenu" nzTitle="Day Manager Options"   (nzOnCancel)="showMenu = false" >
+        <div  class="flexy" style="min-height:25rem; margin-top: 5px;" >
+            <div nz-row  nzGutter="4">
+                <div nz-col nzSpane="24" >
+                    <div>
+                        <label nz-checkbox [(ngModel)]="HideW1W2">Hide W1 W2 WKD Display</label> 
+                    </div>
+                    <div>
+                        <label nz-checkbox [(ngModel)]="IncludeDuration">Include Duration in shift Display</label> 
+                    </div>
+                    <div>
+                        <label nz-checkbox [(ngModel)]="AutoPrviewNote">Auto Preview Notes on click</label> 
+                    </div>
+                    <div>
+                        <label nz-checkbox [(ngModel)]="AutoPrviewNote">Include Notes in Service Display</label> 
+                    </div>
+                    <div>
+                        <label nz-checkbox [(ngModel)]="AutoPrviewNote">Include Information Only Services in Worked Hours</label> 
+                    </div>
+                    <div>
+                        <label nz-checkbox [(ngModel)]="AutoPrviewNote">Recipient Branch Only</label> 
+                    </div>
+                    <div>
+                        <label for="">Set Rostering Pay Preriod</label> 
+                        <nz-date-picker  [nzFormat]="dateFormat" ></nz-date-picker>
+                    </div>
+                </div>
+            </div>
+               
+        </div>
+            <div *nzModalFooter>
+                <button  nz-button nzType="default" (click)="menuAction()">OK</button>
+                <button  nz-button nzType="default" (click)="showMenu=false">Cancel</button>
+            </div>
+        </nz-modal>
        
+        <nz-modal  [nzStyle]="{ top: '10px' }" hasBackdrop [nzWidth]="500" [(nzVisible)]="viewQuickFilter" nzTitle="Day Manager Quiick Filters"   (nzOnCancel)="viewQuickFilter = false" >
+            <div  class="flexy" style="min-height:25rem; margin-top: 5px;" >
+                <div nz-row  nzGutter="4">
+                    <div nz-col nzSpane="24" >
+                        <div>
+                            <label nz-checkbox [(ngModel)]="HideW1W2">Quick Filter Display</label> 
+                        </div>
+                   
+                    </div>
+                </div>  
+            </div>
+            <div *nzModalFooter>
+                <button  nz-button nzType="default" (click)="ApplyCustomFilter()">Apply</button>
+                <button  nz-button nzType="default" (click)="viewQuickFilter=false">Cancel</button>
+            </div>
+         </nz-modal>
+           
     </div>
     <div>
         <dm-calendar [startDate]="date" [dayView]="dayView" [reload]="reload" [personType]="selectedPersonType"  [copyPaste]="toBePasted?.length > 0"
-            (showDetail)="showDetail($event)" (showOptions)="showOptions($event)" (highlighted)="highlighted($event)"
-            (data)="data($event)" (paste)="pasteSelectedRecords($event)"></dm-calendar>
+            (showDetail)="showDetail($event)" (showOptions)="showOptions($event)" (highlighted)="highlighted($event)" 
+            (data)="data($event)" (paste)="pasteSelectedRecords($event)" [applyFilter]="applyFilter"></dm-calendar>
     </div>
    
 </div>
@@ -197,7 +305,7 @@
                       </nz-input-group>               
                 </div>
           
-                <app-search-list [reload]="reloadVal" [view]="1" [(ngModel)]="sample" (ngModelChange)="listChange($event)"></app-search-list>
+                <!-- <app-search-list [reload]="reloadVal" [view]="1" [(ngModel)]="sample" (ngModelChange)="listChange($event)"></app-search-list> -->
 
                        
             </div>
@@ -214,7 +322,9 @@
         <button nz-button nzType="default"  (click)="AllocateStaffModal=false">Cancel</button>
     </div>
 </nz-modal> 
-<staff-search [findModalOpen]="openSearchStaffModal" (searchDone)="onStaffSearch($event)"></staff-search>
+<staff-search [findModalOpen]="openSearchStaffModal" [bookingData]="bookingData"  (searchDone)="onStaffSearch($event)"></staff-search>
+<recipient-search [findModalOpen]="openSearchRecipientModal" [bookingData]="bookingDataRecipient" (searchDone)="onRecipientSearch($event)"></recipient-search>
+
 
 <nz-modal [nzStyle]="{ top: '15px' }" [nzWidth]="900" [(nzVisible)]="ViewServiceNoteModal" nzTitle="Service / Shift Notes "   (nzOnCancel)="ViewServiceNoteModal = false" >
     <div class="flexy" style="min-height:25rem;">

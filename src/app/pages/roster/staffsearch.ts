@@ -8,6 +8,7 @@ import { NzFormatEmitEvent } from 'ng-zorro-antd/core';
 import { EMPTY, forkJoin } from 'rxjs';
 import { stringify } from '@angular/compiler/src/util';
 import { forEach } from 'lodash';
+import { Subscription, Subject } from 'rxjs';
 
 @Component({
     selector: 'staff-search',
@@ -41,9 +42,11 @@ import { forEach } from 'lodash';
     `]
   })
   export class StaffSearch implements AfterViewInit{
-      @Input() findModalOpen:boolean=false;
+      @Input() findModalOpen:boolean=false;      
+      @Input() bookingData = new Subject<any>();
       @Output() searchDone:EventEmitter<any>= new EventEmitter();
 
+      booking :any;
       selectedStaff:any;
       extendedSearch: any;
       allBranches:boolean = true;
@@ -126,6 +129,10 @@ import { forEach } from 'lodash';
       this.nodelist = staffnodes;
         this.buildForms();
         this.getUserData();
+
+        this.bookingData.subscribe(data=>{
+          this.loadModel(data);
+        })
     }
     ngAfterViewInit(){
 
@@ -136,8 +143,13 @@ import { forEach } from 'lodash';
     }
 
     handleOk(){ 
-
+      if (this.selectedStaff==null) return;
       this.searchDone.emit(this.selectedStaff);
+      this.findModalOpen=false;
+    }
+    loadModel(data:any){
+      this.booking=data;
+      this.findModalOpen=true;
     }
     buildForms(){
         
@@ -246,7 +258,36 @@ import { forEach } from 'lodash';
         .filter(opt => opt.checked)
         .map(opt => this.sbFieldsSkill[opt.identifier])
         
+        // if (this.booking==null){
+        //   this.booking={
+        //     recipientCode: 'TT',
+        //     userName:'sysmgr',
+        //     date:'2022/01/01',
+        //     startTime:'07:00',
+        //     endTime:'17:00',
+        //     endLimit:'20:00'
+        //   }
+        // }
+      
+        if (this.booking==null){
+          let dt= new Date();
+          this.booking={
+            recipientCode: '',
+            userName:'',
+            date: '',
+            startTime:'',
+            endTime:'',
+            endLimit:''
+          }
+        }
+      
         var postdata = {
+          firstRecipient:this.booking.recipientCode,
+          userName:this.booking.userName,
+          date:this.booking.date,
+          startTime:this.booking.startTime,
+          endTime:this.booking.endTime,
+          endLimit:this.booking.endLimit,
           status:this.quicksearch.value.status,
           gender:this.quicksearch.value.gender=="Any Gender"? "MALE,FEMALE" : this.quicksearch.value.gender,
           staff:this.quicksearch.value.staff,
@@ -273,6 +314,9 @@ import { forEach } from 'lodash';
           // list of rules
         }
         
+        let value:string;
+        if (this.txtSearch!=null)
+          value = this.txtSearch.toUpperCase();
             
         //console.log (this.selectedSkills);
         this.timeS.getQualifiedStaff(postdata).subscribe(data => {
@@ -281,6 +325,9 @@ import { forEach } from 'lodash';
           this.originalList=data;
           this.loading = false;
           this.cd.detectChanges();
+          if (value!=null && value!=''){
+            this.filteredResult=this.originalList.filter(element=>element.name.includes(value));
+          }
         });
       }
     
@@ -296,11 +343,12 @@ import { forEach } from 'lodash';
      }
 
      onItemSelected(sel:any ) : void {
-
-      this.selectedStaff=sel;     
+      if (sel==null) return;
+        this.selectedStaff=sel;     
   
   }
   onItemDbClick(sel:any ) : void {
+      if (sel==null) return;
 
       this.selectedStaff=sel;
       this.searchDone.emit(sel);

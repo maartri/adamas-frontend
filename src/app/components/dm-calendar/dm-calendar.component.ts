@@ -75,6 +75,8 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
   @Input() dayView: number
   @Input() reload:Subject<boolean>= new Subject()
   @Input() applyFilter: Subject<any>= new Subject()
+  @Input() dmOptions: Subject<any>= new Subject()
+  
   @Input() copyPaste: boolean = false
   @Input() personType: string;
 
@@ -91,12 +93,11 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
   daymanager: Array<any> = [];
   dmOriginal: Array<any> = [];
   dmOriginal_Recipient: Array<any> = [];
- 
-
   workinghours: Array<any> = [];
   personsList: Array<any> = [];
   personValue:any;
   currentFilter:number;
+ 
 
   Filters: Array<any> = [];
 
@@ -106,6 +107,33 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
   selectedRecordNo:string;
   optionMenuDisplayed:boolean
   dmType:string = "2";
+  AutoPreviewNotes:boolean;
+  clickedRoster:any;
+
+  optionsList = [
+    { id: 1, name: 'Hide W1 W2 WKD Display', checked:false },
+    { id: 2, name: 'Include Duration in shift Display', checked:false },
+    { id: 3, name: 'Auto Preview Notes on click', checked:false },
+    { id: 4, name: 'Include Notes in Service Display', checked:false },
+    { id: 5, name: 'Include Information Only Services in Worked Hours', checked:false },
+    { id: 6, name: 'Recipient Branch Only', checked:false },
+    { id: 7, name: 'Include Notes in Service Display', checked:false }
+  ];
+
+  optionsList2 = [
+      { id: 1, name: 'Booking', checked:false },
+      { id: 2, name: 'Direct Care', checked:false },
+      { id: 3, name: 'Case Management', checked:false },
+      { id: 4, name: 'Transport', checked:false },
+      { id: 5, name: 'Facilities', checked:false },
+      { id: 6, name: 'Groups', checked:false },
+      { id: 7, name: 'Items', checked:false },
+      { id: 8, name: 'Unavailable', checked:false },
+      { id: 9, name: 'Staff Admin', checked:false },
+      { id: 10, name: 'Travel Time', checked:false },
+      { id: 11, name: 'Staff Leave', checked:false },
+      
+    ];
 
   constructor(
     private timeS: TimeSheetService,
@@ -153,9 +181,21 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
       this.applyCustomFilters(this.Filters);
       //this.alertChange();
     });
+    this.dmOptions.subscribe(data=>{
+      
+      this.applyDMOptions(data);
+      //this.alertChange();
+    });
+    
     makeResizableDiv(panel);
   }
 
+ 
+  applyDMOptions(options:any){
+    this.optionsList=options.dmOption1;
+    this.optionsList2=options.dmOption2;
+    this.data.emit(this.daymanager) ;
+  }
   private elemMouseUp;
   private documentMouseUp;
 
@@ -173,9 +213,12 @@ HighlightColum(indx:number){
   
   RosterClick(event:any, value:any){
     value.isSelected=true;
+    this.clickedRoster=value;
     this.akonani=[];
     this.akonani.push(value);
-   
+    if (this.optionsList[2].checked)
+      this.AutoPreviewNotes=true;
+
     console.log(value)
   }
   ngAfterViewInit() {
@@ -302,13 +345,6 @@ HighlightColum(indx:number){
               }) 
           }
           
-          if (element.key=='ACTIVITY GROUP')  {
-            this.dmOriginal.forEach(v=>{
-              let filtered=v.value.filter(x => (x.rosterGroup >= element.value && x.rosterGroup <= (element.value+zees)))
-              if (filtered.length>0)
-                  this.daymanager.push({key:v.key, value:filtered});
-              }) 
-          }
           if (element.key=='FACILITY')  {
             this.dmOriginal.forEach(v=>{
               let filtered=v.value.filter(x => (x.servicesetting >= element.value && x.servicesetting <= (element.value+zees)))
@@ -323,13 +359,7 @@ HighlightColum(indx:number){
                   this.daymanager.push({key:v.key, value:filtered});
               }) 
           }
-          if (element.key=='PROGRAM')  {
-            this.dmOriginal.forEach(v=>{
-              let filtered=v.value.filter(x => (x.rprogram >= element.value && x.rprogram <= (element.value+zees)))
-              if (filtered.length>0)
-                  this.daymanager.push({key:v.key, value:filtered});
-              }) 
-          }
+          
           if (element.key=='COORDINATOR')  {
             this.dmOriginal.forEach(v=>{
               let filtered=v.value.filter(x => (x.rosterGroup >= element.value && x.rosterGroup <= (element.value+zees)))
@@ -344,7 +374,32 @@ HighlightColum(indx:number){
                   this.daymanager.push({key:v.key, value:filtered});
               }) 
           }
+          //Quick Filters
+          if (element.key=='BRANCH LIST')  {
+            this.dmOriginal.forEach(v=>{
+              let filtered=v.value.filter(x => (element.value.includes(x.rosterGroup) || element.value.includes(x.staffbranch) || element.value.includes(x.recipientBranch) ))
+              if (filtered.length>0)
+                  this.daymanager.push({key:v.key, value:filtered});
+              }) 
+          }
+          
+          if (element.key=='PROGRAM LIST')  {
+            this.dmOriginal.forEach(v=>{
+              let filtered=v.value.filter(x => (element.value.includes(x.rprogram)))
+              if (filtered.length>0)
+                  this.daymanager.push({key:v.key, value:filtered});
+              }) 
+          }
+          
+          if (element.key=='ACTIVITY LIST')  {
+            this.dmOriginal.forEach(v=>{
+              let filtered=v.value.filter(x => (element.value.includes(x.activity)))
+              if (filtered.length>0)
+                  this.daymanager.push({key:v.key, value:filtered});
+              }) 
+          }
       });
+      
       this.data.emit(this.daymanager) 
       this.loading=false;
     

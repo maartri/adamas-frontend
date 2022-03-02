@@ -8,12 +8,13 @@ import {ShiftDetail} from '../roster/shiftdetail'
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { ThrowStmt } from '@angular/compiler';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormGroup,FormBuilder,Validators } from '@angular/forms';
+import { FormGroup,FormBuilder,Validators, FormArray, FormControl } from '@angular/forms';
 import {takeUntil} from 'rxjs/operators';
 import parseISO from 'date-fns/parseISO'
 import { format, formatDistance, formatRelative, nextDay, subDays } from 'date-fns'
 import { forEach } from 'lodash';
 import * as moment from 'moment';
+import { stringify } from '@angular/compiler/src/util';
 
 
 class Address {
@@ -143,11 +144,18 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
     dayViewArr: Array<number> = [5, 7, 10, 14];
     //reload: boolean = false;
     reload:Subject<boolean> = new Subject();
-    loadingRoster :Subject<any> = new Subject() 
-    applyFilter: Subject<any>= new Subject()
+    loadingRoster :Subject<any> = new Subject() ;
+    applyFilter: Subject<any>= new Subject();
+    dmOptions: Subject<any>= new Subject();
     CustomFilters: Array<any> = [];
     toBePasted: Array<any>=[];
     lstStartWith: Array<any>=[];
+    branchesList = [];
+    activityList = [];
+    programsList = [];
+    selectedBranches:Array<any>=[];
+    selectedPrograms:Array<any>=[];
+    selectedActivities:Array<any>=[];
     addInExisting:boolean;
     nzFilterPlaceHolder:string="Input to Search";
     showSimpleFilterInput:boolean;
@@ -254,8 +262,37 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
     SortOrder:string;
     lstGroup:Array<any>=[];
     viewQuickFilter:boolean;
+    AllPrograms:boolean=true;
+    AllBranches:boolean=true;
+    AllActivities:boolean=true;
     OpenSearchOfStaff:boolean;
     OpenSearchOfRecipient:boolean;
+
+    optionsList = [
+      { id: 1, name: 'Hide W1 W2 WKD Display', checked:false },
+      { id: 2, name: 'Include Duration in shift Display', checked:false },
+      { id: 3, name: 'Auto Preview Notes on click', checked:false },
+      { id: 4, name: 'Include Notes in Service Display', checked:false },
+      { id: 5, name: 'Include Information Only Services in Worked Hours', checked:false },
+      { id: 6, name: 'Recipient Branch Only', checked:false },
+      { id: 7, name: 'Include Notes in Service Display', checked:false }
+    ];
+
+    optionsList2 = [
+        { id: 1, name: 'Booking', checked:false },
+        { id: 2, name: 'Direct Care', checked:false },
+        { id: 3, name: 'Case Management', checked:false },
+        { id: 4, name: 'Transport', checked:false },
+        { id: 5, name: 'Facilities', checked:false },
+        { id: 6, name: 'Groups', checked:false },
+        { id: 7, name: 'Items', checked:false },
+        { id: 8, name: 'Unavailable', checked:false },
+        { id: 9, name: 'Staff Admin', checked:false },
+        { id: 10, name: 'Travel Time', checked:false },
+        { id: 11, name: 'Staff Leave', checked:false },
+        
+      ];
+  
     constructor(
         private globalS: GlobalService,
         private clientS: ClientService,
@@ -265,6 +302,7 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
         private formBuilder: FormBuilder,
         private listS:ListService
     ) {
+
 
         this.ViewRecipientDetails.subscribe(data => {
             this.optionsModal=false;
@@ -487,8 +525,35 @@ data(event:any){
 }
 pasted(event:any){
 }
-ApplyCustomFilter(){
+ApplyQuickFilter(){
+    if (!this.AllBranches){
+        this.LimitTo="BRANCH LIST"
+        this.startWith = JSON.stringify(this.selectedBranches.map(x=>x.title));
+        let fltr= this.CustomFilters.find(a => a.key == this.LimitTo && a.value==this.startWith)        
+        if (!fltr)
+            this.CustomFilters.push({key:this.LimitTo, value:this.startWith});
+    }
+    if (!this.AllPrograms){
+        this.LimitTo="PROGRAM LIST"
+        this.startWith = JSON.stringify(this.selectedPrograms.map(x=>x.title));
+        let fltr= this.CustomFilters.find(a => a.key == this.LimitTo && a.value==this.startWith)        
+        if (!fltr)
+            this.CustomFilters.push({key:this.LimitTo, value:this.startWith});
+    }
+    if (!this.AllActivities){
+        this.LimitTo="ACTIVITY LIST"
+        this.startWith = JSON.stringify(this.selectedActivities.map(x=>x.title));
+        let fltr= this.CustomFilters.find(a => a.key == this.LimitTo && a.value==this.startWith)        
+        if (!fltr)
+            this.CustomFilters.push({key:this.LimitTo, value:this.startWith});
+    }
     this.applyFilter.next(this.CustomFilters);
+     this.viewQuickFilter=false;
+}
+ApplyCustomFilter(){
+   
+    this.applyFilter.next(this.CustomFilters);
+    
 }
 
 AddCustomFilter(){
@@ -512,9 +577,7 @@ ViewCustomFilter(){
     this.ViewExistingFilter=true;
     
 }
-ViewQuickFilterDisplay(){
-    this.viewQuickFilter=true;
-}
+
 
 removeCustomFilter(){
     this.CustomFilter=false;   
@@ -624,6 +687,35 @@ FillLimitTo(){
     });
     
 }
+ViewQuickFilterDisplay(){
+    this.loading=true;
+    setTimeout(() =>{
+        if ( this.branchesList==null || this.branchesList.length<=0)
+            this.FillQuickFilterLists();
+        this.loading=false;
+        this.viewQuickFilter=true;
+    },500)
+    
+}
+
+FillQuickFilterLists() {
+    let sql;
+    let sql_branch=`Select Description as title From DataDomains Where Domain = 'BRANCHES'  ORDER BY DESCRIPTION`;
+    let sql_Activity=`SELECT Title as title FROM ItemTypes WHERE   ProcessClassification = 'OUTPUT' ORDER BY Title`;
+    let sql_program=`SELECT UPPER([Name]) as title FROM HumanResourceTypes WHERE [Group] = 'PROGRAMS' ORDER BY [Name]`;
+    return forkJoin([
+      this.listS.getlist(sql_branch),
+      this.listS.getlist(sql_Activity),
+      this.listS.getlist(sql_program)
+     
+    ]).subscribe(x => {
+      this.branchesList = x[0];
+      this.activityList = x[1];
+      this.programsList = x[2];
+      
+    });
+  }
+
 pasteSelectedRecords(event:any){
     console.log(event);
     if (this.toBePasted==null || this.toBePasted==null)    return;     
@@ -728,6 +820,8 @@ openMenu(){
 }
 menuAction(){
     this.showMenu=false;
+    this.dmOptions.next({dmOption1:this.optionsList,dmOption2:this.optionsList2})
+    console.log(this.optionsList)
 }
 change(event:any){
 
@@ -881,8 +975,9 @@ load_rosters(){
 ngOnInit(): void {
     this.token = this.globalS.decode(); 
     this.buildForm(); 
-   this.selectedPersonType ='Staff Management';
+    this.selectedPersonType ='Staff Management';
     this.setPersonTypes();
+    this.FillQuickFilterLists();
 }
   
 
@@ -1615,5 +1710,51 @@ listChange(event: any) {
     //this.cd.detectChanges();
 }
 
+onItemChecked(data: any, checked: boolean, type:string): void {
+    if (type=='Branches'){
+        if (checked)
+            this.selectedBranches.push(data)
+        else           
+            this.selectedBranches.splice(this.selectedBranches.indexOf(data),1)
+        
+    }else if (type=='Program'){
+        if (checked)
+            this.selectedPrograms.push(data)
+        else
+            this.selectedPrograms.splice(this.selectedPrograms.indexOf(data),1)    
+    }else if (type=='Activity'){
+        if (checked)
+            this.selectedActivities.push(data)
+        else
+            this.selectedActivities.splice(this.selectedActivities.indexOf(data),1)    
+    }
+    //console.log(this.selectedPrograms)
+  }
 
+  onAllChecked(checked: boolean, type:string): void {
+     if (type=='Branch') {
+        if (checked) 
+            this.branchesList.forEach(d => {
+                this.selectedBranches.push(d)
+            });
+        else
+            this.selectedBranches=[];
+     }else if (type=='Program') {
+        if (checked) 
+            this.programsList.forEach(d => {
+                this.selectedPrograms.push(d)
+            });
+        else
+            this.selectedPrograms=[];
+     }
+    else if (type=='Activity') {
+        if (checked) 
+            this.activityList.forEach(d => {
+                this.selectedActivities.push(d)
+            });
+        else
+            this.selectedActivities=[];
+     }
+  }
+ 
 }

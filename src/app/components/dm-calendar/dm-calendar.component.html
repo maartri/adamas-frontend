@@ -57,12 +57,13 @@
                                 <div  >{{ data?.value[0].category}}</div>
                         
                             </div>
-                            
-                            <div >W1-WKD : {{ getWorkHours(data?.key ,'W1') }}</div>
-                            <div >W2-WKD : {{ getWorkHours(data?.key ,'W2') }}</div>
-                            <div >FN-WKD : {{ getWorkHours(data?.key ,'F') }}</div>
-                            <!-- <div >TO-WKD : {{ getWorkHours(data?.key ,'T') }}</div> -->
-                            <div >PP-WKD : {{ getWorkHours(data?.key ,'P') }}</div>
+                            <div *ngIf="!optionsList[0].checked ">
+                                <div  >W1-WKD : {{ getWorkHours(data?.key ,'W1') }}</div>
+                                <div >W2-WKD : {{ getWorkHours(data?.key ,'W2') }}</div>
+                                <div >FN-WKD : {{ getWorkHours(data?.key ,'F') }}</div>
+                                <!-- <div >TO-WKD : {{ getWorkHours(data?.key ,'T') }}</div> -->
+                                <div >PP-WKD : {{ getWorkHours(data?.key ,'P') }}</div>
+                            </div>
                         </div>
                     </div>
                     <ng-container *ngIf="i > 0" >
@@ -144,5 +145,28 @@
         </clr-alert>
     </div>
 
-    
+    <nz-modal  [nzStyle]="{ top: '100px' }" hasBackdrop [nzWidth]="400" [(nzVisible)]="AutoPreviewNotes" nzTitle="Service Summary"   (nzOnCancel)="AutoPreviewNotes = false" >
+        <div  class="flexy" style="min-height:15rem; margin-top: 5px;" >
+            <div nz-row >
+                <div nz-row >
+                    <div *ngIf="clickedRoster">
+                           Shift#   :   <span>{{clickedRoster.recordno}}</span>
+                           <br/> <br/>
+                           Client   :   <span>{{clickedRoster.recipient}}</span>
+                           <br/> <br/>
+                           Staff    :   <span>{{clickedRoster.carercode}}</span>
+                           <br/> <br/>
+                           Location :   <span>{{clickedRoster.servicesetting}}</span>
+                           <br/> <br/>
+                           Activity :   <span>{{clickedRoster.activity}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *nzModalFooter>
+            <button  nz-button nzType="default" (click)="AutoPreviewNotes=false">OK</button>
+            <button  nz-button nzType="default" (click)="AutoPreviewNotes=false">Cancel</button>
+        </div>
+    </nz-modal>                 
+
 </div>

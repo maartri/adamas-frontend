@@ -959,24 +959,8 @@ stafftypeArr: Array<any> = constants.types;
                
                 break;
         }  
-
-        
-
-
-    
-       
-        forkJoin([ 
-            this.ReportS.GetBranchFilters(this.tocken.user.toString()) ,                                    
-            this.ReportS.GetProgramFilters(this.tocken.user.toString()),
-            this.ReportS.GetCoordinaterFilters(this.tocken.user.toString()),
-            
-        ]).subscribe(data => { 
-            this.Viewfilter_Branches= data[0];
-            this.Viewfilter_Programs= data[1];
-            this.Viewfilter_Coordinater= data[2];   
-                                     
-        });
-       
+                         
+          
     
     }//ngOninit  
 
@@ -986,6 +970,34 @@ stafftypeArr: Array<any> = constants.types;
        }
    */
     ngAfterViewInit(): void {
+        
+        let filers = forkJoin([ 
+            this.ReportS.GetBranchFilters(this.tocken.user.toString()) ,                                    
+            this.ReportS.GetProgramFilters(this.tocken.user.toString()),
+            this.ReportS.GetCoordinaterFilters(this.tocken.user.toString()),
+            
+        ]);
+        filers.subscribe(data => { 
+            this.Viewfilter_Branches= data[0];
+            this.Viewfilter_Programs= data[1];
+            this.Viewfilter_Coordinater= data[2];  
+
+            if(this.Viewfilter_Programs != "" && this.Viewfilter_Programs != undefined){
+                var sql = "Select Program from Recipients " + this.Viewfilter_Programs.toString();
+                this.listS.getlist(sql).subscribe(x => {
+                   
+                    for(let i=0; i < x.length-1; i++){
+                        this.programsArr = [... this.programsArr ,x[i].program]               
+                    }
+                })
+               
+            }else{
+                this.listS.getreportcriterialist({
+                    listType: 'PROGRAMS',
+                    includeInactive:false
+                }).subscribe(x => this.programsArr = x);
+            }
+        });
 
         this.listS.getreportcriterialist({
             listType: 'FUNDERS',
@@ -1011,17 +1023,24 @@ stafftypeArr: Array<any> = constants.types;
 
         
     //    this.listS.GetAllPrograms().subscribe(x => this.programsArr = x);
-        this.listS.getreportcriterialist({
+    /*    this.listS.getreportcriterialist({
             listType: 'PROGRAMS',
             includeInactive:false
         }).subscribe(x => this.programsArr = x);
-    /*    
+        
         this.listS.getreportcriterialist({
             listType: 'BRANCHES',
             includeInactive: false
         }).subscribe(x => this.branchesArr = x);
+
+           this.listS.getreportcriterialist({
+            listType: 'MANAGERS',
+            includeInactive: false
+        }).subscribe(x => this.managersArr = x)
     */
+        //this.listS.getlisttimeattendancefilter("PROGRAMS").subscribe(x => this.programsArr = x);
         this.listS.getlisttimeattendancefilter("BRANCHES").subscribe(x => this.branchesArr = x);
+        this.listS.getlisttimeattendancefilter("CASEMANAGERS").subscribe(x => this.managersArr = x);
         
         this.listS.getcasenotecategory(0).subscribe(x => this.casenotesArr = x);
         this.listS.getcasenotecategory(1).subscribe(x => this.OPnotesArr = x);
@@ -1040,10 +1059,7 @@ stafftypeArr: Array<any> = constants.types;
         this.listS.Getrptsettings_vehicles().subscribe(x => this.settting_vehicleArr = x)
 
 
-        this.listS.getreportcriterialist({
-            listType: 'MANAGERS',
-            includeInactive: false
-        }).subscribe(x => this.managersArr = x)
+     
 
         this.listS.getreportcriterialist({
             listType: 'FUNDERS',
@@ -1056,6 +1072,11 @@ stafftypeArr: Array<any> = constants.types;
         }).subscribe(x => this.fundingRegionsArr = x)
 
         this.listS.getliststaffgroup().subscribe(x => this.staffgroupsArr = x)
+        
+
+        
+
+        
 
 
 
@@ -2954,7 +2975,7 @@ stafftypeArr: Array<any> = constants.types;
             var Title = "RECIPIENT REFERRAL LISTING"
 
            
-                //console.log(fQuery)
+                console.log(fQuery)
                 const data = {
         
                     "template": { "_id": this.reportid },                                

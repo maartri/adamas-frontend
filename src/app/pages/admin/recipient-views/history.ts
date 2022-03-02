@@ -6,6 +6,8 @@ import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
 
+import * as groupArray from 'group-array';
+
 @Component({
     styles: [`
         ul{
@@ -71,6 +73,9 @@ export class RecipientHistoryAdmin implements OnInit, OnDestroy {
         this.clientS.gethistory(user.code).subscribe(data => {
             this.tableData = data.list;
             this.loading = false;
+
+            console.log(groupArray(data.list, 'event', 'program'))
+
             this.cd.markForCheck();
         });
     }

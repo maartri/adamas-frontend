@@ -48,6 +48,33 @@ export const view = {
   admin: 'admin'
 }
 
+export const CREDITCARD = [
+  "Visa",
+  "MasterCard",
+  "American Express",
+  "Other"
+]
+
+export const BILLING_CYCLE = [
+  "<FORTNIGHTLY>",
+  "<MONTHLY>",
+  "<WEEKLY>",
+  "BROKERAGE",
+  "DAILY NDIA",
+  "HCP"
+]
+
+export const BILLING_RATE_IS = [
+  "COMMERCIAL",
+  "LEVEL1",
+  "LEVEL2",
+  "LEVEL3",
+  "LEVEL4",
+  "LEVEL5",
+  "FIXED",
+  "PERCENTAGE"
+]
+
 export const ROSTER_TYPE = {
   2: "ONEONONE",
   3: "BROKERED SERVICE",

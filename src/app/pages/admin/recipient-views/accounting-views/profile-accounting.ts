@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 
-import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, ClientService } from '@services/index';
+import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, ClientService, 
+    BILLING_CYCLE, BILLING_RATE_IS, CREDITCARD } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
 import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -75,6 +76,18 @@ import { NzModalService } from 'ng-zorro-antd/modal';
             padding:10px;
             margin:0;
         }
+        .mk-group-inline{
+            display:flex;
+            padding: 0 1rem;
+        }
+        .mk-group-inline > div > *{
+            padding: 4px 5px;
+        }
+        .mk-group-inline > div{
+            margin-right:10px;
+            background: #efefef;
+            border-radius: 5px;
+        }
         `
     ],
     templateUrl: './profile-accounting.html',
@@ -95,6 +108,12 @@ export class ProfileAccounting implements OnInit, OnDestroy {
     inputForm: FormGroup;
     tableData: Array<any> = [];
     alist: Array<any> = [];
+
+    contributionActivities: Array<string> = [];
+    billingCycleList: Array<string> = BILLING_CYCLE;
+    billingrateList: Array<string> = BILLING_RATE_IS;
+    creditCardList: Array<string> = CREDITCARD;
+
 
     constructor(
         private timeS: TimeSheetService,
@@ -142,11 +161,15 @@ export class ProfileAccounting implements OnInit, OnDestroy {
 
     search(user: any = this.user) {
         this.cd.reattach();
-
         this.loading = true;
+
         this.listS.getaccountingprofile(user.id).subscribe(data => {
             this.profileForm.patchValue(data);
             this.cd.markForCheck();
+        });
+
+        this.listS.getcontributionactivity().subscribe(data => {
+            this.contributionActivities = data.map(x => x).filter(x => x != '');
         });
     }
 
@@ -197,11 +220,18 @@ export class ProfileAccounting implements OnInit, OnDestroy {
             terms: null,
             title: null,
             type:null,
-            whs:null
+            whs:null,
+            uniqueID: null
         })
     }
 
     save() {
+        const profileForm = this.profileForm.value;
+
+        console.log(profileForm);
+
+        this.listS.updateaccountingprofile(profileForm, profileForm.uniqueID)
+            .subscribe(data => console.log(data));
 
     }
 

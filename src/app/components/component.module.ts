@@ -12,6 +12,8 @@ import { ProfileComponent } from './profile/profile.component'
 
 import { NgSelectModule } from '@ng-select/ng-select';
 
+import {DragDropModule} from '@angular/cdk/drag-drop';
+
 import {
   SuburbComponent
 } from '@components/index';
@@ -58,6 +60,10 @@ import { CdcClaimPreparationComponent } from './cdc-claim-preparation/cdc-claim-
 import { CdcClaimUpdateComponent } from './cdc-claim-update/cdc-claim-update.component';
 import { CdcProdaClaimUpdateComponent } from './cdc-proda-claim-update/cdc-proda-claim-update.component';
 import { NdiaClaimUpdateComponent } from './ndia-claim-update/ndia-claim-update.component';
+import { GlobalAlertsComponent } from './global-alerts/global-alerts.component';
+import { WorkflowsComponent } from './workflows/workflows.component';
+
+
 
 
 @NgModule({
@@ -103,7 +109,9 @@ import { NdiaClaimUpdateComponent } from './ndia-claim-update/ndia-claim-update.
     CdcClaimPreparationComponent,
     CdcClaimUpdateComponent,
     CdcProdaClaimUpdateComponent,
-    NdiaClaimUpdateComponent
+    NdiaClaimUpdateComponent,
+    GlobalAlertsComponent,
+    WorkflowsComponent
   ],
   imports: [
     CommonModule,
@@ -113,7 +121,8 @@ import { NdiaClaimUpdateComponent } from './ndia-claim-update/ndia-claim-update.
     ReactiveFormsModule,
     NgZorroAntdModule,
     NzUploadModule,
-    CalendarModule.forRoot({ provide: DateAdapter, useFactory: adapterFactory })
+    CalendarModule.forRoot({ provide: DateAdapter, useFactory: adapterFactory }),
+    DragDropModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA
@@ -156,7 +165,9 @@ import { NdiaClaimUpdateComponent } from './ndia-claim-update/ndia-claim-update.
     CdcClaimUpdateComponent,
     CdcProdaClaimUpdateComponent,
     NdiaClaimUpdateComponent,
-    ClickOutsideDirective
+    ClickOutsideDirective,
+    GlobalAlertsComponent,
+    WorkflowsComponent
   ],
   providers: [
     

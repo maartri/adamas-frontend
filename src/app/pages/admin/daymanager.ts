@@ -41,6 +41,9 @@ class Address {
   
 @Component({
     styles: [`
+
+    nz-switch.master-class >>> button.ant-switch-checked{ background-color:#c07417; }
+
     .dm-input{
         margin-bottom:1rem;
     }
@@ -267,6 +270,7 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
     AllActivities:boolean=true;
     OpenSearchOfStaff:boolean;
     OpenSearchOfRecipient:boolean;
+    PayPeriodEndDate:string;
 
     optionsList = [
       { id: 1, name: 'Hide W1 W2 WKD Display', checked:false },
@@ -275,20 +279,20 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
       { id: 4, name: 'Include Notes in Service Display', checked:false },
       { id: 5, name: 'Include Information Only Services in Worked Hours', checked:false },
       { id: 6, name: 'Recipient Branch Only', checked:false },
-      { id: 7, name: 'Include Notes in Service Display', checked:false }
+     
     ];
 
     optionsList2 = [
         { id: 1, name: 'Booking', checked:false },
         { id: 2, name: 'Direct Care', checked:false },
-        { id: 3, name: 'Case Management', checked:false },
-        { id: 4, name: 'Transport', checked:false },
-        { id: 5, name: 'Facilities', checked:false },
-        { id: 6, name: 'Groups', checked:false },
-        { id: 7, name: 'Items', checked:false },
-        { id: 8, name: 'Unavailable', checked:false },
-        { id: 9, name: 'Staff Admin', checked:false },
-        { id: 10, name: 'Travel Time', checked:false },
+        { id: 7, name: 'Case Management', checked:false },
+        { id: 10, name: 'Transport', checked:false },
+        { id: 11, name: 'Facilities', checked:false },
+        { id: 12, name: 'Groups', checked:false },
+        { id: 0, name: 'Items', checked:false },
+        { id: 13, name: 'Unavailable', checked:false },
+        { id: 6, name: 'Staff Admin', checked:false },
+        { id: 5, name: 'Travel Time', checked:false },
         { id: 11, name: 'Staff Leave', checked:false },
         
       ];
@@ -494,7 +498,34 @@ buildForm() {
     });
    
 }
-
+masterCycle:any ='CYCLE-I';
+cycles:any=[
+        {cycle:'CYCLE-I', value:'1900/01/01'},
+        {cycle:'CYCLE-II', value:'1900/01/07'},
+        {cycle:'CYCLE-III', value:'1900/01/14'},
+        {cycle:'CYCLE-IV', value:'1900/01/21'},
+        ]
+Master_Roster_label:string='Day Manager';
+  setMasterRoster($event:any){
+     this.dayView=7;
+    //this.master=!this.master;
+    this.master=$event;
+    
+    if (this.master) {   
+      this.Master_Roster_label='Master Roster'   
+      this.date='1900/01/01';
+    }else {
+        this.Master_Roster_label='Day Manager';
+        this.date= new Date();
+    }
+    
+    
+  }
+  setCycle(){
+     let cycle= this.cycles.filter (x=>x.cycle==this.masterCycle)
+     this.date=cycle[0].value;
+     console.log(cycle);
+  }
 fixStartTimeDefault() {
     const { time } = this.DateTimeForm.value;
     if (!time.startTime) {
@@ -822,6 +853,10 @@ menuAction(){
     this.showMenu=false;
     this.dmOptions.next({dmOption1:this.optionsList,dmOption2:this.optionsList2})
     console.log(this.optionsList)
+    localStorage.setItem('dmOption1', JSON.stringify(this.optionsList));
+    localStorage.setItem('dmOption2', JSON.stringify(this.optionsList2));
+    localStorage.setItem('PayPeriodEndDate', this.PayPeriodEndDate);
+    
 }
 change(event:any){
 
@@ -975,11 +1010,27 @@ load_rosters(){
 ngOnInit(): void {
     this.token = this.globalS.decode(); 
     this.buildForm(); 
+    this.getLocalStorage();
     this.selectedPersonType ='Staff Management';
     this.setPersonTypes();
     this.FillQuickFilterLists();
+
+    
 }
-  
+getLocalStorage(){
+    let item1 =  localStorage.getItem('dmOption1');
+    let item2 = localStorage.getItem('dmOption2');
+    if (item1!=null )
+      if (item1.length>0)
+         this.optionsList =JSON.parse(item1);
+     
+     if (item2!=null )
+       if (item2.length>0)
+         this.optionsList2 =JSON.parse(item2);
+    
+   // this.PayPeriodEndDate = localStorage.getItem('PayPeriodEndDate');
+ 
+  }
 
 ngAfterViewInit(){
     console.log("ngAfterViewInit");   

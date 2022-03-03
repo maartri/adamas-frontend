@@ -50,6 +50,14 @@ function makeResizableDiv(div) {
   }
 }
 
+function groupByKey(array, key) {
+  return array
+    .reduce((hash, obj) => {
+      if(obj[key] === undefined) return hash; 
+      return Object.assign(hash, { [obj[key]]:( hash[obj[key]] || [] ).concat(obj)})
+    }, {})
+}
+
 @Component({
   selector: 'dm-calendar',
   templateUrl: './dm-calendar.component.html',
@@ -66,6 +74,7 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
 
   isClicked: boolean = false
   coordinates: any
+  @Input() master:boolean;
 
   fixedHeader: boolean = false
   optionIsClicked: boolean = false;
@@ -87,8 +96,6 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
   @Output() data = new EventEmitter();
   
   
-    
-  
   days: any[] = [];
   daymanager: Array<any> = [];
   dmOriginal: Array<any> = [];
@@ -109,7 +116,8 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
   dmType:string = "2";
   AutoPreviewNotes:boolean;
   clickedRoster:any;
-
+  PayPeriodEndDate:string;
+  
   optionsList = [
     { id: 1, name: 'Hide W1 W2 WKD Display', checked:false },
     { id: 2, name: 'Include Duration in shift Display', checked:false },
@@ -117,24 +125,25 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
     { id: 4, name: 'Include Notes in Service Display', checked:false },
     { id: 5, name: 'Include Information Only Services in Worked Hours', checked:false },
     { id: 6, name: 'Recipient Branch Only', checked:false },
-    { id: 7, name: 'Include Notes in Service Display', checked:false }
+   
   ];
 
   optionsList2 = [
-      { id: 1, name: 'Booking', checked:false },
-      { id: 2, name: 'Direct Care', checked:false },
-      { id: 3, name: 'Case Management', checked:false },
-      { id: 4, name: 'Transport', checked:false },
-      { id: 5, name: 'Facilities', checked:false },
-      { id: 6, name: 'Groups', checked:false },
-      { id: 7, name: 'Items', checked:false },
-      { id: 8, name: 'Unavailable', checked:false },
-      { id: 9, name: 'Staff Admin', checked:false },
-      { id: 10, name: 'Travel Time', checked:false },
-      { id: 11, name: 'Staff Leave', checked:false },
-      
-    ];
+    { id: 1, name: 'Booking', checked:false },
+    { id: 2, name: 'Direct Care', checked:false },
+    { id: 7, name: 'Case Management', checked:false },
+    { id: 10, name: 'Transport', checked:false },
+    { id: 11, name: 'Facilities', checked:false },
+    { id: 12, name: 'Groups', checked:false },
+    { id: 0, name: 'Items', checked:false },
+    { id: 13, name: 'Unavailable', checked:false },
+    { id: 6, name: 'Staff Admin', checked:false },
+    { id: 5, name: 'Travel Time', checked:false },
+    { id: 11, name: 'Staff Leave', checked:false },
+    
+  ];
 
+  
   constructor(
     private timeS: TimeSheetService,
     private elem: ElementRef,
@@ -171,7 +180,7 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
   ngOnInit() {
     let panel:any=document.getElementById("panel")
     this.days = this.calculateDays(this.startDate, this.dayView);
-   
+    this.getLocalStorage();
     this.reload.subscribe(v => { 
       this.alertChange();
      // this.reload.next(false);
@@ -189,13 +198,56 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
     
     makeResizableDiv(panel);
   }
+  
+ getLocalStorage(){
+   let item1 =  localStorage.getItem('dmOption1');
+   let item2 = localStorage.getItem('dmOption2');
+   if (item1!=null )
+     if (item1.length>0)
+        this.optionsList =JSON.parse(item1);
+    
+    if (item2!=null )
+      if (item2.length>0)
+        this.optionsList2 =JSON.parse(item2);
+   
+   //this.PayPeriodEndDate = localStorage.getItem('PayPeriodEndDate');
+ }
+ workingHours(dm:any,date:any){
+  let sum =0;
+  let dayRoster:any;
+   let dt= moment(date).format('YYYY/MM/DD');
+   if (this.optionsList[4].checked)
+     dayRoster = dm.filter(x=>x.date==dt);
+  else
+    dayRoster = dm.filter(x=>x.date==dt && x.infoonly==false);
+   
+   if (dayRoster.length>0)
+    sum = dayRoster.reduce((acc, val) => {  return acc=acc+val.duration },0);
+   
 
- 
+    return sum;
+    //return this.numStr(Math.floor(sum/12)) + ":" + this.numStr((sum%12)*5);
+  
+ }
+
+ numStr(n:number):string {
+  let val="" + n;
+  if (n<10) val = "0" + n;
+  
+  return val;
+}
+
+BlockToTime(blocks:number){
+ return this.numStr(Math.floor(blocks/12)) + ":" + this.numStr((blocks%12)*5)
+}
   applyDMOptions(options:any){
     this.optionsList=options.dmOption1;
     this.optionsList2=options.dmOption2;
-    this.data.emit(this.daymanager) ;
+    
+    this.search(this.startDate, this.dayView);
+    
   }
+  
   private elemMouseUp;
   private documentMouseUp;
 
@@ -280,6 +332,7 @@ HighlightColum(indx:number){
     
     if (Filters==null || Filters.length<=0 || Filters==''){
       this.daymanager=this.dmOriginal;
+      
       this.data.emit(this.daymanager) 
       this.loading=false;
     
@@ -292,6 +345,7 @@ HighlightColum(indx:number){
       this.loading=true;
       
       let zees='zzzzzzzzzzzz';
+
       
       Filters.forEach(element => {
         if (element.key=='STAFF')  {
@@ -376,11 +430,18 @@ HighlightColum(indx:number){
           }
           //Quick Filters
           if (element.key=='BRANCH LIST')  {
-            this.dmOriginal.forEach(v=>{
-              let filtered=v.value.filter(x => (element.value.includes(x.rosterGroup) || element.value.includes(x.staffbranch) || element.value.includes(x.recipientBranch) ))
-              if (filtered.length>0)
-                  this.daymanager.push({key:v.key, value:filtered});
-              }) 
+            if (this.optionsList[5].checked)
+              this.dmOriginal.forEach(v=>{
+                let filtered=v.value.filter(x => (element.value.includes(x.rosterGroup) || element.value.includes(x.recipientBranch) ))
+                if (filtered.length>0)
+                    this.daymanager.push({key:v.key, value:filtered});
+                });
+            else  
+              this.dmOriginal.forEach(v=>{
+                let filtered=v.value.filter(x => (element.value.includes(x.rosterGroup) || element.value.includes(x.staffbranch) || element.value.includes(x.recipientBranch) ))
+                if (filtered.length>0)
+                    this.daymanager.push({key:v.key, value:filtered});
+                });
           }
           
           if (element.key=='PROGRAM LIST')  {
@@ -399,10 +460,48 @@ HighlightColum(indx:number){
               }) 
           }
       });
-      
-      this.data.emit(this.daymanager) 
-      this.loading=false;
+        this.ApplyDMOPtionsFilter();
+        this.data.emit(this.daymanager) 
+        this.loading=false;
     
+}
+ApplyDMOPtionsFilter(){
+
+  //---------------DM Options Filter----------------------
+  let dm:Array<any>=[]
+  this.optionsList2.forEach(element => {
+    if (element.checked && element.id==2)  {
+      this.daymanager.forEach(v=>{
+        let filtered=v.value.filter(x => x.type==2 ||  x.type==3 ||  x.type==8) 
+        if (filtered.length>0)
+        dm.push({key:v.key, value:filtered});
+        }) 
+    }else if (element.checked && element.id==6)  {
+      this.daymanager.forEach(v=>{
+        let filtered=v.value.filter(x => x.type==6 ||  x.minorGroup!='LEAVE' ) 
+        if (filtered.length>0)
+        dm.push({key:v.key, value:filtered});
+        })
+      }else if (element.checked && element.id==11)  {
+        this.daymanager.forEach(v=>{
+          let filtered=v.value.filter(x =>  x.minorGroup=='LEAVE' ) 
+          if (filtered.length>0)
+          dm.push({key:v.key, value:filtered});
+          })
+        }else if (element.checked && element.id>0)  {
+        this.daymanager.forEach(v=>{
+          let filtered=v.value.filter(x => x.type==element.id ) 
+          if (filtered.length>0)
+          dm.push({key:v.key, value:filtered});
+          })
+        }
+  });
+
+  if (dm.length>0)
+    this.daymanager=dm;
+  
+    dm=[]
+
 }
 applyDMFilters(PersonTypeFilter:any){
     
@@ -682,20 +781,14 @@ getfilterType(type:String)
     }
     this.optionIsClicked = false;
   }
+  
 
   search(date: any, dayView: number) {
+          
     let sDate = moment(date).format('YYYY/MM/DD');
     let eDate = moment(date).add(dayView - 1, 'days').format('YYYY/MM/DD');
-    // if (!this.load_from_server){
-
-    //   if (this.personType!=null && this.personType!=''){
-    //        this.applyFilters(this.personType);
-      
-    //   }
-    //   this.data.emit(this.daymanager);
-    //   this.loading=false;
-    //   return;
-    // } 
+   
+    
     this.timeS.getdaymanager({ StartDate: sDate, EndDate: eDate,dmType:this.dmType }).pipe(
       debounceTime(200))
       .subscribe(data => {
@@ -708,10 +801,11 @@ getfilterType(type:String)
         this.personsList = this.daymanager.map(x => x.key )
         if (this.Filters.length>0)
           this.applyCustomFilters(this.Filters)
-         
+        else
+          this.ApplyDMOPtionsFilter();
       })
     
-      
+    
       this.timeS.getStaffWorkingHours({ StartDate: sDate, EndDate: eDate,dmType:this.dmType }).pipe(
         debounceTime(200))
         .subscribe(data => {
@@ -955,6 +1049,7 @@ getfilterType(type:String)
     event.stopPropagation();
     this.deselect(null, event);
     this.HighlightColum_index=-1
+    this.AutoPreviewNotes=false;
     //value.isSelected=true;
     //this.isClicked = false;
     this.coordinates = {

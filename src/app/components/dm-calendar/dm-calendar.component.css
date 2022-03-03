@@ -24,32 +24,6 @@
     line-height: 10px;
     margin: 6px 0;
 }
-.icon{
-    font-size: 12px;
-    padding-right: 4px;    
-    padding-top: 4px;
-    position: relative;   
-    display: inline-block;
-    background-color: transparent;
-}
-.icon2{
-   font-size: 10px;
-   padding-right: 0px;    
-   padding-top: 0px;
-   width: 15px;
-   height: 15px;
-   background-color: transparent;
-}
-.icon3{
-    font-size: 9px;
-    margin-right: 1px;
-    padding-left: 0px;
-    width: 4px;
-    height: 4px;    
-    background-color: transparent;
-    position: relative;   
-    display: inline-flexbox;
- }
  .slant-position{
     transform: rotate(45deg);
  }
@@ -96,9 +70,9 @@
     color: #000;
     font-weight: 500;
     line-height:16px;
-    font-size:10px;
+    font-size:11px;
     position: relative;
-   
+    padding-left: 4px;
     width: auto;
     white-space: nowrap;
     overflow: hidden;
@@ -122,19 +96,89 @@
     word-break:auto; */
 }
 
-.time{
+
+.icon{
+    width: 18px;
+    height: 18px;  
+    font-size:12px;  
+    position: relative;   
+    display: inline-block;
+    background-color: transparent;
+}
+.icon2{
+   
+    width: 18px;
+    height: 18px;  
+    font-size:12px;  
+    position: relative;   
+    display: inline-block;
+    background-color: transparent;
+}
+.icon3{
+    font-size:8px;    
+    width: 16px;
+    height: 16px;    
+    background-color: transparent;
+    position: relative;   
+    display: inline-block;
+ }
+ .icon4{
+    font-size:7px;    
+    width: 12px;
+    height: 13px;    
+    background-color: transparent;
   
-   font-size:12px;
+ }
+
+.time{
+    margin-left: 4px;
+    padding-left: 2px;
+   font-size:12px;  
    position: relative;   
    display: inline-block;
+   
 }
-.time2{
-  
-    font-size:10px;
-    position: relative;   
-    display: block;
 
+.time2{
+    margin-left: 4px;
+    padding-left: 2px;
+    font-size:12px;
+    position: relative;   
+    display: inline-block;    
+    overflow-wrap: break-word;
 }
+
+.time3{
+    padding-left: 2px;
+    font-size:11px;
+    position: relative;   
+    display: inline-block;    
+    overflow-wrap: break-word;
+}
+
+.time4{   
+   
+    font-size:9px;
+    position: relative;   
+    display: inline-block;
+    inline-size: 50px;
+    overflow-wrap: break-word;
+}
+
+.detail2{   
+    font-size:11px; 
+    padding-left: 3px;
+}
+
+.detail3{   
+    font-size:10px;
+    padding-left: 2px;
+}
+.detail4{   
+    font-size:9px;
+    padding-left: 2px;
+}
+
 .header-wrapper{
     position: sticky;
     border-top-right-radius: 5px;
@@ -330,4 +374,16 @@ h5{
 .spinner{
     margin:1rem auto;
     width:1px;
+}
+
+
+.rectangle{
+    margin-top: 5px;
+    padding: 5px;     
+    border-style: unset; 
+    border-bottom: solid;
+    border-width: 1px; 
+    border-radius: 0px;  
+    width: auto;
+    border-color: rgb(207, 202, 202);
 }

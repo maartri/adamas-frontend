@@ -2,23 +2,37 @@
     <div style="padding-left:8px" >
         
         <div nz-row class="dm-input">
-            <div nz-col nzSpan="5" style="margin-left: 5px; ">
+            <div nz-col nzSpan="5" style="margin-left: 5px; margin-top: 5px; ">
                 <label for="" > Day Manager Filter</label>
-                <nz-select [(ngModel)]="selectedPersonType" (ngModelChange)="personTypeChange($event)" style="width: 200px;">
+                <nz-select  [(ngModel)]="selectedPersonType" (ngModelChange)="personTypeChange($event)" style="width: 200px;">
                     <nz-option *ngFor="let p of personTypeList" [nzValue]="p"  [nzLabel]="p"></nz-option>
                 </nz-select>
             </div>
-            <div nz-col nzSpan="4">
+            <div nz-col nzSpan="4" class="date-title" *ngIf="master" style="margin: 5px; width:200px  ">
+                <label for="date"> Cycle</label>
+                <nz-select style="width:200px" [(ngModel)]="masterCycle" (ngModelChange)="setCycle()">                   
+                    <nz-option *ngFor="let cl of cycles" [nzValue]="cl.cycle" [nzLabel]="cl.cycle"></nz-option>
+                </nz-select>
+            </div>
+            <div nz-col nzSpan="3" *ngIf="!master" style=" margin-top: 5px;">
                 <label for="date"> Date</label>
                 <nz-date-picker nzMode="default" [nzFormat]="dateFormat" [(ngModel)]="date"></nz-date-picker>
             </div>
-            <div nz-col nzSpan="4">
-                <label for="dayview">Day View</label>
+            <div nz-col nzSpan="3" *ngIf="!master" style="margin-left: 5px; margin-top: 5px;">
+                <label for="dayview" >Day View</label>
                 <nz-select [(ngModel)]="dayView">
                     <nz-option *ngFor="let no of dayViewArr" [nzValue]="no" [nzLabel]="no"></nz-option>
                 </nz-select> 
             </div>
-            <div nz-col nzSpan="10" style="margin-top: 20px;" > 
+            <div nz-col nzSpan="2" id="divMaster" style=" margin-top: 5px;  width:80px" >
+                <label for="dayview" >Master</label>
+                <!--                     
+                    <nz-label style="padding:4px; background-color: transparent; color: white; vertical-align: middle"> {{Master_Roster_label}}  </nz-label> -->
+                <div [ngStyle]="{'background-color':master === true ? '#F18805' : '#85B9D5' }" style=" background-color:  #1E91E8; vertical-align: middle; height: 32px; width:80px;  border-radius: 3px;   color: grey; padding-left: 2px; text-align: center;">
+                    <nz-switch  [class.master-class]="master" [(ngModel)]="master" style="padding:4px;  vertical-align: middle" (ngModelChange)="setMasterRoster($event)"></nz-switch>
+                </div>
+            </div>
+            <div nz-col nzSpan="10" style="margin-top: 25px; text-align: center;" > 
                 
                     <button nz-button nzType="default"  (click)="showCustomFilter()" [nzSize]="size" nzShape="circle" nz-tooltip nzTooltipTitle="Create a new custom filter to limit activities to operator requirements"><i nz-icon nzType="filter" nzTheme="outline" ></i></button>
                     <button nz-button nzType="default"  (click)="removeCustomFilter()" [disabled]="CustomFilters.length<=0" [nzSize]="size" nzShape="circle" nz-tooltip nzTooltipTitle="Delete ALL custom filters"><i nz-icon nzType="close-circle" nzTheme="outline" ></i></button>
@@ -28,7 +42,7 @@
                     <button nz-button nzType="default"  [nzSize]="size" nzShape="circle" nz-tooltip nzTooltipTitle="Print the Day Manager"><i nz-icon nzType="printer" nzTheme="outline" ></i></button>                   
                     <button nz-button nzType="default"  (click)="openStaffModal(true)" [nzSize]="size" nzShape="circle" nz-tooltip nzTooltipTitle="Display Staff Inquiry Screen"><i nz-icon nzType="team" nzTheme="outline" ></i></button>
                     <button nz-button nzType="default"  (click)="openRecipientModal(true)" [nzSize]="size" nzShape="circle" nz-tooltip nzTooltipTitle="Display Recipient Inquiry Screen"><i nz-icon nzType="user" nzTheme="outline"></i></button>
-                    <button nz-button nzType="default"  (click)="openMenu()"  [nzSize]="size" nzShape="round"><i nz-icon nzType="menu" nzTheme="outline"></i></button>
+                    <button nz-button nzType="default"  (click)="openMenu()"  [nzSize]="size" nzShape="circle"><i nz-icon nzType="menu" nzTheme="outline"></i></button>
               
             </div>
             <div *ngIf="CustomFilter" >
@@ -99,7 +113,7 @@
                    
                     <div style="margin-top: 20px;">
                         <label for="">Set Rostering Pay Preriod</label> 
-                        <nz-date-picker  [nzFormat]="dateFormat" ></nz-date-picker>
+                        <nz-date-picker [(ngModel)]="PayPeriodEndDate" [nzFormat]="dateFormat" ></nz-date-picker>
                     </div>
                 </div>
             </div>
@@ -114,7 +128,7 @@
 
         </div>
             <div *nzModalFooter>
-                <button  nz-button nzType="default" (click)="menuAction()">OK</button>
+                <button  nz-button nzType="default" (click)="menuAction()">Save & Apply</button>
                 <button  nz-button nzType="default" (click)="showMenu=false">Cancel</button>
             </div>
         </nz-modal>
@@ -214,7 +228,7 @@
     </div>
     <div>
         <dm-calendar [startDate]="date" [dayView]="dayView" [reload]="reload" [personType]="selectedPersonType"  [copyPaste]="toBePasted?.length > 0"
-            (showDetail)="showDetail($event)" (showOptions)="showOptions($event)" (highlighted)="highlighted($event)" 
+            (showDetail)="showDetail($event)" (showOptions)="showOptions($event)" (highlighted)="highlighted($event)" [master]="master"
             (data)="data($event)" (paste)="pasteSelectedRecords($event)" [applyFilter]="applyFilter" [dmOptions]="dmOptions"></dm-calendar>
     </div>
    

@@ -14,10 +14,10 @@ import { takeUntil } from 'rxjs/operators';
   styles: [`
   .mrg-btm{
     margin-bottom:0.3rem;
-  },
+  }
   textarea{
     resize:none;
-  },
+  }
   .staff-wrapper{
     height: 20rem;
     width: 100%;
@@ -25,6 +25,38 @@ import { takeUntil } from 'rxjs/operators';
     padding: .5rem 1rem;
     border: 1px solid #e9e9e9;
     border-radius: 3px;
+  }
+  nz-tabset{
+    margin-top:1rem;
+  }
+  .ant-divider-horizontal.ant-divider-with-text-center, .ant-divider-horizontal.ant-divider-with-text-left, .ant-divider-horizontal.ant-divider-with-text-right {
+      margin:1px 0
+  }
+  nz-tabset >>> div > div.ant-tabs-nav-container{
+      height: 25px !important;
+      font-size: 13px !important;
+  }
+
+  nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-nav-scroll div.ant-tabs-nav div div.ant-tabs-tab{
+      line-height: 24px;
+      height: 25px;
+      border-radius:15px 4px 0 0;
+      margin:0 -10px 0 0;
+  }
+  nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-nav-scroll div.ant-tabs-nav div div.ant-tabs-tab.ant-tabs-tab-active{
+      background: #85B9D5;
+      color: #fff;
+  }
+  .staff-wrapper{
+    height: 20rem;
+    width: 100%;
+    overflow: auto;
+    padding: .5rem 1rem;
+    border: 1px solid #e9e9e9;
+    border-radius: 3px;
+  }
+  .ant-modal-body{
+    padding:0px 14px !important;
   }
   `]
 })
@@ -656,6 +688,15 @@ export class MenuMealsComponent implements OnInit {
           if(index == 8){
             this.loadChecklist();
           }
+        }
+        view(index: number){
+          if(index == 7){
+            this.loadCompetency();
+          }
+          if(index == 8){
+            this.loadChecklist();
+          }
+          this.current = index;
         }
         handleOkTop() {
           this.generatePdf();

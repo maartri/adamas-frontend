@@ -1435,5 +1435,14 @@ export class TimeSheetService {
     addRecurrentRosters(data: any): Observable<any> {
         return this.auth.get(`${timesheet}/addRecurrentRosters`, data);
     }
+    GetHaccSex():Observable<any>{
+        return this.auth.get(`${timesheet}/haccSex`)
+    }
+    GetLanguages():Observable<any>{
+        return this.auth.get(`${timesheet}/languages`)
+    }
+    GetCountries():Observable<any>{
+        return this.auth.get(`${timesheet}/GetCountries`)
+    }
 }
 

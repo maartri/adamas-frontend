@@ -149,27 +149,28 @@ export class DatasetQccsmda implements OnInit, OnDestroy {
             .subscribe(data => this.branches = data)
         }
         getGeneralDataLists(){
+            
             return forkJoin([
-                // this.listS.GetHaccSex(),
+                this.listS.GetHaccSex(),
                 this.listS.GetCountries(),
-                // this.listS.GetLanguages(),
-                // this.listS.GetIndigniousStatus(),
-                // this.listS.GetLivingArrangments(),
-                // this.listS.GetAccomodationSetting(),
-                // this.listS.getpensionall(),
-                // this.listS.GetHACCVaCardStatus(),
-                // this.listS.GetHACCReferralSource(),
+                this.listS.GetLanguages(),
+                this.listS.GetIndigniousStatus(),
+                this.listS.GetLivingArrangments(),
+                this.listS.GetAccomodationSetting(),
+                this.listS.getpensionall(),
+                this.listS.GetHACCVaCardStatus(),
+                this.listS.GetHACCReferralSource(),
 
             ]).subscribe(x => {
-                // this.genderlist             = x[0];
-                this.countries                 = x[0];
-                // this.languages              = x[2];
-                // this.indigniousStatus       = x[3];
-                // this.livingArrangemnts      = x[4];
-                // this.accomodationSetting    = x[5];
-                // this.pensionAll             = x[6];
-                // this.dvaCardStatus          = x[7];
-                // this.referalSource          = x[8];
+                this.genderlist             = x[0];
+                this.countries              = x[1];
+                this.languages              = x[2];
+                this.indigniousStatus       = x[3];
+                this.livingArrangemnts      = x[4];
+                this.accomodationSetting    = x[5];
+                this.pensionAll             = x[6];
+                this.dvaCardStatus          = x[7];
+                this.referalSource          = x[8];
             });
 
         }

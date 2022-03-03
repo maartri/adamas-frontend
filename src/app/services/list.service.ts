@@ -937,6 +937,9 @@ export class ListService {
     Getrptpaytype(): Observable<any>{        
         return this.auth.get(`${list}/paytype`)
     }
+    GettravelandAlternateCode():Observable<any>{
+        return this.auth.get(`${list}/travelandAlternateCode`)
+    }
     Getrptactivity(): Observable<any>{        
         return this.auth.get(`${list}/activity`)
     }

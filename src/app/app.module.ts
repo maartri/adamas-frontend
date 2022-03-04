@@ -80,6 +80,9 @@ import { ContextMenuModule } from 'ngx-contextmenu';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { RecipientComponent } from './pages/standalone-app/recipient/recipient.component';
 
+
+import {DragDropModule} from '@angular/cdk/drag-drop';
+
 registerLocaleData(en);
 
 export function tokenGetter(request) {
@@ -140,7 +143,8 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     InfiniteScrollModule,
     FullCalendarModule,
     SpreadSheetsModule,
-    ContextMenuModule.forRoot()
+    ContextMenuModule.forRoot(),
+    DragDropModule
   ],
   providers: [
     { provide: NZ_I18N, useValue: en_US },

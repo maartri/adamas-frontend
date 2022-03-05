@@ -29,9 +29,6 @@ export class BillingService {
     updateCloseRosterPeriod(data: any): Observable<any> {
         return this.auth.put(`${billing}/closeRosterPeriod`, data);
     }
-    getDebtorRecords(is_where: boolean):Observable<any>{
-        return this.auth.get(`${billing}/getDebtorRecordset/${is_where}`)
-    }
 
     //States
     getActiveStates(is_where: boolean):Observable<any>{
@@ -206,7 +203,18 @@ export class BillingService {
         return this.auth.get(`${billing}/getBatchRecord/${is_where}`)
     }
     insertPayBillBatch(data: any): Observable<any> {
-        return this.auth.put(`${billing}/payBillBatch`, data);
+        return this.auth.post(`${billing}/payBillBatch`, data);
     }
-
+    getDebtorRecordsTest(is_where: boolean):Observable<any>{
+        return this.auth.get(`${billing}/getDebtorRecordsTest/${is_where}`)
+    }
+    getDebtorRecords(data: any): Observable<any> {
+        return this.auth.put(`${billing}/getDebtorRecords`, data);
+    }
+    postDebtorBilling(data: any): Observable<any> {
+        return this.auth.put(`${billing}/postDebtorBilling`, data);
+    }
+    getBillingCycle(is_where: boolean):Observable<any>{
+        return this.auth.get(`${billing}/getBillingCycle/${is_where}`)
+    }
 }

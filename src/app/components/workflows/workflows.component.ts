@@ -35,7 +35,7 @@ export class WorkflowsComponent {
   ];
 
   constructor(){
-    console.log(groupArray(this.arr, 'tag'))
+    console.log(groupArray(this.arr, ['tag']))
   }
 
   drop(event: CdkDragDrop<string[]>) {

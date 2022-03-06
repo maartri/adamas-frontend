@@ -133,6 +133,8 @@ const inputFormDefault = {
     frm_RosterInclusion: [false],
 
     frm_CustomRptbtn : [false],
+
+    EnableCSVExport : [false],
     
 
     whowhat: [''],
@@ -445,6 +447,7 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     frm_RosterInclusion:boolean;
 
     frm_CustomRptbtn: boolean;
+    EnableCSVExport : boolean;
 
     
 
@@ -605,6 +608,12 @@ stafftypeArr: Array<any> = constants.types;
     mta_time_late: string;
     mta_time_overstayed: string;
     mta_time_early: string;
+
+    Viewfilter_Branches: string;
+    Viewfilter_Programs: string;
+    Viewfilter_Coordinater: string;
+
+   CSV_String: any;
 
     ModalName: string;
     FORptModelTitle: string;
@@ -950,10 +959,9 @@ stafftypeArr: Array<any> = constants.types;
                
                 break;
         }  
-
-        
-
-
+                         
+          
+    
     }//ngOninit  
 
     /*   hello(data: any){
@@ -962,6 +970,34 @@ stafftypeArr: Array<any> = constants.types;
        }
    */
     ngAfterViewInit(): void {
+        
+        let filers = forkJoin([ 
+            this.ReportS.GetBranchFilters(this.tocken.user.toString()) ,                                    
+            this.ReportS.GetProgramFilters(this.tocken.user.toString()),
+            this.ReportS.GetCoordinaterFilters(this.tocken.user.toString()),
+            
+        ]);
+        filers.subscribe(data => { 
+            this.Viewfilter_Branches= data[0];
+            this.Viewfilter_Programs= data[1];
+            this.Viewfilter_Coordinater= data[2];  
+
+            if(this.Viewfilter_Programs != "" && this.Viewfilter_Programs != undefined){
+                var sql = "Select Program from Recipients " + this.Viewfilter_Programs.toString();
+                this.listS.getlist(sql).subscribe(x => {
+                   
+                    for(let i=0; i < x.length-1; i++){
+                        this.programsArr = [... this.programsArr ,x[i].program]               
+                    }
+                })
+               
+            }else{
+                this.listS.getreportcriterialist({
+                    listType: 'PROGRAMS',
+                    includeInactive:false
+                }).subscribe(x => this.programsArr = x);
+            }
+        });
 
         this.listS.getreportcriterialist({
             listType: 'FUNDERS',
@@ -987,7 +1023,7 @@ stafftypeArr: Array<any> = constants.types;
 
         
     //    this.listS.GetAllPrograms().subscribe(x => this.programsArr = x);
-        this.listS.getreportcriterialist({
+    /*    this.listS.getreportcriterialist({
             listType: 'PROGRAMS',
             includeInactive:false
         }).subscribe(x => this.programsArr = x);
@@ -997,6 +1033,15 @@ stafftypeArr: Array<any> = constants.types;
             includeInactive: false
         }).subscribe(x => this.branchesArr = x);
 
+           this.listS.getreportcriterialist({
+            listType: 'MANAGERS',
+            includeInactive: false
+        }).subscribe(x => this.managersArr = x)
+    */
+        //this.listS.getlisttimeattendancefilter("PROGRAMS").subscribe(x => this.programsArr = x);
+        this.listS.getlisttimeattendancefilter("BRANCHES").subscribe(x => this.branchesArr = x);
+        this.listS.getlisttimeattendancefilter("CASEMANAGERS").subscribe(x => this.managersArr = x);
+        
         this.listS.getcasenotecategory(0).subscribe(x => this.casenotesArr = x);
         this.listS.getcasenotecategory(1).subscribe(x => this.OPnotesArr = x);
         this.listS.Getrptincidents().subscribe(x => this.incidentArr = x);
@@ -1014,10 +1059,7 @@ stafftypeArr: Array<any> = constants.types;
         this.listS.Getrptsettings_vehicles().subscribe(x => this.settting_vehicleArr = x)
 
 
-        this.listS.getreportcriterialist({
-            listType: 'MANAGERS',
-            includeInactive: false
-        }).subscribe(x => this.managersArr = x)
+     
 
         this.listS.getreportcriterialist({
             listType: 'FUNDERS',
@@ -1030,6 +1072,11 @@ stafftypeArr: Array<any> = constants.types;
         }).subscribe(x => this.fundingRegionsArr = x)
 
         this.listS.getliststaffgroup().subscribe(x => this.staffgroupsArr = x)
+        
+
+        
+
+        
 
 
 
@@ -1122,7 +1169,7 @@ stafftypeArr: Array<any> = constants.types;
         this.UserRptFormatlist = [];
         this.UserRptSQLlist = [];
 
-
+        this.EnableCSVExport = false;
 
         this.ModalName = " CRITERIA "
         
@@ -1209,6 +1256,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_options = true;
                 this.chkbx_incl_Contacts = true;
                 this.chkbx_asAddressLabel = true;
+                this.chkbx_CSVExport = true
 
                 break;
             case 'btn-activepackagelist':
@@ -1217,6 +1265,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Date = true;
                 this.frm_Programs = true;
                 this.frm_Funders = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-recipientroster':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1233,6 +1282,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_RosterInclusion = true;
                 this.Rpt_Format = ['Presentation - with Activity', 'Presentation - with No Activity', 'Detail']   
                 this.Roster_staffinclusion   = ['Show Staff Code','Show Staff First Name','Show Staff #'] ;
+                this.chkbx_CSVExport = true
                
                
                 break;
@@ -1246,6 +1296,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Categories = true;
                 this.frm_options = true;
                 this.chkbx_asAddressLabel = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-vouchersummary':
                 this.bodystyle = { height:'300px', overflow: 'auto'}
@@ -1253,6 +1304,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Date = true;
                 this.frm_Recipients = true;
                 this.frm_Programs = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-packageusage':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1264,11 +1316,13 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_options = true;
                 this.chkbx_incl_approvedPrograms = true;
                 this.chkbx_incl_inactive = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-timelength':
                 this.bodystyle = { height:'200px', overflow: 'auto'}
                 this.ModalName = "RECIPIENTS TIME LENGTH REPORT "
                 this.frm_Date = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-unallocatedbookings':
                 this.bodystyle = { height:'400px', overflow: 'auto'}
@@ -1277,6 +1331,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Branches = true;
                 this.frm_Programs = true;
                 this.frm_SVCTypes = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-transportsummary':
                 this.bodystyle = { height:'400px', overflow: 'auto'}
@@ -1285,6 +1340,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Branches = true;
                 this.frm_Programs = true;
                 this.frm_vehicles = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-refferalduringperiod':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1294,6 +1350,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Managers = true;
                 this.frm_Programs = true;
                 this.frm_Categories = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-recipientMasterroster':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1311,6 +1368,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_RosterInclusion = true;
                 this.Rpt_Format = ['Presentation - with Activity', 'Presentation - with No Activity', 'Detail']   
                 this.Roster_staffinclusion   = ['Show Staff Code','Show Staff First Name','Show Staff #'] ;
+                this.chkbx_CSVExport = true
                 
                 break;
             case 'btn-activerecipient':
@@ -1326,6 +1384,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.chkbx_asAddressLabel = true;                
                 this.chkbx_incl_inactive = true;
                 this.chkbx_incl_approvedPrograms = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-inactiverecipient':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1337,6 +1396,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_options = true;
                 this.chkbx_asAddressLabel = true;
                 this.chkbx_incl_Contacts = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-adminduringperiod':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1346,6 +1406,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Managers = true;
                 this.frm_Programs = true;
                 this.frm_Categories = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-dischargeduringperiod':
                 this.bodystyle = { height:'400px', overflow: 'auto'}
@@ -1354,6 +1415,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Branches = true;
                 this.frm_Managers = true;
                 this.frm_Programs = true;
+                this.chkbx_CSVExport = true
 
                 break;
             case 'btn-absentclient':
@@ -1364,6 +1426,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Managers = true;
                 this.frm_Programs = true;
                 this.frm_Categories = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-careerlist':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1376,6 +1439,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.chkbx_asAddressLabel = true;
                 this.chkbx_incl_Contacts = true;
                 this.chkbx_incl_inactive = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-onlybillingclients':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1388,6 +1452,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.chkbx_asAddressLabel = true;
                 this.chkbx_incl_Contacts = true;
                 this.chkbx_incl_inactive = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-associatelist':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1400,6 +1465,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.chkbx_asAddressLabel = true;
                 this.chkbx_incl_Contacts = true;
                 this.chkbx_incl_inactive = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-unserviced':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1411,6 +1477,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_options = true;
             //    this.chkbx_incl_activeClients = true;
                 this.chkbx_activeClientsonly= true; 
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-staff-Activestaff':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1422,6 +1489,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_add_inclusion = true;
                 this.Additional_inclusion = ['Default Display', 'Include Staff Code', 'Include Staff ID']
                 this.chkbx_asAddressLabel = true;
+                this.chkbx_CSVExport = true
                 break;                
                 case 'btn-staff-competencyRegister':
                     this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1438,6 +1506,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.chkbx_incl_staff = true;
                 this.chkbx_incl_Volunteer = true;
                 this.chkbx_incl_Broker = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-staff-ActiveBrokerage':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1449,6 +1518,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_add_inclusion = true;
                 this.Additional_inclusion = ['Default Display', 'Include Staff Code', 'Include Staff ID']
                 this.chkbx_asAddressLabel = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-staff-Activevolunteers':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1460,6 +1530,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_add_inclusion = true;
                 this.Additional_inclusion = ['Default Display', 'Include Staff Code', 'Include Staff ID']
                 this.chkbx_asAddressLabel = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-staff-InactiveBrokerage':
                 this.bodystyle = { height:'400px', overflow: 'auto'}
@@ -1470,6 +1541,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_add_inclusion = true;
                 this.Additional_inclusion = ['Default Display', 'Include Staff Code', 'Include Staff ID']
                 this.chkbx_asAddressLabel = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-staff-InactiveVolunteer':
                 this.bodystyle = { height:'400px', overflow: 'auto'}    
@@ -1480,6 +1552,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_add_inclusion = true;
                 this.Additional_inclusion = ['Default Display', 'Include Staff Code', 'Include Staff ID']
                 this.chkbx_asAddressLabel = true;
+                this.chkbx_CSVExport = true
                 break;
 
             case 'btn-staff-Inactivestaff':
@@ -1491,6 +1564,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_add_inclusion = true;
                 this.Additional_inclusion = ['Default Display', 'Include Staff Code', 'Include Staff ID']
                 this.chkbx_asAddressLabel = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-staff-Userpermissions':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1501,12 +1575,14 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_StaffGroup = true;
                 this.frm_add_inclusion = true;
                 this.chkbx_asAddressLabel = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-Regis-mealregisterreport':
                 this.bodystyle = { height:'250px', overflow: 'auto'}
                 this.ModalName = "MEAL ORDER REPORT "
                 this.frm_Date = true;
                 this.frm_Recipients = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-Regis-LagTimeRegister':
                 this.bodystyle = { height:'350px', overflow: 'auto'}
@@ -1514,12 +1590,14 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Date = true;
                 this.frm_Branches = true;
                 this.frm_Programs = true;
+                this.chkbx_CSVExport = true
                 break;
                 case 'btn-Regis-masterrosteredhoursreport':
                 this.bodystyle = { height:'300px', overflow: 'auto'}
                 this.ModalName = "MASTER ROSTERED HOURS REGISTER "
                 this.frm_MasterRosterCycles = true;
                 this.frm_Programs = true;
+                this.chkbx_CSVExport = true
                 break;
                 
             case 'btn-Regis-hasreport':
@@ -1527,6 +1605,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.ModalName = "HAS REPORT "
                 this.frm_Date = true;
                 this.frm_Programs = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-Regis-cdcleavereport':
                 this.bodystyle = { height:'350px', overflow: 'auto'}
@@ -1534,6 +1613,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Date = true;
                 this.frm_Branches = true;
                 this.frm_Programs = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-Regis-cdcpackagebalance':
                 this.bodystyle = { height:'350px', overflow: 'auto'}
@@ -1541,6 +1621,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Date = true;
                 this.frm_Recipients = true;
                 this.frm_Programs = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-Regis-incidentregister':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1551,6 +1632,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Staff = true;
                 this.frm_Incidentcategories = true;
                 this.frm_Incidents = true;
+                this.chkbx_CSVExport = true
 
                 break;
             case 'btn-Regis-loanregister':
@@ -1565,11 +1647,13 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_options = true;
                 this.chkbx_incl_inactive = true;
                 this.chkbx_incl_outstanding = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-staff-leaveregister':
                 this.bodystyle = { height:'200px', overflow: 'auto'}
                 this.ModalName = "STAFF LEAVES REGISTER "
                 this.frm_Date = true;
+                this.chkbx_CSVExport = true
                 break;
                 case 'btn-staff-svcnotesregister':
                 this.bodystyle = { height:'450px', overflow: 'auto'}
@@ -1580,6 +1664,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_SVCNotes = true;
                 this.frm_options = true;
                 this.chkbx_incl_achived = true;
+                this.chkbx_CSVExport = true
                 break;
                 
             case 'btn-staff-staffnotworked':
@@ -1591,6 +1676,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_StaffGroup = true;
                 this.frm_options = true;
                 this.chkbx_activeStaffonly = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-staff-competencyrenewal':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1610,6 +1696,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.chkbx_incl_staff = true;
                 this.chkbx_incl_Volunteer = true;
                 this.chkbx_incl_Broker = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-staff-unavailability':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1621,6 +1708,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_StaffGroup = true;
                 this.frm_options = true;
                 this.chkbx_include_AdditionalInfo = true;
+                this.chkbx_CSVExport = true
 
                 break;
             case 'btn-staff-Roster':
@@ -1634,6 +1722,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_options = true;
                 this.chkbx_include_AdditionalInfo = true;
                 this.chkbx_include_unavailability = true;
+                this.chkbx_CSVExport = true
                 
                 break;
             case 'btn-staff-MasterRoster':
@@ -1646,6 +1735,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_StaffGroup = true;
                 this.frm_options = true;
                 this.chkbx_include_AdditionalInfo = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-staff-loanregister':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1658,6 +1748,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_StaffGroup = true;                
                 this.frm_options = true;
                 this.chkbx_incl_outstanding = true;
+                this.chkbx_CSVExport = true
                 break;                
             case 'btn-staff-staffservicenotesreg':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1665,7 +1756,8 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Date = true;
                 this.frm_Branches = true;
                 this.frm_CaseNots = true;
-                this.frm_Staff = true;                
+                this.frm_Staff = true;         
+                this.chkbx_CSVExport = true       
                 break;
             case 'btn-Regis-progcasenotes':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1679,6 +1771,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Programs = true;
                 this.frm_Categories = true;
                 this.frm_Managers = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-Regis-servicenotesreg':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1690,6 +1783,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Disciplines = true;
                 this.frm_CareDomain = true;
                 this.frm_Programs = true;
+                this.chkbx_CSVExport = true
                 break;            
             case 'btn-regis-serviceplan':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1698,7 +1792,8 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Programs = true;                
                 this.frm_Recipients = true;
                 this.frm_Managers = true;
-                this.frm_Categories = true;                
+                this.frm_Categories = true; 
+                this.chkbx_CSVExport = true               
                 break;   
             case 'btn-Regis-opnotesregister':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1710,6 +1805,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Disciplines = true;
                 this.frm_CareDomain = true;
                 this.frm_Programs = true;
+                this.chkbx_CSVExport = true
 
                 break;
             case 'btn-Regis-careplanstatus':
@@ -1718,6 +1814,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Date = true;
                 this.frm_PlanTypes = true;
                 this.frm_Recipients = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-staff-availability':
                 this.bodystyle = { height:'400px', overflow: 'auto'}
@@ -1727,6 +1824,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Staff = true;
                 this.frm_options = true;
                 this.chkbx_exclude_staffondate = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-staff-timeattandencecomp':
                 this.bodystyle = { height:'400px', overflow: 'auto'}
@@ -1736,6 +1834,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Staff = true;
                 this.frm_options = true;
                 this.chkbx_incl_inactive = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-staff-hrnotesregister':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1746,6 +1845,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Staff = true;
                 this.frm_options = true;
                 this.chkbx_pagebreak = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-staff-opnotes':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1757,6 +1857,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Disciplines = true;
                 this.frm_CareDomain = true;
                 this.frm_Programs = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-staff-incidentregister':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1767,6 +1868,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Staff = true;
                 this.frm_StaffGroup = true;
                 this.frm_Incidents = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-staff-training':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1781,6 +1883,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_StaffTeam = true;
                 this.frm_options = true;
                 this.chkbx_exclude_inactivestaff = true;
+                this.chkbx_CSVExport = true
 
                 break;
             case 'btn-competenciesrenewal':
@@ -1802,6 +1905,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.chkbx_incl_staff = true;
                 this.chkbx_incl_Volunteer = true;
                 this.chkbx_incl_Broker = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-Systm-AuditRegister':
                 this.bodystyle = { height:'400px', overflow: 'auto'}
@@ -1810,6 +1914,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_TraccsUsers = true;
                 this.frm_WhoWhat = true;
                 this.frm_Description = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-Systm-ActivityStatusAudit':
                 this.bodystyle = { height:'250px', overflow: 'auto', top:'50px'}
@@ -1817,6 +1922,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Programs = true;
                 this.chkbx_include_enddated = true;
                 this.frm_options = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-Systm-MTARegister':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1835,6 +1941,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.chkbx_overstayed = true;
                 this.chkbx_not_logon = true;
                 this.chkbx_forcedlogon = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-Systm-RosterOverlap':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1844,6 +1951,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Recipients = true;
                 this.frm_Staff = true;
                 this.frm_Programs = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-Systm-MTAVerification':
                 this.ModalName = "MTA ATTENDANCE VERIFICATION "
@@ -1862,6 +1970,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.chkbx_overstayed = true;
                 this.chkbx_not_logon = true;
                 this.chkbx_forcedlogon = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-UnsedFunding':
                 this.ModalName = "RECIPIENT UNUSED FUNDING REPORT "
@@ -1869,11 +1978,13 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Programs = true;
                 this.frm_Managers = true;
                 this.frm_Categories = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-BudgetAuditReport':
                 this.ModalName = "PROGRAM BUDGET AUDIT REPORT "
                 this.frm_Branches = true;
                 this.frm_Programs = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-ProgramSummaryRpt':
                 this.ModalName = "PROGRAM SUMMARY REPORT"
@@ -1881,11 +1992,13 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Programs = true;
                 this.frm_Managers = true;
                 this.frm_Categories = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-report-fundingAuditReport':
                 this.bodystyle = { height:'200px', overflow: 'auto'}
                 this.ModalName = "FUNDING AUDIT REPORT"
                 this.frm_Date = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-report-UnbilledItems':
                 this.bodystyle = { height:'450px', overflow: 'auto'}
@@ -1894,6 +2007,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Branches = true;
                 this.frm_Programs = true;
                 this.frm_SVCTypes = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-report-BilledItems':
                 this.bodystyle = { height:'450px', overflow: 'auto'}
@@ -1902,6 +2016,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Branches = true;
                 this.frm_Programs = true;
                 this.frm_SVCTypes = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-report-DatasetUnitCost':
                 this.bodystyle = { height:'350px', overflow: 'auto'}
@@ -1909,94 +2024,124 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Date = true;
                 this.frm_Recipients = true;
                 this.frm_SVCTypes = true;
+                this.chkbx_CSVExport = true
                 break;
             case 'btn-FORPT-ProgramActivitySpread':
-               this.FORptModelTitle = "PROGRAM ACTIVITY SPREAD " ;                 
+               this.FORptModelTitle = "PROGRAM ACTIVITY SPREAD " ; 
+               this.chkbx_CSVExport = true                
                 break;                
             case 'btn-FORPT-AwardStaffPayRpt':
-               this.FORptModelTitle = "AWARD STAFF PAY REPORT " ;                 
+               this.FORptModelTitle = "AWARD STAFF PAY REPORT " ;   
+               this.chkbx_CSVExport = true              
                 break;                
             case 'btn-FORPT-AwardStaffProgramPayRpt':
-                this.FORptModelTitle = "AWARD STAFF PROGRAM PAY REPORT " ;                 
+                this.FORptModelTitle = "AWARD STAFF PROGRAM PAY REPORT " ; 
+                this.chkbx_CSVExport = true                
                     break;
             case 'btn-FORPT-ProgramStaffUtilized':
                 this.FORptModelTitle = "PROGRAM STAFF UTILIZED " ;
+                this.chkbx_CSVExport = true;
              break;
              case 'btn-FORPT-ProgramRecipientServiced':
                 this.FORptModelTitle = "PROGRAM RECIPIENT SERVICED " ;
+                this.chkbx_CSVExport = true;
              break;
              case 'btn-FORPT-ProgramBillingReport':
                 this.FORptModelTitle = "PROGRAM BILLING REPORT" ;
+                this.chkbx_CSVExport = true
              break;
              case 'btn-FORPT-ActivityRecipientRpt':
                 this.FORptModelTitle = "ACTIVITY RECIPIENT REPORT" ;
+                this.chkbx_CSVExport = true
              break;
              case 'btn-FORPT-ActivityProgramRpt':
                 this.FORptModelTitle = "ACTIVITY PROGRAM REPORT" ;
+                this.chkbx_CSVExport = true
              break;
              case 'btn-FORPT-ActivityStaff':
                 this.FORptModelTitle = "ACTIVITY STAFF REPORT" ;
+                this.chkbx_CSVExport = true
              break;
            
              case 'btn-FORPT-ActivityGroupRpt':
                 this.FORptModelTitle = "ACTIVITY GROUP  REPORT" ;
+                this.chkbx_CSVExport = true
              break;
             /* case 'btn-FORPT-fundingAuditReport':
                 this.FORptModelTitle = "FUNDING AUDIT REPORT CRITERIA" ;
+                this.chkbx_CSVExport = true;
              break;*/
              case 'btn-FORPT-DatasetActivityAnalysis':
                 this.FORptModelTitle = "DATA SET ACTIVITY ANALYSIS  REPORT" ;
+                this.chkbx_CSVExport = true;
              break;
              case 'btn-FORPT-DatasetoutputSummary':
                 this.FORptModelTitle = "DATA SET OUTPUT  REPORT" ;
+                this.chkbx_CSVExport = true;
              break;
              case 'btn-FORPT-DatasetUnitCost':
                 this.FORptModelTitle = "DATA SET RECIPIENT UNIT COST  REPORT" ;
+                this.chkbx_CSVExport = true;
              break;
              case 'btn-FORPT-StaffPaysRpt':
                 this.FORptModelTitle = "STAFF PAY  " ;
+                this.chkbx_CSVExport = true;
              break;             
              case 'btn-FORPT-FunderPayrollRpt':
-                this.FORptModelTitle = "FUNDER PAYROLL R " ;
+                this.FORptModelTitle = "FUNDER PAYROLL  " ;
+                this.chkbx_CSVExport = true;
              break;
              case 'btn-FORPT-StaffunderPayrollRpt':
                 this.FORptModelTitle = "STAFF FUNDER PAYROLL  " ;
+                this.chkbx_CSVExport = true;
                 break;
              case 'btn-FORPT-StaffAllowanceRpt':
                 this.FORptModelTitle = "STAFF ALLOWANCE  " ;
+                this.chkbx_CSVExport = true;
              break;             
              case 'btn-FORPT-StaffDateProgramRpt':
-                this.FORptModelTitle = "STAFF DATE PROGRAM  " ;                                                
+                this.FORptModelTitle = "STAFF DATE PROGRAM  " ; 
+                this.chkbx_CSVExport = true;                                               
              break;
              case 'btn-FORPT-StaffProgramUtilisation':
                 this.FORptModelTitle = "STAFF PROGRAM UTILIZATION  " ;
+                this.chkbx_CSVExport = true;
              break;            
              case 'btn-FORPT-StaffClientServiced':
                 this.FORptModelTitle = "STAFF CLIENT SERVICED  " ;
+                this.chkbx_CSVExport = true;
              break;
              case 'btn-FORPT-StaffAdminRpt':
                 this.FORptModelTitle = "STAFF ADMIN REPORT" ;
+                this.chkbx_CSVExport = true;
              break;
              case 'btn-FORPT-StaffActivityRpt':
                 this.FORptModelTitle = "STAFF ACTIVITY  REPORT" ;
+                this.chkbx_CSVExport = true;
              break;
              case 'btn-FORPT-DailyStaffHrs':
                 this.FORptModelTitle = "STAFF DAILY HOURS  REPORT" ;
+                this.chkbx_CSVExport = true;
              break;
              case 'btn-FORPT-PayTypeProgram':
                 this.FORptModelTitle = "PAY TYPE PROGRAM  REPORT" ;
+                this.chkbx_CSVExport = true;
              break;
              case 'btn-FORPT-StaffusageReport':
                 this.FORptModelTitle = "RECIPIENT STAFF USAGE  REPORT" ;
+                this.chkbx_CSVExport = true;
              break;
              case 'btn-FORPT-PaytypeReport':
                 this.FORptModelTitle = "RECIPIENT PAY TYPE  REPORT" ;
+                this.chkbx_CSVExport = true;
              break;
              case 'btn-FORPT-ProgramUtilisation':
                 this.FORptModelTitle = "RECIPIENT PROGRAM UTILIZATION  " ;
+                this.chkbx_CSVExport = true;
              break;
              case 'btn-FORPT-RecipientserviceReport':
                 this.FORptModelTitle = "RECIPIENT SERVICE REPORT " ;
+                this.chkbx_CSVExport = true;
                 break;
             
  
@@ -2745,6 +2890,7 @@ stafftypeArr: Array<any> = constants.types;
         if (this.inputForm.value.printaslabel == true){fQuery = fQuery + "  join NamesAndAddresses NA on NA.PersonID = R.UniqueID   "} 
         fQuery = fQuery + "WHERE R.[AccountNo] > '!MULTIPLE'   AND (R.DischargeDate is NULL)"
         
+       
         
 
         if (branch != "") {
@@ -2752,10 +2898,24 @@ stafftypeArr: Array<any> = constants.types;
             if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
 
         }
+        else { 
+           if( this.Viewfilter_Branches != ""){
+            var re = /Recipients/gi;                        
+            this.s_BranchSQL = this.Viewfilter_Branches.toString().replace(re, "R");
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+            }
+
+        }
         if (manager != "") {
             this.s_CoordinatorSQL = "R.[RECIPIENT_COOrdinator] in ('" + manager.join("','") + "')";
             if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
 
+        }else{
+        if( this.Viewfilter_Coordinater != ""){  
+            var re = /Recipients/gi;                        
+            this.s_CoordinatorSQL = this.Viewfilter_Coordinater.toString().replace(re, "R");                                             
+            if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+            }
         }
         if (region != "") {
             this.s_CategorySQL = "R.[AgencyDefinedGroup] in ('" + region.join("','") + "')";
@@ -2764,6 +2924,11 @@ stafftypeArr: Array<any> = constants.types;
         if (program != "") {
             this.s_ProgramSQL = " (RecipientPrograms.[Program] in ('" + program.join("','") + "'))";
             if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+        }else{
+        if( this.Viewfilter_Programs != ""){                                   
+            this.s_ProgramSQL = this.Viewfilter_Programs.toString().substring(87,this.Viewfilter_Programs.toString().length);            
+            if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+            }
         }
 
 
@@ -2810,7 +2975,7 @@ stafftypeArr: Array<any> = constants.types;
             var Title = "RECIPIENT REFERRAL LISTING"
 
            
-            //    console.log(this.tocken.user)
+                console.log(fQuery)
                 const data = {
         
                     "template": { "_id": this.reportid },                                
@@ -2825,6 +2990,7 @@ stafftypeArr: Array<any> = constants.types;
                     }
                 }
                 this.loading = true;
+                this.pdfTitle = "Referral list.pdf"
                 
                
                 if(this.inputForm.value.csvExport == true){
@@ -2842,8 +3008,9 @@ stafftypeArr: Array<any> = constants.types;
                     });
 
                 }else{
+                    this.drawerVisible = true; 
                 this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Referral list.pdf"
+                   
                     this.drawerVisible = true;                   
                     let _blob: Blob = blob;
                     let fileURL = URL.createObjectURL(_blob);
@@ -2896,7 +3063,7 @@ stafftypeArr: Array<any> = constants.types;
                     }); */                                                             
                  //   this.drawerVisible = true;                  
         }        
-        //console.log(fQuery)
+       
         //  console.log(this.inputForm.value.printaslabel)                    
         }
     Waiting_list(branch, manager, region, program) {
@@ -2990,27 +3157,45 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
+
        
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Waiting list.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Waiting list.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
 
@@ -3080,7 +3265,7 @@ stafftypeArr: Array<any> = constants.types;
 
         //  //////console.log(fQuery)
 
-        this.drawerVisible = true;
+        
 
         const data = {
             "template": { "_id": "Uer8Y39DEBqdWvvJ" },
@@ -3093,27 +3278,45 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
+        var Title = "Active Packages"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Active Packages.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Active Packages.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
 
@@ -3230,27 +3433,45 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
+       var Title = "Recipient Rosters"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Recipient Rosters.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Recipient Rosters.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -3330,27 +3551,45 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
+        var Title = "Suspended Recipients"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Suspended Recipients.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Suspended Recipients.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -3428,27 +3667,45 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
+       var Title = "Voucher Summary"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Voucher Summary.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Voucher Summary.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -3522,27 +3779,45 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
+       var Title = "Package Usage Report"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Package Usage Report.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Package Usage Report.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -3583,26 +3858,44 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
 
+        var Title = "Recipient Time Length Report"
         
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Recipient Time Length Report.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Recipient Time Length Report.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -3665,8 +3958,7 @@ stafftypeArr: Array<any> = constants.types;
         console.log(s_CoordinatorSQL)*/
         // //////console.log(fQuery)
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": "BL1iE2Hn6FNsUpJN" },
             "options": {
@@ -3678,27 +3970,45 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
+      var Title = "Unallocated Bookings"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Unallocated Bookings.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Unallocated Bookings.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -3779,26 +4089,44 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         
+       var Title = "Transport Summary Report"
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Transport Summary Report.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Transport Summary Report.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -3863,8 +4191,7 @@ stafftypeArr: Array<any> = constants.types;
         console.log(s_CoordinatorSQL)*/
         //////console.log(fQuery)
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": "TwKNgf9F8SLUDgLo" },
             "options": {
@@ -3876,27 +4203,45 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
+        var Title = "Referral During Period"
        
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Referral During Period.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Referral During Period.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -3976,8 +4321,7 @@ stafftypeArr: Array<any> = constants.types;
     }
 
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -3990,27 +4334,45 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
+        var Title = "Recipients Master Roster"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Recipients Master Roster.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Recipients Master Roster.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -4097,7 +4459,7 @@ stafftypeArr: Array<any> = constants.types;
         console.log(s_CoordinatorSQL)*/
         //  //////console.log(fQuery)
 
-        this.drawerVisible = true;
+        
 
         const data = {
             "template": { "_id": "cNhkW3O0lp9TSQyg" },
@@ -4110,27 +4472,45 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
+        var Title = "Master Rostered Hours Report"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Master Rostered Hours Report.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Master Rostered Hours Report.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -4207,8 +4587,7 @@ stafftypeArr: Array<any> = constants.types;
             fQuery = fQuery + " ORDER BY R.[Surname/Organisation], R.FirstName"
 
             //    console.log(fQuery)
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -4222,27 +4601,45 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
+        var Title = "Active Recipient List"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Active Recipient List.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Active Recipient List.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
         }
@@ -4325,8 +4722,7 @@ stafftypeArr: Array<any> = constants.types;
             this.reportid   = "EqrRIePxJeNTXk0b" 
             fQuery = fQuery + " ORDER BY R.[Surname/Organisation], R.FirstName"
 
-            this.drawerVisible = true;
-
+           
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -4339,27 +4735,45 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
+        var Title = "InActive Recipient List"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "InActive Recipient List.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "InActive Recipient List.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
         }
@@ -4437,8 +4851,7 @@ stafftypeArr: Array<any> = constants.types;
             this.reportid   = "pFy5Ej2Zdy6OhMKs" 
             fQuery = fQuery + "  ORDER BY R.[Surname/Organisation], R.FirstName"
 
-            this.drawerVisible = true;
-
+           
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -4451,27 +4864,45 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
+       var Title = "Carer list"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Carer list.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Carer list.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
 
@@ -4551,8 +4982,7 @@ stafftypeArr: Array<any> = constants.types;
             this.reportid   = "0BnEO8OTruJxvLwX" 
             fQuery = fQuery + "  ORDER BY R.[Surname/Organisation], R.FirstName"
 
-            this.drawerVisible = true;
-
+           
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -4564,27 +4994,45 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
+        var Title = "Billing Clients"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Billing Clients.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Billing Clients.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
         }
@@ -4652,8 +5100,7 @@ stafftypeArr: Array<any> = constants.types;
         console.log(s_CoordinatorSQL)*/
         //////console.log(fQuery)
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": "sedG2p1WPWiRPeIc" },
             "options": {
@@ -4665,27 +5112,45 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
+        var Title = "Billing Clients"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Billing Clients.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Billing Clients.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -4759,8 +5224,7 @@ stafftypeArr: Array<any> = constants.types;
 
 
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": "IcqccAG4IKFnbisd" },
             "options": {
@@ -4771,27 +5235,45 @@ stafftypeArr: Array<any> = constants.types;
                 "userid": this.tocken.user,
             }
         }
+       var Title = "Discharge During Period"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Discharge During Period.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Discharge During Period.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -4858,8 +5340,7 @@ stafftypeArr: Array<any> = constants.types;
         console.log(s_CoordinatorSQL)*/
         //console.log(fQuery)
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": "usEk1DqdlD4V07eM" },
               //"template": { "_id": "4g15sMWd23M427Jx" },
@@ -4874,27 +5355,45 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
+       var Title = "Absent Client Status Report" 
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Absent Client Status Report.pdf" 
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });  
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Absent Client Status Report.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }  
 
         return;
     }
@@ -5088,8 +5587,7 @@ stafftypeArr: Array<any> = constants.types;
         console.log(s_CoordinatorSQL)*/
         ////console.log(fQuery)
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": "nsCXBTh7bFlCHSHX" },
             "options": {
@@ -5101,27 +5599,44 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-        
+        var Title = "Unserviced Recipient Report"
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Unserviced Recipient Report.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Unserviced Recipient Report.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -5187,7 +5702,7 @@ stafftypeArr: Array<any> = constants.types;
             this.reportid   = "LQO71slAArEu36fo" 
             fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
 
-            this.drawerVisible = true;        
+                 
             
             this.loading = true;
             
@@ -5203,25 +5718,43 @@ stafftypeArr: Array<any> = constants.types;
                 "userid": this.tocken.user,
             }
         }
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Active Staff List.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       var Title = "Active Staff List"
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+                    this.drawerVisible = true;  
+                this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Active Staff List.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
 
@@ -5284,8 +5817,7 @@ stafftypeArr: Array<any> = constants.types;
             fQuery = fQuery + "Group by UniqueID,Title, AccountNo, STF_CODE, StaffGroup, [LastName],FirstName, Address1, Address2, Suburb, Postcode, CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX"
         fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -5298,26 +5830,44 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
+       var Title = "InActive Staff"
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "InActive Staff.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+                    this.drawerVisible = true;   
+                this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "InActive Staff.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
         }
@@ -5376,7 +5926,7 @@ stafftypeArr: Array<any> = constants.types;
             fQuery = fQuery + "Group by UniqueID,Title, AccountNo, STF_CODE, StaffGroup, [LastName],FirstName, Address1, Address2, Suburb, Postcode, CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX"
             fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
 
-            this.drawerVisible = true;
+            
         
 
         const data = {
@@ -5391,27 +5941,45 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
+        var Title = "Active Contractor List"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Active Contractor List.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+                    this.drawerVisible = true;
+                this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Active Contractor List.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
 
@@ -5473,8 +6041,7 @@ stafftypeArr: Array<any> = constants.types;
             fQuery = fQuery + "Group by UniqueID,Title, AccountNo, STF_CODE, StaffGroup, [LastName],FirstName, Address1, Address2, Suburb, Postcode, CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX"
             fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
 
-            this.drawerVisible = true;
-
+           
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -5487,27 +6054,45 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
+       var Title = "InActive Contractor List"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "InActive Contractor List.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+                    this.drawerVisible = true; 
+                this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "InActive Contractor List.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
 
@@ -5566,8 +6151,7 @@ stafftypeArr: Array<any> = constants.types;
 
             fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
 
-            this.drawerVisible = true;
-
+           
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -5580,27 +6164,45 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
+        var Title = "Active Volunteers"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Active Volunteers.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+                    this.drawerVisible = true;
+                this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Active Volunteers.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
 
@@ -5663,8 +6265,7 @@ stafftypeArr: Array<any> = constants.types;
 
             fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
 
-            this.drawerVisible = true;
-
+           
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -5677,27 +6278,45 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
+        var Title = "InActive Volunteers"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "InActive Volunteers.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+                    this.drawerVisible = true;
+                this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "InActive Volunteers.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
         }
@@ -5752,7 +6371,7 @@ stafftypeArr: Array<any> = constants.types;
 
         ///  //////console.log(fQuery)
 
-        this.drawerVisible = true;
+        
 
         const data = {
             "template": { "_id": "cHHdyk2ACQuXsxFw" },
@@ -5765,27 +6384,45 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
+        var Title = "Staff User Permissions"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Staff User Permissions.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+                    this.drawerVisible = true;
+                this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Staff User Permissions.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -5816,7 +6453,7 @@ stafftypeArr: Array<any> = constants.types;
 
         ///  //////console.log(fQuery)
 
-        this.drawerVisible = true;
+        
 
         const data = {
             "template": { "_id": "zxZz19oiShZi9IuQ" },
@@ -5829,26 +6466,44 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
+        var Title = "Meal Order Report"
         
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Meal Order Report.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+                    this.drawerVisible = true;
+                this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Meal Order Report.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -5912,27 +6567,45 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         this.loading = true;
+        var Title = "Lag Time Register"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Lag Time Register.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+                    this.drawerVisible = true;
+                this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Lag Time Register.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -5971,7 +6644,7 @@ stafftypeArr: Array<any> = constants.types;
 
         ///  //////console.log(fQuery)
 
-        this.drawerVisible = true;
+        
         
 
         const data = {
@@ -5992,26 +6665,44 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
+        var Title = "HAS Report"
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "HAS Report.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+                    this.drawerVisible = true;
+                this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "HAS Report.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -6054,7 +6745,7 @@ stafftypeArr: Array<any> = constants.types;
 
         //  //////console.log(fQuery)
 
-        this.drawerVisible = true;
+        
 
         const data = {
             "template": { "_id": "ixpCLJFq7CjWgMqw" },
@@ -6070,26 +6761,44 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         this.loading = true;
+       var Title = "CDC Leave Register"
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "CDC Leave Register.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+                    this.drawerVisible = true;
+                this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "CDC Leave Register.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -6130,8 +6839,7 @@ stafftypeArr: Array<any> = constants.types;
 
         // //////console.log(fQuery)
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": "wRMaDCYI8N1RwmHp" },
             "options": {
@@ -6146,28 +6854,45 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         this.loading = true;
-        
+        var Title = "CDC Package Balance"
 
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "CDC Package Balance.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+                    this.drawerVisible = true;
+                this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "CDC Package Balance.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -6233,8 +6958,7 @@ stafftypeArr: Array<any> = constants.types;
 
     //    console.log(fQuery)
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": "ufrXaKoSnk1utHyJ" },
             "options": {
@@ -6249,27 +6973,45 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         this.loading = true;
+        var Title = "Incident Register"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Incident Register.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+                     this.drawerVisible = true;
+                this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Incident Register.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -6346,8 +7088,7 @@ stafftypeArr: Array<any> = constants.types;
 
         //console.log(fQuery)
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": "3OJaZgWOBy3b9hOI" },
             "options": {
@@ -6363,26 +7104,44 @@ stafftypeArr: Array<any> = constants.types;
         }
         this.loading = true;
         
+        
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Loan Item Register.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+                    this.drawerVisible = true;
+                this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Loan Item Register.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -6406,8 +7165,7 @@ stafftypeArr: Array<any> = constants.types;
 
         //console.log(fQuery)
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": "w41oVwE0B5tGyRBi" },
             "options": {
@@ -6422,28 +7180,46 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         this.loading = true;
+        var Title = "Staff Leave Register"
         
 
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Staff Leave Register.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Staff Leave Register.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -6508,7 +7284,7 @@ stafftypeArr: Array<any> = constants.types;
 
 //        console.log(fQuery)
 
-        this.drawerVisible = true;
+        
         
 
         const data = {
@@ -6526,26 +7302,44 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         this.loading = true;
+        var Title = "Staff Service Notes Register"
         
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Staff Service Notes Register.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Staff Service Notes Register.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -6601,8 +7395,7 @@ stafftypeArr: Array<any> = constants.types;
 
        // console.log(fQuery)
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": "01uDIoKwUysCboDf" },
             "options": {
@@ -6616,27 +7409,45 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
+        var Title = "Staff Not Worked Report"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Staff Not Worked Report.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Staff Not Worked Report.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -6781,8 +7592,7 @@ stafftypeArr: Array<any> = constants.types;
 
     //  console.log(fQuery) 
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": this.reportid},
             "options": {
@@ -6798,27 +7608,45 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         this.loading = true;
+        var Title = "Staff Competency Renewal"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Staff Competency Renewal.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Staff Competency Renewal.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -6879,7 +7707,7 @@ stafftypeArr: Array<any> = constants.types;
 
         //console.log(fQuery)
 
-        this.drawerVisible = true;
+        
         
 
         const data = {
@@ -6897,27 +7725,45 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         this.loading = true;
+        var Title = "Staff UnAvailability Report"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Staff UnAvailability Report.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Staff UnAvailability Report.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -6981,7 +7827,7 @@ stafftypeArr: Array<any> = constants.types;
 
     //    console.log(fQuery)
 
-        this.drawerVisible = true;
+        
 
         const data = {
             "template": { "_id": "PV0M95ECHuYRp0QD" },
@@ -6998,27 +7844,45 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         this.loading = true;
+        var Title = "Staff Roster"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Staff Roster.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Staff Roster.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -7082,7 +7946,7 @@ stafftypeArr: Array<any> = constants.types;
 
         //console.log(fQuery)
 
-        this.drawerVisible = true;
+        
 
         const data = {
             "template": { "_id": "I2d0gKTCdLP2phas" },
@@ -7098,27 +7962,45 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
+       var Title = "Staff Master Roster"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Staff Master Roster.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Staff Master Roster.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -7190,7 +8072,7 @@ stafftypeArr: Array<any> = constants.types;
     //    console.log(fQuery)
 
 
-        this.drawerVisible = true;
+        
 
         const data = {
             "template": { "_id": "3OJaZgWOBy3b9hOI" },
@@ -7206,26 +8088,44 @@ stafftypeArr: Array<any> = constants.types;
         }
         this.loading = true;
         
+        
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Staff Loan Register.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Staff Loan Register.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -7319,7 +8219,7 @@ stafftypeArr: Array<any> = constants.types;
 
         //  //////console.log(fQuery)
 
-        this.drawerVisible = true;
+        
 
         const data = {
             "template": { "_id": "BTHy0VhO1rkhv5VZ" },
@@ -7335,27 +8235,45 @@ stafftypeArr: Array<any> = constants.types;
         }
         
         this.loading = true;
+        var Title = "Recipient Case Notes Register"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Recipient Case Notes Register.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Recipient Case Notes Register.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -7435,7 +8353,7 @@ stafftypeArr: Array<any> = constants.types;
 
     //    console.log(fQuery)
 
-        this.drawerVisible = true;
+        
 
         const data = {
             "template": { "_id": "H8diePMsfdr5gYyV" },
@@ -7450,27 +8368,45 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
+        var Title = "Service Notes Register"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Service Notes Register.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Service Notes Register.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -7550,7 +8486,7 @@ stafftypeArr: Array<any> = constants.types;
 
         //  //////console.log(fQuery)
 
-        this.drawerVisible = true;
+        
 
         const data = {
             "template": { "_id": "5rDvU6JYKKsSsUEe" },
@@ -7566,27 +8502,45 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         this.loading = true;
+       var Title = "OP Notes Register"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "OP Notes Register.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "OP Notes Register.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -7659,7 +8613,7 @@ stafftypeArr: Array<any> = constants.types;
 
         //console.log(fQuery)
 
-        this.drawerVisible = true;
+        
 
         const data = {
             "template": { "shortid":"2RJgekOWt" },
@@ -7672,27 +8626,45 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         this.loading = true;
+        var Title = "Service Plan Register"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Service Plan Register.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Service Plan Register.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -7734,7 +8706,7 @@ stafftypeArr: Array<any> = constants.types;
 
         ///  //////console.log(fQuery)
 
-        this.drawerVisible = true;
+        
 
         const data = {
             "template": { "_id": "wck7EFbfopCd1OKi" },
@@ -7747,27 +8719,45 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
+        var Title = "Care Plan Status Report"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Care Plan Status Report.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Care Plan Status Report.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -7833,8 +8823,7 @@ stafftypeArr: Array<any> = constants.types;
 
           //console.log(fQuery)
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": "rTZq9PlAzEYD9Jbc" },
             "options": {
@@ -7848,27 +8837,45 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
+        var Title = "Staff Availability"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Staff Availability.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Staff Availability.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -7919,8 +8926,7 @@ stafftypeArr: Array<any> = constants.types;
 
         //console.log(fQuery)
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": "XTO8SlLEk5FLPTqL" },
             "options": {
@@ -7934,27 +8940,45 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
+        var Title = "Time Attendance Comparison Report"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Time Attendance Comparison Report.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Time Attendance Comparison Report.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -8010,8 +9034,7 @@ stafftypeArr: Array<any> = constants.types;
 
         //console.log(fQuery)
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": "tAljOfXOyqcdnOV8" },
             "options": {
@@ -8025,27 +9048,45 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
+        var Title = "HR Notes Register"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "HR Notes Register.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "HR Notes Register.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -8124,8 +9165,7 @@ stafftypeArr: Array<any> = constants.types;
 
         ////console.log(fQuery)
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": "CPX4RU8x2kvCKORP" },
             "options": {
@@ -8139,27 +9179,45 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
+        var Title = "Staff OP Notes Register"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Staff OP Notes Register.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Staff OP Notes Register.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -8225,8 +9283,7 @@ stafftypeArr: Array<any> = constants.types;
 
     //    console.log(fQuery)
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": "elFITHKE2y1STfUR" },
             "options": {
@@ -8240,27 +9297,45 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
+       var Title = "Staff Incident Register"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Staff Incident Register.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Staff Incident Register.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -8358,8 +9433,7 @@ stafftypeArr: Array<any> = constants.types;
 
       //  console.log(fQuery)
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": "7o1ScJuvyRZk8xZ6" },
             "options": {
@@ -8371,27 +9445,44 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-        
+        var Title = "Staff Training Register"
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Staff Training Register.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Staff Training Register.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -8441,8 +9532,7 @@ stafftypeArr: Array<any> = constants.types;
 
     //    console.log(fQuery)
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": "YD5T4jvODtGyusH8" },
             "options": {
@@ -8457,26 +9547,44 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         this.loading = true;
+        var Title = "Audit Register"
         
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Audit Register.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Audit Register.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
 
@@ -8505,8 +9613,7 @@ stafftypeArr: Array<any> = constants.types;
 
     //    console.log(fQuery)
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": "4bzgeVt7vedkx8Uh" },
             "options": {
@@ -8521,27 +9628,45 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         this.loading = true;
+        var Title = "Program Activity Status Audit"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Program Activity Status Audit.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Program Activity Status Audit.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
 
@@ -8639,8 +9764,7 @@ stafftypeArr: Array<any> = constants.types;
 
     //    console.log(fQuery)
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": "l4nWCteKG2bDS0QA" },
             "options": {
@@ -8655,27 +9779,45 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         this.loading = true;
+       var Title = "MTA Attendance Register"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "MTA Attendance Register.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "MTA Attendance Register.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
 
@@ -8741,8 +9883,7 @@ stafftypeArr: Array<any> = constants.types;
 //
         // console.log(fQuery)
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": "lK0psB9gWfDQkZhG" },
             "options": {
@@ -8757,27 +9898,45 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         this.loading = true;
+        var Title = "Roster OverLap Register"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Roster OverLap Register.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Roster OverLap Register.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
             
@@ -8874,8 +10033,7 @@ stafftypeArr: Array<any> = constants.types;
 
         //////console.log(fQuery)
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": "dpEyUTAAn5HXqGhK" },
             "options": {
@@ -8890,27 +10048,45 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         this.loading = true;
+       var Title = "MTA Attendance Verification Audit"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "MTA Attendance Verification Audit.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "MTA Attendance Verification Audit.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
             
@@ -8967,8 +10143,7 @@ stafftypeArr: Array<any> = constants.types;
 
     //    console.log(fQuery)
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": "X641oa708kHECwiT" },
             "options": {
@@ -8983,27 +10158,45 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         this.loading = true;
+        var Title = "Recipient Unused Funding Reprot"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Recipient Unused Funding Reprot.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Recipient Unused Funding Reprot.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
         
@@ -9416,8 +10609,7 @@ stafftypeArr: Array<any> = constants.types;
 
         }
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -9458,26 +10650,44 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
         
+        
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = Title + ".pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = Title + ".pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
             
@@ -9812,8 +11022,7 @@ stafftypeArr: Array<any> = constants.types;
 
 
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -9856,26 +11065,44 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
         
+        
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = Title + ".pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = Title + ".pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
           
@@ -10214,8 +11441,7 @@ stafftypeArr: Array<any> = constants.types;
         }
 
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -10255,26 +11481,44 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
         
+        
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = Title + ".pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = Title + ".pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
            
@@ -10688,8 +11932,7 @@ stafftypeArr: Array<any> = constants.types;
         //console.log(fQuery)
 
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -10729,26 +11972,44 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
         
+        
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = Title + ".pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = Title + ".pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
            
@@ -11086,8 +12347,7 @@ stafftypeArr: Array<any> = constants.types;
         }
 
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -11127,26 +12387,44 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
         
+        
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = Title + ".pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = Title + ".pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
            
@@ -11486,8 +12764,8 @@ stafftypeArr: Array<any> = constants.types;
                 break;
         }
 
-        console.log(this.inputForm.value.InclFinancials)
-        this.drawerVisible = true;
+        //console.log(this.inputForm.value.InclFinancials)
+        
         
         const data = {
             "template": { "_id": this.reportid },
@@ -11528,26 +12806,44 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
         
+        
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = Title + ".pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = Title + ".pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
            
@@ -11580,8 +12876,7 @@ stafftypeArr: Array<any> = constants.types;
 
         // //////console.log(fQuery)
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": "651WtSGmEJ257yjD" },
             "options": {
@@ -11597,28 +12892,46 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         this.loading = true;
+       var Title = "Program Budget Audit"
         
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Program Budget Audit.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Program Budget Audit.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
 
@@ -11696,27 +13009,44 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         this.loading = true;
-        
+       var Title = "Program Summary Report"
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Program Summary Report.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Program Summary Report.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -12066,8 +13396,7 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -12110,26 +13439,44 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
         
+        
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = Title + ".pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = Title + ".pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
 
@@ -12481,8 +13828,7 @@ stafftypeArr: Array<any> = constants.types;
         }
 
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -12523,25 +13869,42 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = Title + ".pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = Title + ".pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
 
@@ -12889,8 +14252,7 @@ stafftypeArr: Array<any> = constants.types;
         }
 
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -12930,26 +14292,44 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
         
+        
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = Title + ".pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = Title + ".pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
 
@@ -13290,8 +14670,7 @@ stafftypeArr: Array<any> = constants.types;
         }
 
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -13331,26 +14710,44 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
         
+        
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = Title + ".pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = Title + ".pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
 
@@ -13694,8 +15091,7 @@ stafftypeArr: Array<any> = constants.types;
         }
 
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -13735,26 +15131,44 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
         
+        
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = Title + ".pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = Title + ".pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
 
@@ -14093,8 +15507,7 @@ stafftypeArr: Array<any> = constants.types;
         }
 
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -14134,26 +15547,44 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
         
+        
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = Title + ".pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = Title + ".pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
 
@@ -14486,8 +15917,7 @@ stafftypeArr: Array<any> = constants.types;
         }
 
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -14526,26 +15956,44 @@ stafftypeArr: Array<any> = constants.types;
         }
         this.loading = true;
         
+        
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = Title + ".pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = Title + ".pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
 
@@ -14878,8 +16326,7 @@ stafftypeArr: Array<any> = constants.types;
         }
 
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -14919,26 +16366,44 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
         
+        
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = Title + ".pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = Title + ".pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
 
@@ -14965,8 +16430,7 @@ stafftypeArr: Array<any> = constants.types;
 
         //////console.log(fQuery)
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": "cmkcZALxPRp1NQEw" },
             "options": {
@@ -14980,27 +16444,45 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
+       var Title = "Funding Audit Report"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Funding Audit Report.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Funding Audit Report.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
 
@@ -15324,8 +16806,7 @@ stafftypeArr: Array<any> = constants.types;
         //////console.log(fQuery)
 
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": "y3AjmCjSbwvf2zGw" },
             "options": {
@@ -15365,26 +16846,44 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
         
+        
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = Title + ".pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = Title + ".pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
 
@@ -15723,8 +17222,7 @@ stafftypeArr: Array<any> = constants.types;
         }
 
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -15764,26 +17262,44 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
         
+        
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = Title + ".pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = Title + ".pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
 
@@ -15834,8 +17350,7 @@ stafftypeArr: Array<any> = constants.types;
 
      //   console.log(fQuery)
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": "FgNttxKsmc7gqOPj" },
             "options": {
@@ -15849,27 +17364,45 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
+       var Title = "UnBilled Items Report"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "UnBilled Items Report.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "UnBilled Items Report.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -15919,8 +17452,7 @@ stafftypeArr: Array<any> = constants.types;
 
      //   console.log(fQuery)
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": "FgNttxKsmc7gqOPj" },
             "options": {
@@ -15934,27 +17466,45 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
+        var Title = "Billed Items Report"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Billed Items Report.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Billed Items Report.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -16304,8 +17854,7 @@ stafftypeArr: Array<any> = constants.types;
                 break;
         }
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -16345,26 +17894,44 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
         
+        
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = Title + ".pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = Title + ".pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
 
@@ -16719,8 +18286,7 @@ stafftypeArr: Array<any> = constants.types;
         }
 
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -16761,26 +18327,44 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
         
+        
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = Title + ".pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = Title + ".pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
 
@@ -17127,8 +18711,7 @@ stafftypeArr: Array<any> = constants.types;
         }
 
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -17169,26 +18752,44 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
         
+        
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = Title + ".pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = Title + ".pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
 
@@ -17238,8 +18839,7 @@ stafftypeArr: Array<any> = constants.types;
 
         // //////console.log(fQuery)
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": "BziOYcDKGzLionPY" },
             "options": {
@@ -17253,27 +18853,45 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
+       var Title = "Dataset Recipient Unit Cost Report"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Dataset Recipient Unit Cost Report.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Dataset Recipient Unit Cost Report.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -17625,8 +19243,7 @@ stafftypeArr: Array<any> = constants.types;
         }
 
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -17667,25 +19284,43 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
         
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = Title + ".pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+        
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = Title + ".pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
 
@@ -17813,27 +19448,45 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
+       var Title = "Program Recipient Budget"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Program Recipient Budget.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Program Recipient Budget.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
         }
@@ -17916,8 +19569,23 @@ CompetencyRegister(branch, Staff,stfgroup,competency) {
         }
     }
     this.loading = true;
+    var Title = "Staff Competency Register"
     
+    if(this.inputForm.value.csvExport == true){
+                   
+        this.listS.getlist(fQuery).subscribe((blob) => {
+            
+            const headings = Object.keys(blob[0]);
+            
+            let testArr:Array<any> = [];
+            for(let i=0; i < blob.length-1; i++){
+                testArr = [...testArr ,blob[i]]               
+            }
+           
+            this.downloadFile(testArr,Title,headings)
+        });
 
+    }else{
     this.printS.printControl(data).subscribe((blob: any) => {
         this.pdfTitle = "Staff Competency Register.pdf"
         this.drawerVisible = true;                   
@@ -17937,7 +19605,7 @@ CompetencyRegister(branch, Staff,stfgroup,competency) {
             },
         });
     });
-
+    }
     return;
     }
     ActivityProgramReport(branch, manager, region, stfgroup, funders, recipient, Staff, HACCCategory, RosterCategory, Age, Datetype, program, mdsagencyID, outletid, staffteam, status, startdate, enddate, rptname, stafftype, paytype, activity, settings, format, tempsdate, tempedate) {
@@ -18289,8 +19957,7 @@ CompetencyRegister(branch, Staff,stfgroup,competency) {
                 break;
         }
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -18330,26 +19997,44 @@ CompetencyRegister(branch, Staff,stfgroup,competency) {
 
         this.loading = true;
         
+        
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = Title + ".pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = Title + ".pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
 
@@ -18705,7 +20390,7 @@ CompetencyRegister(branch, Staff,stfgroup,competency) {
                         break;
                 }
         
-                this.drawerVisible = true;
+                
                 var rptSQL = " SELECT [Date] , [MonthNo], [DayNo], [BlockNo], [Program], [Client Code], [Carer Code], [Service Type], [Anal], [Service Description], [Type], [ServiceSetting], [Start Time], [Duration], CASE WHEN [Type] = 9 THEN 0 ELSE [Duration] / 12 END AS [DecimalDuration], [CostQty], [CostUnit], CASE WHEN [Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Unit Pay Rate], [Unit Pay Rate] * [CostQty] As [LineCost], [BillQty], [BillUnit], [Unit Bill Rate], ([Unit Bill Rate] * [BillQty]) + ([Unit Bill Rate] * [BillQty] * (ISNULL(TaxPercent, 0) / 100)) As [LineBill], [Yearno] FROM Award_Roster_rpt  ORDER BY [Carer Code], [Service Description], Date, [Start Time]  "
                 var sql = " INSERT INTO Award_Roster_mufee (Award, RecordNo, [Date], [Start Time], Duration, PayType, RuleType, " +
                 " Program, Activity, Activity_Type, JobType, InfoOnly, NoOver, Ros_Day ) " +
@@ -18807,26 +20492,43 @@ CompetencyRegister(branch, Staff,stfgroup,competency) {
         
                 this.loading = true;
                 
+                
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = Title + ".pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+                this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = Title + ".pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
         
@@ -19182,7 +20884,7 @@ CompetencyRegister(branch, Staff,stfgroup,competency) {
                         break;
                 }
         
-                this.drawerVisible = true;
+                
                 var rptSQL = " SELECT [Date] , [MonthNo], [DayNo], [BlockNo], [Program], [Client Code], [Carer Code], [Service Type], [Anal], [Service Description], [Type], [ServiceSetting], [Start Time], [Duration], CASE WHEN [Type] = 9 THEN 0 ELSE [Duration] / 12 END AS [DecimalDuration], [CostQty], [CostUnit], CASE WHEN [Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Unit Pay Rate], [Unit Pay Rate] * [CostQty] As [LineCost], [BillQty], [BillUnit], [Unit Bill Rate], ([Unit Bill Rate] * [BillQty]) + ([Unit Bill Rate] * [BillQty] * (ISNULL(TaxPercent, 0) / 100)) As [LineBill], [Yearno] FROM Award_Roster_rpt  ORDER BY [Carer Code], [Service Description], Date, [Start Time]  "
         
                 const data = {
@@ -19224,26 +20926,44 @@ CompetencyRegister(branch, Staff,stfgroup,competency) {
         
                 this.loading = true;
                 
+                
 
+               if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+                    this.drawerVisible = true;
                 this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = Title + ".pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+                    this.pdfTitle = Title + ".pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
         
@@ -19375,8 +21095,7 @@ CompetencyRegister(branch, Staff,stfgroup,competency) {
 
         //console.log(fQuery)
 
-        this.drawerVisible = true;
-
+       
         const data = {
             "template": { "_id": "D9xN7c09VjMDjdaz" },
             "options": {
@@ -19389,27 +21108,45 @@ CompetencyRegister(branch, Staff,stfgroup,competency) {
             }
         }
         this.loading = true;
+       var Title = "Staff Service Notes Register"
         
 
-        this.printS.printControl(data).subscribe((blob: any) => {
-            this.pdfTitle = "Staff Service Notes Register.pdf"
-            this.drawerVisible = true;                   
-            let _blob: Blob = blob;
-            let fileURL = URL.createObjectURL(_blob);
-            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-            this.loading = false;
-            this.cd.detectChanges();
-        }, err => {
-            console.log(err);
-            this.loading = false;
-            this.ModalS.error({
-                nzTitle: 'TRACCS',
-                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                nzOnOk: () => {
-                    this.drawerVisible = false;
-                },
-            });
-        });
+       if(this.inputForm.value.csvExport == true){
+                   
+                    this.listS.getlist(fQuery).subscribe((blob) => {
+                        
+                        const headings = Object.keys(blob[0]);
+                        
+                        let testArr:Array<any> = [];
+                        for(let i=0; i < blob.length-1; i++){
+                            testArr = [...testArr ,blob[i]]               
+                        }
+                       
+                        this.downloadFile(testArr,Title,headings)
+                    });
+
+                }else{
+         this.drawerVisible = true;
+       this.printS.printControl(data).subscribe((blob: any) => {
+                    this.pdfTitle = "Staff Service Notes Register.pdf"
+                    this.drawerVisible = true;                   
+                    let _blob: Blob = blob;
+                    let fileURL = URL.createObjectURL(_blob);
+                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+                    this.loading = false;
+                    this.cd.detectChanges();
+                }, err => {
+                    console.log(err);
+                    this.loading = false;
+                    this.ModalS.error({
+                        nzTitle: 'TRACCS',
+                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                        nzOnOk: () => {
+                            this.drawerVisible = false;
+                        },
+                    });
+                });
+            }
 
         return;
     }
@@ -19432,7 +21169,7 @@ labelfilter(fQuery,rptid,RptTitle,inclusion,lblcriteria){
             fQuery = "Select Distinct Title,FirstName + ' ' + LastName  as AccountNo,LastName,Address1,Address2,Suburb,Postcode from  (" + fQuery + " )cr Order by LastName"      
            }
         //   console.log(fQuery)
-            this.drawerVisible = true;   
+              
             
             this.loading = true;
            
@@ -19550,9 +21287,16 @@ CustomReportSetting(){
 
 FetchRuntimeReport(strtitle){
 //    console.log("TITLE:  " +strtitle)
-    this.tryDoctype = ""; 
-    this.drawerVisible = true; 
-    this.loading = true;
+this.EnableCSVExport = true;
+//this.RptFormat = ;
+    this.CSV_String = strtitle;
+    if(strtitle != 'CSVStr'){        
+        this.GlobalS.var2 = strtitle;
+    }else{
+        strtitle = this.GlobalS.var2.toString()
+        
+    }
+   
     var strFilter  = strtitle.toString().substring(0,1)
  //   console.log(strFilter)
     var title = strtitle.toString().substring(1,strtitle.length)
@@ -19573,6 +21317,7 @@ FetchRuntimeReport(strtitle){
         default: 
             break;
     }
+
    // console.log(this.Rptformat);
   const temp =  forkJoin([
     //    this.ReportS.GetReportFormat(title),
@@ -19584,7 +21329,7 @@ FetchRuntimeReport(strtitle){
         //this.UserRptFormatlist = data[0];
         this.UserRptSQLlist = data[0];   
         var re = /~/gi;    
-     //   console.log((this.UserRptSQLlist.toString()).replace(re,"'"))
+     //console.log((this.UserRptSQLlist.toString()).replace(re,"'"),title)
     
         this.RenderRunTimeReport((this.UserRptSQLlist.toString()).replace(re,"'"),title)
 
@@ -19597,23 +21342,43 @@ FetchRuntimeReport(strtitle){
 }
 RenderRunTimeReport(strSQL,RptTitle){
     //console.log(strSQL)
+    
     const data = {
         
         //"template": { "_id": "qTQEyEz8zqNhNgbU" },
         "template": { "_id": "x8QVE8KhcjiJvD6c" },
                     
         "options": {
-            "reports": { "save": false },
-            
+            "reports": { "save": false },            
             "sql": strSQL,            
             "userid": this.tocken.user,
-            "txtTitle":RptTitle,
-            
-                                                                                         
+            "txtTitle":RptTitle,                                                                                                     
         }
     }
     this.loading = true;
     
+    if(this.CSV_String == 'CSVStr'){
+
+        this.tryDoctype = ""; 
+        this.drawerVisible = false; 
+        this.loading = false;
+                   
+        this.listS.getlist(strSQL).subscribe((blob) => {
+            
+            const headings = Object.keys(blob[0]);
+            
+            let testArr:Array<any> = [];
+            for(let i=0; i < blob.length-1; i++){
+                testArr = [...testArr ,blob[i]]               
+            }
+           
+            this.downloadFile(testArr,RptTitle,headings)
+        });
+
+    }else{
+        this.tryDoctype = ""; 
+        this.drawerVisible = true; 
+        this.loading = true;
 
     this.printS.printControl(data).subscribe((blob: any) => {
         this.pdfTitle = "User Custom Report.pdf"
@@ -19634,7 +21399,8 @@ RenderRunTimeReport(strSQL,RptTitle){
             },
         });
     });
-
+    
+    }
     return;
 
 }

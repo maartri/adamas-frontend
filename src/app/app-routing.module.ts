@@ -161,7 +161,10 @@ import {
 
 import
 {
+  ChildSafety,
   DatasetQccsmda,
+  DSS,
+  MentalHlth,
 } from './pages/admin/recipient-views/dataset-views/index';
 
 import {
@@ -393,6 +396,19 @@ const routes: Routes = [
                 path: 'qccsmds',
                 component: DatasetQccsmda
               },
+              {
+                path: 'childsafety',
+                component:ChildSafety,
+              },
+              {
+                path: 'dss',
+                component:DSS,
+              },
+              {
+                path:'mentalhlth',
+                component:MentalHlth,
+              }
+
             ]
           },
           {
@@ -1398,6 +1414,18 @@ const routes: Routes = [
                 path: 'qccsmds',
                 component: DatasetQccsmda
               },
+              {
+                path:'childsafety',
+                component: ChildSafety,
+              },
+              {
+                path:'dss',
+                component:DSS,
+              },
+              {
+                path:'mentalhlth',
+                component:MentalHlth,
+              }
             ]
           },
           {
@@ -1731,7 +1759,9 @@ export const PAGE_COMPONENTS = [
   
   //dataset
   DatasetQccsmda,
-
+  ChildSafety,
+  DSS,
+  MentalHlth,
 
   ExtraComponent,
   UnauthorizedComponent,

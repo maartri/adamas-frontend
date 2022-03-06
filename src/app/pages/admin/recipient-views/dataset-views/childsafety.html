@@ -1,0 +1,57 @@
+<div nz-row> 
+    <div nz-row >
+        <div nz-col nzSpan="24" [formGroup]="inputForm">
+            <nz-divider nzText="CHILD SAFETY PLACEMENT INFORMATION" nzOrientation="left"></nz-divider>
+            <div nz-row nzJustify class="mrg-btm">
+                <div nz-col nzSpan="6" class="text-right pad-r-5">
+                    <label for="Placement Type">Placement Type :</label>
+                </div>
+                <div nz-col nzSpan="12">
+                    <nz-select nzAllowClear formControlName="placementtype" [nzDropdownMatchSelectWidth]="false">
+                        <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                    </nz-select>
+                </div>
+            </div>
+            <div nz-row nzJustify class="mrg-btm">
+                <div nz-col nzSpan="6" class="text-right pad-r-5">
+                    <label for="Carer Name">Carer Name :</label>
+                </div>
+                <div nz-col nzSpan="12">
+                    <input nz-input placeholder=""  formControlName="carer" />
+                </div>
+            </div>
+            <div nz-row nzJustify class="mrg-btm">
+                <div nz-col nzSpan="6" class="text-right pad-r-5">
+                    <label for="Start Of Placement">Start Of Placement :</label>
+                </div>
+                <div nz-col nzSpan="18">
+                    <nz-date-picker formControlName="start_date" [nzFormat]="dateFormat"></nz-date-picker>
+                </div>
+            </div>
+            <div nz-row nzJustify class="mrg-btm">
+                <div nz-col nzSpan="6" class="text-right pad-r-5">
+                    <label for="End Of Placement">End Of Placement :</label>
+                </div>
+                <div nz-col nzSpan="18">
+                    <nz-date-picker formControlName="end_date" [nzFormat]="dateFormat"></nz-date-picker>
+                </div>
+            </div>
+            <div nz-row nzJustify class="mrg-btm">
+                <div nz-col nzSpan="6" class="text-right pad-r-5">
+                    <label for="Referral Matching Toll On File">Referral Matching Toll On File :</label>
+                </div>
+                <div nz-col nzSpan="18">
+                    <label nz-checkbox formControlName="tool"></label>
+                </div>
+            </div>
+            <div nz-row nzJustify class="mrg-btm">
+                <div nz-col nzSpan="6" class="text-right pad-r-5">
+                    <label for="Runsheet/Timesheet Alert">Runsheet/Timesheet Alert :</label>
+                </div>
+                <div nz-col nzSpan="18">
+                    <label nz-checkbox formControlName="tool"></label>
+                </div>
+            </div>
+        </div>
+    </div> 
+</div>

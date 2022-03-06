@@ -945,6 +945,9 @@ export class ListService {
     Getrptpaytype(): Observable<any>{        
         return this.auth.get(`${list}/paytype`)
     }
+    GettravelandAlternateCode():Observable<any>{
+        return this.auth.get(`${list}/travelandAlternateCode`)
+    }
     Getrptactivity(): Observable<any>{        
         return this.auth.get(`${list}/activity`)
     }
@@ -957,7 +960,46 @@ export class ListService {
     GetBatchClients(batch: number): Observable<any>{
         return this.auth.get(`${list}/batch-clients/${batch}`);
     }
-
-
-
-} //  //GetBatchClients batch-clients
+    //Dataset tab apis
+    // getpensionall(): Observable<any>{
+    //     return this.auth.get(`${list}/pension/all`)
+    // }
+    GetCarerDataRecipientcarer(): Observable<any>{        
+        return this.auth.get(`${list}/carer-data-recipientcarer`)
+    }
+    GetCarerDataRelationship(): Observable<any>{        
+        return this.auth.get(`${list}/carer-data-relationship`)
+    }
+    GetCarerDataAvailability(): Observable<any>{        
+        return this.auth.get(`${list}/carer-data-availability`)
+    }
+    GetCarerDataResidency(): Observable<any>{        
+        return this.auth.get(`${list}/carer-data-residency`)
+    }
+    GetAccomodationSetting(): Observable<any>{        
+        return this.auth.get(`${list}/accomodation-setting`)
+    }
+    GetIndigniousStatus(): Observable<any>{        
+        return this.auth.get(`${list}/indignious-status`)
+    }
+    GetLivingArrangments(): Observable<any>{        
+        return this.auth.get(`${list}/living-arrangments`)
+    }
+    GetHACCVaCardStatus(): Observable<any>{        
+        return this.auth.get(`${list}/hacc-va-card-status`)
+    }
+    GetHACCReferralSource():Observable<any>{
+        return this.auth.get(`${list}/hacc-referral_source`)
+    }
+    GetLanguages():Observable<any>{
+        return this.auth.get(`${list}/languages`)
+    }
+    GetCountries():Observable<any>{
+        return this.auth.get(`${list}/GetCountries`)
+    }
+    GetHaccSex():Observable<any>{
+        return this.auth.get(`${list}/haccSex`)
+    }
+    
+    
+}

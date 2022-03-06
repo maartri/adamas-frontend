@@ -1,17 +1,17 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
-
-import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, ClientService, dateFormat } from '@services/index';
+import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, ClientService,dateFormat } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
 import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
-
 import { NzModalService } from 'ng-zorro-antd/modal';
-
 
 @Component({
     selector: '',
     styles: [`
+    nz-select{
+        width:100%
+    }
     nz-tabset{
         margin-top:1rem;
     }
@@ -33,18 +33,15 @@ import { NzModalService } from 'ng-zorro-antd/modal';
         background: #85B9D5;
         color: #fff;
     }
-    nz-select{
-        width:100%
-    }
     `],
-    templateUrl: './qccsmds.html',
+    templateUrl: './mentalhlth.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 
-export class DatasetQccsmda implements OnInit, OnDestroy {
+export class MentalHlth implements OnInit, OnDestroy {
     private unsubscribe: Subject<void> = new Subject();
     user: any;
-    dateFormat: string = dateFormat;
+    dateFormat = dateFormat;
     loading: boolean = false;
     modalOpen: boolean = false;
     addOREdit: number;
@@ -59,21 +56,6 @@ export class DatasetQccsmda implements OnInit, OnDestroy {
         branch: null,
         notes: ''
     }
-
-    carerRecipientList: any;
-    carerRelationshipList: any;
-    carerAvailabilityList: any;
-    carerResidencyList: any;
-    genderlist: any;
-    countries: any;
-    languages: any;
-    indigniousStatus: any;
-    livingArrangemnts: any;
-    accomodationSetting: any;
-    pensionAll: any;
-    dvaCardStatus: any;
-    referalSource: any;
-
     constructor(
         private timeS: TimeSheetService,
         private sharedS: ShareService,
@@ -95,7 +77,7 @@ export class DatasetQccsmda implements OnInit, OnDestroy {
             });
             
             this.sharedS.changeEmitted$.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-                if (this.globalS.isCurrentRoute(this.router, 'qccsmds')) {
+                if (this.globalS.isCurrentRoute(this.router, 'mentalhlth')) {
                     this.user = data;
                     this.search(data);
                 }
@@ -105,16 +87,9 @@ export class DatasetQccsmda implements OnInit, OnDestroy {
         ngOnInit(): void {
             this.user = this.sharedS.getPicked();
             this.search(this.user);
-            this.getGeneralDataLists();
             this.buildForm();
         }   
-        tabFindIndexScope: number = 0;
-        view(index: number){
-            if(index == 2){
-                this.getCarerDataLists();
-            }
-            this.tabFindIndexScope = index;
-        }
+        
         ngOnDestroy(): void {
             this.unsubscribe.next();
             this.unsubscribe.complete();
@@ -126,8 +101,8 @@ export class DatasetQccsmda implements OnInit, OnDestroy {
                 personID: '',
                 branch: [null, [Validators.required]],
                 notes: '',
-                title:'',
                 flag:false,
+                title:'',
             });
         }
         
@@ -148,45 +123,7 @@ export class DatasetQccsmda implements OnInit, OnDestroy {
             this.listS.getintakebranches(user.id)
             .subscribe(data => this.branches = data)
         }
-        getGeneralDataLists(){
-            
-            return forkJoin([
-                this.listS.GetHaccSex(),
-                this.listS.GetCountries(),
-                this.listS.GetLanguages(),
-                this.listS.GetIndigniousStatus(),
-                this.listS.GetLivingArrangments(),
-                this.listS.GetAccomodationSetting(),
-                this.listS.getpensionall(),
-                this.listS.GetHACCVaCardStatus(),
-                this.listS.GetHACCReferralSource(),
-
-            ]).subscribe(x => {
-                this.genderlist             = x[0];
-                this.countries              = x[1];
-                this.languages              = x[2];
-                this.indigniousStatus       = x[3];
-                this.livingArrangemnts      = x[4];
-                this.accomodationSetting    = x[5];
-                this.pensionAll             = x[6];
-                this.dvaCardStatus          = x[7];
-                this.referalSource          = x[8];
-            });
-
-        }
-        getCarerDataLists(){
-            return forkJoin([
-                this.listS.GetCarerDataRecipientcarer(),
-                this.listS.GetCarerDataRelationship(),
-                this.listS.GetCarerDataAvailability(),
-                this.listS.GetCarerDataResidency(),
-            ]).subscribe(x => {
-                this.carerRecipientList     = x[0];
-                this.carerRelationshipList  = x[1];
-                this.carerAvailabilityList  = x[2];
-                this.carerResidencyList     = x[3];
-            });
-        }
+        
         save() {
             
             if (!this.globalS.IsFormValid(this.inputForm))
@@ -213,7 +150,10 @@ export class DatasetQccsmda implements OnInit, OnDestroy {
                 });
             }
         }
-        
+        tabFindIndexScope: number = 0;
+        view(index: number){
+            this.tabFindIndexScope = index;
+        }
         handleCancel() {
             this.modalOpen = false;
             this.loading = false;

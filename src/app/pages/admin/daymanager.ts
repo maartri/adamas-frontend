@@ -8,12 +8,14 @@ import {ShiftDetail} from '../roster/shiftdetail'
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { ThrowStmt } from '@angular/compiler';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormGroup,FormBuilder,Validators } from '@angular/forms';
+import { FormGroup,FormBuilder,Validators, FormArray, FormControl } from '@angular/forms';
 import {takeUntil} from 'rxjs/operators';
 import parseISO from 'date-fns/parseISO'
 import { format, formatDistance, formatRelative, nextDay, subDays } from 'date-fns'
 import { forEach } from 'lodash';
 import * as moment from 'moment';
+import { stringify } from '@angular/compiler/src/util';
+
 
 class Address {
     postcode: string;
@@ -39,6 +41,9 @@ class Address {
   
 @Component({
     styles: [`
+
+    nz-switch.master-class >>> button.ant-switch-checked{ background-color:#c07417; }
+
     .dm-input{
         margin-bottom:1rem;
     }
@@ -142,9 +147,21 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
     dayViewArr: Array<number> = [5, 7, 10, 14];
     //reload: boolean = false;
     reload:Subject<boolean> = new Subject();
-    loadingRoster :Subject<any> = new Subject() 
-
+    loadingRoster :Subject<any> = new Subject() ;
+    applyFilter: Subject<any>= new Subject();
+    dmOptions: Subject<any>= new Subject();
+    CustomFilters: Array<any> = [];
     toBePasted: Array<any>=[];
+    lstStartWith: Array<any>=[];
+    branchesList = [];
+    activityList = [];
+    programsList = [];
+    selectedBranches:Array<any>=[];
+    selectedPrograms:Array<any>=[];
+    selectedActivities:Array<any>=[];
+    addInExisting:boolean;
+    nzFilterPlaceHolder:string="Input to Search";
+    showSimpleFilterInput:boolean;
     @ViewChild(ShiftDetail) detail!:ShiftDetail;
    // @ViewChild(DMRoster) dmroster:DMRoster;
     optionsModal: boolean = false;
@@ -159,6 +176,18 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
     resourceType:string;
     txtSearch:string;
     openSearchStaffModal:boolean;
+    openSearchRecipientModal:boolean;
+
+    booking:{
+        recipientCode: 'TT',
+        userName:'sysmgr',
+        date:'2022/01/01',
+        startTime:'07:00',
+        endTime:'17:00',
+        endLimit:'20:00'
+      };
+    bookingData = new Subject<any>();
+    bookingDataRecipient = new Subject<any>();
     ViewChangeDayTimeModal:boolean;
     AddRosterModel:boolean;
     ViewServiceNoteModal:boolean    
@@ -172,6 +201,13 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
     ViewAllocateResourceQtyModal:boolean;
     ResourceValue:number;
     InputMode:string='decimal';
+    
+    size: any = 'large';
+    showMenu:boolean;
+    LimitTo:string;
+    startWith:string;
+    
+
     parserPercent = (value: string) => value.replace(' %', '');
     parserDollar = (value: string) => value.replace('$ ', '');
     parserValue = (value: string) => value;
@@ -189,6 +225,7 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
     record_being_pasted:any;
     AllocateStaffModal:boolean;
     selectedCarer:string;
+    selectedRecipient:string;
     NudgeValue=0;
     NudgeStatus:string='Up';
     ViewNudgeModal:boolean;
@@ -220,9 +257,46 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
     staffexternal:boolean;
     ViewAdditionalModal:boolean;
     notes:string="";
+    HideW1W2:boolean;
+    IncludeDuration:boolean;
+    AutoPrviewNote:boolean;
+    CustomFilter:boolean;
+    ViewExistingFilter:boolean;
+    SortOrder:string;
+    lstGroup:Array<any>=[];
+    viewQuickFilter:boolean;
+    AllPrograms:boolean=true;
+    AllBranches:boolean=true;
+    AllActivities:boolean=true;
+    OpenSearchOfStaff:boolean;
+    OpenSearchOfRecipient:boolean;
+    PayPeriodEndDate:string;
 
-    workflowVisible: boolean = false;
+    optionsList = [
+      { id: 1, name: 'Hide W1 W2 WKD Display', checked:false },
+      { id: 2, name: 'Include Duration in shift Display', checked:false },
+      { id: 3, name: 'Auto Preview Notes on click', checked:false },
+      { id: 4, name: 'Include Notes in Service Display', checked:false },
+      { id: 5, name: 'Include Information Only Services in Worked Hours', checked:false },
+      { id: 6, name: 'Recipient Branch Only', checked:false },
+     
+    ];
 
+    optionsList2 = [
+        { id: 1, name: 'Booking', checked:false },
+        { id: 2, name: 'Direct Care', checked:false },
+        { id: 7, name: 'Case Management', checked:false },
+        { id: 10, name: 'Transport', checked:false },
+        { id: 11, name: 'Facilities', checked:false },
+        { id: 12, name: 'Groups', checked:false },
+        { id: 0, name: 'Items', checked:false },
+        { id: 13, name: 'Unavailable', checked:false },
+        { id: 6, name: 'Staff Admin', checked:false },
+        { id: 5, name: 'Travel Time', checked:false },
+        { id: 11, name: 'Staff Leave', checked:false },
+        
+      ];
+  
     constructor(
         private globalS: GlobalService,
         private clientS: ClientService,
@@ -232,6 +306,7 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
         private formBuilder: FormBuilder,
         private listS:ListService
     ) {
+
 
         this.ViewRecipientDetails.subscribe(data => {
             this.optionsModal=false;
@@ -423,7 +498,34 @@ buildForm() {
     });
    
 }
-
+masterCycle:any ='CYCLE-I';
+cycles:any=[
+        {cycle:'CYCLE-I', value:'1900/01/01'},
+        {cycle:'CYCLE-II', value:'1900/01/07'},
+        {cycle:'CYCLE-III', value:'1900/01/14'},
+        {cycle:'CYCLE-IV', value:'1900/01/21'},
+        ]
+Master_Roster_label:string='Day Manager';
+  setMasterRoster($event:any){
+     this.dayView=7;
+    //this.master=!this.master;
+    this.master=$event;
+    
+    if (this.master) {   
+      this.Master_Roster_label='Master Roster'   
+      this.date='1900/01/01';
+    }else {
+        this.Master_Roster_label='Day Manager';
+        this.date= new Date();
+    }
+    
+    
+  }
+  setCycle(){
+     let cycle= this.cycles.filter (x=>x.cycle==this.masterCycle)
+     this.date=cycle[0].value;
+     console.log(cycle);
+  }
 fixStartTimeDefault() {
     const { time } = this.DateTimeForm.value;
     if (!time.startTime) {
@@ -454,6 +556,197 @@ data(event:any){
 }
 pasted(event:any){
 }
+ApplyQuickFilter(){
+    if (!this.AllBranches){
+        this.LimitTo="BRANCH LIST"
+        this.startWith = JSON.stringify(this.selectedBranches.map(x=>x.title));
+        let fltr= this.CustomFilters.find(a => a.key == this.LimitTo && a.value==this.startWith)        
+        if (!fltr)
+            this.CustomFilters.push({key:this.LimitTo, value:this.startWith});
+    }
+    if (!this.AllPrograms){
+        this.LimitTo="PROGRAM LIST"
+        this.startWith = JSON.stringify(this.selectedPrograms.map(x=>x.title));
+        let fltr= this.CustomFilters.find(a => a.key == this.LimitTo && a.value==this.startWith)        
+        if (!fltr)
+            this.CustomFilters.push({key:this.LimitTo, value:this.startWith});
+    }
+    if (!this.AllActivities){
+        this.LimitTo="ACTIVITY LIST"
+        this.startWith = JSON.stringify(this.selectedActivities.map(x=>x.title));
+        let fltr= this.CustomFilters.find(a => a.key == this.LimitTo && a.value==this.startWith)        
+        if (!fltr)
+            this.CustomFilters.push({key:this.LimitTo, value:this.startWith});
+    }
+    this.applyFilter.next(this.CustomFilters);
+     this.viewQuickFilter=false;
+}
+ApplyCustomFilter(){
+   
+    this.applyFilter.next(this.CustomFilters);
+    
+}
+
+AddCustomFilter(){
+    if (this.addInExisting){
+        let fltr= this.CustomFilters.find(a => a.key == this.LimitTo && a.value==this.startWith)        
+        if (!fltr)
+            this.CustomFilters.push({key:this.LimitTo, value:this.startWith});
+    }else{
+        this.CustomFilters=[];
+        this.CustomFilters.push({key:this.LimitTo, value:this.startWith});
+        return;
+    } 
+   
+}
+CloseCustomFilter(){
+    this.CustomFilter=false;
+    
+    
+}
+ViewCustomFilter(){
+    this.ViewExistingFilter=true;
+    
+}
+
+
+removeCustomFilter(){
+    this.CustomFilter=false;   
+    this.CustomFilters=[];
+    this.applyFilter.next(this.CustomFilters)
+}
+showCustomFilter(){
+    this.SortOrder=this.selectedPersonType;
+    this.CustomFilter=!this.CustomFilter;
+    this.lstGroup=[];
+    this.lstGroup.push('STAFF');
+    this.lstGroup.push('STAFF JOB CATEGORY');
+    this.lstGroup.push('STAFF TEAM');
+    this.lstGroup.push('RECIPIENT');
+    this.lstGroup.push('RECIPIENT CATEGORY/REGION');
+    this.lstGroup.push('ACTIVITY');
+    this.lstGroup.push('PROGRAM');
+    this.lstGroup.push('COORDINATOR');
+    this.lstGroup.push('SERVICE ORDER/GRID NO');
+    switch(this.SortOrder.toUpperCase()){
+        case  'RECIPIENT MANAGEMENT':
+            this.lstGroup.push('FACILITY');
+            this.lstGroup.push('VEHICLE');
+            this.lstGroup.push('ACTIVITY GROUP');
+            break;
+        case  'RECIPIENT MANAGEMENT' :
+            this.lstGroup.push('FACILITY');
+            this.lstGroup.push('VEHICLE');
+            this.lstGroup.push('ACTIVITY GROUP');
+            break;
+        case "FACILITIES - RECIPIENTS":
+             this.lstGroup.push('FACILITY');
+             break;
+        case  "FACILITIES - STAFF":
+            this.lstGroup.push('FACILITY');
+            break;
+        case "TRANSPORT - RECIPIENTS":
+             "TRANSPORT - STAFF"
+             this.lstGroup.push('VEHICLE');
+             break;
+        case "TRANSPORT - STAFF":
+            this.lstGroup.push('VEHICLE');
+            break;
+        case "GROUPS - RECIPIENTS":            
+             this.lstGroup.push('ACTIVITY GROUP');
+             break;
+        case  "GROUPS - STAFF":
+            this.lstGroup.push('ACTIVITY GROUP');
+            break;  
+   
+    }
+}
+
+FillLimitTo(){
+    let sql;
+    this.lstStartWith=[];
+    this.startWith='';
+    this.showSimpleFilterInput=false;
+    switch (this.LimitTo.toUpperCase())
+    {
+        
+            case "STAFF":
+                this.lstStartWith=[];
+                this.nzFilterPlaceHolder="TYPE FIRST PART OF STAFF CODE";
+                this.showSimpleFilterInput=true;
+                return;
+                
+            case "RECIPIENT":
+                this.nzFilterPlaceHolder="TYPE FIRST PART OF RECIP CODE";
+                this.showSimpleFilterInput=true;
+                return;
+                
+            case "STAFF JOB CATEGORY":
+                sql=`SELECT UPPER([Description]) as Title FROM DataDomains WHERE [Domain] = 'STAFFGROUP' ORDER BY Description`;
+                break;           
+            case "STAFF TEAM":
+                sql=`SELECT UPPER([Description]) as Title FROM DataDomains WHERE [Domain] = 'STAFFTEAM' ORDER BY Description`;
+                break;                       
+            case "RECIPIENT CATEGORY/REGION":
+                sql=`SELECT UPPER([Description]) as Title FROM DataDomains WHERE [Domain] = 'GROUPAGENCY' ORDER BY Description`;
+                break;            
+            case "ACTIVITY":
+                sql=`SELECT Title FROM ItemTypes WHERE   ProcessClassification = 'OUTPUT'`;
+                break;
+            case "ACTIVITY GROUP":
+                sql=`SELECT UPPER([Description]) as Title FROM DataDomains WHERE [Domain] = 'ACTIVITYGROUPS' ORDER BY Description`;
+                break;
+            case "FACILITY":
+                sql=`SELECT UPPER([Name]) as Title FROM CSTDAOutlets ORDER BY [Name]`;
+                break;    
+            case "PROGRAM":
+                sql=`SELECT UPPER([Name]) as Title FROM HumanResourceTypes WHERE [Group] = 'PROGRAMS'`;
+                break;  
+            case "COORDINATOR":
+                sql=`SELECT UPPER([Description]) as Title FROM DataDomains WHERE [Domain] = 'CASE MANAGERS' ORDER BY Description`;
+                break;  
+            case "SERVICE ORDER/GRID NO":
+                this.nzFilterPlaceHolder="TYPE IN GRID OR ORDER";
+                this.showSimpleFilterInput=true;
+               
+                return;
+                  
+    }
+
+    this.listS.getlist(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        this.lstStartWith=data;
+    });
+    
+}
+ViewQuickFilterDisplay(){
+    this.loading=true;
+    setTimeout(() =>{
+        if ( this.branchesList==null || this.branchesList.length<=0)
+            this.FillQuickFilterLists();
+        this.loading=false;
+        this.viewQuickFilter=true;
+    },500)
+    
+}
+
+FillQuickFilterLists() {
+    let sql;
+    let sql_branch=`Select Description as title From DataDomains Where Domain = 'BRANCHES'  ORDER BY DESCRIPTION`;
+    let sql_Activity=`SELECT Title as title FROM ItemTypes WHERE   ProcessClassification = 'OUTPUT' ORDER BY Title`;
+    let sql_program=`SELECT UPPER([Name]) as title FROM HumanResourceTypes WHERE [Group] = 'PROGRAMS' ORDER BY [Name]`;
+    return forkJoin([
+      this.listS.getlist(sql_branch),
+      this.listS.getlist(sql_Activity),
+      this.listS.getlist(sql_program)
+     
+    ]).subscribe(x => {
+      this.branchesList = x[0];
+      this.activityList = x[1];
+      this.programsList = x[2];
+      
+    });
+  }
+
 pasteSelectedRecords(event:any){
     console.log(event);
     if (this.toBePasted==null || this.toBePasted==null)    return;     
@@ -469,11 +762,18 @@ pasteSelectedRecords(event:any){
     //     }, 100);  
     //   });
 
+    let dmType=event.selected.dmType;
     
     for ( let v of this._highlighted){  
         v.date=moment(event.selected.date).format('YYYY/MM/DD');
-        v.staff = event.selected.carerCode;
-        v.carercode = event.selected.carerCode;
+        if (dmType=="1" || dmType=="2" || dmType=="11"){
+         
+            v.carercode = event.selected.carercode;
+        }else if (dmType=="10" || dmType=="12" ){
+          
+            v.recipient = event.selected.carercode;       
+         
+        }
         setTimeout(() => {
             this.pasting_records(v)                 
         }, 100);   
@@ -486,11 +786,80 @@ onTextChangeEvent(event:any){
     //console.log(this.serviceActivityList[0].description.includes(value));
     this.serviceActivityList=this.originalList.filter(element=>element.description.includes(value));
 }
-openStaffModal(){
-    this.openSearchStaffModal=true;
+
+openStaffModal(OpenSearch:boolean=false){
+
+    if (OpenSearch)
+     this.OpenSearchOfStaff=OpenSearch;
+    
+     this.openSearchStaffModal=true;
+    
+    if (this.selectedOption!=null) //&& !OpenSearch
+        this.booking = {
+                     recipientCode: this.selectedOption.recipient,
+                     userName:this.token.user,
+                     date:this.selectedOption.date,
+                     startTime:this.selectedOption.startTime,
+                     endTime:this.selectedOption.endTime,
+                     endLimit:'20:00'
+                    };
+                
+    this.bookingData.next(this.booking) ;               
 }
 onStaffSearch(data:any){
-    this.selectedCarer=data.selected;
+    this.openSearchStaffModal=false;
+    this.selectedStaff=data.accountno;
+    if (this.OpenSearchOfStaff){
+        this.LimitTo='STAFF';
+        this.startWith=data.accountno;
+        this.AddCustomFilter();
+        this.ApplyCustomFilter();
+    }
+}
+
+openRecipientModal(OpenSearch:boolean=false){
+
+    if (OpenSearch)
+     this.OpenSearchOfRecipient=OpenSearch;
+    
+     this.openSearchRecipientModal=true;
+    
+    if (this.selectedOption!=null ) //&& !OpenSearch
+        this.booking = {
+                     recipientCode: this.selectedOption.recipient,
+                     userName:this.token.user,
+                     date:this.selectedOption.date,
+                     startTime:this.selectedOption.startTime,
+                     endTime:this.selectedOption.endTime,
+                     endLimit:'20:00'
+                    };
+                
+    this.bookingDataRecipient.next(this.booking) ;               
+}
+onRecipientSearch(data:any){
+    this.openSearchRecipientModal=false;
+    this.selectedRecipient=data.accountNo;
+    if (this.OpenSearchOfRecipient){
+        this.LimitTo='RECIPIENT';
+        this.startWith=data.accountNo;
+        this.AddCustomFilter();
+        this.ApplyCustomFilter();
+    }
+}
+openMenu(){
+    this.showMenu=true;
+}
+menuAction(){
+    this.showMenu=false;
+    this.dmOptions.next({dmOption1:this.optionsList,dmOption2:this.optionsList2})
+    console.log(this.optionsList)
+    localStorage.setItem('dmOption1', JSON.stringify(this.optionsList));
+    localStorage.setItem('dmOption2', JSON.stringify(this.optionsList2));
+    localStorage.setItem('PayPeriodEndDate', this.PayPeriodEndDate);
+    
+}
+change(event:any){
+
 }
 loadNotes(){
     this.Person.id=this.selectedOption.recordno;
@@ -540,13 +909,12 @@ selected_roster(r:any):any{
         "duration": r.duration,
         "durationNumber": r.dayno,
         "recipient": r.recipient,
-        "program": r.rProgram,
+        "program": r.rprogram,
         "activity": r.activity,
         "payType": {paytype : r.shiftType },   
-        "paytype": r.shiftType,   
-             
-        "pay": {pay_Unit: r.billunit,
-                pay_Rate: '0',
+        "paytype": r.shiftType,  
+        "pay": {pay_Unit: r.costUnit,
+                pay_Rate: r.payRate,
                 quantity: r.payQty,
                 position: ''
             },                   
@@ -554,20 +922,21 @@ selected_roster(r:any):any{
                 pay_Unit: r.billunit,
                 bill_Rate: r.billRate,
                 quantity: r.billQty,
-                tax: '0'
+                tax: r.taxAmount
             },           
         "approved": '0',
-        "billto":r.billTo,
-        "debtor": r.billTo,
+        "billto":r.billto,
+        "debtor": r.billto,
         "notes": r.notes,
         "selected": false,
         "serviceType": r.type,
         "recipientCode": r.recipient,            
         "staffCode": r.carercode,  
         "serviceActivity": r.activity,
-        "serviceSetting": r['setting/Location'],
-        "analysisCode": r['recipientCategory/Region'],
+        "serviceSetting": r.servicesetting,
+        "analysisCode": r.analysisCode,
         "serviceTypePortal": "",
+        "daymask":r.daymask,       
         "recordNo": r.recordno
         
     }
@@ -601,17 +970,18 @@ find_roster(RecordNo:number):any{
         "activity": r.activity,
         "payType": r.shiftType ,  
         "paytype": r.payType,        
-        "pay": {pay_Unit: r.billunit,
-                pay_Rate: '0',
-                quantity: r.payQty,
-                position: ''
-            },                   
+        "pay": {
+            pay_Unit: r.costUnit,
+            pay_Rate: r.payRate,
+            quantity: r.payQty,
+            position: ''
+        },                   
         "bill":  {
-                pay_Unit: r.billunit,
-                bill_Rate: r.billRate,
-                quantity: r.billQty,
-                tax: '0'
-            },           
+            pay_Unit: r.billunit,
+            bill_Rate: r.billRate,
+            quantity: r.billQty,
+            tax: r.taxPercent
+        },           
         "approved": '0',
         "billto":'',
         "debtor": '',
@@ -621,8 +991,8 @@ find_roster(RecordNo:number):any{
         "recipientCode": r.recipient,            
         "staffCode": r.carercode,  
         "serviceActivity": r.activity,
-        "serviceSetting": r['setting/Location'],
-        "analysisCode": r['recipientCategory/Region'],
+        "serviceSetting": r.servicesetting,
+        "analysisCode": r.analysisCode,
         "serviceTypePortal": "",
         "recordNo": r.recordno
         
@@ -640,10 +1010,27 @@ load_rosters(){
 ngOnInit(): void {
     this.token = this.globalS.decode(); 
     this.buildForm(); 
-   this.selectedPersonType ='Staff Management';
+    this.getLocalStorage();
+    this.selectedPersonType ='Staff Management';
     this.setPersonTypes();
+    this.FillQuickFilterLists();
+
+    
 }
-  
+getLocalStorage(){
+    let item1 =  localStorage.getItem('dmOption1');
+    let item2 = localStorage.getItem('dmOption2');
+    if (item1!=null )
+      if (item1.length>0)
+         this.optionsList =JSON.parse(item1);
+     
+     if (item2!=null )
+       if (item2.length>0)
+         this.optionsList2 =JSON.parse(item2);
+    
+   // this.PayPeriodEndDate = localStorage.getItem('PayPeriodEndDate');
+ 
+  }
 
 ngAfterViewInit(){
     console.log("ngAfterViewInit");   
@@ -684,7 +1071,7 @@ ngAfterViewInit(){
         this.optionsModal=false;
         this.detail.isVisible=true;
         this.detail.data=index;
-        this.detail.viewType ='Staff'
+        this.detail.viewType =this.viewType;
         this.detail.editRecord=false;
         this.detail.ngAfterViewInit();
         
@@ -738,11 +1125,17 @@ ngAfterViewInit(){
        }
     personTypeChange(event:any){
         console.log(event);
+        let val:string=this.selectedPersonType;
+        if (val=='Staff Management' || val.indexOf('Staff')>=0)
+            this.viewType='Staff'
+        else if (val=='Recipient Management' || val.indexOf('Recipient')>=0)
+            this.viewType='Recipient'
        // this.reload.next(true);
        }
 
     highlighted(data: any) {
         this._highlighted = data;
+        this.selectedOption=data[0];
     }
 
     shiftChanged(value:any){
@@ -828,7 +1221,7 @@ ngAfterViewInit(){
             "isMaster": this.master,
             "roster_Date" : record.date,
             "start_Time": record.startTime,
-            "carer_code": this.operation=='Re-Allocate' ? this.selectedCarer : record.staff,
+            "carer_code": this.operation=='Re-Allocate' ? this.selectedCarer : record.carercode,
             "recipient_code" :  record.recipient,
             "notes" : this.notes,
             'clientCodes' : record.recipient
@@ -843,14 +1236,18 @@ ngAfterViewInit(){
                     //this.load_rosters();
                 return; 
             }
-            this.load_rosters();
+            
             if( Option=='Copy' ||Option=='Cut'){
                 this.showAlertForm('Add')
-               
+                if (this._highlighted[this._highlighted.length-1].recordno==record.recordno)
+                    this.load_rosters();
             }else if (Option=='Delete'){
                 this.showAlertForm('Delete')
+                if (this._highlighted[this._highlighted.length-1].recordno==record.recordno)
+                    this.load_rosters();
                 
-                
+            }else{
+                this.load_rosters();
             }
                 
     });
@@ -1222,34 +1619,36 @@ Check_BreachedRosterRules_Paste(action:string, record:any):any{
 //     });
 // }
 
-showConfirm(): void {
-    //var deleteRoster = new this.deleteRoster();
-    this.modalService.confirm({
-      nzTitle: 'Confirm',
-      nzContent: 'Are you sure you want to delete roster',
-      nzOkText: 'Yes',
-      nzCancelText: 'No',
-      nzOnOk: () =>
-      new Promise((resolve,reject) => {
-        setTimeout(Math.random() > 0.5 ? resolve : reject, 100);
-        this.deleteRoster();
-       
-      }).catch(() => console.log('Oops errors!'))
+    showConfirm(): void {
+        //var deleteRoster = new this.deleteRoster();
+        this.modalService.confirm({
+        nzTitle: 'Confirm',
+        nzContent: 'Are you sure you want to delete roster',
+        nzOkText: 'Yes',
+        nzCancelText: 'No',
+        nzOnOk: () =>
+        new Promise((resolve,reject) => {
+            setTimeout(Math.random() > 0.5 ? resolve : reject, 100);
+            this.deleteRoster();
+        
+        }).catch(() => console.log('Oops errors!'))
 
-      
-    });
-  }
-
-    deleteRoster(){
-        this.ProcessRoster("Delete",this.selectedOption);
+        
+        });
     }
 
+    deleteRoster(){
+        for ( let v of this._highlighted){        
+            setTimeout(() => {
+                this.ProcessRoster("Delete",v);                
+            }, 100);   
+        }
+        
+    }
+    
     handleCancel(): void{
             this.optionsModal = false;
             this.recipientDetailsModal = false;
-
-            this.workflowVisible = false;
-            
     }
     
     toMap(){
@@ -1363,5 +1762,51 @@ listChange(event: any) {
     //this.cd.detectChanges();
 }
 
+onItemChecked(data: any, checked: boolean, type:string): void {
+    if (type=='Branches'){
+        if (checked)
+            this.selectedBranches.push(data)
+        else           
+            this.selectedBranches.splice(this.selectedBranches.indexOf(data),1)
+        
+    }else if (type=='Program'){
+        if (checked)
+            this.selectedPrograms.push(data)
+        else
+            this.selectedPrograms.splice(this.selectedPrograms.indexOf(data),1)    
+    }else if (type=='Activity'){
+        if (checked)
+            this.selectedActivities.push(data)
+        else
+            this.selectedActivities.splice(this.selectedActivities.indexOf(data),1)    
+    }
+    //console.log(this.selectedPrograms)
+  }
 
+  onAllChecked(checked: boolean, type:string): void {
+     if (type=='Branch') {
+        if (checked) 
+            this.branchesList.forEach(d => {
+                this.selectedBranches.push(d)
+            });
+        else
+            this.selectedBranches=[];
+     }else if (type=='Program') {
+        if (checked) 
+            this.programsList.forEach(d => {
+                this.selectedPrograms.push(d)
+            });
+        else
+            this.selectedPrograms=[];
+     }
+    else if (type=='Activity') {
+        if (checked) 
+            this.activityList.forEach(d => {
+                this.selectedActivities.push(d)
+            });
+        else
+            this.selectedActivities=[];
+     }
+  }
+ 
 }

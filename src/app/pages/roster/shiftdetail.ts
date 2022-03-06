@@ -41,6 +41,7 @@ interface UserView{
     })
     export class ShiftDetail implements AfterViewInit{
         @Input() timeSheetVisible:boolean=false;
+        @Input() dayMask:string='00000000';
         @Output() timesheetDone:EventEmitter<any>= new EventEmitter();
 
       data:any;
@@ -59,6 +60,7 @@ interface UserView{
        recipientCode:string
        recordNo:string
        debtor:string;
+       dataset:any;
        viewType:string;
        multipleRecipientShow: boolean = false;
        isTravelTimeChargeable: boolean = false;
@@ -66,11 +68,25 @@ interface UserView{
        agencyDefinedGroup:string
        booking_case:number;
        FetchCode:string;
+       staffCode:string
        GroupShiftCategory:string;
        currentDate: string;
     
        breachRoster:boolean;
        Error_Msg:string;
+       openSearchStaffModal:boolean;
+    
+       booking:{
+        recipientCode: 'TT',
+        userName:'sysmgr',
+        date:'2022/01/01',
+        startTime:'07:00',
+        endTime:'17:00',
+        endLimit:'20:00'
+      };
+    @Input() bookingData = new Subject<any>();
+
+
     defaultActivity: any = null;
     selectedActivity: any = null;
     defaultCategory: any = null;
@@ -104,8 +120,10 @@ interface UserView{
     editRecord:boolean=false;
     searchStaff:boolean;
     HighlightRow:number;
-     ViewAuditHistoryModal:boolean;
-     listAuditHistory:Array<any>=[];
+    ViewAuditHistoryModal:boolean;
+    ViewDatasetModal:boolean;
+    ViewExtraChargeModal:boolean;
+    listAuditHistory:Array<any>=[];
     defaultStartTime: Date = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 8, 0, 0);
     defaultEndTime: Date = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 9, 0, 0);
     private unsubscribe = new Subject();
@@ -206,7 +224,7 @@ ngOnInit(){
             program: ['', Validators.required],
             serviceActivity: ['', Validators.required],
             payType: ['', Validators.required],
-            analysisCode: [''],
+            analysisCode: [''],            
             recipientCode:  [''],
             haccType: '',
             staffCode:  [''],
@@ -303,7 +321,8 @@ ngOnInit(){
             this.programsList = d.map(x => x.progName);
             console.log(this.programsList)
 
-            
+            if (this.programsList.indexOf(this.defaultProgram)<0)
+                this.programsList.push(this.defaultProgram);
                 setTimeout(() => {
                     this.rosterForm.patchValue({
                         program: this.defaultProgram
@@ -333,6 +352,7 @@ ngOnInit(){
         ).subscribe((d: Array<any>)  => {
             this.programsList = d.map(x => x.progName);
             //this.programsList = d;
+
         });
 
         this.rosterForm.get('serviceType').valueChanges.pipe(
@@ -357,17 +377,21 @@ ngOnInit(){
 
             this.analysisCodeList = d[0];
             if (payType=='AWARD')
-                this.payTypeList.push ({id:1,title:'AWARD'})
+                this.payTypeList.push ({recnum:1,title:'AWARD'})
             else
                  this.payTypeList = d[1];
+            
+                 this.payTypeList.push ({recnum:2,title:payType})
            // this.programsList = d[2];
            
             this.programsList = d[2].map(x => x.progName);
 
             if(this.viewType == 'Recipient'){
-                this.rosterForm.patchValue({
-                    analysisCode: this.agencyDefinedGroup
-                });
+              
+                // this.rosterForm.patchValue({
+                //     analysisCode: this.agencyDefinedGroup
+                // });
+                
             }
         });
         this.rosterForm.get('program').valueChanges.pipe(
@@ -556,9 +580,7 @@ ngOnInit(){
             return "!INTERNAL"
         }
     }
-    openStaffModal(){
-        this.searchStaff=true;
-    }
+  
 Cancel_ProceedBreachRoster(){
     this.breachRoster=false;
  
@@ -639,13 +661,13 @@ ProceedBreachRoster(){
                 break;
             case 3:
                 //load extra charges
-                //this.loadRosterExtrInfo();
+                this.loadExtraCharge();
                 break;
             case 4:
                 this.loadNotes();
                 break;
             case 5:
-         
+                this.loadDataset();
                 break;
             case 6:
                 this.load_AuditHistory();
@@ -1062,22 +1084,42 @@ GETSERVICEACTIVITY(program: any): Observable<any> {
     };
     GETPAYTYPE(type: string): Observable<any> {
         // `SELECT TOP 1 RosterGroup, Title FROM  ItemTypes WHERE Title = '${type}'`
-        let sql;
-        if (!type) return EMPTY;
-        this.Select_Pay_Type="Select Pay Type"
-        if (type === 'ALLOWANCE CHARGEABLE' || type === 'ALLOWANCE NON-CHARGEABLE') {
-            sql = `SELECT Recnum, Title, ''as HACCCode FROM ItemTypes WHERE RosterGroup = 'ALLOWANCE ' 
-                AND Status = 'NONATTRIBUTABLE' AND ProcessClassification = 'INPUT' AND (EndDate Is Null OR EndDate >= '${this.currentDate}') ORDER BY TITLE`
-        } else if (this.IsGroupShift && this.GroupShiftCategory=="TRANSPORT" ){
-            this.Select_Pay_Type="Select Transportation Reason";
-            sql= `SELECT RecordNumber as Recnum, Description  AS Title,HACCCode FROM DataDomains WHERE Domain = 'TRANSPORTREASON' ORDER BY Description`
+        let sql:any;
+        // if (!type) return EMPTY;
+        // this.Select_Pay_Type="Select Pay Type"
+        // if (type === 'ALLOWANCE CHARGEABLE' || type === 'ALLOWANCE NON-CHARGEABLE') {
+        //     sql = `SELECT Recnum, Title, ''as HACCCode FROM ItemTypes WHERE RosterGroup = 'ALLOWANCE ' 
+        //         AND Status = 'NONATTRIBUTABLE' AND ProcessClassification = 'INPUT' AND (EndDate Is Null OR EndDate >= '${this.currentDate}') ORDER BY TITLE`
+        // } else if (this.IsGroupShift && this.GroupShiftCategory=="TRANSPORT" ){
+        //     this.Select_Pay_Type="Select Transportation Reason";
+        //     sql= `SELECT RecordNumber as Recnum, Description  AS Title,HACCCode FROM DataDomains WHERE Domain = 'TRANSPORTREASON' ORDER BY Description`
        
-        }else  {
-          sql = `SELECT Recnum, LTRIM(RIGHT(Title, LEN(Title) - 0)) AS Title, '' as HACCCode
-            FROM ItemTypes WHERE RosterGroup = 'SALARY'   AND Status = 'NONATTRIBUTABLE'   AND ProcessClassification = 'INPUT' AND Title BETWEEN '' 
-            AND 'zzzzzzzzzz'AND (EndDate Is Null OR EndDate >= '${this.currentDate}') ORDER BY TITLE`
+        // }else  {
+        //   sql = `SELECT Recnum, LTRIM(RIGHT(Title, LEN(Title) - 0)) AS Title, '' as HACCCode
+        //     FROM ItemTypes WHERE RosterGroup = 'SALARY'   AND Status = 'NONATTRIBUTABLE'   AND ProcessClassification = 'INPUT' AND Title BETWEEN '' 
+        //     AND 'zzzzzzzzzz'AND (EndDate Is Null OR EndDate >= '${this.currentDate}') ORDER BY TITLE`
+        // }
+        //return this.listS.getlist(sql);
+        let inputs={
+            
+         chooseEach :0,
+         payTypeMode :'Filter for Pay Group',
+         s_PayItem :'',
+         s_PayUnit :'',
+         s_PayRate :'',
+         s_Status :'',
+         s_DayMask : this.dayMask,
+         b_Award :0,
+         s_RosterStaff : this.staffCode,
+         b_TestForSingle : 0,
+         s_TimespanStart :'',
+         s_TimespanEnd :'',
+         
         }
-        return this.listS.getlist(sql);
+
+        return this.timeS.determinePayType(inputs);
+        
+
     }
 
     GET_ACTIVITY_VALUE(roster: string) {
@@ -1257,28 +1299,40 @@ GETSERVICEACTIVITY(program: any): Observable<any> {
             shiftbookNo,
             recordNo,
             staffCode,
-            endTime           
+            endTime,
+            daymask 
         
         } = index;
 
         this.recordNo=recordNo;
         this.recipientCode= recipientCode,
         this.FetchCode=recipientCode;
+        this.staffCode=staffCode;
         this.debtor=debtor;
+       
         this.defaultStartTime = parseISO(new Date(date + " " + startTime).toISOString());
         this.defaultEndTime = parseISO(new Date(date + " " + endTime).toISOString());
         let time:any={startTime:this.defaultStartTime, endTime:this.defaultEndTime}
         //this.defaultStartTime = parseISO( "2020-11-20T" + startTime + ":01.516Z");
         //this.defaultEndTime = parseISO( "2020-11-20T" + endTime + ":01.516Z");;
+        this.booking={
+            recipientCode: recipientCode,
+            userName:this.token.user,
+            date:date,
+            startTime:startTime,
+            endTime:endTime,
+            endLimit:'20:00'
+          };
         this.current = 0;
-
+        if (daymask!=null)
+            this.dayMask=daymask;
+        
+        
        //console.log(this.defaultEndTime)
        
          
          this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
       //  this.durationObject = this.globalS.computeTimeDATE_FNS(startTime, endTime);
-
-        
             
             this.defaultProgram = program;
             this.defaultActivity = activity;
@@ -1301,11 +1355,14 @@ GETSERVICEACTIVITY(program: any): Observable<any> {
                 debtor: debtor,
                 type: serviceType,
                 recipientCode: recipientCode,
-                staffCode:staffCode                
+                staffCode:staffCode   
+                
                 
             });
-
             this.rosterForm.enable();
+
+           
+
         
     }
     DETERMINE_SERVICE_TYPE(index: any): any{
@@ -1392,6 +1449,36 @@ GETSERVICEACTIVITY(program: any): Observable<any> {
                  
      }
      
+   loadDataset(){
+       
+
+        let sql=`SELECT  Program,[service type] as Activity, [Client Code] as Client,roster.HACCType,
+                HumanResourceTypes.Type AS FundingSource, 
+                HumanResourceTypes.Address1 AS AgencyID, 
+                DataDomains.Description AS Position, 
+                ItemTypes.RosterGroup, 
+                ItemTypes.MinorGroup, 
+                ItemTypes.IT_Dataset AS Dataset, 
+                ItemTypes.CSTDAOutletID AS OutletID, 
+                ItemTypes.DatasetGroup AS DatasetGroup, 
+                ItemTypes.DEXID AS DEXID, 
+                ItemTypes.NDIA_ID 
+            FROM  ROSTER  
+            LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name =  roster .Program 
+            INNER JOIN ItemTypes on ItemTypes.Title =  roster .[Service Type] 
+            LEFT JOIN DataDomains on DataDomains.RecordNumber =  Roster.[StaffPosition] 
+            WHERE RecordNo =  ${this.recordNo}`
+
+            this.listS.getlist(sql).pipe(takeUntil(this.unsubscribe)).subscribe(d=>{
+                this.dataset=d[0];
+                this.ViewDatasetModal=true;
+            })
+   }  
+   loadExtraCharge(){
+    this.ViewExtraChargeModal=true;
+} 
+    
+    
      load_AuditHistory(){
          this.loading=true;
         this.ViewAuditHistoryModal=true;
@@ -1411,6 +1498,20 @@ GETSERVICEACTIVITY(program: any): Observable<any> {
             
         if (!sql) return EMPTY;
         return this.listS.getlist(sql);
+    
     }
+
+    openStaffModal(){
+        this.openSearchStaffModal=true;
+         this.bookingData.next(this.booking) ;               
+    }
+    onStaffSearch(data:any){
+        this.openSearchStaffModal=false;
+        this.staffCode=data.accountno;
+        this.rosterForm.patchValue({
+            staffCode:data.accountno
+        })
+    }
+
     }
     

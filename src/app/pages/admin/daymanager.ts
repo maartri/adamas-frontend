@@ -270,7 +270,7 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
     AllActivities:boolean=true;
     OpenSearchOfStaff:boolean;
     OpenSearchOfRecipient:boolean;
-    PayPeriodEndDate:string;
+    PayPeriodEndDate:Date;
 
     optionsList = [
       { id: 1, name: 'Hide W1 W2 WKD Display', checked:false },
@@ -855,7 +855,7 @@ menuAction(){
     console.log(this.optionsList)
     localStorage.setItem('dmOption1', JSON.stringify(this.optionsList));
     localStorage.setItem('dmOption2', JSON.stringify(this.optionsList2));
-    localStorage.setItem('PayPeriodEndDate', this.PayPeriodEndDate);
+    localStorage.setItem('PayPeriodEndDate', this.PayPeriodEndDate.toString());
     
 }
 change(event:any){

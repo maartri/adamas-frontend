@@ -116,7 +116,7 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
   dmType:string = "2";
   AutoPreviewNotes:boolean;
   clickedRoster:any;
-  PayPeriodEndDate:string;
+  PayPeriodEndDate:Date;
   
   optionsList = [
     { id: 1, name: 'Hide W1 W2 WKD Display', checked:false },
@@ -210,7 +210,7 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
       if (item2.length>0)
         this.optionsList2 =JSON.parse(item2);
    
-   //this.PayPeriodEndDate = localStorage.getItem('PayPeriodEndDate');
+   this.PayPeriodEndDate = new Date(localStorage.getItem('PayPeriodEndDate'));
  }
  workingHours(dm:any,date:any){
   let sum =0;
@@ -263,14 +263,25 @@ HighlightColum(indx:number){
    
   }
   
+  clickCount:number=0;
   RosterClick(event:any, value:any){
     value.isSelected=true;
     this.clickedRoster=value;
-    this.akonani=[];
-    this.akonani.push(value);
-    if (this.optionsList[2].checked)
-      this.AutoPreviewNotes=true;
-
+    
+    this.clickCount++;
+    setTimeout(() => {
+        if (this.clickCount === 1) {
+             // single
+             this.akonani=[];
+             this.akonani.push(value);
+             if (this.optionsList[2].checked)
+               this.AutoPreviewNotes=true;           
+        } else if (this.clickCount === 2) {
+            // double
+            this.AutoPreviewNotes=false;           
+        }
+        this.clickCount = 0;
+    }, 100) 
     console.log(value)
   }
   ngAfterViewInit() {
@@ -1050,6 +1061,7 @@ getfilterType(type:String)
     this.deselect(null, event);
     this.HighlightColum_index=-1
     this.AutoPreviewNotes=false;
+    this.clickCount = 0;
     //value.isSelected=true;
     //this.isClicked = false;
     this.coordinates = {

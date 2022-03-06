@@ -271,6 +271,7 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
     OpenSearchOfStaff:boolean;
     OpenSearchOfRecipient:boolean;
     PayPeriodEndDate:string;
+    workflowVisible: boolean = false;
 
     optionsList = [
       { id: 1, name: 'Hide W1 W2 WKD Display', checked:false },
@@ -1645,7 +1646,7 @@ Check_BreachedRosterRules_Paste(action:string, record:any):any{
         }
         
     }
-    
+
     handleCancel(): void{
             this.optionsModal = false;
             this.recipientDetailsModal = false;

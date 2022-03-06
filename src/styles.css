@@ -75,7 +75,9 @@ td, th{
 .mrg-btm{
     margin-bottom:1rem;
 }
-
+.mrg-btm1point5{
+    margin-bottom:1.5rem;
+}
 .mrg-btm-2{
     margin-bottom:2rem;
 }
@@ -361,48 +363,48 @@ th.action{
 
 /* Defining a custom border on all
             sides except the top side */
-            .custom-field {
+            /* .custom-field {
                 border: 1px solid #85b9d5;
                 border-top: none;
                 margin: 10px 2px;
                 padding: 8px;
-            }
+            } */
       
             /* Defining the style of the 
             heading/legend for custom fieldset */
-            .custom-field h1 {
+            /* .custom-field h1 {
                 font: 16px normal;
                 margin: -16px -8px 0;
-            }
+            } */
       
             /* Using float:left allows us to mimic
                the legend like fieldset. The 
                float:right property can also be 
                used to show the legend on right side */
       
-            .custom-field h1 span {
+            /* .custom-field h1 span {
                 float: left;
-            }
+            } */
       
             /* Creating the custom top border to make
                 it look like fieldset defining small 
                 border before the legend. The width 
                 can be modified to change position 
                 of the legend */
-            .custom-field h1:before {
+            /* .custom-field h1:before {
                 border-top: 1px solid #85b9d5;
                 content: ' ';
                 float: left;
                 margin: 8px 2px 0 -1px;
                 width: 12px;
-            }
+            } */
       
             /* Defining a long border after the 
             legend, using overflow hidden to 
             actually hide the line behind the 
             legend text. It can be removed
             for a different effect */
-            .custom-field h1:after {
+            /* .custom-field h1:after {
                 border-top: 1px solid #85b9d5;
                 content: ' ';
                 display: block;
@@ -412,7 +414,7 @@ th.action{
                 overflow: hidden;
                 position: relative;
                 top: 8px;
-            }
+            } */
 
 
 

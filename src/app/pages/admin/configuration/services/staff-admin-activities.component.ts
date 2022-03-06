@@ -55,17 +55,16 @@ const inputFormDefault = {
     border-radius: 3px;
   }
   nz-select{
-    width:100%
-    min-width: 100%;
+    min-width:100%;
   }
-  .ant-modal-header .ant-modal-title .ng-star-inserted"{
-    width: 40%;
-    margin: auto;
-    background: #85b9d5;
-    text-align: center;
-    color: white;
-    border-radius: 5px;
-    padding: 5px;
+  .ant-modal-content .ant-modal-header .ant-modal-title .ng-star-inserted"{
+    width: 40% !important;
+    margin: auto !important;
+    background: #85b9d5 !important;
+    text-align: center !important;
+    color: white !important;
+    border-radius: 5px !important;
+    padding: 5px !important;
   }
   .ant-modal-header {
     padding: 4px 24px !important;
@@ -79,6 +78,22 @@ const inputFormDefault = {
   } 
   #main-wrapper{
     border:1px solid #85B9D5;padding:10px 0px;min-height:28rem;
+  }
+  #mta-btn-group{
+  margin-left: 12px !important;margin-right: 12px;padding:10px;
+  }
+  #mta-btn-group .ant-tabs-bar {
+    margin: 0px;
+    border: 0px;
+  }
+  #mta-btn-group nz-tabset[_ngcontent-gwp-c604] {
+    margin-top: 0px;
+  }
+  .redColor{
+    color:red
+  }
+  .whiteColor{
+    color:rgba(0, 0, 0, 0);
   }
   `]
 })
@@ -123,6 +138,7 @@ export class StaffAdminActivitiesComponent implements OnInit {
   competencymodal: boolean = false;
   check : boolean = false;
   current: number = 0;
+  current_mta: number = 0;
   checkedflag:boolean = true;
   dateFormat: string = 'dd/MM/yyyy';
   inputForm: FormGroup;
@@ -314,6 +330,10 @@ export class StaffAdminActivitiesComponent implements OnInit {
         this.loadChecklist();
       }
       this.current = index;
+    }
+    viewMTA(index: number){
+      console.log(index + "111");
+      this.current_mta = index;
     }
     save() {
       this.loading = true;

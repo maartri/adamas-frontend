@@ -96,7 +96,7 @@
                                         <td style="width:200px">{{data.serviceType}}</td>
         
                                         <td style="width:100px">{{data.rosterStart}}</td>
-                                        <td style="width:100px">{{data.duration}}</td>
+                                        <td style="width:100px">{{BlockToTime(data.duration)}}</td>
                                         <td style="width:100px">{{data.rosterEnd}}</td>
                                         <td style="width:100px">{{data.taMultishift}}</td>
                                       </tr>
@@ -106,19 +106,141 @@
                     </div>
 
                     <div *ngIf="nzSelectedIndex == 1">
-                        active
+                        <nz-table #virtualTable nzVirtualScroll [nzData]="dataSet" [nzSize]="'small'" [nzLoading]="loadingPending" [nzBordered]="true"
+                        [nzVirtualForTrackBy]="trackByIndex" [nzVirtualForTrackBy]="trackByIndex" [nzFrontPagination]="false" 
+                        [nzShowPagination]="false" [nzScroll]="{ x: '1100px', y: 'calc(100vh - 238px)' }">
+                            <thead>
+                              <tr>
+                                <th style="width:200px">Staff</th>
+                                <th style="width:200px">Recipient</th>
+                                <th style="width:200px">Service Type</th>
+                                <th style="width:100px">Roster Start</th>
+                                <th style="width:100px">Duration</th>
+                                <th style="width:100px">Roster End</th>
+                                <th style="width:100px">Actual Start</th>
+                                <th style="width:100px">Status</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                                <ng-template nz-virtual-scroll let-data let-index="index">
+                                    <tr>
+                                        <td style="width:200px">{{data.staff}}</td>
+                                        <td style="width:200px">{{data.recipient}}</td>
+                                        <td style="width:200px">{{data.serviceType}}</td>
+        
+                                        <td style="width:100px">{{data.rosterStart}}</td>
+                                        <td style="width:100px">{{BlockToTime(data.duration)}}</td>
+                                        <td style="width:100px">{{data.rosterEnd}}</td>
+                                        <td style="width:100px">{{data.actualStart | date : 'HH:MM'}}</td>
+                                        <td style="width:100px">{{data.taMultishift}}</td>
+                                      </tr>
+                                </ng-template>                       
+                            </tbody>
+                          </nz-table>
                     </div>
 
                     <div *ngIf="nzSelectedIndex == 2">
-                        completed
+                        <nz-table #virtualTable nzVirtualScroll [nzData]="dataSet" [nzSize]="'small'" [nzLoading]="loadingPending" [nzBordered]="true"
+                        [nzVirtualForTrackBy]="trackByIndex" [nzVirtualForTrackBy]="trackByIndex" [nzFrontPagination]="false" 
+                        [nzShowPagination]="false" [nzScroll]="{ x: '1200px', y: 'calc(100vh - 238px)' }">
+                            <thead>
+                              <tr>
+                                <th style="width:200px">Staff</th>
+                                <th style="width:200px">Recipient</th>
+                                <th style="width:200px">Service Type</th>
+                                <th style="width:100px">Roster Start</th>
+                                <th style="width:100px">Duration</th>
+                                <th style="width:100px">Roster End</th>                                
+                                <th style="width:100px">Actual Start</th>
+                                <th style="width:100px">Actual End</th>
+                                <th style="width:100px">Status</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                                <ng-template nz-virtual-scroll let-data let-index="index">
+                                    <tr>
+                                        <td style="width:200px">{{data.staff}}</td>
+                                        <td style="width:200px">{{data.recipient}}</td>
+                                        <td style="width:200px">{{data.serviceType}}</td>
+        
+                                        <td style="width:100px">{{data.rosterStart}}</td>
+                                        <td style="width:100px">{{BlockToTime(data.duration)}}</td>
+                                        <td style="width:100px">{{data.rosterEnd | date : 'HH:MM'}}</td>
+                                        <td style="width:100px">{{data.actualStart | date : 'HH:MM'}}</td>
+                                        <td style="width:100px">{{data.actualEnd | date : 'HH:MM'}}</td>
+                                        <td style="width:100px">{{data.taMultishift}}</td>
+                                      </tr>
+                                </ng-template>                       
+                            </tbody>
+                          </nz-table>
                     </div>
 
                     <div *ngIf="nzSelectedIndex == 3">
-                        alert log
+                        <nz-table #virtualTable nzVirtualScroll [nzData]="dataSet" [nzSize]="'small'" [nzLoading]="loadingPending" [nzBordered]="true"
+                        [nzVirtualForTrackBy]="trackByIndex" [nzVirtualForTrackBy]="trackByIndex" [nzFrontPagination]="false" [nzSize]="'middle'"
+                        [nzShowPagination]="false" [nzScroll]="{ x: '1200px', y: 'calc(100vh - 238px)' }">
+                            <thead>
+                              <tr>
+                                <th style="width:200px">Staff</th>
+                                <th style="width:200px">Recipient</th>
+                                <th style="width:200px">Service Type</th>
+                                <th style="width:100px">Roster Start</th>
+                                <th style="width:100px">Duration</th>
+                                <th style="width:100px">Roster End</th>                               
+                                <th style="width:100px">Actual Start</th>
+                                <th style="width:100px">Actual End</th>
+                                <th style="width:100px">Status</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                                <ng-template nz-virtual-scroll let-data let-index="index">
+                                    <tr>
+                                        <td style="width:200px">{{data.staff}}</td>
+                                        <td style="width:200px">{{data.recipient}}</td>
+                                        <td style="width:200px">{{data.serviceType}}</td>
+        
+                                        <td style="width:100px">{{data.rosterStart}}</td>
+                                        <td style="width:100px">{{BlockToTime(data.duration)}}</td>
+                                        <td style="width:100px">{{data.rosterEnd}}</td>                                        
+                                        <td style="width:100px">{{data.actualStart | date : 'HH:MM'}}</td>
+                                        <td style="width:100px">{{data.actualEnd | date : 'HH:MM'}}</td>
+                                        <td style="width:100px">{{data.taMultishift}}</td>
+                                      </tr>
+                                </ng-template>                       
+                            </tbody>
+                          </nz-table>
                     </div>
 
                     <div *ngIf="nzSelectedIndex == 4">
-                        settings
+                        <nz-table #virtualTable nzVirtualScroll [nzData]="dataSet" [nzSize]="'small'" [nzLoading]="loadingPending" [nzBordered]="true"
+                        [nzVirtualForTrackBy]="trackByIndex" [nzVirtualForTrackBy]="trackByIndex" [nzFrontPagination]="false" [nzSize]="'middle'"
+                        [nzShowPagination]="false" [nzScroll]="{ x: '1000px', y: 'calc(100vh - 238px)' }">
+                            <thead>
+                              <tr>
+                                <th style="width:200px">Staff</th>
+                                <th style="width:200px">Recipient</th>
+                                <th style="width:200px">Service Type</th>
+                                <th style="width:100px">Roster Start</th>
+                                <th style="width:100px">Duration</th>
+                                <th style="width:100px">Roster End</th>
+                                <th style="width:100px">Status</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                                <ng-template nz-virtual-scroll let-data let-index="index">
+                                    <tr>
+                                        <td style="width:200px">{{data.staff}}</td>
+                                        <td style="width:200px">{{data.recipient}}</td>
+                                        <td style="width:200px">{{data.serviceType}}</td>
+        
+                                        <td style="width:100px">{{data.rosterStart}}</td>
+                                        <td style="width:100px">{{BlockToTime(data.duration)}}</td>
+                                        <td style="width:100px">{{data.rosterEnd}}</td>
+                                        <td style="width:100px">{{data.taMultishift}}</td>
+                                      </tr>
+                                </ng-template>                       
+                            </tbody>
+                          </nz-table>
                     </div>
                 </div>
            </div>

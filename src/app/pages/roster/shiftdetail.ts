@@ -60,6 +60,7 @@ interface UserView{
        recipientCode:string
        recordNo:string
        debtor:string;
+       date:string;
        dataset:any;
        viewType:string;
        multipleRecipientShow: boolean = false;
@@ -1309,6 +1310,7 @@ GETSERVICEACTIVITY(program: any): Observable<any> {
         this.FetchCode=recipientCode;
         this.staffCode=staffCode;
         this.debtor=debtor;
+        this.date=date;
        
         this.defaultStartTime = parseISO(new Date(date + " " + startTime).toISOString());
         this.defaultEndTime = parseISO(new Date(date + " " + endTime).toISOString());

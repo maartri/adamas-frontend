@@ -1,9 +1,10 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core'
+import { Component, OnInit, OnDestroy, AfterViewInit,Input } from '@angular/core'
 
 import { ListService } from '@services/index';
 import { forkJoin } from 'rxjs';
 
 import { format } from 'date-fns';
+//import { type } from 'os';
 
 
 export interface VirtualDataInterface {
@@ -62,7 +63,7 @@ export interface VirtualDataInterface {
 })
 
 
-export class AttendanceAdmin implements OnInit, OnDestroy {
+export class AttendanceAdmin implements OnInit, AfterViewInit,OnDestroy {
 
     allCheckedBranches: boolean = false;
     allCheckedTeams: boolean = false;
@@ -80,7 +81,7 @@ export class AttendanceAdmin implements OnInit, OnDestroy {
     nzSelectedIndex: number = 0;
 
     dataSet: Array<any> = [];
-
+    
 
     checkOptionsOne = [
         { label: 'Apple', value: 'Apple', checked: true },
@@ -143,13 +144,24 @@ export class AttendanceAdmin implements OnInit, OnDestroy {
 
       });
     }
-
+    ngAfterViewInit(): void {
+      this.reload();
+    }
     ngOnDestroy(): void {
 
     }
-
+    numStr(n:number):string {
+      let val="" + n;
+      if (n<10) val = "0" + n;
+      
+      return val;
+    }
+    BlockToTime(blocks:number){
+      return this.numStr(Math.floor(blocks/12)) + ":" + this.numStr((blocks%12)*5)
+     }
     view(index: number) {
       this.nzSelectedIndex = index;
+      this.reload();
     }
 
     // Branches
@@ -294,15 +306,17 @@ export class AttendanceAdmin implements OnInit, OnDestroy {
     
     reload(){
       this.loadingPending = true;
-      let data = {
+      
+      let input = {
         Date:  format(this.date,'yyyy/MM/dd'),
         LocalTimezoneOffset: 0,
         Coordinators: this.coordinators.filter(item => item.checked).map(x => x.label).join(','),
         Branches: this.branches.filter(item => item.checked).map(x => x.label).join(','),
-        Categories: this.categories.filter(item => item.checked).map(x => x.label).join(',')
+        Categories: this.categories.filter(item => item.checked).map(x => x.label).join(','),
+        TAType:this.nzSelectedIndex
       };
-      
-      this.listS.postmtapending(data).subscribe(data => {
+      this.dataSet=[];
+      this.listS.postmtapending(input).subscribe(data => {
         console.log(data)
         this.dataSet = data;
         this.loadingPending = false;

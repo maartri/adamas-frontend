@@ -60,7 +60,7 @@
                     <div nz-row>
                         <div class="form-group">
                             <label for="">Date</label>
-                            <nz-date-picker [nzDisabled]="!editRecord" [nzFormat]="dateFormat" formControlName="date"></nz-date-picker>
+                            <nz-date-picker [nzDisabled]="!editRecord || date<'2000/01/01'" [nzFormat]="dateFormat" formControlName="date"></nz-date-picker>
                         </div>
                     </div>
                     <div nz-row>

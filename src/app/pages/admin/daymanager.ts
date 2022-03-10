@@ -132,6 +132,9 @@ class Address {
         border-radius: 5px;  
         border-color: rgb(236, 236, 236);
    }
+
+   
+
       
     `],
     templateUrl: './daymanager.html'

@@ -225,8 +225,8 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
     sum = dayRoster.reduce((acc, val) => {  return acc=acc+val.duration },0);
    
 
-    return sum;
-    //return this.numStr(Math.floor(sum/12)) + ":" + this.numStr((sum%12)*5);
+    //return sum;
+    return this.numStr(Math.floor(sum/12)) + ":" + this.numStr((sum%12)*5);
   
  }
 

@@ -1,9 +1,11 @@
 import { Component, OnInit, OnDestroy, AfterViewInit,Input } from '@angular/core'
 
-import { ListService } from '@services/index';
-import { forkJoin } from 'rxjs';
-
+import { ListService,GlobalService } from '@services/index';
+import { forkJoin, Subject } from 'rxjs';
+import { FormGroup,FormBuilder } from '@angular/forms';
+import {takeUntil} from 'rxjs/operators';
 import { format } from 'date-fns';
+import parseISO from 'date-fns/parseISO'
 //import { type } from 'os';
 
 
@@ -58,6 +60,60 @@ export interface VirtualDataInterface {
     i:hover{
         color:#4d4d4d;
     }
+    nz-modal.options >>> div div div.ant-modal div.ant-modal-content div.ant-modal-body{
+      padding:0;
+  }
+  nz-modal.options >>> div div div.ant-modal div.ant-modal-content div.ant-modal-footer{
+      padding:0;
+  }
+  ul{
+      list-style: none;
+      padding: 5px 0 5px 15px;
+      margin: 0;
+  }
+  li {
+      padding: 4px 0 4px 10px;
+      font-size: 13px;
+      position:relative;
+      cursor:pointer;
+  }
+  li:hover{
+      background:#f2f2f2;
+  }
+  li i {
+      float:right;
+      margin-right:7px;
+  }
+  hr{
+      border: none;
+      height: 1px;
+      background: #e5e5e5;
+      margin: 2px 0;
+  }
+  li > ul{
+      position: absolute;
+      display:none;         
+      right: -192px;
+      padding: 2px 5px;
+      background: #fff;
+      top: -6px;
+      width: 192px;
+      transition: all 0.5s ease 3s;
+  }
+  li:hover > ul{           
+      display:block;
+      transition: all 0.5s ease 0s;
+  }
+
+  .rectangle{
+    margin-top: 10px;     
+    padding: 10px; 
+    padding-left: 5px; 
+    border-style:solid; 
+    border-width: 2px; 
+    border-radius: 5px;  
+    border-color: rgb(236, 236, 236);
+}
     `],
     templateUrl: './attendance.html'
 })
@@ -81,22 +137,31 @@ export class AttendanceAdmin implements OnInit, AfterViewInit,OnDestroy {
     nzSelectedIndex: number = 0;
 
     dataSet: Array<any> = [];
-    
-
-    checkOptionsOne = [
-        { label: 'Apple', value: 'Apple', checked: true },
-        { label: 'Pear', value: 'Pear', checked: false },
-        { label: 'Orange', value: 'Orange', checked: false }
-    ];
+    nzWidth:number=400;
+    optionMenuDisplayed:boolean;
+    menu:Subject<number>= new Subject();
+    TimeAttendnaceModal:boolean;
+    TimeAttendnaceLable:string='';
+    clickedData:any;
 
     branches: Array<any> = [];
     teams: Array<any> = [];
     categories: Array<any> = [];
     coordinators: Array<any> = [];
-    
+
+    DateTimeForm:FormGroup;
+    durationObject:any;
+    today = new Date();
+    defaultStartTime: Date = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 8, 0, 0);
+    defaultEndTime: Date = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 9, 0, 0);
+    dateFormat:string="dd/MM/YYYY"
+    rdate:any;
+    private unsubscribe = new Subject();
 
     constructor(
-      private listS: ListService
+      private listS: ListService,
+      private globalS: GlobalService,
+      private formBuilder: FormBuilder,
     ) {
 
     }
@@ -143,12 +208,110 @@ export class AttendanceAdmin implements OnInit, AfterViewInit,OnDestroy {
 
 
       });
+      this.buildForm();
+      this.menu.subscribe(data => {
+        this.optionMenuDisplayed=false;
+      switch(data){
+        case 1:
+          this.nzWidth=400;
+          this.TimeAttendnaceModal=true;
+          this.TimeAttendnaceLable="Force Shift Logon";
+          break;
+        case 2:         
+          this.nzWidth=600;
+          this.TimeAttendnaceModal=true;
+          this.TimeAttendnaceLable="Force Shift Logoff";
+          break;
+        case 3:   
+          this.nzWidth=600;
+          this.TimeAttendnaceModal=true;
+          this.TimeAttendnaceLable="Set Actual Worked Hours";
+          break;
+        case 4:   
+          this.nzWidth=600;
+          this.TimeAttendnaceModal=true;
+          this.TimeAttendnaceLable="Set Actual Worked Hours";
+          break;
+      }
+    });
+
     }
     ngAfterViewInit(): void {
       this.reload();
     }
     ngOnDestroy(): void {
 
+    }
+    buildForm() {
+      this.DateTimeForm = this.formBuilder.group({
+          recordNo: [''],
+          rdate: [''],
+          time: this.formBuilder.group({
+              startTime:  [''],
+              endTime:  [''],
+          }),
+          payQty: [''],
+          billQty: ['']
+          
+      });
+  
+      this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
+      this.fixStartTimeDefault();   
+  
+      this.DateTimeForm.get('time.startTime').valueChanges.pipe(
+          takeUntil(this.unsubscribe)
+      ).subscribe(d => {
+          
+          this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
+      });
+      this.DateTimeForm.get('time.endTime').valueChanges.pipe(
+          takeUntil(this.unsubscribe)
+      ).subscribe(d => {
+          this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
+      });
+     
+  }
+
+  fixStartTimeDefault() {
+    const { time } = this.DateTimeForm.value;
+    if (!time.startTime) {
+        this.ngModelChangeStart(this.defaultStartTime)
+    }
+
+    if (!time.endTime) {
+        this.ngModelChangeEnd(this.defaultEndTime)
+    }
+}
+
+ngModelChangeStart(event): void{
+  this.DateTimeForm.patchValue({
+      time: {
+          startTime: event
+      }
+  })
+}
+ngModelChangeEnd(event): void{
+  this.DateTimeForm.patchValue({
+      time: {
+          endTime: event
+      }
+  })
+}
+    TimeDifference(data:any,  t:number=0){
+      let diff:number=0
+      let StartTime ;
+      let EndTime;
+      if (t==1) {
+        StartTime = parseISO(new Date(data.date + ' ' + data.rosterEnd).toISOString());
+        EndTime = parseISO (new Date(data.actualEnd).toISOString());
+      }else{
+        StartTime = parseISO(new Date(data.date + ' ' + data.rosterStart).toISOString());
+        EndTime = parseISO (new Date(data.actualStart).toISOString());
+      }
+       
+      diff = this.globalS.computeTimeDifference(StartTime, EndTime);
+     
+      return diff;
     }
     numStr(n:number):string {
       let val="" + n;
@@ -162,6 +325,29 @@ export class AttendanceAdmin implements OnInit, AfterViewInit,OnDestroy {
     view(index: number) {
       this.nzSelectedIndex = index;
       this.reload();
+    }
+    
+    rightClickMenu(event: any, value: any) {
+      this.optionMenuDisplayed=true;
+      event.preventDefault();
+      this.clickedData=value;
+      console.log(value);
+      let date=this.clickedData.date;
+      this.defaultStartTime = parseISO(new Date(date + " " + this.clickedData.rosterStart).toISOString());
+      this.defaultEndTime = parseISO(new Date(date + " " + this.clickedData.rosterEnd).toISOString());
+
+      this.DateTimeForm.patchValue({
+        rdate:this.clickedData.date,
+        payQty:this.clickedData.pay,
+        billQty:this.clickedData.bill
+
+      })
+      
+  
+    }
+
+    menuAction(){
+
     }
 
     // Branches
@@ -328,6 +514,7 @@ export class AttendanceAdmin implements OnInit, AfterViewInit,OnDestroy {
     trackByIndex(_: number, data: VirtualDataInterface): number {
       return data.index;
   }
-    
+ 
+
     
 }

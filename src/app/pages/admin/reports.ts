@@ -9,7 +9,7 @@ import format from 'date-fns/format';
 import parseISO from 'date-fns/parseISO'
 import { EventInputTransformer, whenTransitionDone } from '@fullcalendar/angular';
 import { getDate } from 'date-fns';
-import { concat, constant, now } from 'lodash';
+import { concat, constant, now, xor } from 'lodash';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { Router,ActivatedRoute, ParamMap } from '@angular/router';
 import * as constants from './../../services/global.service'
@@ -612,6 +612,8 @@ stafftypeArr: Array<any> = constants.types;
     Viewfilter_Branches: string;
     Viewfilter_Programs: string;
     Viewfilter_Coordinater: string;
+    Viewfilter_StaffGroup :string;
+    Viewfilter_Category :string;
 
    CSV_String: any;
 
@@ -975,17 +977,37 @@ stafftypeArr: Array<any> = constants.types;
             this.ReportS.GetBranchFilters(this.tocken.user.toString()) ,                                    
             this.ReportS.GetProgramFilters(this.tocken.user.toString()),
             this.ReportS.GetCoordinaterFilters(this.tocken.user.toString()),
+            this.ReportS.GetStaffCategoryFilters(this.tocken.user.toString()),
+            this.ReportS.GetCategoryFilters(this.tocken.user.toString()),
+            
             
         ]);
         filers.subscribe(data => { 
             this.Viewfilter_Branches= data[0];
             this.Viewfilter_Programs= data[1];
-            this.Viewfilter_Coordinater= data[2];  
+            this.Viewfilter_Coordinater= data[2]; 
+            this.Viewfilter_StaffGroup= data[3]; 
+            this.Viewfilter_Category= data[4];
+
+            if(this.Viewfilter_Category != "" && this.Viewfilter_Category != undefined){
+                var sql = "SELECT DISTINCT(AgencyDefinedGroup ) FROM Recipients where " + this.Viewfilter_Category.toString();
+               
+                this.listS.getlist(sql).subscribe(x => { 
+                    
+                    for(let i=0; i < x.length-1; i++){
+                        this.serviceRegionsArr = [... this.serviceRegionsArr ,x[i].agencyDefinedGroup]               
+                    }
+                })
+               
+            }else{
+                this.listS.getserviceregion().subscribe(x => this.serviceRegionsArr = x)
+            }
 
             if(this.Viewfilter_Programs != "" && this.Viewfilter_Programs != undefined){
                 var sql = "Select Program from Recipients " + this.Viewfilter_Programs.toString();
+               
                 this.listS.getlist(sql).subscribe(x => {
-                   
+                    
                     for(let i=0; i < x.length-1; i++){
                         this.programsArr = [... this.programsArr ,x[i].program]               
                     }
@@ -997,7 +1019,22 @@ stafftypeArr: Array<any> = constants.types;
                     includeInactive:false
                 }).subscribe(x => this.programsArr = x);
             }
+            if(this.Viewfilter_StaffGroup != "" && this.Viewfilter_StaffGroup != undefined){
+                var sql = "Select Distinct StaffGroup from Staff where " + this.Viewfilter_StaffGroup.toString();
+               
+                this.listS.getlist(sql).subscribe(x => {
+                    
+                    for(let i=0; i < x.length-1; i++){
+                        this.staffgroupsArr = [... this.staffgroupsArr ,x[i].staffGroup]               
+                    }
+                })
+               
+            }else{
+                this.listS.getliststaffgroup().subscribe(x => this.staffgroupsArr = x)
+            }
+
         });
+
 
         this.listS.getreportcriterialist({
             listType: 'FUNDERS',
@@ -1037,10 +1074,16 @@ stafftypeArr: Array<any> = constants.types;
             listType: 'MANAGERS',
             includeInactive: false
         }).subscribe(x => this.managersArr = x)
-    */
-        //this.listS.getlisttimeattendancefilter("PROGRAMS").subscribe(x => this.programsArr = x);
+    
+        this.listS.getlisttimeattendancefilter("PROGRAMS").subscribe(x => this.programsArr = x);
+        this.listS.getliststaffteam().subscribe(x => this.staffteamArr = x)
+        
+       */ 
+        
         this.listS.getlisttimeattendancefilter("BRANCHES").subscribe(x => this.branchesArr = x);
         this.listS.getlisttimeattendancefilter("CASEMANAGERS").subscribe(x => this.managersArr = x);
+        this.listS.getlisttimeattendancefilter("STAFFTEAM").subscribe(x => this.staffteamArr = x);
+       
         
         this.listS.getcasenotecategory(0).subscribe(x => this.casenotesArr = x);
         this.listS.getcasenotecategory(1).subscribe(x => this.OPnotesArr = x);
@@ -1048,12 +1091,12 @@ stafftypeArr: Array<any> = constants.types;
         this.listS.GetrptLoanItems().subscribe(x => this.itemArr = x);
         this.listS.getstaffdiscipline().subscribe(x => this.disciplineArr = x)
         this.listS.getstaffcaredomain().subscribe(x => this.caredomainArr = x)
-        this.listS.getserviceregion().subscribe(x => this.serviceRegionsArr = x)
+        
         this.listS.Getrptcasenotes().subscribe(x => this.casenotesArr = x)
         this.listS.Getrptiplantypes().subscribe(x => this.planArr = x)
         this.listS.GetTraccsStaffCodes().subscribe(x => this.staffArr = x)
         this.listS.GetCopetencyGroup().subscribe(x => this.competeciesgroupArr = x)
-        this.listS.getliststaffteam().subscribe(x => this.staffteamArr = x)
+        
         this.TimesheetS.getcompetenciesall().subscribe(x => this.CompetenciesArr = x)
         this.listS.Getrpttrainingtype().subscribe(x => this.trainingtypeArr = x)
         this.listS.Getrptsettings_vehicles().subscribe(x => this.settting_vehicleArr = x)
@@ -1071,7 +1114,7 @@ stafftypeArr: Array<any> = constants.types;
             includeInactive: false
         }).subscribe(x => this.fundingRegionsArr = x)
 
-        this.listS.getliststaffgroup().subscribe(x => this.staffgroupsArr = x)
+        
         
 
         
@@ -1260,7 +1303,7 @@ stafftypeArr: Array<any> = constants.types;
 
                 break;
             case 'btn-activepackagelist':
-                this.bodystyle = { height:'350px', overflow: 'auto'}
+                this.bodystyle = { height:'400px', overflow: 'auto'}
                 this.ModalName = "ACTIVE PACKAGE REPORT  "
                 this.frm_Date = true;
                 this.frm_Programs = true;
@@ -1299,7 +1342,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.chkbx_CSVExport = true
                 break;
             case 'btn-vouchersummary':
-                this.bodystyle = { height:'300px', overflow: 'auto'}
+                this.bodystyle = { height:'350px', overflow: 'auto'}
                 this.ModalName = "VOUCHER SUMMARY REPORT "
                 this.frm_Date = true;
                 this.frm_Recipients = true;
@@ -1419,14 +1462,14 @@ stafftypeArr: Array<any> = constants.types;
 
                 break;
             case 'btn-absentclient':
-                this.bodystyle = { height:'500px', overflow: 'auto'}
+                this.bodystyle = { height:'520px', overflow: 'auto'}
                 this.ModalName = "ABSENT CLIENT STATUS REPORT"
                 this.frm_Date = true;
                 this.frm_Branches = true;
                 this.frm_Managers = true;
                 this.frm_Programs = true;
                 this.frm_Categories = true;
-                this.chkbx_CSVExport = true
+                this.chkbx_CSVExport = true;
                 break;
             case 'btn-careerlist':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1452,7 +1495,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.chkbx_asAddressLabel = true;
                 this.chkbx_incl_Contacts = true;
                 this.chkbx_incl_inactive = true;
-                this.chkbx_CSVExport = true
+                this.chkbx_CSVExport = true;
                 break;
             case 'btn-associatelist':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1465,7 +1508,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.chkbx_asAddressLabel = true;
                 this.chkbx_incl_Contacts = true;
                 this.chkbx_incl_inactive = true;
-                this.chkbx_CSVExport = true
+                this.chkbx_CSVExport = true;
                 break;
             case 'btn-unserviced':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1477,7 +1520,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_options = true;
             //    this.chkbx_incl_activeClients = true;
                 this.chkbx_activeClientsonly= true; 
-                this.chkbx_CSVExport = true
+                this.chkbx_CSVExport = true;
                 break;
             case 'btn-staff-Activestaff':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1578,14 +1621,14 @@ stafftypeArr: Array<any> = constants.types;
                 this.chkbx_CSVExport = true
                 break;
             case 'btn-Regis-mealregisterreport':
-                this.bodystyle = { height:'250px', overflow: 'auto'}
+                this.bodystyle = { height:'300px', overflow: 'auto'}
                 this.ModalName = "MEAL ORDER REPORT "
                 this.frm_Date = true;
                 this.frm_Recipients = true;
                 this.chkbx_CSVExport = true
                 break;
             case 'btn-Regis-LagTimeRegister':
-                this.bodystyle = { height:'350px', overflow: 'auto'}
+                this.bodystyle = { height:'400px', overflow: 'auto'}
                 this.ModalName = "LAG TIME REGISTER"
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1593,7 +1636,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.chkbx_CSVExport = true
                 break;
                 case 'btn-Regis-masterrosteredhoursreport':
-                this.bodystyle = { height:'300px', overflow: 'auto'}
+                this.bodystyle = { height:'350px', overflow: 'auto'}
                 this.ModalName = "MASTER ROSTERED HOURS REGISTER "
                 this.frm_MasterRosterCycles = true;
                 this.frm_Programs = true;
@@ -1608,7 +1651,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.chkbx_CSVExport = true
                 break;
             case 'btn-Regis-cdcleavereport':
-                this.bodystyle = { height:'350px', overflow: 'auto'}
+                this.bodystyle = { height:'400px', overflow: 'auto'}
                 this.ModalName = "CDC LEAVE REPORT "
                 this.frm_Date = true;
                 this.frm_Branches = true;
@@ -1616,7 +1659,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.chkbx_CSVExport = true
                 break;
             case 'btn-Regis-cdcpackagebalance':
-                this.bodystyle = { height:'350px', overflow: 'auto'}
+                this.bodystyle = { height:'400px', overflow: 'auto'}
                 this.ModalName = "CDC PACKAGE BALANCE REGISTER "
                 this.frm_Date = true;
                 this.frm_Recipients = true;
@@ -1809,7 +1852,7 @@ stafftypeArr: Array<any> = constants.types;
 
                 break;
             case 'btn-Regis-careplanstatus':
-                this.bodystyle = { height:'350px', overflow: 'auto'}
+                this.bodystyle = { height:'400px', overflow: 'auto'}
                 this.ModalName = "CARER PLAN STATUS "
                 this.frm_Date = true;
                 this.frm_PlanTypes = true;
@@ -1917,7 +1960,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.chkbx_CSVExport = true
                 break;
             case 'btn-Systm-ActivityStatusAudit':
-                this.bodystyle = { height:'250px', overflow: 'auto', top:'50px'}
+                this.bodystyle = { height:'300px', overflow: 'auto', top:'50px'}
                 this.ModalName = "PROGRAM ACTIVITY STATUS AUDIT "
                 this.frm_Programs = true;
                 this.chkbx_include_enddated = true;
@@ -2019,7 +2062,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.chkbx_CSVExport = true
                 break;
             case 'btn-report-DatasetUnitCost':
-                this.bodystyle = { height:'350px', overflow: 'auto'}
+                this.bodystyle = { height:'400px', overflow: 'auto'}
                 this.ModalName = "DATASET RECIPIENT UNIT COST"
                 this.frm_Date = true;
                 this.frm_Recipients = true;
@@ -2905,7 +2948,7 @@ stafftypeArr: Array<any> = constants.types;
             if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
             }
 
-        }
+        }        
         if (manager != "") {
             this.s_CoordinatorSQL = "R.[RECIPIENT_COOrdinator] in ('" + manager.join("','") + "')";
             if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
@@ -2920,6 +2963,11 @@ stafftypeArr: Array<any> = constants.types;
         if (region != "") {
             this.s_CategorySQL = "R.[AgencyDefinedGroup] in ('" + region.join("','") + "')";
             if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL }
+        }else{
+            if( this.Viewfilter_Category != ""){                                   
+                this.s_CategorySQL = this.Viewfilter_Category.toString().substring(87,this.Viewfilter_Category.toString().length);            
+                if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL }
+                }
         }
         if (program != "") {
             this.s_ProgramSQL = " (RecipientPrograms.[Program] in ('" + program.join("','") + "'))";
@@ -3082,18 +3130,42 @@ stafftypeArr: Array<any> = constants.types;
             if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
 
         }
+        else { 
+           if( this.Viewfilter_Branches != ""){
+            var re = /Recipients/gi;                        
+            this.s_BranchSQL = this.Viewfilter_Branches.toString().replace(re, "R");
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+            }
+
+        }
         if (manager != "") {
             this.s_CoordinatorSQL = "R.[RECIPIENT_COOrdinator] in ('" + manager.join("','") + "')";
             if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
 
+        }else{
+        if( this.Viewfilter_Coordinater != ""){  
+            var re = /Recipients/gi;                        
+            this.s_CoordinatorSQL = this.Viewfilter_Coordinater.toString().replace(re, "R");                                             
+            if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+            }
         }
         if (region != "") {
             this.s_CategorySQL = "R.[AgencyDefinedGroup] in ('" + region.join("','") + "')";
             if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL }
+        }else{
+            if( this.Viewfilter_Category != ""){                                   
+                this.s_CategorySQL = this.Viewfilter_Category.toString().substring(87,this.Viewfilter_Category.toString().length);            
+                if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL }
+                }
         }
         if (program != "") {
             this.s_ProgramSQL = " (RecipientPrograms.[Program] in ('" + program.join("','") + "'))";
             if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+        }else{
+        if( this.Viewfilter_Programs != ""){                                   
+            this.s_ProgramSQL = this.Viewfilter_Programs.toString().substring(87,this.Viewfilter_Programs.toString().length);            
+            if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+            }
         }
 
 
@@ -3209,21 +3281,45 @@ stafftypeArr: Array<any> = constants.types;
         //Condtion to be added on dynamic input   
         //HAVING MIN(CASE WHEN MINORGROUP = 'ADMISSION' THEN [DATE] END) <= '2020-07-01'  AND MIN(CASE WHEN MINORGROUP = 'DISCHARGE' THEN [DATE] END) >'2020-07-31' 
 
-        if (branch != "") {
+         if (branch != "") {
             this.s_BranchSQL = "R.[BRANCH] in ('" + branch.join("','") + "')";
-            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL };
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+        }
+        else { 
+           if( this.Viewfilter_Branches != ""){
+            var re = /Recipients/gi;                        
+            this.s_BranchSQL = this.Viewfilter_Branches.toString().replace(re, "R");
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+            }
         }
         if (manager != "") {
             this.s_CoordinatorSQL = "R.[RECIPIENT_COOrdinator] in ('" + manager.join("','") + "')";
             if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+
+        }else{
+        if( this.Viewfilter_Coordinater != ""){  
+            var re = /Recipients/gi;                        
+            this.s_CoordinatorSQL = this.Viewfilter_Coordinater.toString().replace(re, "R");                                             
+            if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+            }
         }
         if (region != "") {
             this.s_CategorySQL = "R.[AgencyDefinedGroup] in ('" + region.join("','") + "')";
-            if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL };
+            if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL }
+        }else{
+            if( this.Viewfilter_Category != ""){                                   
+                this.s_CategorySQL = this.Viewfilter_Category.toString().substring(87,this.Viewfilter_Category.toString().length);            
+                if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL }
+                }
         }
         if (program != "") {
             this.s_ProgramSQL = " (RecipientPrograms.[Program] in ('" + program.join("','") + "'))";
             if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+        }else{
+        if( this.Viewfilter_Programs != ""){                                   
+            this.s_ProgramSQL = this.Viewfilter_Programs.toString().substring(87,this.Viewfilter_Programs.toString().length);            
+            if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+            }
         }
         //'2013/04/18'  '2016/10/05'
         if (startdate != "" || enddate != "") {
@@ -3482,21 +3578,45 @@ stafftypeArr: Array<any> = constants.types;
         var fQuery = "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ' ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, Format(convert(datetime,(SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC)),'dd/MM/yyyy') AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END + CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID INNER JOIN Roster Rs on Rs.[client code]=R.[AccountNo] WHERE R.[AccountNo] > '!MULTIPLE'   AND   (ServiceOverview.ServiceStatus = 'ON HOLD') "
         //Condtion to be added on dynamic input   
         //HAVING MIN(CASE WHEN MINORGROUP = 'ADMISSION' THEN [DATE] END) <= '2020-07-01'  AND MIN(CASE WHEN MINORGROUP = 'DISCHARGE' THEN [DATE] END) >'2020-07-31' 
-        if (branch != "") {
+         if (branch != "") {
             this.s_BranchSQL = "R.[BRANCH] in ('" + branch.join("','") + "')";
-            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL };
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+        }
+        else { 
+           if( this.Viewfilter_Branches != ""){
+            var re = /Recipients/gi;                        
+            this.s_BranchSQL = this.Viewfilter_Branches.toString().replace(re, "R");
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+            }
         }
         if (manager != "") {
             this.s_CoordinatorSQL = "R.[RECIPIENT_COOrdinator] in ('" + manager.join("','") + "')";
             if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+
+        }else{
+        if( this.Viewfilter_Coordinater != ""){  
+            var re = /Recipients/gi;                        
+            this.s_CoordinatorSQL = this.Viewfilter_Coordinater.toString().replace(re, "R");                                             
+            if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+            }
         }
         if (region != "") {
             this.s_CategorySQL = "R.[AgencyDefinedGroup] in ('" + region.join("','") + "')";
-            if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL };
+            if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL }
+        }else{
+            if( this.Viewfilter_Category != ""){                                   
+                this.s_CategorySQL = this.Viewfilter_Category.toString().substring(87,this.Viewfilter_Category.toString().length);            
+                if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL }
+                }
         }
         if (program != "") {
             this.s_ProgramSQL = " (RecipientPrograms.[Program] in ('" + program.join("','") + "'))";
             if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+        }else{
+        if( this.Viewfilter_Programs != ""){                                   
+            this.s_ProgramSQL = this.Viewfilter_Programs.toString().substring(87,this.Viewfilter_Programs.toString().length);            
+            if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+            }
         }
         //AND [DATE] BETWEEN '2014-05-22' AND '2019/07/18' 
         if (startdate != "" || enddate != "") {
@@ -3601,19 +3721,43 @@ stafftypeArr: Array<any> = constants.types;
         var fQuery = "SELECT Recipients.AccountNo as [Recipient],  COUNT(SrNo) as  [Vouchers Issued], COUNT(CASE Cancelled WHEN 1 then 'True' else NULL END) as [Vouchers Cancelled], COUNT(CASE Redeemed WHEN 1 then 'True' else NULL END) as [Vouchers Redeemed], SUM(((CASE Redeemed WHEN 1 then 1 else 0 END) * SubsidyAmountt)) as [Value] FROM LMVoucher LEFT JOIN Recipients on LMVoucher.PersonID = Recipients.UniqueID  WHERE  "
         if (branch != "") {
             this.s_BranchSQL = "R.[BRANCH] in ('" + branch.join("','") + "')";
-            if (this.s_BranchSQL != "") { fQuery = fQuery + "  " + this.s_BranchSQL };
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+        }
+        else { 
+           if( this.Viewfilter_Branches != ""){
+            var re = /Recipients/gi;                        
+            this.s_BranchSQL = this.Viewfilter_Branches.toString().replace(re, "R");
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+            }
         }
         if (manager != "") {
             this.s_CoordinatorSQL = "R.[RECIPIENT_COOrdinator] in ('" + manager.join("','") + "')";
             if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+
+        }else{
+        if( this.Viewfilter_Coordinater != ""){  
+            var re = /Recipients/gi;                        
+            this.s_CoordinatorSQL = this.Viewfilter_Coordinater.toString().replace(re, "R");                                             
+            if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+            }
         }
         if (region != "") {
             this.s_CategorySQL = "R.[AgencyDefinedGroup] in ('" + region.join("','") + "')";
-            if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL };
+            if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL }
+        }else{
+            if( this.Viewfilter_Category != ""){                                   
+                this.s_CategorySQL = this.Viewfilter_Category.toString().substring(87,this.Viewfilter_Category.toString().length);            
+                if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL }
+                }
         }
         if (program != "") {
             this.s_ProgramSQL = " (RecipientPrograms.[Program] in ('" + program.join("','") + "'))";
             if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+        }else{
+        if( this.Viewfilter_Programs != ""){                                   
+            this.s_ProgramSQL = this.Viewfilter_Programs.toString().substring(87,this.Viewfilter_Programs.toString().length);            
+            if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+            }
         }
         
         if (startdate != "" || enddate != "") {
@@ -3652,7 +3796,9 @@ stafftypeArr: Array<any> = constants.types;
         console.log(s_BranchSQL)
         console.log(s_CategorySQL)
         console.log(s_CoordinatorSQL)
-        console.log(fQuery)*/
+        */
+
+        console.log(fQuery)
 
       
 
@@ -3721,21 +3867,45 @@ stafftypeArr: Array<any> = constants.types;
         if(this.inputForm.value.incl_inactive == false){
             fQuery = fQuery  + " AND ((R.AdmissionDate is NOT NULL) and (DischargeDate is NULL)) "
         }
-        if (branch != "") {
+         if (branch != "") {
             this.s_BranchSQL = "R.[BRANCH] in ('" + branch.join("','") + "')";
-            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL };
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+        }
+        else { 
+           if( this.Viewfilter_Branches != ""){
+            var re = /Recipients/gi;                        
+            this.s_BranchSQL = this.Viewfilter_Branches.toString().replace(re, "R");
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+            }
         }
         if (manager != "") {
             this.s_CoordinatorSQL = "R.[RECIPIENT_COOrdinator] in ('" + manager.join("','") + "')";
             if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+
+        }else{
+        if( this.Viewfilter_Coordinater != ""){  
+            var re = /Recipients/gi;                        
+            this.s_CoordinatorSQL = this.Viewfilter_Coordinater.toString().replace(re, "R");                                             
+            if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+            }
         }
         if (region != "") {
             this.s_CategorySQL = "R.[AgencyDefinedGroup] in ('" + region.join("','") + "')";
-            if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL };
+            if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL }
+        }else{
+            if( this.Viewfilter_Category != ""){                                   
+                this.s_CategorySQL = this.Viewfilter_Category.toString().substring(87,this.Viewfilter_Category.toString().length);            
+                if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL }
+                }
         }
         if (program != "") {
             this.s_ProgramSQL = " (RecipientPrograms.[Program] in ('" + program.join("','") + "'))";
             if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+        }else{
+        if( this.Viewfilter_Programs != ""){                                   
+            this.s_ProgramSQL = this.Viewfilter_Programs.toString().substring(87,this.Viewfilter_Programs.toString().length);            
+            if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+            }
         }
         if (branch != "") {
             var lblcriteria = "Branches:" + branch.join("','") + "; "
@@ -3904,21 +4074,45 @@ stafftypeArr: Array<any> = constants.types;
 
 
         var fQuery = "SELECT FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date], [Roster].[MonthNo], [Roster].[DayNo], [Roster].[BlockNo], [Roster].[Program], [Roster].[Client Code], [Roster].[Service Type], [Roster].[Anal], [Roster].[Service Description], [Roster].[Type], [Roster].[Notes], [Roster].[ShiftName], [Roster].[ServiceSetting], [Roster].[Carer Code], [Roster].[Start Time], [Roster].[Duration], [Roster].[Duration] / 12 As [DecimalDuration],  [Roster].[CostQty], CASE WHEN [Roster].[Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Roster].[Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty,[Roster].[Unit Pay Rate] as UnitPayRate , [Roster].[Unit Pay Rate], [Roster].[Unit Pay Rate] * [Roster].[CostQty] As [LineCost], [Roster].[BillQty], [Roster].[Unit Bill Rate], [Roster].[Unit Bill Rate] * [Roster].[BillQty] As [LineBill], [Roster].[Yearno]  FROM Roster  INNER JOIN Recipients ON Roster.[CLient Code] = Recipients.[Accountno]  WHERE ([Client Code] <> '!INTERNAL')  AND Roster.[Type] = 1  "
-        if (branch != "") {
+         if (branch != "") {
             this.s_BranchSQL = "R.[BRANCH] in ('" + branch.join("','") + "')";
-            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL };
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+        }
+        else { 
+           if( this.Viewfilter_Branches != ""){
+            var re = /Recipients/gi;                        
+            this.s_BranchSQL = this.Viewfilter_Branches.toString().replace(re, "R");
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+            }
         }
         if (manager != "") {
             this.s_CoordinatorSQL = "R.[RECIPIENT_COOrdinator] in ('" + manager.join("','") + "')";
             if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+
+        }else{
+        if( this.Viewfilter_Coordinater != ""){  
+            var re = /Recipients/gi;                        
+            this.s_CoordinatorSQL = this.Viewfilter_Coordinater.toString().replace(re, "R");                                             
+            if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+            }
         }
         if (region != "") {
             this.s_CategorySQL = "R.[AgencyDefinedGroup] in ('" + region.join("','") + "')";
-            if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL };
+            if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL }
+        }else{
+            if( this.Viewfilter_Category != ""){                                   
+                this.s_CategorySQL = this.Viewfilter_Category.toString().substring(87,this.Viewfilter_Category.toString().length);            
+                if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL }
+                }
         }
         if (program != "") {
             this.s_ProgramSQL = " (RecipientPrograms.[Program] in ('" + program.join("','") + "'))";
             if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+        }else{
+        if( this.Viewfilter_Programs != ""){                                   
+            this.s_ProgramSQL = this.Viewfilter_Programs.toString().substring(87,this.Viewfilter_Programs.toString().length);            
+            if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+            }
         }
         //AND Date BETWEEN '2020/07/01' AND '2020/07/31'
         if (startdate != "" || enddate != "") {
@@ -4018,21 +4212,45 @@ stafftypeArr: Array<any> = constants.types;
 
         var fQuery = "SELECT  DATADOMAINS.[User1]  as [District], [Roster].[ServiceSetting] as Vehicle, [Roster].[Client Code] as Client, FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date of Travel] , (Case UPPER(LEFT([Roster].[Service Type],3)) WHEN 'MED' THEN 1 ELSE 0 END) as [MED], (Case UPPER(LEFT([Roster].[Service Type],3)) WHEN 'MED' THEN 0 ELSE 1 END) as [SOC], [Roster].[Program], PR.[Type] AS FundingSource FROM Roster INNER JOIN RECIPIENTS ON [Roster].[Client Code] = [Recipients].[AccountNo]   INNER JOIN DATADOMAINS ON DATADOMAINS.[Description] =  [Roster].[ServiceSetting] INNER JOIN HumanResourceTypes PR ON PR.[Name] = Roster.[Program]WHERE  Roster.Type = 10 AND [Client Code] > '!MULTIPLE' AND Roster.[Status] >= 2 "
 
-        if (branch != "") {
+         if (branch != "") {
             this.s_BranchSQL = "R.[BRANCH] in ('" + branch.join("','") + "')";
-            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL };
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+        }
+        else { 
+           if( this.Viewfilter_Branches != ""){
+            var re = /Recipients/gi;                        
+            this.s_BranchSQL = this.Viewfilter_Branches.toString().replace(re, "R");
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+            }
         }
         if (manager != "") {
             this.s_CoordinatorSQL = "R.[RECIPIENT_COOrdinator] in ('" + manager.join("','") + "')";
             if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+
+        }else{
+        if( this.Viewfilter_Coordinater != ""){  
+            var re = /Recipients/gi;                        
+            this.s_CoordinatorSQL = this.Viewfilter_Coordinater.toString().replace(re, "R");                                             
+            if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+            }
         }
         if (region != "") {
             this.s_CategorySQL = "R.[AgencyDefinedGroup] in ('" + region.join("','") + "')";
-            if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL };
+            if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL }
+        }else{
+            if( this.Viewfilter_Category != ""){                                   
+                this.s_CategorySQL = this.Viewfilter_Category.toString().substring(87,this.Viewfilter_Category.toString().length);            
+                if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL }
+                }
         }
         if (program != "") {
             this.s_ProgramSQL = " (RecipientPrograms.[Program] in ('" + program.join("','") + "'))";
             if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+        }else{
+        if( this.Viewfilter_Programs != ""){                                   
+            this.s_ProgramSQL = this.Viewfilter_Programs.toString().substring(87,this.Viewfilter_Programs.toString().length);            
+            if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+            }
         }
         // AND (DATE BETWEEN '2019/07/01' AND '2020/07/31')
         if (startdate != "" || enddate != "") {
@@ -4137,21 +4355,45 @@ stafftypeArr: Array<any> = constants.types;
 
         var fQuery = "SELECT FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date], [Recipients].[UniqueID], [Recipients].[AccountNo], [Recipients].[AgencyIDReportingCode], [Recipients].[Surname/Organisation], UPPER([Recipients].[Surname/Organisation]) + ' ' + CASE WHEN [Recipients].[FirstName] <> '' THEN [Recipients].[FirstName]  ELSE ' ' END As [RecipientName], [Recipients].[Address1], [Recipients].[Address2], [Recipients].[pSuburb] As Suburb, [Recipients].[pPostcode] As Postcode,format([Recipients].[AdmissionDate],'dd/MM/yyyy') As [Activation Date], format([Recipients].[DischargeDate],'dd/MM/yyyy') As [DeActivation Date], [Recipients].[ONIRating], [Roster].[Client Code], [Roster].[Service Type], [Roster].[DischargeReasonType], [Roster].[Program]  ,Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID =Recipients.[UniqueID] For XML path ('')),1, 1, '') [Detail]  FROM Recipients With (NoLock)  INNER JOIN Roster With (NoLock) ON Recipients.accountno = Roster.[Client Code]  INNER JOIN ItemTypes With (NoLock) ON ItemTypes.Title = Roster.[Service Type]  AND ProcessClassification <> 'INPUT'    WHERE ItemTypes.MinorGroup = 'REFERRAL-IN'"
 
-        if (branch != "") {
+         if (branch != "") {
             this.s_BranchSQL = "R.[BRANCH] in ('" + branch.join("','") + "')";
-            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL };
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+        }
+        else { 
+           if( this.Viewfilter_Branches != ""){
+            var re = /Recipients/gi;                        
+            this.s_BranchSQL = this.Viewfilter_Branches.toString().replace(re, "R");
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+            }
         }
         if (manager != "") {
             this.s_CoordinatorSQL = "R.[RECIPIENT_COOrdinator] in ('" + manager.join("','") + "')";
             if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+
+        }else{
+        if( this.Viewfilter_Coordinater != ""){  
+            var re = /Recipients/gi;                        
+            this.s_CoordinatorSQL = this.Viewfilter_Coordinater.toString().replace(re, "R");                                             
+            if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+            }
         }
         if (region != "") {
             this.s_CategorySQL = "R.[AgencyDefinedGroup] in ('" + region.join("','") + "')";
-            if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL };
+            if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL }
+        }else{
+            if( this.Viewfilter_Category != ""){                                   
+                this.s_CategorySQL = this.Viewfilter_Category.toString().substring(87,this.Viewfilter_Category.toString().length);            
+                if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL }
+                }
         }
         if (program != "") {
             this.s_ProgramSQL = " (RecipientPrograms.[Program] in ('" + program.join("','") + "'))";
             if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+        }else{
+        if( this.Viewfilter_Programs != ""){                                   
+            this.s_ProgramSQL = this.Viewfilter_Programs.toString().substring(87,this.Viewfilter_Programs.toString().length);            
+            if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+            }
         }   //AND (Date BETWEEN '2020/08/01' AND '2020/08/31')
         if (startdate != "" || enddate != "") {
             this.s_DateSQL = " Date BETWEEN '" + tempsdate + ("'AND'") + tempedate + "'";
@@ -4531,21 +4773,45 @@ stafftypeArr: Array<any> = constants.types;
         if(this.inputForm.value.incl_inactive == false){
             fQuery = fQuery  + " AND ((R.AdmissionDate is NOT NULL) and (DischargeDate is NULL)) "
         }
-        if (branch != "") {
+         if (branch != "") {
             this.s_BranchSQL = "R.[BRANCH] in ('" + branch.join("','") + "')";
-            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL };
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+        }
+        else { 
+           if( this.Viewfilter_Branches != ""){
+            var re = /Recipients/gi;                        
+            this.s_BranchSQL = this.Viewfilter_Branches.toString().replace(re, "R");
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+            }
         }
         if (manager != "") {
             this.s_CoordinatorSQL = "R.[RECIPIENT_COOrdinator] in ('" + manager.join("','") + "')";
             if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+
+        }else{
+        if( this.Viewfilter_Coordinater != ""){  
+            var re = /Recipients/gi;                        
+            this.s_CoordinatorSQL = this.Viewfilter_Coordinater.toString().replace(re, "R");                                             
+            if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+            }
         }
         if (region != "") {
             this.s_CategorySQL = "R.[AgencyDefinedGroup] in ('" + region.join("','") + "')";
-            if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL };
+            if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL }
+        }else{
+            if( this.Viewfilter_Category != ""){                                   
+                this.s_CategorySQL = this.Viewfilter_Category.toString().substring(87,this.Viewfilter_Category.toString().length);            
+                if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL }
+                }
         }
         if (program != "") {
             this.s_ProgramSQL = " (RecipientPrograms.[Program] in ('" + program.join("','") + "'))";
             if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+        }else{
+        if( this.Viewfilter_Programs != ""){                                   
+            this.s_ProgramSQL = this.Viewfilter_Programs.toString().substring(87,this.Viewfilter_Programs.toString().length);            
+            if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+            }
         }
         if (branch != "") {
             var lblcriteria = "Branches:" + branch.join("','") + "; "
@@ -4662,21 +4928,45 @@ stafftypeArr: Array<any> = constants.types;
         
         
         
-        if (branch != "") {
+         if (branch != "") {
             this.s_BranchSQL = "R.[BRANCH] in ('" + branch.join("','") + "')";
-            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL };
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+        }
+        else { 
+           if( this.Viewfilter_Branches != ""){
+            var re = /Recipients/gi;                        
+            this.s_BranchSQL = this.Viewfilter_Branches.toString().replace(re, "R");
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+            }
         }
         if (manager != "") {
             this.s_CoordinatorSQL = "R.[RECIPIENT_COOrdinator] in ('" + manager.join("','") + "')";
             if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+
+        }else{
+        if( this.Viewfilter_Coordinater != ""){  
+            var re = /Recipients/gi;                        
+            this.s_CoordinatorSQL = this.Viewfilter_Coordinater.toString().replace(re, "R");                                             
+            if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+            }
         }
         if (region != "") {
             this.s_CategorySQL = "R.[AgencyDefinedGroup] in ('" + region.join("','") + "')";
-            if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL };
+            if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL }
+        }else{
+            if( this.Viewfilter_Category != ""){                                   
+                this.s_CategorySQL = this.Viewfilter_Category.toString().substring(87,this.Viewfilter_Category.toString().length);            
+                if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL }
+                }
         }
         if (program != "") {
             this.s_ProgramSQL = " (RecipientPrograms.[Program] in ('" + program.join("','") + "'))";
             if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+        }else{
+        if( this.Viewfilter_Programs != ""){                                   
+            this.s_ProgramSQL = this.Viewfilter_Programs.toString().substring(87,this.Viewfilter_Programs.toString().length);            
+            if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+            }
         }
 
         if (branch != "") {
@@ -4795,21 +5085,45 @@ stafftypeArr: Array<any> = constants.types;
             fQuery = fQuery + " AND ((R.AdmissionDate is NOT NULL) and (DischargeDate is NULL)) "
         }
 
-        if (branch != "") {
+         if (branch != "") {
             this.s_BranchSQL = "R.[BRANCH] in ('" + branch.join("','") + "')";
-            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL };
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+        }
+        else { 
+           if( this.Viewfilter_Branches != ""){
+            var re = /Recipients/gi;                        
+            this.s_BranchSQL = this.Viewfilter_Branches.toString().replace(re, "R");
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+            }
         }
         if (manager != "") {
             this.s_CoordinatorSQL = "R.[RECIPIENT_COOrdinator] in ('" + manager.join("','") + "')";
             if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+
+        }else{
+        if( this.Viewfilter_Coordinater != ""){  
+            var re = /Recipients/gi;                        
+            this.s_CoordinatorSQL = this.Viewfilter_Coordinater.toString().replace(re, "R");                                             
+            if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+            }
         }
         if (region != "") {
             this.s_CategorySQL = "R.[AgencyDefinedGroup] in ('" + region.join("','") + "')";
-            if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL };
+            if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL }
+        }else{
+            if( this.Viewfilter_Category != ""){                                   
+                this.s_CategorySQL = this.Viewfilter_Category.toString().substring(87,this.Viewfilter_Category.toString().length);            
+                if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL }
+                }
         }
         if (program != "") {
             this.s_ProgramSQL = " (RecipientPrograms.[Program] in ('" + program.join("','") + "'))";
             if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+        }else{
+        if( this.Viewfilter_Programs != ""){                                   
+            this.s_ProgramSQL = this.Viewfilter_Programs.toString().substring(87,this.Viewfilter_Programs.toString().length);            
+            if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+            }
         }
 
         if (branch != "") {
@@ -4925,21 +5239,45 @@ stafftypeArr: Array<any> = constants.types;
             fQuery = fQuery + " AND ((R.AdmissionDate is NOT NULL) and (DischargeDate is NULL)) "
         }
 
-        if (branch != "") {
+         if (branch != "") {
             this.s_BranchSQL = "R.[BRANCH] in ('" + branch.join("','") + "')";
-            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL };
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+        }
+        else { 
+           if( this.Viewfilter_Branches != ""){
+            var re = /Recipients/gi;                        
+            this.s_BranchSQL = this.Viewfilter_Branches.toString().replace(re, "R");
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+            }
         }
         if (manager != "") {
             this.s_CoordinatorSQL = "R.[RECIPIENT_COOrdinator] in ('" + manager.join("','") + "')";
             if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+
+        }else{
+        if( this.Viewfilter_Coordinater != ""){  
+            var re = /Recipients/gi;                        
+            this.s_CoordinatorSQL = this.Viewfilter_Coordinater.toString().replace(re, "R");                                             
+            if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+            }
         }
         if (region != "") {
             this.s_CategorySQL = "R.[AgencyDefinedGroup] in ('" + region.join("','") + "')";
-            if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL };
+            if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL }
+        }else{
+            if( this.Viewfilter_Category != ""){                                   
+                this.s_CategorySQL = this.Viewfilter_Category.toString().substring(87,this.Viewfilter_Category.toString().length);            
+                if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL }
+                }
         }
         if (program != "") {
             this.s_ProgramSQL = " (RecipientPrograms.[Program] in ('" + program.join("','") + "'))";
             if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+        }else{
+        if( this.Viewfilter_Programs != ""){                                   
+            this.s_ProgramSQL = this.Viewfilter_Programs.toString().substring(87,this.Viewfilter_Programs.toString().length);            
+            if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+            }
         }
         if (branch != "") {
             var lblcriteria = "Branches:" + branch.join("','") + "; "
@@ -5044,21 +5382,45 @@ stafftypeArr: Array<any> = constants.types;
 
         var fQuery = "SELECT FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date], [Recipients].[UniqueID], [Recipients].[AccountNo], [Recipients].[AgencyIDReportingCode], [Recipients].[Surname/Organisation], UPPER([Recipients].[Surname/Organisation]) + ' ' + CASE WHEN [Recipients].[FirstName] <> '' THEN [Recipients].[FirstName]  ELSE ' ' END As [RecipientName], [Recipients].[Address1], [Recipients].[Address2], [Recipients].[pSuburb] As Suburb, [Recipients].[pPostcode] As Postcode, format([Recipients].[AdmissionDate],'dd/MM/yyyy') As [Activation Date], format([Recipients].[DischargeDate],'dd/MM/yyyy') As [DeActivation Date], [Recipients].[ONIRating], [Roster].[Client Code], [Roster].[Service Type], [Roster].[DischargeReasonType], [Roster].[Program]  FROM Recipients With (NoLock)  INNER JOIN Roster With (NoLock) ON Recipients.accountno = Roster.[Client Code]  INNER JOIN ItemTypes With (NoLock) ON ItemTypes.Title = Roster.[Service Type]  AND ProcessClassification <> 'INPUT'  WHERE ItemTypes.MinorGroup = 'ADMISSION'  "
 
-        if (branch != "") {
+         if (branch != "") {
             this.s_BranchSQL = "R.[BRANCH] in ('" + branch.join("','") + "')";
-            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL };
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+        }
+        else { 
+           if( this.Viewfilter_Branches != ""){
+            var re = /Recipients/gi;                        
+            this.s_BranchSQL = this.Viewfilter_Branches.toString().replace(re, "R");
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+            }
         }
         if (manager != "") {
             this.s_CoordinatorSQL = "R.[RECIPIENT_COOrdinator] in ('" + manager.join("','") + "')";
             if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+
+        }else{
+        if( this.Viewfilter_Coordinater != ""){  
+            var re = /Recipients/gi;                        
+            this.s_CoordinatorSQL = this.Viewfilter_Coordinater.toString().replace(re, "R");                                             
+            if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+            }
         }
         if (region != "") {
             this.s_CategorySQL = "R.[AgencyDefinedGroup] in ('" + region.join("','") + "')";
-            if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL };
+            if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL }
+        }else{
+            if( this.Viewfilter_Category != ""){                                   
+                this.s_CategorySQL = this.Viewfilter_Category.toString().substring(87,this.Viewfilter_Category.toString().length);            
+                if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL }
+                }
         }
         if (program != "") {
             this.s_ProgramSQL = " (RecipientPrograms.[Program] in ('" + program.join("','") + "'))";
             if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+        }else{
+        if( this.Viewfilter_Programs != ""){                                   
+            this.s_ProgramSQL = this.Viewfilter_Programs.toString().substring(87,this.Viewfilter_Programs.toString().length);            
+            if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+            }
         }
         //AND (Date BETWEEN '2015/07/01' AND '2016/07/31'
         if (startdate != "" || enddate != "") {
@@ -5161,21 +5523,45 @@ stafftypeArr: Array<any> = constants.types;
         //AND (Date BETWEEN '2015/07/01' AND '2016/07/31'
 
 
-        if (branch != "") {
+         if (branch != "") {
             this.s_BranchSQL = "R.[BRANCH] in ('" + branch.join("','") + "')";
-            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL };
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+        }
+        else { 
+           if( this.Viewfilter_Branches != ""){
+            var re = /Recipients/gi;                        
+            this.s_BranchSQL = this.Viewfilter_Branches.toString().replace(re, "R");
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+            }
         }
         if (manager != "") {
             this.s_CoordinatorSQL = "R.[RECIPIENT_COOrdinator] in ('" + manager.join("','") + "')";
             if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+
+        }else{
+        if( this.Viewfilter_Coordinater != ""){  
+            var re = /Recipients/gi;                        
+            this.s_CoordinatorSQL = this.Viewfilter_Coordinater.toString().replace(re, "R");                                             
+            if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+            }
         }
         if (region != "") {
             this.s_CategorySQL = "R.[AgencyDefinedGroup] in ('" + region.join("','") + "')";
-            if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL };
+            if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL }
+        }else{
+            if( this.Viewfilter_Category != ""){                                   
+                this.s_CategorySQL = this.Viewfilter_Category.toString().substring(87,this.Viewfilter_Category.toString().length);            
+                if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL }
+                }
         }
         if (program != "") {
             this.s_ProgramSQL = " (RecipientPrograms.[Program] in ('" + program.join("','") + "'))";
             if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+        }else{
+        if( this.Viewfilter_Programs != ""){                                   
+            this.s_ProgramSQL = this.Viewfilter_Programs.toString().substring(87,this.Viewfilter_Programs.toString().length);            
+            if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+            }
         }
         if (startdate != "" || enddate != "") {
             this.s_DateSQL = " Date BETWEEN '" + tempsdate + ("'AND'") + tempedate + "'";
@@ -5283,21 +5669,45 @@ stafftypeArr: Array<any> = constants.types;
 
         var fQuery = "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ' ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, Format(convert(datetime,(SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC)),'dd/MM/yyyy') AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID INNER JOIN Roster Rs on Rs.[client code]=R.[AccountNo] WHERE R.[AccountNo] > '!MULTIPLE' AND Rs.[TYPE] = 4  AND ((admissiondate is not null) and (DischargeDate is null))"
 
-        if (branch != "") {
+         if (branch != "") {
             this.s_BranchSQL = "R.[BRANCH] in ('" + branch.join("','") + "')";
-            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL };
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+        }
+        else { 
+           if( this.Viewfilter_Branches != ""){
+            var re = /Recipients/gi;                        
+            this.s_BranchSQL = this.Viewfilter_Branches.toString().replace(re, "R");
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+            }
         }
         if (manager != "") {
             this.s_CoordinatorSQL = "R.[RECIPIENT_COOrdinator] in ('" + manager.join("','") + "')";
             if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+
+        }else{
+        if( this.Viewfilter_Coordinater != ""){  
+            var re = /Recipients/gi;                        
+            this.s_CoordinatorSQL = this.Viewfilter_Coordinater.toString().replace(re, "R");                                             
+            if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+            }
         }
         if (region != "") {
             this.s_CategorySQL = "R.[AgencyDefinedGroup] in ('" + region.join("','") + "')";
-            if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL };
+            if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL }
+        }else{
+            if( this.Viewfilter_Category != ""){                                   
+                this.s_CategorySQL = this.Viewfilter_Category.toString().substring(87,this.Viewfilter_Category.toString().length);            
+                if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL }
+                }
         }
         if (program != "") {
             this.s_ProgramSQL = " (RecipientPrograms.[Program] in ('" + program.join("','") + "'))";
             if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+        }else{
+        if( this.Viewfilter_Programs != ""){                                   
+            this.s_ProgramSQL = this.Viewfilter_Programs.toString().substring(87,this.Viewfilter_Programs.toString().length);            
+            if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+            }
         }
         //   AND [DATE] BETWEEN '2015/07/01' AND '2016/07/31' 
         if (startdate != "" || enddate != "") {
@@ -5418,18 +5828,42 @@ stafftypeArr: Array<any> = constants.types;
             if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
 
         }
+        else { 
+           if( this.Viewfilter_Branches != ""){
+            var re = /Recipients/gi;                        
+            this.s_BranchSQL = this.Viewfilter_Branches.toString().replace(re, "R");
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+            }
+
+        }
         if (manager != "") {
             this.s_CoordinatorSQL = "R.[RECIPIENT_COOrdinator] in ('" + manager.join("','") + "')";
             if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
 
+        }else{
+        if( this.Viewfilter_Coordinater != ""){  
+            var re = /Recipients/gi;                        
+            this.s_CoordinatorSQL = this.Viewfilter_Coordinater.toString().replace(re, "R");                                             
+            if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+            }
         }
         if (region != "") {
             this.s_CategorySQL = "R.[AgencyDefinedGroup] in ('" + region.join("','") + "')";
             if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL }
+        }else{
+            if( this.Viewfilter_Category != ""){                                   
+                this.s_CategorySQL = this.Viewfilter_Category.toString().substring(87,this.Viewfilter_Category.toString().length);            
+                if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL }
+                }
         }
         if (program != "") {
             this.s_ProgramSQL = " (RecipientPrograms.[Program] in ('" + program.join("','") + "'))";
             if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+        }else{
+        if( this.Viewfilter_Programs != ""){                                   
+            this.s_ProgramSQL = this.Viewfilter_Programs.toString().substring(87,this.Viewfilter_Programs.toString().length);            
+            if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+            }
         }
 
 
@@ -5531,21 +5965,45 @@ stafftypeArr: Array<any> = constants.types;
 
         
 
-        if (branch != "") {
+         if (branch != "") {
             this.s_BranchSQL = "R.[BRANCH] in ('" + branch.join("','") + "')";
-            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL };
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+        }
+        else { 
+           if( this.Viewfilter_Branches != ""){
+            var re = /Recipients/gi;                        
+            this.s_BranchSQL = this.Viewfilter_Branches.toString().replace(re, "R");
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+            }
         }
         if (manager != "") {
             this.s_CoordinatorSQL = "R.[RECIPIENT_COOrdinator] in ('" + manager.join("','") + "')";
             if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+
+        }else{
+        if( this.Viewfilter_Coordinater != ""){  
+            var re = /Recipients/gi;                        
+            this.s_CoordinatorSQL = this.Viewfilter_Coordinater.toString().replace(re, "R");                                             
+            if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+            }
         }
         if (region != "") {
             this.s_CategorySQL = "R.[AgencyDefinedGroup] in ('" + region.join("','") + "')";
-            if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL };
+            if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL }
+        }else{
+            if( this.Viewfilter_Category != ""){                                   
+                this.s_CategorySQL = this.Viewfilter_Category.toString().substring(87,this.Viewfilter_Category.toString().length);            
+                if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL }
+                }
         }
         if (program != "") {
             this.s_ProgramSQL = " (RecipientPrograms.[Program] in ('" + program.join("','") + "'))";
             if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+        }else{
+        if( this.Viewfilter_Programs != ""){                                   
+            this.s_ProgramSQL = this.Viewfilter_Programs.toString().substring(87,this.Viewfilter_Programs.toString().length);            
+            if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+            }
         }   //  AND Date BETWEEN '2020-07-01' AND '2020-07-31' )
         if (startdate != "" || enddate != "") {
             this.s_DateSQL = " Date BETWEEN '" + tempsdate + ("'AND'") + tempedate + "')";
@@ -6630,6 +7088,11 @@ stafftypeArr: Array<any> = constants.types;
         if (program != "") {
             this.s_ProgramSQL = " (RecipientPrograms.[Program] in ('" + program.join("','") + "'))";
             if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+        }else{
+        if( this.Viewfilter_Programs != ""){                                   
+            this.s_ProgramSQL = this.Viewfilter_Programs.toString().substring(87,this.Viewfilter_Programs.toString().length);            
+            if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+            }
         }
         if (startdate != "") {
             lblcriteria = " Date Between " + startdate + " and " + enddate + "; "
@@ -6719,8 +7182,15 @@ stafftypeArr: Array<any> = constants.types;
             if (this.s_DateSQL != "") { fQuery = fQuery + "  " + this.s_DateSQL };
         }
         if (branch != "") {
-            this.s_BranchSQL = "RE.BRANCH in ('" + branch.join("','") + "')";
+            this.s_BranchSQL = "RE.[BRANCH] in ('" + branch.join("','") + "')";
             if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+        }
+        else { 
+           if( this.Viewfilter_Branches != ""){
+            var re = /Recipients/gi;                        
+            this.s_BranchSQL = this.Viewfilter_Branches.toString().replace(re, "RE");
+            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+            }
         }
         if (program != "") {
             this.s_ProgramSQL = " (RO.PROGRAM in ('" + program.join("','") + "'))";
@@ -9355,10 +9825,22 @@ stafftypeArr: Array<any> = constants.types;
         if (manager != "") {
             this.s_CoordinatorSQL = "R.[RECIPIENT_COOrdinator] in ('" + manager.join("','") + "')";
             if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+
+        }else{
+        if( this.Viewfilter_Coordinater != ""){  
+            var re = /Recipients/gi;                        
+            this.s_CoordinatorSQL = this.Viewfilter_Coordinater.toString().replace(re, "R");                                             
+            if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
+            }
         }
         if (region != "") {
             this.s_CategorySQL = "R.[AgencyDefinedGroup] in ('" + region.join("','") + "')";
-            if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL };
+            if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL }
+        }else{
+            if( this.Viewfilter_Category != ""){                                   
+                this.s_CategorySQL = this.Viewfilter_Category.toString().substring(87,this.Viewfilter_Category.toString().length);            
+                if (this.s_CategorySQL != "") { fQuery = fQuery + " AND " + this.s_CategorySQL }
+                }
         }
         if (program != "") {
             this.s_ProgramSQL = " ([Program] in ('" + program.join("','") + "'))";
@@ -9612,8 +10094,7 @@ stafftypeArr: Array<any> = constants.types;
         fQuery = fQuery + " ORDER BY H.[NAME], S.[SERVICE TYPE] "
 
     //    console.log(fQuery)
-
-       
+           
         const data = {
             "template": { "_id": "4bzgeVt7vedkx8Uh" },
             "options": {
@@ -19407,6 +19888,11 @@ stafftypeArr: Array<any> = constants.types;
         if (program != "") {
             this.s_ProgramSQL = " (RecipientPrograms.[Program] in ('" + program.join("','") + "'))";
             if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+        }else{
+        if( this.Viewfilter_Programs != ""){                                   
+            this.s_ProgramSQL = this.Viewfilter_Programs.toString().substring(87,this.Viewfilter_Programs.toString().length);            
+            if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
+            }
         }
         if (incl_unapproved == true){
             fQuery = fQuery + " AND (admissiondate is not null) AND (DischargeDate is null)  "

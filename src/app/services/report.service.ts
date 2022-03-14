@@ -34,7 +34,14 @@ export class ReportService {
     }
     GetCoordinaterFilters(user: string): Observable<any>{
         return this.auth.get(`${report}/coordinaterviewfilter/${user}`);
+    }    
+    GetStaffCategoryFilters(user: string): Observable<any>{
+        return this.auth.get(`${report}/staffgroupviewfilter/${user}`);
     }
+    GetCategoryFilters(user: string): Observable<any>{
+        return this.auth.get(`${report}/categoryviewfilter/${user}`);
+    }
+    
 
 
 

@@ -1,13 +1,13 @@
 import { Component, OnInit, OnDestroy, AfterViewInit,Input } from '@angular/core'
 
-import { ListService,GlobalService } from '@services/index';
+import { ListService,GlobalService, TimeSheetService } from '@services/index';
 import { forkJoin, Subject } from 'rxjs';
 import { FormGroup,FormBuilder } from '@angular/forms';
 import {takeUntil} from 'rxjs/operators';
 import { format } from 'date-fns';
 import parseISO from 'date-fns/parseISO'
-//import { type } from 'os';
-
+import * as moment from 'moment';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 export interface VirtualDataInterface {
   index: number;
@@ -156,18 +156,22 @@ export class AttendanceAdmin implements OnInit, AfterViewInit,OnDestroy {
     defaultEndTime: Date = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(), 9, 0, 0);
     dateFormat:string="dd/MM/YYYY"
     rdate:any;
+    action:string;
     private unsubscribe = new Subject();
 
     constructor(
       private listS: ListService,
       private globalS: GlobalService,
       private formBuilder: FormBuilder,
+      private timeS:TimeSheetService,
+      private modalService: NzModalService,
     ) {
 
     }
 
     ngOnInit(): void {
-      forkJoin([
+     
+     forkJoin([
         this.listS.getlisttimeattendancefilter("BRANCHES"),
         this.listS.getlisttimeattendancefilter("STAFFTEAM"),
         this.listS.getlisttimeattendancefilter("STAFFGROUP"),
@@ -216,26 +220,60 @@ export class AttendanceAdmin implements OnInit, AfterViewInit,OnDestroy {
           this.nzWidth=400;
           this.TimeAttendnaceModal=true;
           this.TimeAttendnaceLable="Force Shift Logon";
+          this.action="Force Logon";
           break;
         case 2:         
           this.nzWidth=600;
           this.TimeAttendnaceModal=true;
           this.TimeAttendnaceLable="Force Shift Logoff";
+          this.action="Force Logoff";
           break;
         case 3:   
           this.nzWidth=600;
           this.TimeAttendnaceModal=true;
           this.TimeAttendnaceLable="Set Actual Worked Hours";
+          this.action="Actual Worked Hours";
           break;
         case 4:   
           this.nzWidth=600;
           this.TimeAttendnaceModal=true;
           this.TimeAttendnaceLable="Set Actual Worked Hours";
           break;
+        case 4:   
+        case 5: 
+          this.nzWidth=600;        
+          this.action='Force Finalisation';
+          this.menuAction();
+          break;
+        case 6:   
+          this.action='Reset Pending';
+          this.showConfirm_for_Pending('This will reset the service back to pending status the highlighted shift/s - do you wich to proceed');
+         
+          break;
       }
+
+      this.action=='Reset Pending'
     });
 
     }
+    showConfirm_for_Pending(msg:string): void {
+      //var deleteRoster = new this.deleteRoster();
+      this.modalService.confirm({
+        nzTitle: 'Confirm',
+        nzContent: msg,
+        nzOkText: 'Yes',
+        nzCancelText: 'No',
+        nzOnOk: () =>
+        new Promise((resolve,reject) => {
+          setTimeout(Math.random() > 0.5 ? resolve : reject, 100);
+         
+          this.menuAction()
+        }).catch(() => console.log('Oops errors!'))
+  
+        
+      });
+    }
+  
     ngAfterViewInit(): void {
       this.reload();
     }
@@ -338,19 +376,156 @@ ngModelChangeEnd(event): void{
 
       this.DateTimeForm.patchValue({
         rdate:this.clickedData.date,
-        payQty:this.clickedData.pay,
-        billQty:this.clickedData.bill
+        payQty: this.roundTo(this.clickedData.pay,2),
+        billQty:this.roundTo(this.clickedData.bill,2)
 
       })
       
   
     }
+    roundTo (num: number, places: number) {
+      const factor = 10 ** places;
+      return Math.round(num * factor) / factor;
+    }
 
     menuAction(){
 
-    }
+      let rosteredstart=moment(this.defaultStartTime).format('YYYY/MM/DD HH:mm');
+      let rosteredend=moment(this.defaultEndTime).format('YYYY/MM/DD HH:mm');
 
-    // Branches
+     switch (this.action){
+       case 'Force Logon' :
+      {
+        this.forceLogOn(rosteredstart);
+        break;
+      }
+      case 'Force Logoff':
+      {
+          this.forceLogOff(rosteredend);
+              break;
+     }
+   case 'Actual Worked Hours' :
+      {
+        this.actualWorkedHours(rosteredstart,rosteredend);
+        break;
+     }
+     case 'Force Finalisation' :
+      {
+        this.forceFinalisation(rosteredstart,rosteredend);
+        break;
+     }
+  case 'Reset Pending':
+    {
+      this.resetPending()
+      break;
+    }
+  }
+}
+
+forceLogOn(timestamp:string){    
+
+      let input= {
+        Recordno: this.clickedData.jobno,
+        cancel:false,
+        timeStamp : timestamp,
+        latitude:'',
+        longitude:'',
+        location:''
+       }
+        this.timeS.processStartJob(input).pipe(
+          takeUntil(this.unsubscribe)).subscribe(d => {
+            if (this.action!='Force Finalisation'){
+              this.TimeAttendnaceModal=false;
+              this.reload();
+            }
+        });
+
+    }
+    forceLogOff(timestamp:string){
+      
+
+      let sql :any= {TableName:'',Columns:'',ColumnValues:'',SetClause:'',WhereClause:''};
+        
+        sql.TableName='eziTracker_Log ';          
+     
+        sql.SetClause=`SET 
+            LODateTime = '${timestamp}', 
+            LOActualDateTime = '${this.clickedData.date + ' ' + this.clickedData.rosterEnd}',  
+            RosteredEnd = '${this.clickedData.date + ' ' + this.clickedData.rosterEnd}',
+            WorkDuration = ${this.durationObject.durationInHours},
+            ErrorCode = 1
+             `;
+
+        sql.WhereClause=`WHERE JobNo = ${this.clickedData.jobno}`;
+        this.listS.updatelist(sql).pipe(
+          takeUntil(this.unsubscribe)).subscribe(d => {
+            if (this.action!='Force Finalisation')
+              this.TimeAttendnaceModal=false;
+            
+            this.reload();
+      
+       });
+
+    }
+    actualWorkedHours(rosteredstart:string,rosteredend:string){
+      
+      let sql :any= {TableName:'',Columns:'',ColumnValues:'',SetClause:'',WhereClause:''};
+      
+      sql.TableName='eziTracker_Log ';         
+
+      let duration=this.durationObject.durationStr.split(" ");
+      let durationstr= this.numStr(duration[0]) + ":" + this.numStr(duration[2]);
+
+       sql.SetClause=`SET 
+          DateTime ='${rosteredstart}', 
+          ActualDateTime = '${moment(this.clickedData.actualStart).format('YYYY/MM/DD HH:mm')}', 
+          LODateTime = '${rosteredend}', 
+          LOActualDateTime = '${this.clickedData.date + ' ' + this.clickedData.rosterEnd}',  
+          RosteredEnd = '${this.clickedData.date + ' ' + this.clickedData.rosterEnd}',  
+          WorkDuration = ${this.durationObject.durationInHours}, 
+          WorkDurationHHMM = '${durationstr}', 
+          ErrorCode = 1 
+          `;
+
+
+      sql.WhereClause=`WHERE JobNo = ${this.clickedData.jobno}`;
+      this.listS.updatelist(sql).pipe(
+        takeUntil(this.unsubscribe)).subscribe(d => {
+          this.TimeAttendnaceModal=false;
+            this.reload();
+    
+     });
+    }
+forceFinalisation(rosteredstart:string,rosteredend:string){
+  this.forceLogOn(rosteredstart);
+  this.forceLogOff(rosteredend);
+  
+}
+resetPending(){
+  let sql :any= {TableName:'',Columns:'',ColumnValues:'',SetClause:'',WhereClause:''};
+     
+    sql.TableName='Roster '; 
+    sql.SetClause=`set ros_panztel_updated = 0 `;
+    sql.WhereClause=`WHERE RecordNo = ${this.clickedData.jobno}`;
+
+ 
+  setTimeout(() =>{ 
+      this.listS.updatelist(sql).pipe(
+        takeUntil(this.unsubscribe)).subscribe(d => {});
+
+          sql.TableName='eziTracker_Log ';    
+          sql.SetClause='';
+          sql.WhereClause=`WHERE JobNo = ${this.clickedData.jobno}`;
+          this.listS.deletelist(sql).pipe(
+            takeUntil(this.unsubscribe)).subscribe(d => {
+              this.TimeAttendnaceModal=false;
+                this.reload();
+        
+        });
+    },100);
+}
+
+// Branches
     updateAllBranches(): void {
         this.indeterminateBranch = false;
 

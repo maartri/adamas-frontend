@@ -259,6 +259,10 @@ export class TimeSheetService {
         return this.auth.post(`${timesheet}/delete-unapproved/all`, data);
     }
 
+    processStartJob(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/processStartJob`, data);
+    }
+
     getjobstatus(recordArr: Array<number>): Observable<any> {
         return this.auth.post(`${timesheet}/jobstatus-timesheet`, recordArr);
     }

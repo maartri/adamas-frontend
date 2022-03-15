@@ -174,8 +174,8 @@
                                         <td style="width:100px">{{data.actualEnd | date : 'HH:MM'}}</td>                               
                                         <td style="width:50px">{{TimeDifference(data,1)}}</td>
                                         <td style="width:80px">{{data.duration}}</td>
-                                        <td style="width:50px">{{data.pay}}</td>
-                                        <td style="width:50px">{{data.bill}}</td>
+                                        <td style="width:50px">{{data.pay | number : '1.2-2' }}</td>
+                                        <td style="width:50px">{{data.bill | number : '1.2-2' }}</td>
                                         <td style="width:220px">{{data.completionStatus}}</td>
 
                                       </tr>
@@ -301,7 +301,7 @@
                        
                     </div>   
                     <div *ngIf="nzSelectedIndex==2" nz-row   class="rectangle" nzGutter="8">
-                        <div  nz-col nzSpan="20"  >
+                        <div  nz-col nzSpan="20" *ngIf="clickedData" >
                             {{clickedData.rosterStart}} - {{clickedData.staff}} goes to {{clickedData.serviceType}}
                         </div>
                     </div>

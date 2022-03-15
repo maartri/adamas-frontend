@@ -148,6 +148,11 @@ export class AttendanceAdmin implements OnInit, AfterViewInit,OnDestroy {
     teams: Array<any> = [];
     categories: Array<any> = [];
     coordinators: Array<any> = [];
+    Interval:number=30;
+    AlertInterval:number=30;
+    TimeZoneOffset:number=0;
+    AlertServer:boolean;
+    AlertAudit:boolean;
 
     DateTimeForm:FormGroup;
     durationObject:any;
@@ -169,8 +174,16 @@ export class AttendanceAdmin implements OnInit, AfterViewInit,OnDestroy {
 
     }
 
+    
     ngOnInit(): void {
-     
+
+      this.getSetting();
+      setInterval(() => {         
+       // refresh data after some interval
+       this.reload();
+        
+      }, this.Interval*1000);
+      
      forkJoin([
         this.listS.getlisttimeattendancefilter("BRANCHES"),
         this.listS.getlisttimeattendancefilter("STAFFTEAM"),
@@ -278,6 +291,27 @@ export class AttendanceAdmin implements OnInit, AfterViewInit,OnDestroy {
       this.reload();
     }
     ngOnDestroy(): void {
+
+    }
+
+    setSetting(){
+  
+      localStorage.setItem('Interval', this.Interval.toString());
+      localStorage.setItem('AlertInterval', this.AlertInterval.toString());
+      localStorage.setItem('TimeZoneOffset', this.TimeZoneOffset.toString());
+      localStorage.setItem('AlertServer', this.AlertServer.toString());
+      localStorage.setItem('AlertAudit', this.AlertAudit.toString());
+
+    }
+    getSetting(){
+
+      if (localStorage.getItem('Interval')==null) return;
+  
+      this.Interval=JSON.parse(localStorage.getItem('Interval'));
+      this.AlertInterval=JSON.parse(localStorage.getItem('AlertInterval'));
+      this.TimeZoneOffset=JSON.parse(localStorage.getItem('TimeZoneOffset'));
+      this.AlertServer=JSON.parse(localStorage.getItem('AlertServer'));
+      this.AlertAudit=JSON.parse(localStorage.getItem('AlertAudit'));
 
     }
     buildForm() {

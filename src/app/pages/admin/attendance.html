@@ -221,35 +221,55 @@
                     </div>
 
                     <div *ngIf="nzSelectedIndex == 4">
-                        <nz-table #virtualTable nzVirtualScroll [nzData]="dataSet" [nzSize]="'small'" [nzLoading]="loadingPending" [nzBordered]="true"
-                        [nzVirtualForTrackBy]="trackByIndex" [nzVirtualForTrackBy]="trackByIndex" [nzFrontPagination]="false" [nzSize]="'middle'"
-                        [nzShowPagination]="false" [nzScroll]="{ x: '1000px', y: 'calc(100vh - 238px)' }">
-                            <thead>
-                              <tr>
-                                <th style="width:200px">Staff</th>
-                                <th style="width:200px">Recipient</th>
-                                <th style="width:200px">Service Type</th>
-                                <th style="width:100px">Roster Start</th>
-                                <th style="width:100px">Duration</th>
-                                <th style="width:100px">Roster End</th>
-                                <th style="width:100px">Status</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                                <ng-template nz-virtual-scroll let-data let-index="index">
-                                    <tr>
-                                        <td style="width:200px">{{data.staff}}</td>
-                                        <td style="width:200px">{{data.recipient}}</td>
-                                        <td style="width:200px">{{data.serviceType}}</td>
-        
-                                        <td style="width:100px">{{data.rosterStart}}</td>
-                                        <td style="width:100px">{{BlockToTime(data.duration)}}</td>
-                                        <td style="width:100px">{{data.rosterEnd}}</td>
-                                        <td style="width:100px">{{data.taMultishift}}</td>
-                                      </tr>
-                                </ng-template>                       
-                            </tbody>
-                          </nz-table>
+
+                        Settings
+                        <div nz-row nzGutter="8">
+                            <div nz-row   class="rectangle" nzGutter="8">
+                                <div nz-col nzSpan="24" nzGutter="8" >
+                                    <div nz-col nzSpan="8" style="text-align: right;">                                 
+                                        <label for="" >Alet Server </label>
+                                    </div>
+                                    <div nz-col nzSpan="8">                                 
+                                        <label nz-checkbox [(ngModel)]="AlertServer" (ngModelChange)="setSetting()" style="margin-right: 10px;"></label> 
+                                    </div>
+                                   
+                                </div>
+                                <div nz-col nzSpan="24" nzGutter="8" >
+                                    <div nz-col nzSpan="8" style="text-align: right;">                                 
+                                        <label for="">Enable Alet Audit </label>
+                                    </div>
+                                    <div nz-col nzSpan="8">                                 
+                                        <label nz-checkbox [(ngModel)]="AlertAudit" (ngModelChange)="setSetting()" style="margin-right: 10px;"></label> 
+                                    </div>
+                                   
+                                </div>
+                            </div>
+                            <div nz-row   class="rectangle" nzGutter="8">
+                                <div nz-col nzSpan="24" nzGutter="8" >
+                                    <div nz-col nzSpan="8" style="text-align: right;">                                 
+                                        <label for="">Local Refresh Interval (Seconds)  </label>
+                                    </div>
+                                    <div nz-col nzSpan="6">                                 
+                                        <nz-input-number [(ngModel)]="Interval" [nzMin]="0" [nzStep]="1" (ngModelChange)="setSetting()"></nz-input-number>
+                                    </div>
+                                </div>
+                                <div nz-col nzSpan="24" nzGutter="8" >
+                                    <div nz-col nzSpan="8" style="text-align: right;">                                 
+                                        <label for="">Alert Refresh Interval (Minutes)  </label>
+                                    </div>
+                                    <div nz-col nzSpan="6">                                 
+                                        <nz-input-number [(ngModel)]="AlertInterval" [nzMin]="0" [nzStep]="1" (ngModelChange)="setSetting()"></nz-input-number>
+                                    </div>
+                                </div>
+                                <div nz-col nzSpan="24" nzGutter="8" >
+                                    <div nz-col nzSpan="8" style="text-align: right;">                                 
+                                        <label for="">Local Timezone Offset (Minutes)  </label>
+                                    </div>
+                                    <div nz-col nzSpan="6">                                 
+                                        <nz-input-number [(ngModel)]="TimeZoneOffset" [nzMin]="0" [nzStep]="1" (ngModelChange)="setSetting()"></nz-input-number>
+                                    </div>
+                                </div>
+                            </div>
                     </div>
                 </div>
            </div>

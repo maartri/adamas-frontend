@@ -75,16 +75,16 @@
                 <div>
                     <div *ngIf="nzSelectedIndex == 0">
                         <nz-table #virtualTable nzVirtualScroll [nzData]="dataSet" [nzSize]="'small'" [nzLoading]="loadingPending" [nzBordered]="true"
-                        [nzVirtualForTrackBy]="trackByIndex" [nzVirtualForTrackBy]="trackByIndex" [nzFrontPagination]="false" [nzSize]="'middle'"
-                        [nzShowPagination]="false" [nzScroll]="{ x: '1000px', y: 'calc(100vh - 238px)' }">
+                        [nzVirtualForTrackBy]="trackByIndex" [nzVirtualForTrackBy]="trackByIndex" [nzFrontPagination]="false" 
+                        [nzShowPagination]="false" [nzScroll]="{ x: '1100px', y: 'calc(100vh - 238px)' }">
                             <thead>
-                              <tr>
-                                <th style="width:200px">Staff</th>
+                              <tr >
+                                <th style="width:200px;">Staff</th>
                                 <th style="width:200px">Recipient</th>
-                                <th style="width:200px">Service Type</th>
-                                <th style="width:100px">Roster Start</th>
-                                <th style="width:100px">Duration</th>
-                                <th style="width:100px">Roster End</th>
+                                <th style="width:250px">Service Type</th>
+                                <th style="width:90px">Roster Start</th>
+                                <th style="width:80px">Duration</th>
+                                <th style="width:80px">Roster End</th>
                                 <th style="width:100px">Status</th>
                               </tr>
                             </thead>
@@ -93,11 +93,10 @@
                                     <tr (contextmenu)="rightClickMenu($event, data)">
                                         <td style="width:200px">{{data.staff}}</td>
                                         <td style="width:200px">{{data.recipient}}</td>
-                                        <td style="width:200px">{{data.serviceType}}</td>
-        
-                                        <td style="width:100px">{{data.rosterStart}}</td>
-                                        <td style="width:100px">{{data.duration}}</td>
-                                        <td style="width:100px">{{data.rosterEnd}}</td>
+                                        <td style="width:250px">{{data.serviceType}}</td>        
+                                        <td style="width:90px">{{data.rosterStart}}</td>
+                                        <td style="width:80px">{{data.duration}}</td>
+                                        <td style="width:80px">{{data.rosterEnd}}</td>
                                         <td style="width:100px">{{data.taMultishift}}</td>
                                       </tr>
                                 </ng-template>                       
@@ -171,7 +170,7 @@
                                         <td style="width:100px">{{data.actualStart | date : 'HH:mm'}}</td>
                                         <td style="width:50px">{{TimeDifference(data)}}</td>
                                         <td style="width:100px">{{data.rosterEnd}}</td>
-                                        <td style="width:100px">{{data.actualEnd | date : 'HH:MM'}}</td>                               
+                                        <td style="width:100px">{{data.actualEnd | date : 'HH:mm'}}</td>                               
                                         <td style="width:50px">{{TimeDifference(data,1)}}</td>
                                         <td style="width:80px">{{data.duration}}</td>
                                         <td style="width:50px">{{data.pay | number : '1.2-2' }}</td>
@@ -186,7 +185,7 @@
 
                     <div *ngIf="nzSelectedIndex == 3">
                         <nz-table #virtualTable nzVirtualScroll [nzData]="dataSet" [nzSize]="'small'" [nzLoading]="loadingPending" [nzBordered]="true"
-                        [nzVirtualForTrackBy]="trackByIndex" [nzVirtualForTrackBy]="trackByIndex" [nzFrontPagination]="false" [nzSize]="'middle'"
+                        [nzVirtualForTrackBy]="trackByIndex" [nzVirtualForTrackBy]="trackByIndex" [nzFrontPagination]="false" 
                         [nzShowPagination]="false" [nzScroll]="{ x: '1200px', y: 'calc(100vh - 238px)' }">
                             <thead>
                               <tr>

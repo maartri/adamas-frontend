@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterViewInit,Input } from '@angular/core'
+import { Component, OnInit, OnDestroy, AfterViewInit,Input,ViewChild } from '@angular/core'
 
 import { ListService,GlobalService, TimeSheetService } from '@services/index';
 import { forkJoin, Subject } from 'rxjs';
@@ -8,6 +8,7 @@ import { format } from 'date-fns';
 import parseISO from 'date-fns/parseISO'
 import * as moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import {ShiftDetail} from '../roster/shiftdetail'
 
 export interface VirtualDataInterface {
   index: number;
@@ -120,6 +121,9 @@ export interface VirtualDataInterface {
 
 
 export class AttendanceAdmin implements OnInit, AfterViewInit,OnDestroy {
+
+   @ViewChild(ShiftDetail) detail!:ShiftDetail;
+   
 
     allCheckedBranches: boolean = false;
     allCheckedTeams: boolean = false;
@@ -369,7 +373,75 @@ ngModelChangeEnd(event): void{
       }
   })
 }
-    TimeDifference(data:any,  t:number=0){
+
+mousedblclick(event: any, value: any) {
+  event.preventDefault();
+  event.stopPropagation();
+ 
+  this.showDetail(value);
+}
+showDetail(data: any) {
+        
+  this.getRoster(data.jobno).pipe(
+    takeUntil(this.unsubscribe)
+).subscribe(d => {
+    this.detail.isVisible=true;
+    this.detail.data=this.selected_roster(d);
+    this.detail.viewType ='Staff';
+    this.detail.editRecord=false;
+    this.detail.ngAfterViewInit();
+});
+  
+}
+shiftChanged(value:any){        
+ 
+      this.reload();
+  
+}
+getRoster(recordNo:any){
+ 
+  return this.timeS.getrosterRecord(recordNo);
+  
+      
+}
+selected_roster(r:any):any{
+  let rst:any;
+    
+  rst = {
+         
+    "shiftbookNo": r.recordNo,
+    "date": r.roster_Date,
+    "startTime": r.start_Time,
+    "endTime":    r.end_Time,
+    "duration": r.duration,
+    "durationNumber": r.dayNo,
+    "recipient": r.clientCode,
+    "program": r.program,
+    "activity": r.serviceType,
+    "payType": r.payType,   
+    "paytype": r.payType.paytype,  
+    "pay": r.pay,                   
+    "bill": r.bill,            
+    "approved": r.Approved,
+    "billto": r.billedTo,
+    "debtor": r.billedTo,
+    "notes": r.notes,
+    "selected": false,
+    "serviceType": r.type,
+    "recipientCode": r.clientCode,            
+    "staffCode": r.carerCode,  
+    "serviceActivity": r.serviceType,
+    "serviceSetting": r.serviceSetting,
+    "analysisCode": r.anal,
+    "serviceTypePortal": "",
+    "recordNo": r.recordNo
+    
+}
+
+return rst;
+}   
+
+TimeDifference(data:any,  t:number=0){
       let diff:number=0
       let StartTime ;
       let EndTime;

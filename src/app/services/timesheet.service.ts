@@ -1009,6 +1009,10 @@ export class TimeSheetService {
         return this.auth.get(`${timesheet}/staff/filtered`, input)
     }
 
+    getrosterRecord(rosterNo: any): Observable<any> {
+        return this.auth.get(`${timesheet}/rosterRecord/${rosterNo}`);
+    }
+
     getfiltteredrecipient(input: InputFilter): Observable<any> {
         return this.auth.get(`${timesheet}/recipient/filtered`, input)
     }

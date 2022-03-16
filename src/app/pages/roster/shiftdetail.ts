@@ -198,7 +198,8 @@ ngOnInit(){
     ngAfterViewInit(){
 
         console.log('Data in ngAfterViewInit of detail');
-        console.log(this.data);
+       // console.log(this.data);
+        //if (this.data==null) return;
         this.current=0;
         this.isConfirmLoading=true;
           if (this.data!=null){

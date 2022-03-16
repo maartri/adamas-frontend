@@ -1,5 +1,6 @@
 <div>
     <div nz-row>
+        <shiftdetail (timesheetDone)="shiftChanged($event)" ></shiftdetail>
         <div nz-col nzSpan="6" style="padding:15px;border-right: 1px solid #ededed;height: calc(100vh - 75px);overflow: auto;" >
             <div nz-row>
                 <nz-date-picker [(ngModel)]="date" ></nz-date-picker>
@@ -90,7 +91,9 @@
                             </thead>
                             <tbody>
                                 <ng-template nz-virtual-scroll let-data let-index="index">
-                                    <tr (contextmenu)="rightClickMenu($event, data)">
+                                    <tr (contextmenu)="rightClickMenu($event, data)" 
+                                        (dblclick)="mousedblclick($event,data)" >
+
                                         <td style="width:200px">{{data.staff}}</td>
                                         <td style="width:200px">{{data.recipient}}</td>
                                         <td style="width:250px">{{data.serviceType}}</td>        
@@ -123,7 +126,7 @@
                             </thead>
                             <tbody>
                                 <ng-template nz-virtual-scroll let-data let-index="index">
-                                    <tr (contextmenu)="rightClickMenu($event, data)">
+                                    <tr (contextmenu)="rightClickMenu($event, data)" (dblclick)="mousedblclick($event,data)">
                                         <td style="width:150px">{{data.staff}}</td>
                                         <td style="width:150px">{{data.recipient}}</td>
                                         <td style="width:200px">{{data.serviceType}} </td>        
@@ -162,7 +165,7 @@
                             </thead>
                             <tbody>
                                 <ng-template nz-virtual-scroll let-data let-index="index">
-                                    <tr (contextmenu)="rightClickMenu($event, data)">
+                                    <tr (contextmenu)="rightClickMenu($event, data)" (dblclick)="mousedblclick($event,data)">
                                         <td style="width:150px">{{data.staff}}</td>
                                         <td style="width:150px">{{data.recipient}}</td>
                                         <td style="width:200px">{{data.serviceType}} </td>        

@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
-import { GlobalService, ListService,dataSetDropDowns,MenuService,PrintService,timeSteps } from '@services/index';
+import { GlobalService, ListService,dataSetDropDowns,datasetTypeDropDowns,MenuService,PrintService,timeSteps } from '@services/index';
 import { SwitchService } from '@services/switch.service';
 import { NzModalService } from 'ng-zorro-antd';
 import { Subject } from 'rxjs';
@@ -30,22 +30,22 @@ import { takeUntil } from 'rxjs/operators';
     margin-top:1rem;
   }
   .ant-divider-horizontal.ant-divider-with-text-center, .ant-divider-horizontal.ant-divider-with-text-left, .ant-divider-horizontal.ant-divider-with-text-right {
-      margin:1px 0
+    margin:1px 0
   }
   nz-tabset >>> div > div.ant-tabs-nav-container{
-      height: 25px !important;
-      font-size: 13px !important;
+    height: 25px !important;
+    font-size: 13px !important;
   }
-
+  
   nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-nav-scroll div.ant-tabs-nav div div.ant-tabs-tab{
-      line-height: 24px;
-      height: 25px;
-      border-radius:15px 4px 0 0;
-      margin:0 -10px 0 0;
+    line-height: 24px;
+    height: 25px;
+    border-radius:15px 4px 0 0;
+    margin:0 -10px 0 0;
   }
   nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-nav-scroll div.ant-tabs-nav div div.ant-tabs-tab.ant-tabs-tab-active{
-      background: #85B9D5;
-      color: #fff;
+    background: #85B9D5;
+    color: #fff;
   }
   .staff-wrapper{
     height: 20rem;
@@ -90,6 +90,7 @@ export class CaseMangementAdminComponent implements OnInit {
   staffUnApproved: boolean = false;
   competencymodal: boolean = false;
   current: number = 0;
+  current_mta:number = 0;
   checkedflag:boolean = true;
   dateFormat: string = 'dd/MM/yyyy';
   inputForm: FormGroup;
@@ -122,7 +123,11 @@ export class CaseMangementAdminComponent implements OnInit {
   addOrEdit: number = 0;
   isNewRecord: any;
   dataSetDropDowns: { CACP: string[]; CTP: string[]; DEX: string[]; DFC: string[]; DVA: any[]; HACC: string[]; HAS: string[]; QCSS: string[]; ICTD: string[]; NDIS: any[]; NRCP: string[]; NRCPSAR: string[]; OTHER: string[]; };
+  datasetTypeDropDowns: { CACP: string[]; CTP: string[]; DEX: string[]; DFC: string[]; DVA: any[]; HACC: string[]; HAS: string[]; QCSS: string[]; ICTD: string[]; NDIS: any[]; NRCP: string[]; NRCPSAR: string[]; OTHER: string[]; };
   dataset_group: any[];
+  dataset_type:any;
+  ndiaItemss: any;
+  travelandAlernatelist: any;
   checkList: any;
   chkListForm: any;
   insertOne: number;
@@ -148,6 +153,7 @@ export class CaseMangementAdminComponent implements OnInit {
       this.userRole = this.tocken.role;
       this.checkedList = new Array<string>();
       this.dataSetDropDowns = dataSetDropDowns;
+      this.datasetTypeDropDowns = datasetTypeDropDowns;
       this.loadData();
       this.buildForm();
       this.populateDropdowns();
@@ -191,6 +197,12 @@ export class CaseMangementAdminComponent implements OnInit {
       });
       this.selectedPrograms = [];
     }
+    selectProgram(){
+      this.programz.forEach(x => {
+        x.checked = true;
+        this.selectedPrograms = x.name;
+      });
+    }
     loadTitle()
     {
       return this.title;
@@ -223,6 +235,11 @@ export class CaseMangementAdminComponent implements OnInit {
       this.staffUnApproved = false;
     }
     showCompetencyModal(){
+      if(this.globalS.isEmpty(this.inputForm.get('title').value))
+          {
+            this.globalS.iToast('Info','can not create this record beacuse there are blank entries');  
+            return;
+          }
       this.addOrEdit = 0;
       this.competencymodal = true;
       this.clearCompetency();
@@ -473,6 +490,14 @@ export class CaseMangementAdminComponent implements OnInit {
               
               let todayDate       = this.globalS.curreentDate();
               
+              this.listS.GettravelandAlternateCode().subscribe(data => {
+                this.travelandAlernatelist = data;
+              })
+              this.listS.getndiaitemss().subscribe(data=>{
+                this.ndiaItemss = data;
+              })
+
+
               let sql ="SELECT distinct Description from DataDomains Where  Domain = 'LIFECYCLEEVENTS'";
               this.loading = true;
               this.listS.getlist(sql).subscribe(data => {
@@ -539,6 +564,9 @@ export class CaseMangementAdminComponent implements OnInit {
             
             buildForm() {
               this.inputForm = this.formBuilder.group({
+                ALT_NDIANonLabTravelKmActivity:'',
+                ALT_AppKmWithinActivity:'',
+                ExcludeFromAppLogging:false,
                 dataSet:'',
                 datasetGroup:'',
                 haccType:'',
@@ -548,7 +576,7 @@ export class CaseMangementAdminComponent implements OnInit {
                 rosterGroup:'',
                 minorGroup:'',
                 status:'',
-                amount:'',
+                amount:0.0,
                 minChargeRate:'',
                 lifecycle:'',
                 unit:'',
@@ -643,9 +671,15 @@ export class CaseMangementAdminComponent implements OnInit {
                 ndiaTravel:false,
                 DeletedRecord:false,
                 excludeFromRecipSummarySheet:false,
+                ExcludeFromMinHoursCalculation:false,
+                OnSpecial:false,
+                Discountable:false,
                 ndiA_LEVEL2:'',
                 ndiA_LEVEL3:'',
                 ndiA_LEVEL4:'',
+                ALT_PHActivityCode:'',
+                PHAction:'',
+                recnum:0,
               });
               this.competencyForm = this.formBuilder.group({
                 competencyValue: '',
@@ -688,6 +722,9 @@ export class CaseMangementAdminComponent implements OnInit {
                 this.loadChecklist();
               }
               this.current = index;
+            }
+            viewMTA(index: number){
+              this.current_mta = index;
             }
             handleCancelTop(): void {
               this.drawerVisible = false;

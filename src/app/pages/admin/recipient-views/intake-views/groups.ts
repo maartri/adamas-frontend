@@ -37,6 +37,8 @@ export class IntakeGroups implements OnInit, OnDestroy {
         userGroups: Array<string>,
         preferences: Array<string>
     }
+    selectedGroups: any;
+    selectedPrefernces: any;
 
     constructor(
         private timeS: TimeSheetService,
@@ -106,13 +108,15 @@ export class IntakeGroups implements OnInit, OnDestroy {
             date1: new FormControl(null),
             date2: new FormControl(null),
             email: new FormControl(''),
+            selectedGroup:new FormControl(''),
          })
          
          this.preferenceForm = this.formBuilder.group({
             preference: new FormControl('', [Validators.required]),
             notes: new FormControl(''),
             personID: new FormControl(''),
-            recordNumber: new FormControl(0)
+            recordNumber: new FormControl(0),
+            selectedPrefernces:new FormControl('')
          })
     }
 
@@ -129,9 +133,11 @@ export class IntakeGroups implements OnInit, OnDestroy {
         
         this.addOREdit = 1;
         if (view == 1){
+            this.selectedGroups = {}
             this.definedOpen = false;
             // this.userGroupForm.reset();
         }else{
+            this.selectedPrefernces = {};
             this.preferenceOpen = false;
             // this.preferenceForm.reset();
         }
@@ -141,16 +147,35 @@ export class IntakeGroups implements OnInit, OnDestroy {
         this.search()
         this.listDropDowns()
     }
-
+    logs(event: any) {
+        this.selectedGroups = event;
+    }
+    logs2(event: any) {
+        this.selectedPrefernces = event;
+    }
     listDropDowns(){
         forkJoin([
             this.listS.getusergroup(this.user.id),
             this.listS.getrecipientpreference(this.user.id)
         ]).subscribe(data => {
             this.loading = false;
+            let usergroup = data[0].map(x => {
+                return {
+                    label: x,
+                    value: x,
+                    checked: false
+                }
+            });
+           let preference = data[1].map(x => {
+                return {
+                    label: x,
+                    value: x,
+                    checked: false
+                }
+            });
             this.dropDowns = {
-                userGroups: data[0],
-                preferences: data[1]
+                userGroups: usergroup,
+                preferences: preference
             }
         });
     }
@@ -169,7 +194,6 @@ export class IntakeGroups implements OnInit, OnDestroy {
             }else{
                 this.globalS.iToast('Info','There Is No Preference');
             }
-        
         }
     }
 
@@ -196,8 +220,14 @@ export class IntakeGroups implements OnInit, OnDestroy {
     }
     userGroupProcess(){
         this.userGroupForm.controls['personID'].setValue(this.user.id)
+        this.userGroupForm.controls['selectedGroup'].setValue(this.selectedGroups)
         const userGroup = this.userGroupForm.value;
+        
         if(this.addOREdit == 1){
+            if((this.addOREdit == 1 && this.selectedGroups === undefined) || (this.selectedGroups !== undefined && this.selectedGroups.length ===0) ){
+                this.globalS.sToast('Success', 'Please Select Atleast One Group ');
+                return
+            }
             this.timeS.postusergroup(userGroup)
                         .subscribe(data => {
                             if(data){
@@ -222,10 +252,14 @@ export class IntakeGroups implements OnInit, OnDestroy {
 
     preferenceProcess(){
         this.preferenceForm.controls['personID'].setValue(this.user.id)
-
+        this.preferenceForm.controls['selectedPrefernces'].setValue(this.selectedPrefernces)
         const preferences = this.preferenceForm.value;
 
         if(this.addOREdit == 1){
+            if((this.addOREdit == 1 && this.selectedPrefernces === undefined) || (this.selectedPrefernces !== undefined && this.selectedPrefernces.length ===0) ){
+                this.globalS.sToast('Success', 'Please Select Atleast One Preference ');
+                return
+            }
             this.timeS.postrecipientpreference(preferences)
                         .subscribe(data => {
                             if(data){

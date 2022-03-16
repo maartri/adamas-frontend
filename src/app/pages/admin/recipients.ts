@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef, AfterViewInit } from '@angular/core'
+import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef, AfterViewInit, Renderer2, ViewChild, ElementRef } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { GlobalService, StaffService,nodes,checkOptionsOne,sampleList,ShareService, leaveTypes, ListService,TimeSheetService } from '@services/index';
@@ -24,21 +24,40 @@ import { FormBuilder, Validators } from '@angular/forms';
   nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-nav-scroll div.ant-tabs-nav div div.ant-tabs-tab{
     line-height: 24px;
     height: 25px;
+    border-radius:15px 4px 0 0;
+    margin:0 -10px 0 0;
   }
   nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-nav-scroll div.ant-tabs-nav div div.ant-tabs-tab.ant-tabs-tab-active{
     background: #85B9D5;
     color: #fff;
   }
-  ul{
-    list-style:none;
-    float:right;
-    margin:0;
+  
+  ul.options{
+    list-style: none;
+    margin: 0;
+    padding: 1rem 0 0 0;
   }
-  li{
+  ul.options li{
     display: inline-block;
     margin-right: 6px;
     padding: 5px 0;
     font-size: 13px;
+  }
+  .disabled{
+    cursor: not-allowed;
+  }
+  ul.sub-menu{
+    list-style:none;
+    padding:0;
+    margin:0;
+  }
+  ul.sub-menu li{
+    font-size:12px;
+    padding:5px 15px;
+  }
+  ul.sub-menu li:hover:not(.disabled){
+    color:black;
+    background:#edf9ff;
   }
   li div{
     text-align: center;
@@ -62,6 +81,31 @@ import { FormBuilder, Validators } from '@angular/forms';
     border: 0;
     background: #ffffff00;
     float: left;
+  }
+  div.special-btn{
+    padding: 4px 2rem !important;
+    position:relative;
+    display:inline-block;
+  }
+  div.special-btn > div{
+    position: absolute;
+    border: 1px solid #dfdfdf;
+    background: #fff;
+    z-index: 10;
+    top: 34px;
+    left: 0;
+    width: 100%;  
+    border-radius:4px;
+  }
+  .special-btn{
+    flex: 10%;
+    font-size: 1.1rem;
+    padding: 8px;
+    margin-left: 10px;
+    border: 1px solid #dadada;
+    border-radius: 7px;
+    cursor: pointer;
+    color: #afafaf;
   }
   // .status{
   //   font-size: 11px;
@@ -111,6 +155,19 @@ import { FormBuilder, Validators } from '@angular/forms';
   .ant-table-thead>tr>th{
     background:green;
   }
+  .hide{
+    display:none;
+  }
+  .status-wrapper{
+    color: #fff;
+    border-radius: 10px;
+    background: #85b9d5;
+    padding: 5px 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-left: 10px;
+    display: inline-block;
+  }
   `],
   templateUrl: './recipients.html',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -119,6 +176,9 @@ import { FormBuilder, Validators } from '@angular/forms';
 
 export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
   
+  @ViewChild('menuSub') menuSub: ElementRef;
+  @ViewChild('toggleMenu') toggleMenu: ElementRef
+
   option: string = 'add';
   
   allBranches:boolean = true;
@@ -197,6 +257,8 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
   currentDate = new Date();
   longMonth = this.currentDate.toLocaleString('en-us', { month: 'long' });
   sampleModel: any;
+
+  switchValue: boolean = false;
   
   columns: Array<any> = [
     {
@@ -314,6 +376,8 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
   selectedCategories: any;
   rights: any;
   tocken: any;
+
+  
   nzEvent(event: NzFormatEmitEvent): void {
     if (event.eventName === 'click') {
       var title = event.node.origin.title;
@@ -410,10 +474,14 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     private globalS:GlobalService,
     private http: HttpClient,
     private msg: NzMessageService,
+    private renderer2: Renderer2
     ) {
       
+
+   
+
       this.sharedS.emitProfileStatus$.subscribe(data => {
-        // console.log(data);
+        console.log(data);
         this.selectedRecipient = data;
         this.recipientType = data.type == null || data.type.trim() == "" ? null : data.type;
         // if(data.admissionDate == null && data.dischargeDate == null){
@@ -438,7 +506,13 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     }
     listOfData: Array<{ name: string; age: number; address: string }> = [];
     ngOnInit(): void {
+      
+      // this.globalS.token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUwMDAvIiwiYXVkIjoiY2xpZW50cG9ydGFsIiwibmFtZWlkIjoic3lzbWdyIiwiaWF0IjoxNjQyMTI1NDcyLCJleHAiOjE2NDIxNzk0NzUsIm5iZiI6MTY0MjEyNTQ3MiwiY29kZSI6IlNLRUVORSBST0RFUklHTyIsInJvbGUiOiJBRE1JTiBVU0VSIiwidXNlciI6IlNZU01HUiIsInVuaXF1ZUlEIjoiUzAxMDAwMDUzOTMiLCJjYW5DaG9vc2VQcm92aWRlciI6IkZhbHNlIiwicmVjaXBpZW50RG9jRm9sZGVyIjoiQzpcXEFkYW1hc1xcU3VwcG9ydFxcQ3JhbmVzIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQURNSU4gVVNFUiIsImp0aSI6ImZhMzU2ZmU0LWU4N2QtNGExOC05MDA4LTYwNDQyNWQyZTUwMyJ9.LOmuL9GwvWAtacoStsIl9-cAESqClezqCeege08G52I"
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
+      // this.tocken ={"iss":"http://localhost:5000/","aud":"clientportal","nameid":"sysmgr","iat":1642115732,"exp":1642169735,"nbf":1642115732,"code":"SKEENE RODERIGO","role":"ADMIN USER","user":"SYSMGR","uniqueID":"S0100005393","canChooseProvider":"False","recipientDocFolder":"C:\\Adamas\\Support\\Cranes","http://schemas.microsoft.com/ws/2008/06/identity/claims/role":"ADMIN USER","jti":"18aecec4-c164-448a-b8d6-d714eb50cd19"}
+
+      // console.log(JSON.stringify(this.tocken));
+
       for (let i = 0; i < 100; i++) {
         this.listOfData.push({
           name: `Edward King`,
@@ -446,6 +520,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
           address: `LondonLondonLondonLondonLondon`
         });
       } 
+
       this.nodelist = nodes;
       this.getRights(this.tocken.user);
       this.getUserData();
@@ -457,8 +532,15 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     }
     
     ngAfterViewInit() {
-      
+      // this.renderer2.listen('window', 'click',(e:Event)=>{
+      //     if(e.target !== this.menuSub.nativeElement){
+      //           this.showSubMenu = !this.showSubMenu;
+      //     }
+      // });
     }
+
+    showSubMenu: boolean = false;
+
     searchData() : void{
       this.loading = true;      
       
@@ -745,6 +827,9 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
       if (index == 16) {
         this.router.navigate(['/admin/recipient/clinical'])
       }
+      if (index == 18) {
+        this.router.navigate(['/admin/recipient/dataset'])
+      }
     }
     
     handleCancel() {
@@ -968,6 +1053,12 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
         this.findModalOpen = false;
         this.referdocument = false;
         this.quicksearch.reset();
+      }
+
+      clickOutsideMenu(data: any){        
+        if(data.value){
+          this.showSubMenu = false;
+        }
       }
       
       

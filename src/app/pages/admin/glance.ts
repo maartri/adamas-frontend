@@ -12,11 +12,7 @@ import endOfMonth from 'date-fns/endOfMonth';
 @Component({
     templateUrl: './glance.html',
     styles: [`
-        
-    button{
-        width: 200pt !important;
-        text-align: center !important;
-    }        
+          
     .btn{
         border:none;
         cursor:pointer;
@@ -108,14 +104,12 @@ export class GlanceAdmin implements OnInit, OnDestroy, AfterViewInit {
     teamTA: number = 0;
     teamAIP: number = 0;
 
+    staffUtilize: any;
+    noStaff: number = 0;
     totalOutHour: number = 0;
-    funded: number = 0;
-    unfunded: number = 0;
     noRecipient: number = 0;
     totalWorkHour: number = 0;
     totalWorkAttrHour: number = 0;
-    staffUtilize: number = 0;
-    noStaff: number = 0;
 
     constructor(
         private router: Router,
@@ -128,6 +122,7 @@ export class GlanceAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.buildForm();
         this.populateDropDown();
         this.getCompanyName();
+        this.refreshValues();
     }
     buildForm() {
         this.inputForm = this.formBuilder.group({
@@ -145,6 +140,12 @@ export class GlanceAdmin implements OnInit, OnDestroy, AfterViewInit {
         // console.log('onChange: ', result);
     }
     ngOnDestroy(): void {
+    }
+    view(index: number) {
+        console.log(index);
+        if(index == 1){
+            this.router.navigate(['/admin/analyse-budget']);
+        }
     }
     populateDropDown() {
         // this.statesList = ['ACT', 'NSW', 'NT', 'QLD', 'SA', 'TAS', 'VIC', 'WA'];
@@ -359,6 +360,56 @@ export class GlanceAdmin implements OnInit, OnDestroy, AfterViewInit {
             DateEnd: this.dtpEndDate,
             IsWhere: null
         }
+
+        //Total Output Hours
+        this.billingS.getOutputHours(dataPass).subscribe(data => {
+            this.totalOutHour = data[0].totalOutHour;
+            this.inputForm.patchValue({
+                totalOutHour: this.totalOutHour,
+            })
+        });
+
+        //Total Worked Hours
+        this.billingS.getWorkedHours(dataPass).subscribe(data => {
+            this.totalWorkHour = data[0].totalWorkedHour;
+            this.inputForm.patchValue({
+                totalWorkHour: this.totalWorkHour,
+            })
+        });
+
+        //Total Worked Attribute Hours
+        this.billingS.getWorkedAttributeHours(dataPass).subscribe(data => {
+            this.totalWorkAttrHour = data[0].totalWorkedAttrHour;
+            this.inputForm.patchValue({
+                totalWorkAttrHour: this.totalWorkAttrHour,
+            })
+        });
+
+        //Total Staff
+        this.billingS.getTotalStaff(dataPass).subscribe(data => {
+            this.noStaff = data[0].totalNoStaff;
+            this.inputForm.patchValue({
+                noStaff: this.noStaff,
+            })
+        });
+
+        //Total Recipient
+        this.billingS.getTotalRecipient(dataPass).subscribe(data => {
+            this.noRecipient = data[0].totalNoRecipient;
+            this.inputForm.patchValue({
+                noRecipient: this.noRecipient,
+            })
+        });
+
+        this.billingS.getTotalStaff(dataPass).subscribe(data => {
+            this.noStaff = data[0].totalNoStaff;
+            if (this.noStaff > 0) {
+                this.staffUtilize = (this.totalWorkAttrHour / this.totalWorkHour * 100).toFixed(2)
+                this.inputForm.patchValue({
+                    staffUtilize: this.staffUtilize,
+                })
+            }
+        });
 
         //States
         this.billingS.getActiveStates(null).subscribe(data => {
@@ -628,7 +679,6 @@ export class GlanceAdmin implements OnInit, OnDestroy, AfterViewInit {
                 teamAIP: this.teamAIP,
             })
         });
-
     }
 
     // refreshValues() {

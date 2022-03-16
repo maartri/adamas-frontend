@@ -40,6 +40,8 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
   private unsubscribe: Subject<void> = new Subject();
   private searchChangeEmit: Subject<void> = new Subject();
 
+  showAll: boolean = false;
+
   // 0 if recipient / 1 if staff
   @Input() view: number;
   @Input() reload: boolean;
@@ -56,6 +58,10 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
   pageCounter: number = 1;
   take: number = 50;
   activeInactive: boolean;
+
+  globalUser: any;
+
+  switchValue: boolean = false;
 
 
   // nzFilterOption  = () => true;
@@ -77,6 +83,7 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
   }
 
   ngOnInit(): void {
+    this.globalUser = this.globalS.decode();  
     this.search();
   }
 
@@ -152,7 +159,7 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
     this.lists = [];   
 
     this.timeS.getstaff({
-      User: this.globalS.decode().nameid,
+      User: this.globalUser.nameid,
       SearchString: '',
       IncludeInactive:this.activeInactive,
     }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
@@ -178,7 +185,7 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
   loadMore(){
     this.pageCounter = this.pageCounter + 1;
     this.timeS.getstaffpaginate({
-      User: this.globalS.decode().nameid,
+      User: this.globalUser.nameid,
       SearchString: '',
       Skip: this.pageCounter,
       Take: this.take
@@ -192,7 +199,7 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
   searchRecipient(search: any = null): void {
     this.lists = []
     this.timeS.getrecipients({
-      User: this.globalS.decode().nameid,
+      User: this.globalUser.nameid,
       SearchString: '',
       IncludeInactive:this.activeInactive,
     }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
@@ -276,5 +283,17 @@ export class SearchListComponent implements OnInit , OnChanges, AfterViewInit, O
     this.change(this.searchModel);
     this.globalS.sToast('Success', 'Staff Display Sucessfully');
     this.clearPhoneModal();
+  }
+
+  clickOutsideMenu(data: any){
+    console.log(data);
+    if(data.value){
+      this.showAll = false;
+    }
+  }
+
+  changeStatusBool(data: any){
+    this.activeInactive = data;
+    this.search();
   }
 }

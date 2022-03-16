@@ -2,36 +2,66 @@
     <div nz-row>
         <div nz-col nzSpan="24" class="recipient-controls">
             <div nz-col nzSpan="8">
-                <!--<button class="botton success" (click)="newReferralModal = !newReferralModal"><i nz-icon nzType="plus" nzTheme="outline"></i> New Referral</button> -->
                 <button class="headers-botton recordHeaderMainButtons" (click)="newReferralModal = !newReferralModal"><i nz-icon nzType="plus" nzTheme="outline"></i> New Referral</button>
                 <button class="headers-botton recordHeaderMainButtons" (click)="openFindModal()"><i nz-icon nzType="search" nzTheme="outline"></i> Find</button>
             </div>
-            <div nz-col nzSpan="16" style="text-align:right;">
-                <!-- <button class="botton sea" (click)="newOtherModal = true"><i nz-icon nzType="check-circle" nzTheme="outline"></i> New Other</button> -->
+            <!-- <div nz-col nzSpan="16" style="text-align:right;">
                 <button class="headers-botton recordHeaderMainButtons" (click)="newQuoteModal = !newQuoteModal" [disabled]="user == null"><i nz-icon nzType="form" nzTheme="outline"></i> Quote</button>
-                <!-- <button class="botton other" (click)="saveModal = true" [disabled]="user == null"><i nz-icon nzType="cloud-upload" nzTheme="outline"></i> Save</button> -->
                 <button class="headers-botton recordHeaderMainButtons" (click)="clicky(12)" [disabled]="status?.b_IsDead  || status == null"><i nz-icon nzType="printer" nzTheme="outline"></i> Print</button>
-                <!-- <button class="botton other" (click)="openReferModal(null)"><i nz-icon nzType="cloud-upload" nzTheme="outline"></i> Sample</button> -->
                 <button class="headers-botton recordHeaderMainButtons" (click)="currentMonthRoster()" [disabled]="user == null"><i nz-icon nzType="calendar" nzTheme="outline"></i> {{longMonth}} Roster</button>
                 <button class="headers-botton recordHeaderMainButtons" (click)="rosterMaster()" [disabled]="user == null"><i nz-icon nzType="calendar" nzTheme="outline"></i> Master</button>  
-            </div>
+            </div> -->
         </div> 
     </div>
     
-    <div nz-row>
+    <div nz-row style="margin-top:10px">
         
-        <div nz-col nzSpan="6" style="margin-top: 10px;">
-            <div *ngIf="recipientType" class="status-program" ><i (click)="programModalOpen = true;loadPrograms()" style="font-size:2.3rem;" nz-icon nzType="dollar" nzTheme="outline"></i></div>
+        <div nz-col nzSpan="6">
+            <!-- <div *ngIf="recipientType" class="status-program" ><i (click)="programModalOpen = true;loadPrograms()" style="font-size:2.3rem;" nz-icon nzType="dollar" nzTheme="outline"></i></div> -->
             <app-search-list [view]="0" [(ngModel)]="sample" (ngModelChange)="listChange($event)"></app-search-list>           
         </div>
-        <div nz-col nzSpan="4">
-            <div *ngIf="recipientType" nz-col nzSpan="24" style="margin-top:10px;font-size:1.4rem;font-weight: 700;margin-left: 10px;">
+        <div nz-col nzSpan="8">
+           
+            <i *ngIf="recipientType" class="special-btn" (click)="programModalOpen = true;loadPrograms()" nz-icon nzType="dollar" nzTheme="outline"></i>
+            
+
+            <div class="special-btn" (clickOutside)="clickOutsideMenu($event)" (click)="showSubMenu = !showSubMenu">
+                <span>Menu</span>
+                <div [class.hide]="!showSubMenu">
+                    <ul class="sub-menu">
+                        <!-- <li (click)="newReferralModal = !newReferralModal">New Referral</li>
+                        <li (click)="openFindModal()">Find</li> -->
+                        <li (click)="newQuoteModal = !newQuoteModal">Quote</li>
+                        <li (click)="clicky(12)" [class.disabled]="status?.b_IsDead  || status == null">Print</li>
+                        <li (click)="user != null && currentMonthRoster()" [class.disabled]="user == null">{{ longMonth }} Roster</li>
+                        <li (click)="user != null && rosterMaster()" [class.disabled]="user == null">Master Roster</li>
+
+                        <li (click)="clicky(0)"  [class.disabled]="status?.b_IsDead || status == null">Refer In</li>
+                        <li (click)="clicky(1)" [class.disabled]="status?.b_IsDead  || status == null">Refer On</li>
+
+                        <li (click)="clicky(2)" [class.disabled]="status?.b_IsDead || !status?.b_HasReferrals">Not Proceed</li>
+                        <li (click)="clicky(3)" [class.disabled]="status?.b_IsDead || !status?.b_HasReferrals">Assess</li>
+                        <li (click)="clicky(4)" [class.disabled]="status?.b_IsDead || !status?.b_HasReferrals">Admit</li>
+                        <li (click)="clicky(5)" [class.disabled]="status?.b_IsDead || !status?.b_HasActivePrograms">Wait List</li>
+                        <li (click)="clicky(6)" [class.disabled]="status?.b_IsDead || !status?.b_HasActivePrograms">Discharge</li>
+                        <li (click)="clicky(7)" [class.disabled]="status?.b_IsDead || !status?.b_HasActivePrograms">Suspend</li>
+                        <li (click)="clicky(8)" [class.disabled]="status?.b_IsDead || (!status?.b_HasOnHoldPrograms && !status?.b_HasOnHoldServices)">Reinstate</li>
+                        <li (click)="clicky(9)" [class.disabled]="status?.b_IsDead  || status == null">Decease</li>
+                        <li (click)="clicky(10)" [class.disabled]="status == null">Admin</li>
+                        <li (click)="clicky(11)" [class.disabled]="status?.b_IsDead  || status == null">Item</li>
+                    </ul>
+                </div>
+            </div>
+            
+
+            <!-- <div class="status-wrapper" *ngIf="recipientType">
                 <span class="status active" *ngIf="recipientStatus && recipientStatus == 'active'"> ACTIVE </span>
                 <span class="status inactive" *ngIf="recipientStatus && recipientStatus == 'inactive'"> INACTIVE </span>
                 <span class="status type">{{ recipientType }} </span>
-            </div>
+            </div> -->
         </div>
-        <div nz-col nzSpan="14">
+
+        <!-- <div nz-col nzSpan="24">
             <ul class="options">
                 <li><button (click)="clicky(0)" [disabled]="status?.b_IsDead || status == null"><div><i class="fas fa-file"></i></div>Refer In</button></li>
                 <li><button (click)="clicky(1)" [disabled]="status?.b_IsDead  || status == null"><div><i class="fas fa-file-alt"></i></div>Refer On</button></li>
@@ -44,10 +74,11 @@
                 <li><button (click)="clicky(8)" [disabled]="status?.b_IsDead || (!status?.b_HasOnHoldPrograms && !status?.b_HasOnHoldServices)"><div><i class="fas fa-folder-plus"></i></div>Reinstate</button></li>
                 <li><button (click)="clicky(9)" [disabled]="status?.b_IsDead  || status == null"><div><i class="fas fa-procedures"></i></div>Decease</button></li>
                 <li><button (click)="clicky(10)" [disabled]="status == null"><div><i class="fas fa-address-book"></i></div>Admin</button></li>
-                <li><button (click)="clicky(11)" [disabled]="status?.b_IsDead  || status == null"><div><i class="fas fa-th-list"></i></div>Item</button></li>
+                <li><button (click)="clicky(11)" [disabled]="status?.b_IsDead  || status == null"><div><i class="fas fa-th-list"></i></div>Item</button></li> -->
+
                 <!-- <li><button (click)="clicky(12)" [disabled]="status?.b_IsDead  || status == null"><div><i class="fas fa-print"></i></div>Print</button></li> -->
-            </ul>
-        </div>
+            <!-- </ul>
+        </div> -->
         
         
         <!-- <select [(ngModel)]="user" (ngModelChange)="change($event)">
@@ -62,7 +93,7 @@
                 <nz-tab *ngIf="getPermisson(100) == '1'" nzTitle="Personal" (nzClick)="view(0)"> </nz-tab>
                 <nz-tab *ngIf="getPermisson(101) == '1'" nzTitle="Contacts" (nzClick)="view(1)"> </nz-tab>
                 <nz-tab *ngIf="getPermisson(103) == '1'" nzTitle="Intake Details" (nzClick)="view(2)"></nz-tab>
-                <nz-tab *ngIf="getPermisson(113) == '1'" nzTitle="ONI" (nzClick)="view(17)"> </nz-tab>
+                <nz-tab [nzDisabled]="true" *ngIf="getPermisson(113) == '1'" nzTitle="ONI" (nzClick)="view(17)"> </nz-tab>
                 <nz-tab *ngIf="getPermisson(113) == '1'" nzTitle="Clinical" (nzClick)="view(16)"> </nz-tab>
                 <nz-tab *ngIf="getPermisson(120) == '1'" nzTitle="Reminders" (nzClick)="view(3)"> </nz-tab>
                 <nz-tab *ngIf="getPermisson(121) == '1'" nzTitle="OP Notes" (nzClick)="view(4)"> </nz-tab>

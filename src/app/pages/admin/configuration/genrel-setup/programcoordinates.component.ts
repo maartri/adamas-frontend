@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { ListService, MenuService, PrintService } from '@services/index';
+import { ListService, MenuService, PrintService, TimeSheetService } from '@services/index';
 import { GlobalService } from '@services/global.service';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
@@ -43,6 +43,7 @@ export class ProgramcoordinatesComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private listS:ListService,
     private menuS:MenuService,
+    private timeS:TimeSheetService,
     private switchS:SwitchService,
     private printS:PrintService,
     private formBuilder: FormBuilder,
@@ -153,12 +154,12 @@ export class ProgramcoordinatesComponent implements OnInit {
         }
         let domain = "'CASE MANAGERS'";
         let code   = this.globalS.isValueNull(group.get('code').value);
-            name   = this.globalS.isValueNull(group.get('name').value.trim().toUpperCase());
+        name   = this.globalS.isValueNull(group.get('name').value.trim().toUpperCase());
         let end_date      = !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
         
         let values = domain+","+code+","+end_date+","+name;
         let sql = "insert into DataDomains (Domain,HACCCode,EndDate,Description) Values ("+values+")";
-          console.log(sql);
+        console.log(sql);
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
           if (data) 
           this.globalS.sToast('Success', 'Saved successful');     
@@ -173,14 +174,14 @@ export class ProgramcoordinatesComponent implements OnInit {
       }else{
         const group = this.inputForm;
         let name        = group.get('name').value.trim().toUpperCase();
-          if(this.temp_title != name){
-            let is_exist    = this.globalS.isNameExists(this.tableData,name);
-            if(is_exist){
-              this.globalS.sToast('Unsuccess', 'Title Already Exist');
-              this.postLoading = false;
-              return false;   
-            }
+        if(this.temp_title != name){
+          let is_exist    = this.globalS.isNameExists(this.tableData,name);
+          if(is_exist){
+            this.globalS.sToast('Unsuccess', 'Title Already Exist');
+            this.postLoading = false;
+            return false;   
           }
+        }
         let code   = this.globalS.isValueNull(group.get('code').value);
         name   = this.globalS.isValueNull(group.get('name').value.trim().toUpperCase());
         let end_date     =  !(this.globalS.isVarNull(group.get('end_date').value)) ?  "'"+this.globalS.convertDbDate(group.get('end_date').value)+"'" : null;
@@ -188,10 +189,23 @@ export class ProgramcoordinatesComponent implements OnInit {
         let sql  = "Update DataDomains SET [HACCCode] ="+ code+",[EndDate] ="+ end_date+",[Description]="+ name+" WHERE [RecordNumber]='"+recordNumber+"'";
         
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
-          if (data) 
-          this.globalS.sToast('Success', 'Updated successful');     
-          else
-          this.globalS.sToast('Success', 'Updated successful');
+          if (data)
+          {
+            this.timeS.postaudithistory({
+              Operator:this.tocken.user,
+              actionDate:this.globalS.getCurrentDateTime(),
+              auditDescription:'Managers Coordinator Changed',
+              actionOn:'CASE MANAGERS',
+              whoWhatCode:group.get('recordNumber').value, //inserted
+              TraccsUser:this.tocken.user,
+            }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+              this.globalS.sToast('Success', 'Update successful');
+            }
+            );
+          }else
+          {
+            this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
+          }
           this.postLoading = false;      
           this.loadData();
           this.handleCancel();
@@ -204,9 +218,19 @@ export class ProgramcoordinatesComponent implements OnInit {
       this.postLoading = true;     
       const group = this.inputForm;
       this.menuS.deleteDomain(data.recordNumber)
-      .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-        if (data) {
-          this.globalS.sToast('Success', 'Data Deleted!');
+      .pipe(takeUntil(this.unsubscribe)).subscribe(datas => {
+        if (datas) {
+          this.timeS.postaudithistory({
+            Operator:this.tocken.user,
+            actionDate:this.globalS.getCurrentDateTime(),
+            auditDescription:'Managers Coordinator Deleted',
+            actionOn:'CASE MANAGERS',
+            whoWhatCode:data.recordNumber, //inserted
+            TraccsUser:this.tocken.user,
+          }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            this.globalS.sToast('Success', 'Deleted successful');
+          }
+          );
           this.loadData();
           return;
         }
@@ -247,13 +271,13 @@ export class ProgramcoordinatesComponent implements OnInit {
           "head4" : "End Date",
         }
       }
-
+      
       this.printS.printControl(data).subscribe((blob: any) => {
         let _blob: Blob = blob;
         let fileURL = URL.createObjectURL(_blob);
         this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
         this.loading = false;
-        }, err => {
+      }, err => {
         this.loading = false;
         this.ModalS.error({
           nzTitle: 'TRACCS',
@@ -263,8 +287,8 @@ export class ProgramcoordinatesComponent implements OnInit {
           },
         });
       });
-
-
+      
+      
       this.loading = true;
       this.tryDoctype = "";
       this.pdfTitle = "";

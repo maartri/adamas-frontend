@@ -10,6 +10,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NzModalService } from 'ng-zorro-antd';
 import { PrintService } from '@services/print.service';
+import { TimeSheetService } from '@services/timesheet.service';
 
 @Component({
   selector: 'app-location-categories',
@@ -44,12 +45,10 @@ export class LocationCategoriesComponent implements OnInit {
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
     private switchS:SwitchService,
-    private listS:ListService,
+    private timeS:TimeSheetService,
     private menuS:MenuService,
     private formBuilder: FormBuilder,
     private printS:PrintService,
-    private http: HttpClient,
-    private fb: FormBuilder,
     private sanitizer: DomSanitizer,
     private ModalS: NzModalService,
     ){}
@@ -195,10 +194,23 @@ export class LocationCategoriesComponent implements OnInit {
             }
             
             ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-              if (data) 
-              this.globalS.sToast('Success', 'Updated successful');     
-              else
-              this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
+              if (data)
+              {
+                this.timeS.postaudithistory({
+                  Operator:this.tocken.user,
+                  actionDate:this.globalS.getCurrentDateTime(),
+                  auditDescription:'Incident Location Categories Changed',
+                  actionOn:'IMLocation',
+                  whoWhatCode:group.get('recordNumber').value, //inserted
+                  TraccsUser:this.tocken.user,
+                }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+                  this.globalS.sToast('Success', 'Update successful');
+                }
+                );
+              }else
+              {
+                this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
+              }
               this.loadData();
               this.postLoading = false;
               this.isUpdate = false;          
@@ -213,9 +225,19 @@ export class LocationCategoriesComponent implements OnInit {
           this.postLoading = true;     
           const group = this.inputForm;
           this.menuS.deleteDomain(data.recordNumber)
-          .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-            if (data) {
-              this.globalS.sToast('Success', 'Data Deleted!');
+          .pipe(takeUntil(this.unsubscribe)).subscribe(datas => {
+            if (datas) {
+              this.timeS.postaudithistory({
+                Operator:this.tocken.user,
+                actionDate:this.globalS.getCurrentDateTime(),
+                auditDescription:'Incident Location Categories Deleted',
+                actionOn:'IMLocation',
+                whoWhatCode:data.recordNumber, //inserted
+                TraccsUser:this.tocken.user,
+              }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+                this.globalS.sToast('Success', 'Deleted successful');
+              }
+              );
               this.loadData();
               return;
             }

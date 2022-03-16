@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { LoginComponent } from './pages/login/login.component';
 
-import {  
+import {
   ProfilePage
 } from '@components/index';
 
@@ -90,6 +90,8 @@ import {
   StaffAdmin,
   TimesheetAdmin,
   ConfigurationAdmin,
+  NDIAAdmin,
+  chspDexAdmin,
   HCPComponent,
   PrintComponent,
   BudgetAdmin, //AHSAN
@@ -123,6 +125,7 @@ import {
   RecipientIncidentAdmin,
   RecipientIntakeAdmin,
   RecipientClinicalAdmin,
+  RecipientDatasetAdmin,
   RecipientOpnoteAdmin,
   RecipientPensionAdmin,
   RecipientPermrosterAdmin,
@@ -139,7 +142,9 @@ import {
 import {
   RouteGuard,
   AdminStaffRouteGuard,
-  CanDeactivateGuard
+  CanDeactivateGuard,
+  LoginGuard,
+  ByPassGuard
 } from '@services/index'
 
 import {
@@ -153,6 +158,14 @@ import {
   IntakeServices,
   IntakeStaff
 } from '@intakes/index';
+
+import
+{
+  ChildSafety,
+  DatasetQccsmda,
+  DSS,
+  MentalHlth,
+} from './pages/admin/recipient-views/dataset-views/index';
 
 import {
   ClinicalDiagnose,
@@ -280,11 +293,217 @@ import { CloseRosterComponent } from '@admin/billing/closeRoster.component'; //A
 import { MediaList } from '@admin/recipient-views/mediaList';
 import { UserDetail } from '@admin/configuration/genrel-setup/userdetail';
 import { Checklist } from '@admin/configuration/genrel-setup/checklist';
+import { RecipientComponent } from './pages/standalone-app/recipient/recipient.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: LoginComponent
+    component: LoginComponent,
+    canActivate: [ByPassGuard]
+  },
+  {
+    path: 'sys-redirect',
+    component: RecipientComponent,
+    children: [
+      {
+        path: 'recipient',
+        component: RecipientsAdmin,
+        children: [
+          {
+            path: 'personal',
+            component: RecipientPersonalAdmin
+          },
+          {
+            path: 'contacts',
+            component: RecipientContactsAdmin
+          },
+          {
+            path: 'accounting',
+            component: RecipientAccountingAdmin,
+            children: [
+              {
+                path: '',
+                redirectTo: 'profile',
+                pathMatch: 'full'
+              },
+              {
+                path: 'profile',
+                component: ProfileAccounting
+              },
+              {
+                path: 'accounting',
+                component: AccountingHistory
+              },
+            ]
+          },
+          {
+            path: 'intake',
+            component: RecipientIntakeAdmin,
+            children: [
+              {
+                path: '',
+                redirectTo: 'branches',
+                pathMatch: 'full'
+              },
+              {
+                path: 'alerts',
+                component: IntakeAlerts
+              },
+              {
+                path: 'branches',
+                component: IntakeBranches
+              },
+              {
+                path: 'consents',
+                component: IntakeConsents
+              },
+              {
+                path: 'funding',
+                component: IntakeFunding
+              },
+              {
+                path: 'goals',
+                component: IntakeGoals
+              },
+              {
+                path: 'groups',
+                component: IntakeGroups
+              },
+              {
+                path: 'plans',
+                component: IntakePlans
+              },
+              {
+                path: 'services',
+                component: IntakeServices
+              },
+              {
+                path: 'staff',
+                component: IntakeStaff
+              }
+            ]
+          },
+          {
+            path: 'dataset',
+            component: RecipientDatasetAdmin,
+            children: [
+              {
+                path: '',
+                redirectTo: 'qccsmds',
+                pathMatch: 'full'
+              },
+              {
+                path: 'qccsmds',
+                component: DatasetQccsmda
+              },
+              {
+                path: 'childsafety',
+                component:ChildSafety,
+              },
+              {
+                path: 'dss',
+                component:DSS,
+              },
+              {
+                path:'mentalhlth',
+                component:MentalHlth,
+              }
+
+            ]
+          },
+          {
+            path: 'clinical',
+            component: RecipientClinicalAdmin,
+            children: [
+              {
+                path: '',
+                redirectTo: 'diagnose',
+                pathMatch: 'full'
+              },
+              {
+                path: 'diagnose',
+                component: ClinicalDiagnose
+              },
+              {
+                path: 'procedure',
+                component: ClinicalProcedure
+              },
+              {
+                path: 'medication',
+                component: ClinicalMedication
+              },
+              {
+                path: 'reminder',
+                component: ClinicalReminder
+              },
+              {
+                path: 'alert',
+                component: ClinicalAlert,
+              },
+              {
+                path: 'note',
+                component: ClinicalNote,
+              },
+              
+            ]
+          },
+          {
+            path: 'reminders',
+            component: RecipientRemindersAdmin
+          },
+          {
+            path: 'documents',
+            component: RecipientDocumentsAdmin
+          },
+          {
+            path: 'attendance',
+            component: RecipientAttendanceAdmin,
+            canDeactivate: [CanDeactivateGuard]
+          },
+          {
+            path: 'accounting',
+            component: RecipientAccountingAdmin
+          },
+          {
+            path: 'others',
+            component: RecipientOthersAdmin,
+            canDeactivate: [CanDeactivateGuard]
+          },
+          {
+            path: 'opnote',
+            component: RecipientOpnoteAdmin
+          },
+          {
+            path: 'casenote',
+            component: RecipientCasenoteAdmin
+          },
+          {
+            path: 'incidents',
+            component: RecipientIncidentAdmin
+          },
+          {
+            path: 'perm-roster',
+            component: RecipientPermrosterAdmin
+          },
+          {
+            path: 'history',
+            component: RecipientHistoryAdmin
+          },
+          {
+            path: 'insurance-pension',
+            component: RecipientPensionAdmin
+          },
+          {
+            path: 'quotes',
+            component: RecipientQuotesAdmin
+          },
+          {
+            path: 'media',
+            component: MediaList,
+          }
+        ]
+      }
+    ]
   },
   {
     path: 'client',
@@ -502,7 +721,7 @@ const routes: Routes = [
             component: StaffDocumentAdminRedirect
           },
           {
-            path: 'time-attendance',
+            path: 'staff-time-attendance',
             component: StaffAttendanceAdminRedirect,
             canDeactivate: [CanDeactivateGuard]
           },
@@ -563,6 +782,14 @@ const routes: Routes = [
       {
         path: 'configuration',
         component: ConfigurationAdmin
+      },
+      {
+        path: 'ndia',
+        component: NDIAAdmin,
+      },
+      {
+        path: 'chspDex',
+        component:chspDexAdmin,
       },
       {
         path: 'analyse-budget', //AHSAN
@@ -1087,7 +1314,7 @@ const routes: Routes = [
             component: StaffDocumentAdmin
           },
           {
-            path: 'time-attendance',
+            path: 'staff-time-attendance',
             component: StaffAttendanceAdmin,
             canDeactivate: [CanDeactivateGuard]
           },
@@ -1176,6 +1403,33 @@ const routes: Routes = [
               {
                 path: 'staff',
                 component: IntakeStaff
+              }
+            ]
+          },
+          {
+            path: 'dataset',
+            component: RecipientDatasetAdmin,
+            children: [
+              {
+                path: '',
+                redirectTo: 'qccsmds',
+                pathMatch: 'full'
+              },
+              {
+                path: 'qccsmds',
+                component: DatasetQccsmda
+              },
+              {
+                path:'childsafety',
+                component: ChildSafety,
+              },
+              {
+                path:'dss',
+                component:DSS,
+              },
+              {
+                path:'mentalhlth',
+                component:MentalHlth,
               }
             ]
           },
@@ -1335,6 +1589,8 @@ export const PAGE_COMPONENTS = [
   StaffAdmin,
   TimesheetAdmin,
   ConfigurationAdmin,
+  NDIAAdmin,
+  chspDexAdmin,
   HCPComponent,
   PrintComponent,
   BudgetAdmin, //AHSAN
@@ -1482,6 +1738,7 @@ export const PAGE_COMPONENTS = [
   RecipientIncidentAdmin,
   RecipientIntakeAdmin,
   RecipientClinicalAdmin,
+  RecipientDatasetAdmin,
   RecipientOpnoteAdmin,
   RecipientPensionAdmin,
   RecipientPermrosterAdmin,
@@ -1505,6 +1762,12 @@ export const PAGE_COMPONENTS = [
   IntakePlans,
   IntakeServices,
   IntakeStaff,
+  
+  //dataset
+  DatasetQccsmda,
+  ChildSafety,
+  DSS,
+  MentalHlth,
 
   ExtraComponent,
   UnauthorizedComponent,
@@ -1549,4 +1812,5 @@ export const PAGE_COMPONENTS = [
   StaffLoansAdminRedirect,
 
   ProfileAccounting,
+  AccountingHistory
 ]

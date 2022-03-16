@@ -71,7 +71,10 @@ export class UserDetail implements OnInit {
     allStaffCatIntermediate:boolean = false;
 
     staffjobcategories: any;
-    
+
+
+    checkBoxString: string = '010101001011001101010111';
+
     constructor(
         private globalS: GlobalService,
         private cd: ChangeDetectorRef,
@@ -411,6 +414,7 @@ export class UserDetail implements OnInit {
         next(): void {
             this.current += 1;
         }
+
         save() {
             this.postLoading = true;     
             const group = this.inputForm;
@@ -534,7 +538,16 @@ export class UserDetail implements OnInit {
                     this.loading = true;
                     this.tryDoctype = "";
                     this.pdfTitle = "";
-                }
+        }
+
+
+        changeCheckbox(index: number, val: boolean){
+            let temp = Object.assign([], this.checkBoxString);
+            temp.splice(index,1, val ? '1' : '0')
+
+            this.checkBoxString = temp.join('')
+            console.log(this.checkBoxString)
+        }
                 
-            }
+    }
             

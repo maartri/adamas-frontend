@@ -69,3 +69,49 @@ button{
     font-size: 13px;
     height: 1.7rem;
 }
+
+
+ul.sub-menu{
+    list-style:none;
+    padding:0;
+    margin:0;
+    width:8rem;
+  }
+  ul.sub-menu li{
+    font-size:12px;
+    padding:5px 15px;
+  }
+  ul.sub-menu li:hover:not(.disabled){
+    color:black;
+    background:#edf9ff;
+  }
+
+  .special{
+    position:relative;
+  }
+  .special > div{
+    position: absolute;
+    top: 35px;
+    left: 11px;
+    z-index: 100;
+    background: #fff;
+  }
+  .hide{
+      display:none;
+  }
+
+  .switch{
+    padding: 6px 10px;
+    margin-left: 10px;
+    background: #85b9d5;
+    color: #fff;
+    border-radius: 5px;
+    width:12rem;
+  }
+  .switch > div > span{
+    width: 5rem;
+    font-weight:500;
+  }
+  nz-switch >>> button.ant-switch-checked {
+        background-color: #85b9d5 !important;
+ }

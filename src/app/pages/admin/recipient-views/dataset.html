@@ -1,0 +1,26 @@
+<div nz-row nzGutter="16">
+    <div nz-col nzSpan="3">
+        <p routerLink="qccsmds" routerLinkActive="active-tab">
+            <i nz-icon nzType="shop" nzTheme="outline"></i>
+            QCCS MDS
+        </p>
+        <nz-divider></nz-divider>
+        <p routerLink="childsafety" routerLinkActive="active-tab">
+            <i nz-icon nzType="shop" nzTheme="outline"></i>
+            Child Safety
+        </p>
+        <nz-divider></nz-divider>
+        <p routerLink="dss" routerLinkActive="active-tab">
+            <i nz-icon nzType="shop" nzTheme="outline"></i>
+            DSS
+        </p>
+        <nz-divider></nz-divider>
+        <p routerLink="mentalhlth" routerLinkActive="active-tab">
+            <i nz-icon nzType="shop" nzTheme="outline"></i>
+            Mental Hlth
+        </p>
+    </div>
+    <div nz-col nzSpan="18" nzOffset="1">
+        <router-outlet></router-outlet>
+    </div>
+</div>

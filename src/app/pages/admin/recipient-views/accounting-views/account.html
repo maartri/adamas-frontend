@@ -1,3 +1,31 @@
-<div>
-    account
+<div nz-row>
+    <div nz-col>
+        <nz-table #basicTable [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false"
+            [nzData]="tableData">
+            <thead>
+                <tr>
+                    <th class="left">Date</th>
+                    <th>Type</th>
+                    <th>Number</th>
+                    <th>Amount</th>
+                    <th>GST</th>
+                    <th>O/S</th>
+                    <th>Package</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of basicTable.data;let i = index;trackBy: trackByFn">
+                    <td class="left">{{ data.date | date: 'dd/MM/yyyy'  }}</td>
+                    <td>{{ data.type }}</td>
+                    <td>{{ data.number }}</td>
+                    <td>{{ data.amount || '0' | number : '1.2-2' }}</td>
+                    <td>{{ data.gst || '0' | number : '1.2-2' }}</td>
+                    <td>{{ data.os || '0' | number : '1.2-2' }}</td>
+                    <td>{{ data.package }}</td>
+                    <td>{{ data.notes }}</td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </div>
 </div>

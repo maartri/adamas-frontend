@@ -12,7 +12,8 @@
                                 or Recipient Date:</p>
                         </div>
                         <div nz-col nzSpan="4">
-                            <nz-date-picker [nzPlaceHolder]="'Invoice Date'" formControlName="invoiceDate" [nzFormat]="dateFormat"></nz-date-picker>
+                            <nz-date-picker [nzPlaceHolder]="'Invoice Date'" formControlName="invoiceDate"
+                                [nzFormat]="dateFormat"></nz-date-picker>
                         </div>
                     </div>
 
@@ -22,31 +23,78 @@
                         <div>
                             <div nz-col nzSpan="2"></div>
                             <div nz-col nzSpan="12">
-                                <p nz-checkbox style="color:black">Billing / Invoice Update & Export</p>
+                                <p nz-checkbox style="color:black" formControlName="billingUpdate">Billing / Invoice
+                                    Update </p>
                             </div>
                             <div nz nz-col nzSpan="2">
-                                <label nz-checkbox formControlName="name"> All </label>
+                                <!-- <label nz-checkbox formControlName="allWeeksChecked" (click)="checkedStatus()"> All </label> -->
+                                <label nz-checkbox [(ngModel)]="allWeeksChecked" (ngModelChange)="checkedStatus()"
+                                    [ngModelOptions]="{standalone: true}" style="margin-top: 5px;"> All </label>
                             </div>
-                            <div nz-col
-                                style="border-left: solid; border-left-color: #A4A4A4; border-left-width: 2px;"
+                            <div nz-col style="border-left: solid; border-left-color: #A4A4A4; border-left-width: 2px;"
                                 nzSpan="6" class="wrap-container">
-                                <label nz-checkbox formControlName="name"> &lt;WEEKLY&gt; </label>
                                 <div nz-row nzSpan="6">
-                                    <label nz-checkbox formControlName="name"> &lt;FORTNIGHTLY&gt; </label>
+                                    <div nz-col>
+                                        <nz-table style="margin-top: 0px;" [nzScroll]="{ y: '150px' }"
+                                            [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
+                                            [nzLoading]="loading" [nzData]="tableData">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <div nz-row>
+                                                            <label nz-checkbox [disabled]="lockBillingCycle == false" [(ngModel)]="checkedWeekly" [ngModelOptions]="{standalone: true}"> &lt;WEEKLY&gt; </label>
+                                                        </div>
+                                                        <div nz-row>
+                                                            <label nz-checkbox [disabled]="lockBillingCycle == false" [(ngModel)]="checkedFornightly" [ngModelOptions]="{standalone: true}"> &lt;FORTNIGHTLY&gt; </label>
+                                                        </div>
+                                                        <div nz-row>
+                                                            <label nz-checkbox [disabled]="lockBillingCycle == false" [(ngModel)]="checkedMonthly" [ngModelOptions]="{standalone: true}"> &lt;MONTHLY&gt; </label>
+                                                        </div>
+                                                        <nz-checkbox-wrapper style="width: 100%;"
+                                                            (nzOnChange)="log($event,4)">
+                                                            <div nz-row
+                                                                *ngFor="let list of billingCycleList; let i = index">
+                                                                <label nz-checkbox [disabled]="lockBillingCycle == false" [nzValue]="list.description"
+                                                                    [(ngModel)]="list.checked"
+                                                                    [ngModelOptions]="{standalone: true}">{{
+                                                                    list.description }}</label>
+                                                            </div>
+                                                        </nz-checkbox-wrapper>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </nz-table>
+                                    </div>
+                                </div>
+                                <!-- <label nz-checkbox [(ngModel)]="checkedWeekly" [ngModelOptions]="{standalone: true}">
+                                    &lt;WEEKLY&gt; </label>
+                                <div nz-row nzSpan="6">
+                                    <label nz-checkbox [(ngModel)]="checkedFornightly"
+                                        [ngModelOptions]="{standalone: true}"> &lt;FORTNIGHTLY&gt; </label>
                                 </div>
                                 <div nz-row nzSpan="6">
-                                    <label nz-checkbox formControlName="name"> &lt;MONTHLY&gt; </label>
+                                    <label nz-checkbox [(ngModel)]="checkedMonthly"
+                                        [ngModelOptions]="{standalone: true}"> &lt;MONTHLY&gt; </label>
+                                </div> 
+                                <div nz-row nzSpan="6">
+                                    <label nz-checkbox  [(ngModel)]="checked4Weekly" [ngModelOptions]="{standalone: true}"> 4 WEEKLY </label>
                                 </div>
                                 <div nz-row nzSpan="6">
-                                    <label nz-checkbox formControlName="name"> 4 WEEKLY </label>
+                                    <label nz-checkbox  [(ngModel)]="checkedMonthly1" [ngModelOptions]="{standalone: true}"> MONTHLY </label>
                                 </div>
                                 <div nz-row nzSpan="6">
-                                    <label nz-checkbox formControlName="name"> MONTHLY </label>
-                                </div>
-                                <div nz-row nzSpan="6">
-                                    <label nz-checkbox formControlName="name"> WEEKLY </label>
-                                </div>
+                                    <label nz-checkbox  [(ngModel)]="checkedWeekly1" [ngModelOptions]="{standalone: true}"> WEEKLY </label>
+                                </div> -->
                             </div>
+                            <!-- <div style="border-bottom: 1px solid rgb(233, 233, 233);">
+                                <label nz-checkbox [(ngModel)]="allChecked" (ngModelChange)="updateAllChecked()"
+                                    [nzIndeterminate]="indeterminate" [ngModelOptions]="{standalone: true}">
+                                    Check all
+                                </label>
+                            </div>
+                            <br />
+                            <nz-checkbox-group [(ngModel)]="checkOptionsOne" (ngModelChange)="updateSingleChecked()"
+                                [ngModelOptions]="{standalone: true}"></nz-checkbox-group> -->
                         </div>
                     </div>
                     <div nz-row nzGutter=24>
@@ -54,7 +102,7 @@
                             <div nz-col nzSpan="2"></div>
                             <div nz-col nzSpan="12">
                                 <div nz-row nzSpan="6">
-                                    <p nz-checkbox style="color:black" formControlName="name"> Receipt Update & Export
+                                    <p nz-checkbox style="color:black" formControlName="name"> Receipt Update
                                     </p>
                                 </div>
                                 <div nz-row nzSpan="6">
@@ -126,7 +174,7 @@
                     <nz-divider style="margin-top: 6px; margin-bottom: 6px;" nzText="" nzOrientation="left">
                     </nz-divider>
 
-                    <div nz-row  nzJustify class="mrg-btm">
+                    <div nz-row nzJustify class="mrg-btm">
                         <div nz-col nzSpan="4">
                             <h3 style="color:#1890FF;"> Dates </h3>
                         </div>
@@ -138,14 +186,16 @@
                         </div>
                         <div nz-col nzSpan="5" [formGroup]="inputForm">
                             <!-- <nz-date-picker formControlName="dtpStartDate" [nzFormat]="dateFormat"></nz-date-picker> -->
-                            <nz-date-picker nzPlaceHolder="Start Date" formControlName="dtpStartDate" [nzFormat]="dateFormat"></nz-date-picker>
+                            <nz-date-picker nzPlaceHolder="Start Date" formControlName="dtpStartDate"
+                                [nzFormat]="dateFormat"></nz-date-picker>
                         </div>
                         <div nz-col nzSpan="2">
                             <p style="text-align: center; margin-top: 5px;"> TO </p>
                         </div>
                         <div nz-col nzSpan="5" [formGroup]="inputForm">
                             <!-- <nz-date-picker formControlName="dtpEndDate" [nzFormat]="dateFormat"></nz-date-picker> -->
-                            <nz-date-picker nzPlaceHolder="End Date" formControlName="dtpEndDate" [nzFormat]="dateFormat"></nz-date-picker>
+                            <nz-date-picker nzPlaceHolder="End Date" formControlName="dtpEndDate"
+                                [nzFormat]="dateFormat"></nz-date-picker>
                         </div>
                     </div>
 
@@ -189,7 +239,8 @@
                                                         <nz-checkbox-wrapper style="width: 100%;"
                                                             (nzOnChange)="log($event,1)">
                                                             <div nz-row *ngFor="let list of branchList; let i = index">
-                                                                <label nz-checkbox [nzValue]="list.description"
+                                                                <label nz-checkbox [disabled]="lockBranches == false"
+                                                                    [nzValue]="list.description"
                                                                     [(ngModel)]="list.checked"
                                                                     [ngModelOptions]="{standalone: true}">{{
                                                                     list.description }}</label>
@@ -236,7 +287,9 @@
                                                         <nz-checkbox-wrapper style="width: 100%;"
                                                             (nzOnChange)="log($event,2)">
                                                             <div nz-row *ngFor="let list of programList; let i = index">
-                                                                <label nz-checkbox [nzValue]="list.description"
+                                                                <label nz-checkbox
+                                                                    [disabled]="lockPrograms?.b_IsDead || lockPrograms == false"
+                                                                    [nzValue]="list.description"
                                                                     [(ngModel)]="list.checked"
                                                                     [ngModelOptions]="{standalone: true}">{{
                                                                     list.title }}</label>
@@ -285,7 +338,9 @@
                                                             (nzOnChange)="log($event,3)">
                                                             <div nz-row
                                                                 *ngFor="let list of categoriesList; let i = index">
-                                                                <label nz-checkbox [nzValue]="list.description"
+                                                                <label nz-checkbox
+                                                                    [disabled]="lockCategories?.b_IsDead || lockCategories == false"
+                                                                    [nzValue]="list.description"
                                                                     [(ngModel)]="list.checked"
                                                                     [ngModelOptions]="{standalone: true}">{{
                                                                     list.description }}</label>
@@ -602,7 +657,7 @@
                     </div>
                 </div>
             </nz-tab>
-            <nz-tab nzTitle="Debtor Records">
+            <!-- <nz-tab nzTitle="Debtor Records">
                 <div nz-row nzJustify class="mrg-btm">
                     <div nz-col nzSpan="18">
                         <h3 style="color:#1890FF;"> Debtor Records (for testing purpose) </h3>
@@ -655,7 +710,7 @@
                         </tr>
                     </tbody>
                 </nz-table>
-            </nz-tab>
+            </nz-tab> -->
             <nz-tab nzTitle="Update History">
                 <div nz-row nzJustify class="mrg-btm">
                     <div nz-col nzSpan="18">

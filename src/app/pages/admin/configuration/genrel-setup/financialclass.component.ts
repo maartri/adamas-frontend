@@ -10,6 +10,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NzModalService } from 'ng-zorro-antd';
 import { PrintService } from '@services/print.service';
+import { TimeSheetService } from '@services/index';
 
 
 @Component({
@@ -48,6 +49,7 @@ export class FinancialclassComponent implements OnInit {
     private listS:ListService,
     private printS:PrintService,
     private menuS:MenuService,
+    private timeS:TimeSheetService,
     private switchS:SwitchService,
     private formBuilder: FormBuilder,
     private http: HttpClient,
@@ -174,13 +176,25 @@ export class FinancialclassComponent implements OnInit {
               end_date:!(this.globalS.isVarNull(group.get('end_date').value)) ? this.globalS.convertDbDate(group.get('end_date').value) : null,
               primaryId:group.get('recordNumber').value,
               domain: 'FINANCIALCLASS',
-            }
-            
+            } 
             ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-              if (data) 
-              this.globalS.sToast('Success', 'Updated successful');     
-              else
-              this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
+              if (data)
+              {
+                this.timeS.postaudithistory({
+                  Operator:this.tocken.user,
+                  actionDate:this.globalS.getCurrentDateTime(),
+                  auditDescription:'Financial Classification Changed',
+                  actionOn:'FINANCIALCLASS',
+                  whoWhatCode:group.get('recordNumber').value, //inserted
+                  TraccsUser:this.tocken.user,
+                }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+                    this.globalS.sToast('Success', 'Update successful');
+                  }
+                );
+              }else
+              {
+                this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
+              }
               this.loadData();
               this.postLoading = false;          
               this.handleCancel();
@@ -200,9 +214,19 @@ export class FinancialclassComponent implements OnInit {
           this.postLoading = true;     
           const group = this.inputForm;
           this.menuS.deleteDomain(data.recordNumber)
-          .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-            if (data) {
-              this.globalS.sToast('Success', 'Data Deleted!');
+          .pipe(takeUntil(this.unsubscribe)).subscribe(datas => {
+            if (datas) {
+              this.timeS.postaudithistory({
+                Operator:this.tocken.user,
+                actionDate:this.globalS.getCurrentDateTime(),
+                auditDescription:'Financial Class Deleted',
+                actionOn:'FINANCIALCLASS',
+                whoWhatCode:data.recordNumber, //inserted
+                TraccsUser:this.tocken.user,
+              }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+                  this.globalS.sToast('Success', 'Deleted successful');
+                }
+              );
               this.loadData();
               return;
             }

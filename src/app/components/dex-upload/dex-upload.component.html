@@ -1,0 +1,52 @@
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Dex Bulk Upload File Creation" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()" nzWidth="1026">
+    <div>
+        <nz-tabset [nzTabPosition]="'top'" [nzType]="'card'">
+            <nz-tab  nzTitle="General" (nzClick)="view(0)"> </nz-tab>
+            <nz-tab nzTitle="Other Options" (nzClick)="view(1)"> </nz-tab>          
+        </nz-tabset>
+
+        <div>
+            <div *ngIf="index == 0">
+               <div nz-row>
+                    <div class="form-group">
+                        <label for="">Dates To Report On</label> 
+                        <nz-range-picker [(ngModel)]="dateRange"></nz-range-picker>
+                    </div>
+               </div>
+
+               <hr />
+                <div nz-row nzGutter="32">
+                    <div nz-col nzSpan="12">
+                        <div class="form-group">
+                            <label for="">Outlet ID</label> 
+
+                            <nz-select [(ngModel)]="selectedValue" nzAllowClear nzPlaceHolder="Choose">
+                                <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
+                                <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
+                                <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
+                            </nz-select>
+
+                            <nz-alert style="margin-top:10px"
+                                nzType="warning"
+                                nzMessage=""
+                                nzDescription="All displayed programs will be included in the submission file"
+                                nzShowIcon>
+                            </nz-alert>
+                        </div>
+                    </div>
+                    <div nz-col nzSpan="12">
+                        <div class="form-group">
+                            <textarea rows="4" nz-input ></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="index == 1">
+                asdasd
+            </div>
+
+        </div>
+    </div>
+</nz-modal>
+

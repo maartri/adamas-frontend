@@ -36,6 +36,7 @@ export class IntakeConsents implements OnInit, OnDestroy {
     lists: Array<any>;
 
     dateFormat: string = dateFormat;
+    selectedConsent: any;
     
     constructor(
         private timeS: TimeSheetService,
@@ -93,18 +94,25 @@ export class IntakeConsents implements OnInit, OnDestroy {
 
     resetAll(){
         this.search();
+        this.selectedConsent = {};
     }
 
     consentProcess(){
+
+        if((this.addOREdit == 1 && this.selectedConsent === undefined) || (this.selectedConsent !== undefined && this.selectedConsent.length ===0) ){
+            this.globalS.sToast('Success', 'Please Select Atleast One Consent ');
+            return
+        }
+
         const group = this.consentGroup.value;
-        // console.log(format(group.expiryDate, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"));
-        // this.competencyGroup.controls['mandatory'].setValue((this.competencyGroup.value.mandatory == null) ? false : this.competencyGroup.value.mandatory)
         let _consentGroup: Consents = {
             recordNumber: group.recordNumber,
             personID: this.user.id,
             notes: group.notes,
             date1: group.expiryDate ? group.expiryDate : null,
-            name: group.consent
+            name: group.consent,
+            Creator:"SYSMGR",
+            selectedConsent:this.selectedConsent,
         }
 
         console.log(_consentGroup);
@@ -141,10 +149,20 @@ export class IntakeConsents implements OnInit, OnDestroy {
     }
 
     listDropDowns(){
-        this.listS.getconsents(this.user.id).subscribe(data => this.lists = data)
+        this.listS.getconsents(this.user.id).subscribe(data => {
+            this.lists = data.map(x => {
+                return {
+                    label: x,
+                    value: x,
+                    checked: false
+                }
+            });
+            this.cd.markForCheck();
+        });
     }
-
-
+    logs(event: any) {
+        this.selectedConsent = event;
+    }
     updateconsentmodal(data: any){
 
         this.consentOpen = true;

@@ -398,6 +398,9 @@ export class TimeSheetService {
         return this.auth.get(`${timesheet}/audit-history/${recordNo}`)
     }
 
+    postaudithistory(data:any): Observable<any> {
+        return this.auth.post(`${timesheet}/audit-history`,data)
+    }
 
     /**
      * Data Set
@@ -771,6 +774,33 @@ export class TimeSheetService {
     }
 
     /** */
+    /**
+     *  Clinical Reminders Recipient
+     */
+
+    postclinicalreminders(data: any,isSingle:string): Observable<any> {
+        return this.auth.post(`${timesheet}/clinicalReminder/${isSingle}`,data)
+    }
+    updateclinicalreminders(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/clinicalReminder`, data);
+    }
+    deleteclinicalreminders(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/clinicalReminder/${recordNo}`)
+    }
+    /** */
+    /**
+     *  Clinical Alerts Recipient
+     */
+
+    postclinicalalerts(data: any,isSingle:string): Observable<any> {
+        return this.auth.post(`${timesheet}/clinicalAlert/${isSingle}`,data)
+    }
+    updateclinicalalerts(data: any): Observable<any> {
+        return this.auth.put(`${timesheet}/clinicalAlert`,data)
+    }
+    deleteclinicalalerts(recordNo: number): Observable<any> {
+        return this.auth.delete(`${timesheet}/clinicalAlert/${recordNo}`)
+    }
 
     /**
      *  Reminders Staff
@@ -1105,23 +1135,57 @@ export class TimeSheetService {
     updatecompetency(data: any, id: number): Observable<any> {
         return this.auth.put(`${timesheet}/competency/update/${id}`, data)
     }
+    postnursingdiagnosis(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/clinical/Nursingdiagnose/store`,data)
+    }
+    updatenursingdiagnosis(data: any, id: number): Observable<any> {
+        return this.auth.put(`${timesheet}/clinical/Nursingdiagnose/update/${id}`,data)
+    }
+    deletenursingdiagnosis(id:number):Observable<any>{
+        return this.auth.delete(`${timesheet}/clinical/Nursingdiagnose/delete/${id}`)
+    }
+    postmedicaldiagnosis(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/clinical/Medicaldiagnose/store`,data)
+    }
+    updatemedicaldiagnosis(data: any, id: number): Observable<any> {
+        return this.auth.put(`${timesheet}/clinical/Medicaldiagnose/update/${id}`,data)
+    }
+    deletemedicaldiagnosis(id:number):Observable<any>{
+        return this.auth.delete(`${timesheet}/clinical/Medicaldiagnose/delete/${id}`)
+    }
 
     getincidentdetails(name: string, id: number): Observable<any> {
         return this.auth.get(`${timesheet}/incidents/${name}/${id}`)
     }
 
+    postclinicalprocedure(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/clinical/procedure/store`,data)
+    }
+    updateclinicalprocedure(data: any, id: number): Observable<any> {
+        return this.auth.put(`${timesheet}/clinical/procedure/update/${id}`,data)
+    }
+    deleteclinicalprocedure(id:number):Observable<any>{
+        return this.auth.delete(`${timesheet}/clinical/procedure/delete/${id}`)
+    }
+    postclinicalmedication(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/clinical/medication/store`,data)
+    }
+    updateclinicalmedication(data: any, id: number): Observable<any> {
+        return this.auth.put(`${timesheet}/clinical/medication/update/${id}`,data)
+    }
+    deleteclinicalmedication(id:number):Observable<any>{
+        return this.auth.delete(`${timesheet}/clinical/medication/delete/${id}`)
+    }
+
     getincidents(name: string): Observable<any> {
         return this.auth.get(`${timesheet}/incidents/${name}`)
     }
-
     getincidentlocation(): Observable<any> {
         return this.auth.get(`${timesheet}/incident/location`)
     }
-
     getdocuments(name: string): Observable<any> {
         return this.auth.get(`${timesheet}/documents/${name}`)
     }
-
     getleaveapplication(name: string): Observable<any> {
         return this.auth.get(`${timesheet}/leaveapplication/${name}`)
     }
@@ -1249,7 +1313,6 @@ export class TimeSheetService {
         return this.auth.get(`${timesheet}/intake/services/${id}`)
     }
     
-
     postintakeservices(data: any): Observable<any> {
         return this.auth.post(`${timesheet}/intake/services`, data)
     }
@@ -1378,6 +1441,15 @@ export class TimeSheetService {
     }
     addRecurrentRosters(data: any): Observable<any> {
         return this.auth.get(`${timesheet}/addRecurrentRosters`, data);
+    }
+    GetHaccSex():Observable<any>{
+        return this.auth.get(`${timesheet}/haccSex`)
+    }
+    GetLanguages():Observable<any>{
+        return this.auth.get(`${timesheet}/languages`)
+    }
+    GetCountries():Observable<any>{
+        return this.auth.get(`${timesheet}/GetCountries`)
     }
 }
 

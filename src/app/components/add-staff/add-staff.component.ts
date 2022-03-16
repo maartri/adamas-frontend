@@ -41,6 +41,8 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
   contactGroups: Array<string> = contactGroups;
   doctors: Array<any> = []
 
+  postLoad: boolean = false;
+
   @Input() open: boolean = false;
   @Output() reload = new EventEmitter();
 
@@ -150,7 +152,7 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
         timeSpent: new Date(defaultTimeSpent),
 
         // note details
-        radioGroup: 'CASENOTE',
+        radioGroup: 'HRNOTE',
         notes: null,
 
 
@@ -533,6 +535,8 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
     // this.writereminder('asd', 'notes', this.notifFollowUpGroup);
     // return;
 
+    this.postLoad = true;
+
     const {
           type,               //category
           accountNo,
@@ -545,8 +549,11 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
           jobCategory,        //job category
           manager,            //manager
           branch,             //branch
-          commencementDate,   //commencement date      
+          commencementDate,   //commencement date     
+          
           notes,
+          radioGroup,
+          
           otherContactsForm,
           preferred
       } = this.staffForm.value;
@@ -584,13 +591,13 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
           let pcode = /(\d+)/g.test(x.suburb) ? x.suburb.match(/(\d+)/g)[0] : "";
           let suburb = /(\D+)/g.test(x.suburb) ? x.suburb.match(/(\D+)/g)[0] : "";
 
-          if(!_.isEmpty(x.type) && !_.isEmpty(x.address1) && !_.isEmpty(suburb) && !_.isEmpty(pcode)){
+          // if(!_.isEmpty(x.type) && !_.isEmpty(x.address1) && !_.isEmpty(suburb) && !_.isEmpty(pcode)){
               return {
                   personID: '',
                   description: x.type,
                   address1: x.address1.trim(),
                   address2: x.address2.trim(),
-                  suburb: suburb.trim(),
+                  suburb: x.suburb.trim(),
                   postcode: pcode.trim(),
                   primaryAddress: x.primary,
 
@@ -601,10 +608,11 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
                   mobile: x.mobile,
                   fax: x.fax,
                   email: x.email,
-
+                  group: x.contactGroup,
+                  type: x.type
 
               }
-          }
+          // }
       }).filter(x => x);      
         
       var contactList = (this.staffForm.value.contactForm).map(x => {
@@ -632,6 +640,10 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
               staffGroup: jobCategory,
               pan_Manager: manager,
               preferredName: preferred
+          },
+          Notes: {
+            type: radioGroup,
+            notes: notes
           },
           NamesAndAddresses: addressList,
           PhoneFaxOther: contactList,
@@ -681,6 +693,10 @@ export class AddStaffComponent implements OnInit, OnChanges ,ControlValueAccesso
 
               this.reload.next(true);              
           }
+
+          this.postLoad = false;
+      },() => {
+        this.postLoad = false;
       });
   }
 

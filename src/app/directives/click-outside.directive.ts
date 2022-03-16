@@ -4,7 +4,7 @@ import { delay, takeUntil, mergeMap, tap } from 'rxjs/operators';
 
 
 @Directive({
-  selector: '[click-outside]'
+  selector: '[clickOutside]'
 })
 
 export class ClickOutsideDirective implements OnInit, OnDestroy {

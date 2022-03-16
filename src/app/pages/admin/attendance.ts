@@ -436,7 +436,7 @@ selected_roster(r:any):any{
     "serviceTypePortal": "",
     "recordNo": r.recordNo
     
-}
+  }
 
 return rst;
 }   

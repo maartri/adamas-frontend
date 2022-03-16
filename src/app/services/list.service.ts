@@ -277,6 +277,10 @@ export class ListService {
     getndiaitems(): Observable<any>{
         return this.auth.get(`${list}/ndia-items`);
     }
+    getndiaitemss(): Observable<any>{
+        return this.auth.get(`${list}/ndia-itemss`);
+    }
+    
     getskills(): Observable<any>{
         return this.auth.get(`${list}/skills`);
     }
@@ -947,6 +951,9 @@ export class ListService {
     }
     GettravelandAlternateCode():Observable<any>{
         return this.auth.get(`${list}/travelandAlternateCode`)
+    }
+    GetDatasetItems():Observable<any>{
+        return this.auth.get(`${list}/datasetItems`)
     }
     Getrptactivity(): Observable<any>{        
         return this.auth.get(`${list}/activity`)

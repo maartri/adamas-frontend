@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
-import { GlobalService, ListService, MenuService,dataSetDropDowns,PrintService, timeSteps } from '@services/index';
+import { GlobalService, ListService, MenuService,dataSetDropDowns,datasetTypeDropDowns,PrintService, timeSteps } from '@services/index';
 import { SwitchService } from '@services/switch.service';
 import { NzModalService } from 'ng-zorro-antd';
 import { Subject } from 'rxjs';
@@ -89,6 +89,7 @@ export class ItemsConsumablesComponent implements OnInit {
   competencymodal: boolean = false;
   check : boolean = false;
   current: number = 0;
+  current_mta:number = 0 ;
   checkedflag:boolean = true;
   dateFormat: string = 'dd/MM/yyyy';
   inputForm: FormGroup;
@@ -116,6 +117,7 @@ export class ItemsConsumablesComponent implements OnInit {
   serviceoutIds: any;
   emptyList: any[];
   ndiaItems: any;
+  ndiaItemss: any;
   selectedPrograms: any[];
   selectedCompetencies: any;
   competencyForm: FormGroup;
@@ -123,13 +125,16 @@ export class ItemsConsumablesComponent implements OnInit {
   addOrEdit: number = 0;
   isNewRecord: any;
   dataSetDropDowns: { CACP: string[]; CTP: string[]; DEX: string[]; DFC: string[]; DVA: any[]; HACC: string[]; HAS: string[]; QCSS: string[]; ICTD: string[]; NDIS: any[]; NRCP: string[]; NRCPSAR: string[]; OTHER: string[]; };
-  dataset_group: any[];
+  datasetTypeDropDowns: { CACP: string[]; CTP: string[]; DEX: string[]; DFC: string[]; DVA: any[]; HACC: string[]; HAS: string[]; QCSS: string[]; ICTD: string[]; NDIS: any[]; NRCP: string[]; NRCPSAR: string[]; OTHER: string[]; };
+  dataset_group: any;
+  dataset_type:any;
   checkList: any;
   chkListForm: any;
   insertOne: number;
   selectedChklst: any;
   chklstmodal: boolean;
   chkList: any;
+  travelandAlernatelist: any;
   constructor(
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
@@ -150,6 +155,7 @@ export class ItemsConsumablesComponent implements OnInit {
       this.userRole = this.tocken.role;
       this.checkedList = new Array<string>();
       this.dataSetDropDowns = dataSetDropDowns;
+      this.datasetTypeDropDowns = datasetTypeDropDowns;
       this.loadData();
       this.buildForm();
       this.populateDropdowns();
@@ -192,6 +198,13 @@ export class ItemsConsumablesComponent implements OnInit {
       });
       this.selectedPrograms = [];
     }
+    selectProgram(){
+      this.programz.forEach(x => {
+        x.checked = true;
+        this.selectedPrograms = x.name;
+      });
+      console.log("programs : " + this.selectedPrograms);
+    }
     
     loadTitle()
     {
@@ -228,6 +241,10 @@ export class ItemsConsumablesComponent implements OnInit {
         this.loadChecklist();
       }
       this.current = index;
+    }
+    viewMTA(index: number){
+      console.log(index + "111");
+      this.current_mta = index;
     }
     handleCancel() {
       this.modalOpen = false;
@@ -508,6 +525,10 @@ export class ItemsConsumablesComponent implements OnInit {
             "2":'SIGNATURE',
           };
           
+          this.listS.GettravelandAlternateCode().subscribe(data => {
+            this.travelandAlernatelist = data;
+          })
+
           let sql ="SELECT distinct Description from DataDomains Where  Domain = 'LIFECYCLEEVENTS'";
           this.loading = true;
           this.listS.getlist(sql).subscribe(data => {
@@ -558,6 +579,9 @@ export class ItemsConsumablesComponent implements OnInit {
           this.listS.getndiaitems().subscribe(data => {
             this.ndiaItems = data;
           })
+          this.listS.getndiaitemss().subscribe(data=>{
+            this.ndiaItemss = data;
+          })
           this.mtaAlerts = ['NO ALERT','STAFF CASE MANAGER','RECIPIENT CASE MANAGER','BRANCH ROSTER EMAIL'];
           this.paytypes  = ['SALARY','ALLOWANCE'];
           this.subgroups  = ['NOT APPLICABLE','WORKED HOURS','PAID LEAVE','UNPAID LEAVE','N/C TRAVVEL BETWEEN','CHG TRAVVEL BETWEEN','N/C TRAVVEL WITHIN','CHG TRAVVEL WITHIN','OTHER ALLOWANCE'];
@@ -576,113 +600,122 @@ export class ItemsConsumablesComponent implements OnInit {
         }
         buildForm() {
           this.inputForm = this.formBuilder.group({
-            dataSet:'',
-            datasetGroup:'',
-            haccType:'',
-            title:'',
-            billText:'',
-            processClassification:'OUTPUT',
-            rosterGroup:'',
-            minorGroup:'',
-            status:'',
-            amount:'',
-            minChargeRate:'',
-            lifecycle:'',
-            unit:'',
-            budgetGroup:'',
-            iT_Dataset:'',
-            colorCode:'',
-            autoApprove:false,
-            excludeFromAutoLeave:false,
-            infoOnly:false,
-            groupMapping:'',
-            NDIA_ID:'',
-            ndiA_ID:'',
-            accountingIdentifier:'',
-            glRevenue:'',
-            job:'',
-            glCost:'',
-            unitCostUOM:'',
-            unitCost:'',
-            price2:0.0,
-            price3:0.0,
-            price4:0.0,
-            price5:0.0,
-            price6:0.0,
-            excludeFromPayExport:false,
-            excludeFromUsageStatements:false,
-            endDate:'',
-            excludeFromConflicts:false,
-            noMonday   : false,//day1
-            noTuesday  : false,//day2
-            noWednesday: false,//day3
-            noThursday : false,//day4
-            noFriday   : false,//day5
-            noSaturday : false,//day6
-            noSunday   : false,//day7
-            noPubHol   : false,//day0
-            startTimeLimit:'',
-            endTimeLimit:'',
-            maxDurtn:0,
-            minDurtn:0,
-            fixedTime:0,
-            noChangeDate:false,
-            noChangeTime:false,
-            timeChangeLimit:0,
-            defaultAddress:'',
-            defaultPhone:'',
-            autoActivityNotes:false,
-            autoRecipientDetails:false,
-            jobSheetPrompt:false,
-            activityNotes:'',
-            excludeFromHigherPayCalculation:false,
-            noOvertimeAccumulation:false,
-            payAsRostered:false,
-            excludeFromTimebands:false,
-            excludeFromInterpretation:false,
-            jobType:'',
-            mtacode:'',
-            tA_LOGINMODE:'',
-            excludeFromClientPortalDisplay: false,
-            excludeFromTravelCalc: false,
-            tA_EXCLUDEGEOLOCATION:false,
-            appExclude1:false,
-            taexclude1:false,
-            taEarlyStartTHEmail:false,
-            taLateStartTHEmail:false,
-            taEarlyStartTH:'',
-            taLateStartTH:'',
-            taEarlyStartTHWho:'',
-            taLateStartTHWho:'',
-            taNoGoResend:'',
-            taNoShowResend:'',
-            taEarlyFinishTHEmail:false,
-            taLateFinishTHEmail:false,
-            taEarlyFinishTH:'',
-            taLateFinishTH:'',
-            taLateFinishTHWho:'',
-            taEarlyFinishTHWho:'',
-            taOverstayTHEmail:false,
-            taUnderstayTHEmail:false,
-            taNoWorkTHEmail:false,
-            taOverstayTH:'',
-            taUnderstayTH:'',
-            taNoWorkTH:'',
-            taUnderstayTHWho:'',
-            taOverstayTHWho:'',
-            taNoWorkTHWho:'',
-            deletedRecord:false,
-            HACCUse:false,
-            CSTDAUse:false,
-            NRCPUse:false,
-            ndiaClaimType:"",
-            ndiaPriceType:"",
-            ndiaTravel:false,
-            DeletedRecord:false,
-            excludeFromRecipSummarySheet:false,
-            ndiA_LEVEL2:'',
-            ndiA_LEVEL3:'',
-            ndiA_LEVEL4:'',
+            ALT_NDIANonLabTravelKmActivity:'',
+                ALT_AppKmWithinActivity:'',
+                ExcludeFromAppLogging:false,
+                dataSet:'',
+                datasetGroup:'',
+                haccType:'',
+                title:'',
+                billText:'',
+                processClassification:'OUTPUT',
+                rosterGroup:'',
+                minorGroup:'',
+                status:'',
+                amount:0.0,
+                minChargeRate:'',
+                lifecycle:'',
+                unit:'',
+                budgetGroup:'',
+                iT_Dataset:'',
+                colorCode:'',
+                autoApprove:false,
+                excludeFromAutoLeave:false,
+                infoOnly:false,
+                groupMapping:'',
+                NDIA_ID:'',
+                ndiA_ID:'',
+                accountingIdentifier:'',
+                glRevenue:'',
+                job:'',
+                glCost:'',
+                unitCostUOM:'',
+                unitCost:'',
+                price2:0.0,
+                price3:0.0,
+                price4:0.0,
+                price5:0.0,
+                price6:0.0,
+                excludeFromPayExport:false,
+                excludeFromUsageStatements:false,
+                endDate:'',
+                excludeFromConflicts:false,
+                noMonday   : false,//day1
+                noTuesday  : false,//day2
+                noWednesday: false,//day3
+                noThursday : false,//day4
+                noFriday   : false,//day5
+                noSaturday : false,//day6
+                noSunday   : false,//day7
+                noPubHol   : false,//day0
+                startTimeLimit:'',
+                endTimeLimit:'',
+                maxDurtn:0,
+                minDurtn:0,
+                fixedTime:0,
+                noChangeDate:false,
+                noChangeTime:false,
+                timeChangeLimit:0,
+                defaultAddress:'',
+                defaultPhone:'',
+                autoActivityNotes:false,
+                autoRecipientDetails:false,
+                jobSheetPrompt:false,
+                activityNotes:'',
+                excludeFromHigherPayCalculation:false,
+                noOvertimeAccumulation:false,
+                payAsRostered:false,
+                excludeFromTimebands:false,
+                excludeFromInterpretation:false,
+                jobType:'',
+                mtacode:'',
+                tA_LOGINMODE:'',
+                excludeFromClientPortalDisplay: false,
+                excludeFromTravelCalc: false,
+                tA_EXCLUDEGEOLOCATION:false,
+                appExclude1:false,
+                taexclude1:false,
+                taEarlyStartTHEmail:false,
+                taLateStartTHEmail:false,
+                taEarlyStartTH:'',
+                taLateStartTH:'',
+                taEarlyStartTHWho:'',
+                taLateStartTHWho:'',
+                taNoGoResend:'',
+                taNoShowResend:'',
+                taEarlyFinishTHEmail:false,
+                taLateFinishTHEmail:false,
+                taEarlyFinishTH:'',
+                taLateFinishTH:'',
+                taLateFinishTHWho:'',
+                taEarlyFinishTHWho:'',
+                taOverstayTHEmail:false,
+                taUnderstayTHEmail:false,
+                taNoWorkTHEmail:false,
+                taOverstayTH:'',
+                taUnderstayTH:'',
+                taNoWorkTH:'',
+                taUnderstayTHWho:'',
+                taOverstayTHWho:'',
+                taNoWorkTHWho:'',
+                deletedRecord:false,
+                HACCUse:false,
+                CSTDAUse:false,
+                NRCPUse:false,
+                ndiaClaimType:"",
+                ndiaPriceType:"",
+                ndiaTravel:false,
+                DeletedRecord:false,
+                excludeFromRecipSummarySheet:false,
+                ExcludeFromMinHoursCalculation:false,
+                OnSpecial:false,
+                Discountable:false,
+                ndiA_LEVEL2:'',
+                ndiA_LEVEL3:'',
+                ndiA_LEVEL4:'',
+                ALT_PHActivityCode:'',
+                PHAction:'',
+                recnum:0,
           });
           this.competencyForm = this.formBuilder.group({
             competencyValue: '',

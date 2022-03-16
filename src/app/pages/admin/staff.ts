@@ -698,7 +698,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
           this.router.navigate(['/admin/staff/document'])
         }
         if (index == 11) {
-          this.router.navigate(['/admin/staff/time-attendance'])
+          this.router.navigate(['/admin/staff/staff-time-attendance'])
         }
         if (index == 12) {
           this.router.navigate(['/admin/staff/position'])

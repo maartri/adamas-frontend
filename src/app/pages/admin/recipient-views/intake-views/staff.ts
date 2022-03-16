@@ -49,7 +49,6 @@ export class IntakeStaff implements OnInit, OnDestroy {
   inputvalueSearch:string = '';
   listArray: Array<any>;
   listStaff: any;
-  selectedStaff: any;
   
   constructor(
     private timeS: TimeSheetService,
@@ -92,7 +91,6 @@ export class IntakeStaff implements OnInit, OnDestroy {
     
     search(user: any = this.user) {
       this.cd.reattach();
-      console.log(this.user);
       this.loading = true;
       forkJoin([
         this.timeS.getexcludedstaff(user.id),
@@ -102,13 +100,7 @@ export class IntakeStaff implements OnInit, OnDestroy {
         this.loading = false;
         this.excludedStaff = staff[0];
         this.includedStaff = staff[1];
-        this.listStaff = staff[2].map(x => {
-          return {
-              label: x,
-              value: x,
-              checked: false
-          }
-        });
+        this.listStaff = staff[2];
         this.cd.markForCheck();
       });
     }
@@ -142,8 +134,6 @@ export class IntakeStaff implements OnInit, OnDestroy {
     }
     save() {
 
-      console.log(this.user);
-
       for (const i in this.inputForm.controls) {
         this.inputForm.controls[i].markAsDirty();
         this.inputForm.controls[i].updateValueAndValidity();
@@ -156,20 +146,12 @@ export class IntakeStaff implements OnInit, OnDestroy {
       const index = this.whatView;
       this.isLoading = true;
       
-      if((this.editOrAdd == 1 && this.selectedStaff === undefined) || (this.selectedStaff !== undefined && this.selectedStaff.length ===0) ){
-        this.globalS.sToast('Success', 'Please Select Atleast One Staff ');
-        this.isLoading = false;
-        return
-      }
-      
       if (index == 1) {    
         this.timeS.postintakestaff({
           Notes: (notes == null) ? '' : notes,
           PersonID: this.user.id,
           Name: list,
           StaffCategory:0,
-          Creater:'SYSMGR',
-          selectedStaff:this.selectedStaff,
           DateCreated: this.globalS.getCurrentDate()
         }).pipe(takeUntil(this.unsubscribe))
         .subscribe(data => {
@@ -187,8 +169,6 @@ export class IntakeStaff implements OnInit, OnDestroy {
           personID: this.user.id,
           name: list,
           staffCategory:1,
-          Creater:'SYSMGR',
-          selectedStaff:this.selectedStaff,
           dateCreated: this.globalS.getCurrentDate()
         }).pipe(takeUntil(this.unsubscribe))
         .subscribe(data => {
@@ -289,7 +269,6 @@ export class IntakeStaff implements OnInit, OnDestroy {
         
         handleCancel() {
           this.inputForm.reset();
-          this.selectedStaff = {};
           this.isLoading = false;
           this.modalOpen = false;
         }
@@ -301,9 +280,6 @@ export class IntakeStaff implements OnInit, OnDestroy {
         }
         
         log(value: string[]): void {
-        }
-        logs(event: any) {
-          this.selectedStaff = event;
         }
         tabFindIndex: number = 0;
         tabFindChange(index: number){

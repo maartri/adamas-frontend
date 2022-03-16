@@ -1,39 +1,38 @@
 <div style="padding:8px;">
     <div nz-row>
-            <div nz-col nzSpan="24">
-                <button class="botton success" (click)="showAddModal()">Add Service</button>
-                <nz-table #basicTable [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'"
-                [nzFrontPagination]="false" [nzData]="tableData">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Activity</th>
-                        <th>Funded Under</th>
-                        <th>Status</th>
-                        <th>Service Profile</th>
-                        <th class="action">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let data of basicTable.data;let i = index;trackBy: trackByFn">
-                        <td class="left">{{ i+1  }}</td>
-                        <td>{{ data.activity}}</td>
-                        <td>{{ data.funding }}</td>
-                        <td>{{ data.status }}</td>
-                        <td>{{ data.serviceProfile}}</td>
-                        <td>
-                            <a (click)="showEditModal(data)">Update</a>
-                            <nz-divider nzType="vertical"></nz-divider>
-                            <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this service from List?" nzPopconfirmPlacement="bottom"
-                            (nzOnConfirm)="delete(data)">Delete</a>
-                        </td>
-                    </tr>
-                </tbody>
-            </nz-table>
-        </div>
+        <div nz-col nzSpan="24">
+            <button class="botton success" (click)="showAddModal()">Add Service</button>
+            <nz-table #basicTable [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'"
+            [nzFrontPagination]="false" [nzData]="tableData">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Activity</th>
+                    <th>Funded Under</th>
+                    <th>Status</th>
+                    <th>Service Profile</th>
+                    <th class="action">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of basicTable.data;let i = index;trackBy: trackByFn">
+                    <td class="left">{{ i+1  }}</td>
+                    <td>{{ data.activity}}</td>
+                    <td>{{ data.funding }}</td>
+                    <td>{{ data.status }}</td>
+                    <td>{{ data.serviceProfile}}</td>
+                    <td>
+                        <a (click)="showEditModal(data)">Update</a>
+                        <nz-divider nzType="vertical"></nz-divider>
+                        <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this service from List?" nzPopconfirmPlacement="bottom"
+                        (nzOnConfirm)="delete(data)">Delete</a>
+                    </td>
+                </tr>
+            </tbody>
+        </nz-table>
     </div>
 </div>
-
+</div>
 <nz-modal [nzWidth]="1000" [(nzVisible)]="modalOpen" [nzTitle]="addOREdit == 1 ? 'Add New Service Profile Detail' : 'Edit Service Profile Detail'"
 (nzOnCancel)="handleCancel()">
 <div [formGroup]="inputForm">
@@ -207,7 +206,7 @@
                     </nz-card>
                 </div>
                 <ng-template #extraTemplatetwo>
-                    <b>Auto Insert Notes To Roster: </b> &nbsp;<label nz-checkbox formControlName="autoInsertNotes"></label>
+                    <b>Auto Insert Notes To Roaster : </b> &nbsp;<label nz-checkbox formControlName="autoInsertNotes"></label>
                 </ng-template>
             </div>
         </div>

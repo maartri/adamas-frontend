@@ -6,7 +6,6 @@ import { GlobalService } from '@services/global.service';
 import { ListService } from '@services/list.service';
 import { MenuService } from '@services/menu.service';
 import { PrintService } from '@services/print.service';
-import { TimeSheetService } from '@services/timesheet.service';
 import { NzModalService } from 'ng-zorro-antd';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -90,7 +89,7 @@ export class BudgetsComponent implements OnInit {
     private menuS:MenuService,
     private printS:PrintService,
     private listS: ListService,
-    private timeS: TimeSheetService,
+    private http: HttpClient,
     private sanitizer: DomSanitizer,
     private ModalS: NzModalService
     ){}
@@ -307,7 +306,7 @@ export class BudgetsComponent implements OnInit {
         this.postLoading = true;   
         const group = this.inputForm;
         let name        = group.get('title').value.trim().toUpperCase();
-        let is_exist    = this.globalS.isDescriptionExists(this.tableData,name);
+        let is_exist    = this.globalS.isNameExists(this.tableData,name);
         if(is_exist){
           this.globalS.sToast('Unsuccess', 'Title Already Exist');
           this.postLoading = false;
@@ -347,24 +346,11 @@ export class BudgetsComponent implements OnInit {
         let values = name+","+branch+","+funding_source+","+care_domain+","+budget_group+","+prog+","+dataset+","+traccs+","+staff_team+","+staff_cat+","+staff+","+recepient+","+coordinator+","+spid+","+state+","+costcenter+","+dsoutlet+","+funding_region+","+svcdicipline+","+svcregion+","+total+","+dollars+","+packages+","+older+","+emoty+","+emoty+","+younger+","+emoty+","+emoty+","+input_type+","+unit+","+Undated+","+start+","+end;
         let sql = "INSERT INTO Budgets([Name], [Branch], [Funding Source], [Care Domain], [Budget Group], [Program], [Dataset Code], [Activity], [Staff Team], [Staff Category], [Staff], [Recipient],[coordinator], [SPID], [State], [CostCentre], [DSOutlet], [FundingRegion], [SvcDiscipline], [SvcRegion], [Hours], [Dollars], [Places], [O_Hours], [O_Dollars], [O_PlcPkg], [Y_Hours], [Y_Dollars], [Y_PlcPkg], [BudgetType], [Unit], Undated, StartDate, EndDate) Values ("+values+");select @@IDENTITY"; 
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{   
-          if (data)
-          {
-            this.timeS.postaudithistory({
-              Operator:this.tocken.user,
-              actionDate:this.globalS.getCurrentDateTime(),
-              auditDescription:'Budget Added',
-              actionOn:'Budget',
-              whoWhatCode:data, //inserted
-              TraccsUser:this.tocken.user,
-            }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-                this.globalS.sToast('Success', 'Saved successful');
-              }
-            );
-          }else
-          {
-            this.globalS.sToast('Unsuccess', 'Data not saved' + data);
-          }
-
+          
+          if (data) 
+          this.globalS.sToast('Success', 'Saved successful');     
+          else
+          this.globalS.sToast('Success', 'Saved successful');
           this.loadData();
           this.postLoading = false;          
           this.handleCancel();
@@ -405,27 +391,12 @@ export class BudgetsComponent implements OnInit {
         let recordNumber = group.get('RecordNumber').value;
         
         let sql = "Update Budgets SET [Name]="+name+", [Branch]="+ branch + ", [Funding Source]="+ funding_source + ", [Care Domain]="+ care_domain + ", [Budget Group]="+ budget_group + ", [Program]="+ prog + ",[Dataset Code]="+ dataset + ", [Activity]="+ traccs + ", [Staff Team]="+ staff_team + ", [Staff Category]="+ staff_cat +", [Staff]="+ staff +", [Recipient]="+ recepient +",[coordinator]="+ coordinator + ", [SPID]="+ spid + ", [State]="+ state + ", [CostCentre]="+ costcenter + ", [DSOutlet]="+ dsoutlet + ", [FundingRegion]="+ funding_region + ", [SvcDiscipline]="+ svcdicipline + ", [SvcRegion]="+ svcregion + ", [Hours]="+ hours + ", [Dollars]="+ dollars + ", [Places]="+ emoty + ", [O_Hours]="+ emoty + ", [O_Dollars]="+ emoty + ", [O_PlcPkg]="+ emoty + ", [Y_Hours]="+ emoty + ", [Y_Dollars]="+ emoty + ", [Y_PlcPkg]="+ emoty + ", [BudgetType]="+ input_type + ", [Unit]="+ unit + ", Undated="+ Undated + ",StartDate="+start+",EndDate="+end+"  WHERE [recordNumber] ='"+recordNumber+"'"; 
-        
+        console.log(sql);
         this.menuS.InsertDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{
-          if (data)
-              {
-                this.timeS.postaudithistory({
-                  Operator:this.tocken.user,
-                  actionDate:this.globalS.getCurrentDateTime(),
-                  auditDescription:'Budgets Changed',
-                  actionOn:'Budget',
-                  whoWhatCode:group.get('recordNumber').value, //inserted
-                  TraccsUser:this.tocken.user,
-                }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-                  this.globalS.sToast('Success', 'Update successful');
-                }
-                );
-              }else
-              {
-                this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
-              }
-
-
+          if (data) 
+          this.globalS.sToast('Success', 'Saved successful');     
+          else
+          this.globalS.sToast('Success', 'Update successful');
           this.postLoading = false;      
           this.loadData();
           this.handleCancel();
@@ -438,19 +409,9 @@ export class BudgetsComponent implements OnInit {
     delete(data: any) {
       this.postLoading = true;     
       this.menuS.deleteBudgetlist(data.recordNumber)
-      .pipe(takeUntil(this.unsubscribe)).subscribe(datas => {
-        if (datas) {
-          this.timeS.postaudithistory({
-            Operator:this.tocken.user,
-            actionDate:this.globalS.getCurrentDateTime(),
-            auditDescription:'Budget Deleted',
-            actionOn:'Budget',
-            whoWhatCode:data.recordNumber, //inserted
-            TraccsUser:this.tocken.user,
-          }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-            this.globalS.sToast('Success', 'Deleted successful');
-          }
-          );
+      .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        if (data) {
+          this.globalS.sToast('Success', 'Data Deleted!');
           this.loadData();
           return;
         }

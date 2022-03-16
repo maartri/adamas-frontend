@@ -30,6 +30,7 @@
         </nz-table>
     </div>
 </div>
+
 <nz-modal [nzStyle]="{ top: '20px' }" [(nzVisible)]="modalOpen" [nzTitle]="addOREdit ? 'Add Reminder' : 'Edit Reminder'"
     (nzOnCancel)="handleCancel()">
     <div [formGroup]="inputForm">

@@ -10,7 +10,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NzModalService } from 'ng-zorro-antd';
 import { PrintService } from '@services/print.service';
-import { TimeSheetService } from '@services/timesheet.service';
 
 
 @Component({
@@ -49,7 +48,6 @@ export class AddresstypesComponent implements OnInit {
     private listS:ListService,
     private printS:PrintService,
     private menuS:MenuService,
-    private timeS:TimeSheetService,
     private switchS:SwitchService,
     private formBuilder: FormBuilder,
     private http: HttpClient,
@@ -179,23 +177,10 @@ export class AddresstypesComponent implements OnInit {
             }
             
             ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-              if (data)
-              {
-                this.timeS.postaudithistory({
-                  Operator:this.tocken.user,
-                  actionDate:this.globalS.getCurrentDateTime(),
-                  auditDescription:'Address Types Changed',
-                  actionOn:'ADDRESSTYPE',
-                  whoWhatCode:group.get('recordNumber').value, //inserted
-                  TraccsUser:this.tocken.user,
-                }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-                    this.globalS.sToast('Success', 'Update successful');
-                  }
-                );
-              }else
-              {
-                this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
-              }
+              if (data) 
+              this.globalS.sToast('Success', 'Updated successful');     
+              else
+              this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
               this.loadData();
               this.postLoading = false;     
               this.isUpdate = false;     
@@ -216,19 +201,9 @@ export class AddresstypesComponent implements OnInit {
           this.postLoading = true;     
           const group = this.inputForm;
           this.menuS.deleteDomain(data.recordNumber)
-          .pipe(takeUntil(this.unsubscribe)).subscribe(datas => {
-            if (datas) {
-              this.timeS.postaudithistory({
-                Operator:this.tocken.user,
-                actionDate:this.globalS.getCurrentDateTime(),
-                auditDescription:'Address Types Deleted',
-                actionOn:'ADDRESSTYPE',
-                whoWhatCode:data.recordNumber, //inserted
-                TraccsUser:this.tocken.user,
-              }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-                  this.globalS.sToast('Success', 'Deleted successful');
-                }
-              );
+          .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (data) {
+              this.globalS.sToast('Success', 'Data Deleted!');
               this.loadData();
               return;
             }

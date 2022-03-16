@@ -1,51 +1,32 @@
 <div nz-row>
   <div style="padding:8px">
-    <!-- <div nz-row *ngIf="userview?.staff >= 951">
+    <div nz-row *ngIf="userview?.staff >= 951">
       <div nz-col nzSpan="12">
         <button class="headers-botton recordHeaderMainButtons" (click)="newStaffModal = !newStaffModal" ><i nz-icon nzType="plus" nzTheme="outline"></i> New Staff</button>
         <button class="botton color-powder-blue" (click)="openFindModal()" style="color: #fff;background-color: #85B9D5 !important; border-color: #85B9D5 !important;margin:0 1rem"><i nz-icon nzType="search" nzTheme="outline"></i> Find</button>
       </div>
-    </div> -->
+    </div>
     <ng-container *ngIf="userview?.staff >= 951">
-      <div nz-col nzSpan="6">
+      <div nz-col nzSpan="6" style="margin-top: 10px;">
         <app-search-list [reload]="reloadVal" [view]="1" [(ngModel)]="sample" (ngModelChange)="listChange($event)"></app-search-list>
       </div>
       
       <div nz-col nzSpan="8" *ngIf="user">
-
-          <div class="special-btn" (clickOutside)="clickOutsideMenu($event)" (click)="showSubMenuStaff = true">
-            <span>Menu</span>
-            
-            <div [class.hide]="!showSubMenuStaff">
-                <ul class="sub-menu">
-                    <li (click)="newStaffModal = !newStaffModal">New Staff</li>
-                    <li (click)="openFindModal()">Find</li>
-                    <li (click)="changeStaffModalOpen()">Change Staff Code</li>
-                    <li nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this Staff?" nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete()">Delete Staff</li>
-                    <li (click)="terminateModalOpen()">Terminate</li>
-                    <li (click)="showLeaveModal()">Put on Leave</li>
-                    <li (click)="user && printSummaryModalOpen()" [class.disabled]="user == null">Print</li>
-                    <li (click)="user && currentMonthRoster()" [class.disabled]="user == null">{{ longMonth }} Roster</li>
-                    <li (click)="user && rosterMaster()" [class.disabled]="user == null">Master Roster</li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- <ul class="old-list-wrapper">
+        <ul>
           <li class="terminate" (click)="changeStaffModalOpen()"><div><i nz-icon nzType="edit" nzTheme="outline"></i></div>Change Staff Code</li>
           <li class="terminate" nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this Staff ?"
           nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete()"><div><i nz-icon nzType="delete" nzTheme="outline"></i></div>Delete Staff</li>
           <li class="terminate" (click)="terminateModalOpen()"><div><i nz-icon nzType="close" nzTheme="outline"></i></div>Terminate</li>
           <li class="leave" (click)="showLeaveModal()"><div><i nz-icon nzType="eye-invisible" nzTheme="outline"></i></div>Put On Leave</li>
-        </ul> -->
+        </ul>
       </div>
-      <!-- <div nz-col nzSpan="10" *ngIf="user">
-        <ul class="old-list-wrapper">
+      <div nz-col nzSpan="10" *ngIf="user">
+        <ul>
           <li class="terminate" (click)="printSummaryModalOpen()"><div><i nz-icon nzType="printer" nzTheme="outline"></i></div>Print</li>
           <li class="terminate" (click)="currentMonthRoster()"><div><i nz-icon nzType="calendar" nzTheme="outline"></i></div>{{longMonth}} Roster</li>
           <li class="leave" (click)="rosterMaster()"><div><i nz-icon nzType="calendar" nzTheme="outline"></i></div>Master</li>
         </ul>
-      </div> -->
+      </div>
       <div nz-col nzSpan="24" *ngIf="userview">
         <nz-tabset *ngIf="user && userview" [nzTabPosition]="'top'" [nzSelectedIndex]="nzSelectedIndex" [nzType]="'card'">
           <nz-tab nzTitle="Personal" (nzClick)="view(0)"> </nz-tab>

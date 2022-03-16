@@ -7,9 +7,7 @@
             <tr>
                 <th nzWidth="5%">#</th>
                 <th nzWidth="15%">Name</th>
-                <th nzWidth="10%">Creator</th>
-                <th nzWidth="10%">Date Created</th>
-                <th nzWidth="50%">Notes</th>
+                <th nzWidth="60%">Notes</th>
                 <th nzWidth="10%" class="action">Actions</th>
             </tr>
         </thead>
@@ -17,8 +15,6 @@
             <tr *ngFor="let data of headerTable.data;let i = index;trackBy: trackByFn">
                 <td>{{ i+1  }}</td>
                 <td>{{ data.name}}</td>
-                <td>{{ data.creator }}</td>
-                <td>{{ data.date1 | date: 'dd/MM/y'}}</td>
                 <td>{{ data.notes }}</td>
                 <td>
                     <a (click)="showEditModal(1,i)">Update</a>
@@ -40,19 +36,15 @@
             <tr>
                 <th nzWidth="5%">#</th>
                 <th nzWidth="15%">Name</th>
-                <th nzWidth="10%">Creator</th>
-                <th nzWidth="10%">Date Created</th>
-                <th nzWidth="50%">Notes</th>
+                <th nzWidth="60%">Notes</th>
                 <th nzWidth="10%" class="action">Actions</th>
             </tr>
         </thead>
         <tbody>
             <tr *ngFor="let data of headerTable2.data;let i = index;trackBy: trackByFn">
                 <td nzWidth="5%">{{ i+1  }}</td>
-                <td nzWidth="15%">{{ data.name}}</td>
-                <td nzWidth="10%">{{ data.creator}}</td>
-                <td nzWidth="10%">{{ data.date1 | date: 'dd/MM/y' }}</td>
-                <td nzWidth="50%">{{ data.notes }}</td>
+                <td nzWidth="20%">{{ data.name}}</td>
+                <td nzWidth="55%">{{ data.notes }}</td>
                 <td nzWidth="10%">
                     <a (click)="showEditModal(2,i)">Update</a>
                     <nz-divider nzType="vertical"></nz-divider>
@@ -72,16 +64,15 @@
     <div *ngIf="tabFindIndex == 0">
             <div nz-row [formGroup]="inputForm">
                 <div nz-row>
-                <div *ngIf="editOrAdd == 1" class="staff-wrapper" style="height: 15rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
-                    <h4 style="text-align:center;color:#1890FF">Tick The Checkbox Next To The Staff</h4>
-                    <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="logs($event)">
-                        <div nz-row>
-                            <div nz-col nzSpan="24" *ngFor="let list of listStaff">
-                                <label nz-checkbox [nzValue]="list.value" [(ngModel)]="list.checked" [ngModelOptions]="{standalone: true}">{{ list.label }}</label>
-                            </div>
-                        </div>
-                    </nz-checkbox-wrapper>
-                </div>
+                    <nz-form-item *ngIf="editOrAdd == 1">
+                        <nz-form-label>{{ whatView == 1 ? 'Staff' :  'Staff'}}</nz-form-label>
+                        <nz-form-control nzErrorTip="Required Field">
+                            <nz-select formControlName="list" nzAllowClear nzPlaceHolder=""
+                            [nzDropdownMatchSelectWidth]="false" style="width: 100%;">
+                            <nz-option *ngFor="let list of listStaff" [nzValue]="list" [nzLabel]="list"></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
                 <div class="form-group" *ngIf="editOrAdd == 2">
                     <nz-form-label>{{ whatView == 1 ? 'Staff' :  'Staff'}}</nz-form-label>
                     <input nz-input formControlName="list" disabled />
@@ -98,7 +89,7 @@
         </div>
         <div *nzModalFooter>
             <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
-            <button nz-button nzType="primary" (click)="processBtn()" [nzLoading]="isLoading">Save</button>
+            <button nz-button nzType="primary" (click)="processBtn()" [disabled]="!this.inputForm.get('list').value" [nzLoading]="isLoading">Save</button>
         </div>
     </div>
 </nz-modal>

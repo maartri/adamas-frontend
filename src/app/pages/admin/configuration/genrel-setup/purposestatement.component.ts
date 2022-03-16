@@ -10,7 +10,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NzModalService } from 'ng-zorro-antd';
 import { PrintService } from '@services/print.service';
-import { TimeSheetService } from '@services/timesheet.service';
 
 @Component({
   selector: 'app-purposestatement',
@@ -36,7 +35,7 @@ export class PurposestatementComponent implements OnInit {
   current: number = 0;
   inputForm: FormGroup;
   modalVariables: any;
-  dateFormat: string ='dd/MM/yyyy';
+dateFormat: string ='dd/MM/yyyy';
   inputVariables:any;
   postLoading: boolean = false;
   isUpdate: boolean = false;
@@ -61,7 +60,8 @@ export class PurposestatementComponent implements OnInit {
     private menuS:MenuService,
     private switchS:SwitchService,
     private formBuilder: FormBuilder,
-    private timeS:TimeSheetService,
+    private http: HttpClient,
+    private fb: FormBuilder,
     private sanitizer: DomSanitizer,
     private ModalS: NzModalService
     ){}
@@ -149,7 +149,7 @@ export class PurposestatementComponent implements OnInit {
     save() {
       this.postLoading = true;     
       const group = this.inputForm;
-      
+
       if(!this.isUpdate){      
         
         let name        = this.globalS.isValueNull(group.get('porpose').value).trim().toUpperCase();
@@ -159,7 +159,7 @@ export class PurposestatementComponent implements OnInit {
           this.postLoading = false;
           return false;   
         }
-        
+
         this.switchS.addData(  
           this.modalVariables={
             title: 'Package Purpose Statements'
@@ -203,23 +203,10 @@ export class PurposestatementComponent implements OnInit {
             }
             
             ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-              if (data)
-              {
-                this.timeS.postaudithistory({
-                  Operator:this.tocken.user,
-                  actionDate:this.globalS.getCurrentDateTime(),
-                  auditDescription:'Package Purpose Statement Changed',
-                  actionOn:'PKGPURPOSE',
-                  whoWhatCode:group.get('recordNumber').value, //inserted
-                  TraccsUser:this.tocken.user,
-                }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-                  this.globalS.sToast('Success', 'Update successful');
-                }
-                );
-              }else
-              {
-                this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
-              }
+              if (data) 
+              this.globalS.sToast('Success', 'Updated successful');     
+              else
+              this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
               this.loadData();
               this.postLoading = false;
               this.isUpdate = false;     
@@ -234,19 +221,9 @@ export class PurposestatementComponent implements OnInit {
           this.postLoading = true;     
           const group = this.inputForm;
           this.menuS.deleteDomain(data.recordNumber)
-          .pipe(takeUntil(this.unsubscribe)).subscribe(datas => {
-            if (datas) {
-              this.timeS.postaudithistory({
-                Operator:this.tocken.user,
-                actionDate:this.globalS.getCurrentDateTime(),
-                auditDescription:'Package Purpose Statement Deleted',
-                actionOn:'PKGPURPOSE',
-                whoWhatCode:data.recordNumber, //inserted
-                TraccsUser:this.tocken.user,
-              }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-                this.globalS.sToast('Success', 'Deleted successful');
-              }
-              );
+          .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (data) {
+              this.globalS.sToast('Success', 'Data Deleted!');
               this.loadData();
               return;
             }
@@ -287,13 +264,13 @@ export class PurposestatementComponent implements OnInit {
               "head3" : "End Date"
             }
           }
-          
+
           this.printS.printControl(data).subscribe((blob: any) => {
             let _blob: Blob = blob;
             let fileURL = URL.createObjectURL(_blob);
             this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
             this.loading = false;
-          }, err => {
+            }, err => {
             this.loading = false;
             this.ModalS.error({
               nzTitle: 'TRACCS',
@@ -303,8 +280,8 @@ export class PurposestatementComponent implements OnInit {
               },
             });
           });
-          
-          
+    
+
           this.loading = true;
           this.tryDoctype = "";
           this.pdfTitle = "";

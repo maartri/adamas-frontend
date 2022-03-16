@@ -17,7 +17,6 @@ export class SwitchService {
     modalVariables: ModalVariables;
     sqlCommand: string;
     listS: any;
-    audithistory:any;
     
     constructor(
         private injector: Injector
@@ -786,10 +785,9 @@ export class SwitchService {
         // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         
         
-        addData(modalVariables: ModalVariables, inputVariables: any,audithistory={}) {
+        addData(modalVariables: ModalVariables, inputVariables: any) {
             console.log(inputVariables);
             this.anyVariable = {}
-            this.audithistory = {};
             switch (modalVariables.title) {
                 case 'Medical Contacts':
                 //var colValues = `'${(this.selected.name).toUpperCase()}','` + this.category.categoryName  + "','" + this.contact.type + "','" + this.contact.address1 + "','" + this.contact.address2 + "','" + this.contact.suburb + "','" +  this.contact.phone1 + "','" + this.contact.phone2 + "','" + this.contact.fax + "','" + this.contact.mobile + "','" + this.contact.email + "'"
@@ -805,14 +803,6 @@ export class SwitchService {
                         user1: '',
                         user2: '',
                         endDate: inputVariables.end_date
-                    },
-                    audithistory:{
-                        Operator:'',
-                        actionDate:'',
-                        auditDescription:'',
-                        actionOn:'',
-                        whoWhatCode:'',
-                        tracsUser:'',
                     },
                     table: 'DataDomains'
                 }

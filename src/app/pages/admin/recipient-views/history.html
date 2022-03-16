@@ -1,68 +1,22 @@
 <div nz-row>
     <app-filter></app-filter>
 </div>
-
-<!-- <div class="example-container">
-    <h2>To do</h2>
-  
-    <div
-      cdkDropList
-      #todoList="cdkDropList"
-      [cdkDropListData]="todo"
-      [cdkDropListConnectedTo]="[doneList]"
-      class="example-list"
-      (cdkDropListDropped)="drop($event)">
-      <div class="example-box" *ngFor="let item of todo" cdkDrag>{{item}}</div>
-    </div>
-  </div>
-  
-  <div class="example-container">
-    <h2>Done</h2>
-  
-    <div
-      cdkDropList
-      #doneList="cdkDropList"
-      [cdkDropListData]="done"
-      [cdkDropListConnectedTo]="[todoList]"
-      class="example-list"
-      (cdkDropListDropped)="drop($event)">
-      <div class="example-box" *ngFor="let item of done" cdkDrag>{{item}}</div>
-    </div>
-  </div> -->
-
-  <div class="example-container">
-    <ul
-      cdkDropList
-      cdkDropListOrientation="horizontal"
-      #todoList="cdkDropList"
-      [cdkDropListData]="todo"
-      [cdkDropListConnectedTo]="[doneList]"
-      class="example-list"
-      (cdkDropListDropped)="drop($event)">
-      <li class="example-box" *ngFor="let item of todo" [cdkDragDisabled]="true" cdkDrag>
-          <div>
-            {{item}} <span (click)="removeTodo(item)"><i nz-icon nzType="close" nzTheme="outline"></i></span>
-          </div>
-      </li>
-  </ul>
-  </div>
-
 <div nz-row>
     <div nz-col>
-        <!-- <nz-table #basicTable [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false"
+        <nz-table #basicTable [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false"
             [nzData]="tableData">
             <thead>
-                <tr cdkDropList #doneList="cdkDropList" [cdkDropListData]="done" [cdkDropListConnectedTo]="[todoList]">
-                    <th cdkDrag [cdkDragData]="'Date'" class="left">Date</th>
-                    <th cdkDrag [cdkDragData]="'Program'">Program</th>
-                    <th cdkDrag [cdkDragData]="'Event'">Event</th>
-                    <th cdkDrag [cdkDragData]="'Staff'">Staff</th>
-                    <th cdkDrag [cdkDragData]="'Amount'">Amount</th>
-                    <th cdkDrag [cdkDragData]="'Notes'">Notes</th>
+                <tr>
+                    <th class="left">Date</th>
+                    <th>Program</th>
+                    <th>Event</th>
+                    <th>Staff</th>
+                    <th>Amount</th>
+                    <th>Notes</th>
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let data of tableData;let i = index;trackBy: trackByFn">
+                <tr *ngFor="let data of basicTable.data;let i = index;trackBy: trackByFn">
                     <td class="left">{{ data.date  }}</td>
                     <td>{{ data.program }}</td>
                     <td>{{ data.event }}</td>
@@ -71,59 +25,6 @@
                     <td>{{ data.notes }}</td>
                 </tr>
             </tbody>
-        </nz-table> -->
-
-
-        <nz-table #basicTable [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false"
-            [nzData]="tableData">
-            <thead>
-                <tr cdkDropList #doneList="cdkDropList" [cdkDropListData]="done" [cdkDropListConnectedTo]="[todoList]">
-                    <th cdkDrag [cdkDragData]="'Date'" class="left">Date</th>
-                    <th cdkDrag [cdkDragData]="'Program'">Program</th>
-                    <th cdkDrag [cdkDragData]="'Event'">Event</th>
-                    <th cdkDrag [cdkDragData]="'Staff'">Staff</th>
-                    <th cdkDrag [cdkDragData]="'Amount'">Amount</th>
-                    <th cdkDrag [cdkDragData]="'Notes'">Notes</th>
-                </tr>
-            </thead>
-            <tbody>
-
-                <ng-container *ngIf="isSome(tableData)">
-                    <ng-container *ngFor="let titleData of tableData;">
-                        <tr  *ngIf="!isArray(titleData)">
-                            <td colspan="6">
-                                <p style="margin:0">{{ titleData.titlezzzfsdfsdfsdf }}</p>
-                            </td>
-                        </tr>
-                        
-                        <ng-container *ngIf="isArray(titleData)">
-                            <tr style="background: #d9efff;" *ngFor="let data of titleData">
-                                <td class="left">{{ data.date  }}</td>
-                                <td>{{ data.program }}</td>
-                                <td>{{ data.event }}</td>
-                                <td>{{ data.staff }}</td>
-                                <td>{{ data.amount || '0' | number : '1.2-2' }}</td>
-                                <td>{{ data.notes }}</td>
-                            </tr>
-                        </ng-container>
-                    </ng-container>
-                </ng-container>
-
-                <ng-container *ngIf="!isSome(tableData)">
-                    <tr *ngFor="let data of tableData;let i = index;trackBy: trackByFn">
-                        <td class="left">{{ data.date  }}</td>
-                        <td>{{ data.program }}</td>
-                        <td>{{ data.event }}</td>
-                        <td>{{ data.staff }}</td>
-                        <td>{{ data.amount || '0' | number : '1.2-2' }}</td>
-                        <td>{{ data.notes }}</td>
-                    </tr>
-                </ng-container>
-            
-            
-               
-            </tbody>
         </nz-table>
-
     </div>
 </div>

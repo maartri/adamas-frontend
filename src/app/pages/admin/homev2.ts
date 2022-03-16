@@ -1,9 +1,8 @@
-import { Component, OnInit, OnDestroy, Input, AfterViewInit, ViewChild, ElementRef, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
+import { Component, OnInit, OnDestroy, Input, AfterViewInit, ViewChild, ElementRef } from '@angular/core'
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 
 import { filter, tap, last } from 'rxjs/operators';
 import { GlobalService } from '@services/index';
-import { of } from 'rxjs';
 
 @Component({
     styles: [`
@@ -156,15 +155,11 @@ export class HomeV2Admin implements OnInit, OnDestroy, AfterViewInit {
     breadcrumbs: Array<any> = [];
 
     ISTAFF_BYPASS: boolean = false;
-    token: any;
-
-    showIfByPassOn:  boolean = true;
 
     constructor(
         private router: Router,
         private activatedRoute: ActivatedRoute,
-        private globalS: GlobalService,
-        private cd: ChangeDetectorRef
+        private globalS: GlobalService
     ) {
 
     }
@@ -172,9 +167,12 @@ export class HomeV2Admin implements OnInit, OnDestroy, AfterViewInit {
     ngOnInit(): void {
         this.ISTAFF_BYPASS = this.globalS.ISTAFF_BYPASS == 'true' && this.globalS.ISTAFF_BYPASS != null ? true : false;
         
-
-        this.token = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA) : this.globalS.decode();
-
+        // this.router.events.pipe(
+        //     filter(event => event instanceof NavigationEnd)
+        // ).subscribe(event => {
+        //     this.createBreadCrumb(this.activatedRoute.root);
+        // });
+        // this.createBreadCrumb(this.activatedRoute.root);
     }
 
     ngOnDestroy(): void {
@@ -182,15 +180,6 @@ export class HomeV2Admin implements OnInit, OnDestroy, AfterViewInit {
     }
 
     ngAfterViewInit(): void {
-
-        setTimeout(() => {
-            if('bypass' in this.token){
-                this.isCollapsed = this.token.bypass;  
-                console.log(this.token.bypass)
-                this.cd.markForCheck();
-                this.cd.detectChanges();
-            }
-        }, 100);
 
     }
 

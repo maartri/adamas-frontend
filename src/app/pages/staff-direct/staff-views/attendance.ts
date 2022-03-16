@@ -49,7 +49,7 @@ export class StaffAttendanceAdmin implements OnInit, OnDestroy {
         });
 
         this.sharedS.changeEmitted$.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-            if (this.globalS.isCurrentRoute(this.router, 'staff-time-attendance')) {
+            if (this.globalS.isCurrentRoute(this.router, 'time-attendance')) {
                 this.search(data);
             }
         });

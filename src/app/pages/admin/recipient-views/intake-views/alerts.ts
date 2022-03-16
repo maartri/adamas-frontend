@@ -139,7 +139,7 @@ export class IntakeAlerts implements OnInit, OnDestroy {
         this.timeS.updaterosteralerts(this.alertGroup.value.rosterAlert, this.user.id ).pipe(
         takeUntil(this.unsubscribe)).subscribe(data => {
                         if(data){
-                            this.globalS.sToast('Success','Alert Updated')
+                            this.globalS.sToast('Success','Roster Updated')
                         }
                     });
     }

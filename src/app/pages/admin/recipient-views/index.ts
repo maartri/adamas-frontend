@@ -4,7 +4,6 @@ export * from './history';
 export * from './incident';
 export * from './intake';
 export * from './clinical';
-export * from './dataset';
 export * from './opnote';
 export * from './pension';
 export * from './perm-roster';

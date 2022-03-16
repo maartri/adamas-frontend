@@ -17,14 +17,6 @@ export class ListService {
         public auth: AuthService
     ) { }
 
-    updateaccountingprofile(data: any, id: string):Observable<any>{
-        return this.auth.put(`${list}/accounting-profile/${id}`, data);
-    }
-
-    getcontributionactivity(): Observable<any>{
-        return this.auth.get(`${list}/contribution-activity`);
-    }
-
     getstaffcompetencylist(data: any): Observable<any>{
         return this.auth.get(`${list}/staff-competency-list`, data);
     }
@@ -277,10 +269,6 @@ export class ListService {
     getndiaitems(): Observable<any>{
         return this.auth.get(`${list}/ndia-items`);
     }
-    getndiaitemss(): Observable<any>{
-        return this.auth.get(`${list}/ndia-itemss`);
-    }
-    
     getskills(): Observable<any>{
         return this.auth.get(`${list}/skills`);
     }
@@ -761,14 +749,8 @@ export class ListService {
     getclinicalnursingdiagnose(personID: string): Observable<any>{
         return this.auth.get(`${list}/clinical/nursingdiagnose/${personID}`)
     }
-    getaddclinicalnursingdiagnose(personID: string): Observable<any>{
-        return this.auth.get(`${list}/clinical/addnursingdiagnose/${personID}`)
-    }
     getclinicalmedicationdiagnose(personID: string): Observable<any>{
         return this.auth.get(`${list}/clinical/medicationdiagnose/${personID}`)
-    }
-    getaddclinicalmedicationdiagnose(personID: string): Observable<any>{
-        return this.auth.get(`${list}/clinical/addmedicationdiagnose/${personID}`)
     }
     getclinicalprocedure(personID: string): Observable<any>{
         return this.auth.get(`${list}/clinical/procedure/${personID}`)
@@ -779,13 +761,6 @@ export class ListService {
     getclinicalreminder(personID: string): Observable<any>{
         return this.auth.get(`${list}/clinical/reminder/${personID}`)
     }
-    getreminders(personID: string): Observable<any>{
-        return this.auth.get(`${list}/clinical-reminders/${personID}`)
-    }
-    getalerts(personID: string): Observable<any>{
-        return this.auth.get(`${list}/clinical-alertt/${personID}`)
-    }
-    
     getclinicalalert(personID: string): Observable<any>{
         return this.auth.get(`${list}/clinical/alert/${personID}`)
     }
@@ -915,13 +890,6 @@ export class ListService {
         return this.auth.get(`${list}/consent/${personId}`)
     }
 
-    getmedicalprocedure(personId: string):Observable<any>{
-        return this.auth.get(`${list}/procedure/${personId}`)
-    }
-
-    getmedication(personId: string):Observable<any>{
-        return this.auth.get(`${list}/medication/${personId}`)
-    }
     getusergroup(personID: string):Observable<any>{
         return this.auth.get(`${list}/group/usergroup/${personID}`)
     }
@@ -949,12 +917,6 @@ export class ListService {
     Getrptpaytype(): Observable<any>{        
         return this.auth.get(`${list}/paytype`)
     }
-    GettravelandAlternateCode():Observable<any>{
-        return this.auth.get(`${list}/travelandAlternateCode`)
-    }
-    GetDatasetItems():Observable<any>{
-        return this.auth.get(`${list}/datasetItems`)
-    }
     Getrptactivity(): Observable<any>{        
         return this.auth.get(`${list}/activity`)
     }
@@ -967,46 +929,7 @@ export class ListService {
     GetBatchClients(batch: number): Observable<any>{
         return this.auth.get(`${list}/batch-clients/${batch}`);
     }
-    //Dataset tab apis
-    // getpensionall(): Observable<any>{
-    //     return this.auth.get(`${list}/pension/all`)
-    // }
-    GetCarerDataRecipientcarer(): Observable<any>{        
-        return this.auth.get(`${list}/carer-data-recipientcarer`)
-    }
-    GetCarerDataRelationship(): Observable<any>{        
-        return this.auth.get(`${list}/carer-data-relationship`)
-    }
-    GetCarerDataAvailability(): Observable<any>{        
-        return this.auth.get(`${list}/carer-data-availability`)
-    }
-    GetCarerDataResidency(): Observable<any>{        
-        return this.auth.get(`${list}/carer-data-residency`)
-    }
-    GetAccomodationSetting(): Observable<any>{        
-        return this.auth.get(`${list}/accomodation-setting`)
-    }
-    GetIndigniousStatus(): Observable<any>{        
-        return this.auth.get(`${list}/indignious-status`)
-    }
-    GetLivingArrangments(): Observable<any>{        
-        return this.auth.get(`${list}/living-arrangments`)
-    }
-    GetHACCVaCardStatus(): Observable<any>{        
-        return this.auth.get(`${list}/hacc-va-card-status`)
-    }
-    GetHACCReferralSource():Observable<any>{
-        return this.auth.get(`${list}/hacc-referral_source`)
-    }
-    GetLanguages():Observable<any>{
-        return this.auth.get(`${list}/languages`)
-    }
-    GetCountries():Observable<any>{
-        return this.auth.get(`${list}/GetCountries`)
-    }
-    GetHaccSex():Observable<any>{
-        return this.auth.get(`${list}/haccSex`)
-    }
-    
-    
-}
+
+
+
+} //  //GetBatchClients batch-clients

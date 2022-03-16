@@ -9,7 +9,7 @@
                                         <ul nz-menu nzMode="horizontal">
                                             <li nz-menu-item >
                                                 <i nz-icon nzType="user" ></i>
-                                                <strong>STANDARD LISTINGS</strong>                                                
+                                                <strong>STANDARD LISTINGS</strong> 
                                                 <div>                                        
                                                     <button nz-button nzType="default" id="btn-absentclient" (click)="showModal(this.id)" >
                                                     <i nz-icon nzType="printer"></i>
@@ -845,7 +845,8 @@
                                 <label class="checks" nz-checkbox formControlName="allPrograms">All Programs</label>
                                 <nz-select formControlName="programsArr" nzMode="multiple" [nzDisabled]="inputForm.value.allPrograms">
                                     <nz-option *ngFor="let option of programsArr" [nzLabel]="option" [nzValue]="option"></nz-option> 
-                                </nz-select>                                
+                                </nz-select>
+                                
                             </div>
                         </div>
                     </div>    
@@ -1239,9 +1240,8 @@
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_activeStaffonly" ><label class="checks" nz-checkbox formControlName="activeStaffonly"   >Active Staff Only</label></div>
                                         <div nz-col nzSpan = "20" *ngIf="chkbx_activeClientsonly"><label class="checks" nz-checkbox formControlName="activeclientsonly"   >Active Clients Only</label></div>
                                         
-                                        
                                        
-                                    </div>                                    
+                                    </div>
                             </fieldset>                             
                         </div> 
         
@@ -1272,14 +1272,8 @@
                          
         
                     </div>
-                    
-                    <div nz-row *ngIf="chkbx_CSVExport">
-                        <div nz-col nzSpan = "20" >
-                            <label class="checks" nz-checkbox formControlName="csvExport"   >Only Export to CSV</label>
-                        </div>
-                    </div>
                 </div>                                                  
-            </div>            
+            </div>
             </nz-modal>            
         </div>
 
@@ -1610,7 +1604,6 @@
                         </div>
                     </div>
                 </div>
-                <div nz-col nzSpan = "20" *ngIf="chkbx_CSVExport"><label class="checks" nz-checkbox formControlName="csvExport"   >Only Export to CSV</label></div>
             </ng-template>                            
                <ng-template #modalFooter> 
                    <div class="modalFooter">
@@ -1666,9 +1659,6 @@
                     &nbsp;&nbsp;<label class="checks" nz-checkbox formControlName="incl_actuals"  >include Allowance in Actuals Calculations</label>
                     &nbsp;&nbsp;<label class="checks" nz-checkbox formControlName="Incl_inactive"  >Include Inactive Recipients</label>
                 </div>
-                <div nz-col nzSpan = "20" *ngIf="chkbx_CSVExport">
-                    &nbsp;&nbsp;<label class="checks" nz-checkbox formControlName="csvExport"   >Only Export to CSV</label>
-                </div>
             </div>
             <div>
                 <div nz-row>                             
@@ -1692,16 +1682,11 @@
     
     <!-- [nzScroll]="{ x:'1000px',y:'calc(100vh-238px)'}" [nzHeight]= "650" width="1224"  height="calc(100vh-300px)" -->
         
-    <nz-drawer  nzHeight="100vh"  [nzClosable]="true"  class="drawer"  [nzVisible]="drawerVisible" nzPlacement="top" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()" >
-        <div *ngIf="EnableCSVExport">   
-            <button nz-button nzType="default" class="btn" (click)="FetchRuntimeReport('CSVStr')" >Export CSV</button> 
-        </div>
+    <nz-drawer [nzHeight]= "1000"  [nzClosable]="true"  class="drawer"  [nzVisible]="drawerVisible" nzPlacement="top" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()"  >
         <div class="col-md-12 spinner" *ngIf="loading">
             <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
-        </div>        
-        
-        <div nz-row>   
-            <iframe *ngIf="tryDoctype" class="iframe" [src]="tryDoctype" scrolling="auto" width="1280" height="650"  ></iframe> 
         </div>
-        
+        <div nz-row>   
+            <iframe *ngIf="tryDoctype" class="iframe" [src]="tryDoctype" width="950" height="650"  ></iframe> 
+        </div>
     </nz-drawer>

@@ -1,12 +1,5 @@
 import { Injectable } from '@angular/core'
-import {
-    CanActivate,
-    Router,
-    CanActivateChild,
-    ActivatedRouteSnapshot,
-    ActivatedRoute,
-    RouterStateSnapshot
-} from '@angular/router';
+import { Router, CanActivate, CanActivateChild } from '@angular/router'
 
 import { GlobalService } from './global.service';
 
@@ -20,8 +13,7 @@ export class LoginGuard implements CanActivate, CanActivateChild{
 
     }
  
-    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean{        
-        console.log(route)   
+    canActivate(): boolean{           
         if(this.globalS.isEmpty(this.globalS.token) || this.globalS.isExpired()){
             this.globalS.clearTokens();
             return true;

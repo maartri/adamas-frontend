@@ -7,31 +7,6 @@ import { takeUntil } from 'rxjs/operators';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
-const defaultValue = {
-    includeCaseManagement:false,
-    status: null,
-    program:null,
-    activity:'',
-    freq:'',
-    period:'',
-    duration:'',
-    enforcement:'',
-    starting:'',
-    budgetType: null,
-    bamount:'',
-    specialPricing:false,
-    billunit:'',
-    namount:'',
-    gst: false,
-    compRecord:'',
-    activityBreakDown:'',
-    serviceBiller:'',
-    autoInsertNotes:false,
-    excludeFromNDIAPriceUpdates:false,
-    PersonID:'',
-    recordNumber:'',  
-}
-
 @Component({
     selector: '',
     templateUrl: './services.html',
@@ -185,7 +160,30 @@ export class IntakeServices implements OnInit, OnDestroy {
           });
     }
     buildForm() {
-        this.inputForm = this.formBuilder.group(defaultValue)
+        this.inputForm = this.formBuilder.group({
+            includeCaseManagement:false,
+            status:'',
+            program:'',
+            activity:'',
+            freq:'',
+            period:'',
+            duration:'',
+            enforcement:'',
+            starting:'',
+            budgetType:'',
+            bamount:'',
+            specialPricing:false,
+            billunit:'',
+            namount:'',
+            gst: false,
+            compRecord:'',
+            activityBreakDown:'',
+            serviceBiller:'',
+            autoInsertNotes:false,
+            excludeFromNDIAPriceUpdates:false,
+            PersonID:'',
+            recordNumber:'',  
+        })
         this.competencyForm = this.formBuilder.group({
             competency:'',
             mandatory:false,
@@ -337,7 +335,6 @@ export class IntakeServices implements OnInit, OnDestroy {
     }
     showAddModal() {
         this.addOREdit = 1;
-        this.inputForm.reset(defaultValue)
         this.listDropDown();
         this.loadCompetency();
         this.modalOpen = true;

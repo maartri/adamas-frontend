@@ -48,8 +48,7 @@ export interface ApplicationUser {
     Username: string,
     Password: string,
     NewPassword?: string,
-    PasswordHandler?: string,
-    Bypass?: boolean
+    PasswordHandler?: string
 }
 
 export interface Jwt {
@@ -578,9 +577,7 @@ export interface Consents {
     personID?: string,
     name?: string,
     date1?: string,
-    notes?: string,
-    Creator?:string,
-    selectedConsent?:Array<any>,
+    notes?: string
 }
 
 export interface IntakeCompetency {

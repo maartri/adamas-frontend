@@ -48,33 +48,6 @@ export const view = {
   admin: 'admin'
 }
 
-export const CREDITCARD = [
-  "Visa",
-  "MasterCard",
-  "American Express",
-  "Other"
-]
-
-export const BILLING_CYCLE = [
-  "<FORTNIGHTLY>",
-  "<MONTHLY>",
-  "<WEEKLY>",
-  "BROKERAGE",
-  "DAILY NDIA",
-  "HCP"
-]
-
-export const BILLING_RATE_IS = [
-  "COMMERCIAL",
-  "LEVEL1",
-  "LEVEL2",
-  "LEVEL3",
-  "LEVEL4",
-  "LEVEL5",
-  "FIXED",
-  "PERCENTAGE"
-]
-
 export const ROSTER_TYPE = {
   2: "ONEONONE",
   3: "BROKERED SERVICE",
@@ -198,21 +171,7 @@ export const dataSetDropDowns = {
   NRCPSAR:['EMERGENCY', 'NON EMERGENCY'],
   OTHER:['ADMISSION', 'ASSESMENT','DATA UPDATE','DISCHARGE','OTHER','STAFF ONBOARDING','REFERRAL - IN','REFERRAL - OUT','REVIEW']
 }
-export const datasetTypeDropDowns = {
-  CACP:[],
-  CTP: [],
-  DEX: [],
-  DFC: [],
-  DVA: [],
-  HACC:[],
-  HAS: [],
-  QCSS:[],
-  ICTD:[],
-  NDIS:[],
-  NRCP:['COMMONWEALTH APPROVED AGED CARE HOMES RESIDENTIAL RESPITE','COMMUNITY RESIDENTIAL RESPITE','COMMUNITY RESPITE','INDIRECT RESPITE','INDIVIDUALISED RESPITE','IN-HOME RESPITE','OTHER RESIDENTIAL RESPITE','STATE/TERRITORY FUNDED DISABILITY CARE HOMES RESIDENTIAL RESPITE'],
-  NRCPSAR:['COMMUNITY ACCESS - GROUP','COMMUNITY ACCESS - INDIVIDUAL','DAY CARE - CENTRE BASED','DAYTIME RESPITE - IN HOME','HOST FAMILY - DAY','HOST FAMILY - OVERNIGHT','OVERNIGHT - OTHER','OVERNIGHT COMMUNITY RESPITE HOUSES','OVERNIGHT RESPITE - IN HOME','REFERRAL TO NON RESPITE SERVICES','REFERRAL TO OTHER RESPITE SERVICES'],
-  OTHER:[]
-}
+
 export const notificationTypes = ['Referral Notification','Assessment Notification','Admission Notification','Refer On Notification','Not Proceed Notification','Discharge Notification','Suspend Notification','Reinstate Notification','Admin Notification','Lifecycle Event Notification','Staff Onboard Notification','Staff Terminate Notification']
 export const othersType = ['REFERRAL','WAITING LIST','CARER','RECIPIENT','CARER/RECIPIENT','BILLING CLIENT ONLY','ASSOCIATE']
 export const attendance = ['NO ALERT','STAFF CASE MANAGER','RECIPIENT CASE MANAGER','BRANCH ROSTER EMAIL']
@@ -2286,9 +2245,6 @@ export class GlobalService {
     }
     getCurrentDate(){
       return moment().format('yyyy-MM-DD')
-    }
-    getCurrentDateTime(){
-      return moment().format('yyyy-MM-DD HH:mm:ss')
     }
     convertDbDate(date:string,defaultformat:string = 'yyyy/MM/dd'){
       const newDate = format(Date.parse(date),defaultformat);

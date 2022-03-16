@@ -2,13 +2,13 @@
     <div nz-col nzSpan="24">
         <button class="botton success" (click)="showAddModal()">Add Reminder</button>
         <nz-table #sss [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false"
-            [nzData]="tableData">
+            [nzData]="reminderList">
             <thead>
                 <tr>
                     <th>#</th>
                     <th>Alert/Review</th>
                     <th>Reminder Date</th>
-                    <th>Due Date</th>
+                    <th>Dur Date</th>
                     <th>Notes</th>
                     <th class="action">Actions</th>
                 </tr>
@@ -16,110 +16,51 @@
             <tbody>
                 <tr *ngFor="let data of sss.data;let i = index;trackBy: trackByFn">
                     <td class="left">{{ i+1  }}</td>
-                    <td>{{ data.alert}}</td>
+                    <td>{{ data.review}}</td>
                     <td>{{ data.reminderDate | date: 'dd/MM/y' }}</td>
                     <td>{{ data.dueDate | date: 'dd/MM/y' }}</td>
                     <td>{{ data.notes }}</td>
                     <td>
-                        <a (click)="showEditModal(i)">Update</a>
+                        <a (click)="updateconsentmodal(data)">Update</a>
                         <nz-divider nzType="vertical"></nz-divider>
-                        <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this from Clinical Reminder List?" nzPopconfirmPlacement="bottom"
-                            (nzOnConfirm)="delete(data.recordNumber)">Delete</a>
+                        <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this consent from the List?" nzPopconfirmPlacement="bottom"
+                            (nzOnConfirm)="deleteconsent(data)">Delete</a>
                     </td>
                 </tr>
             </tbody>
         </nz-table>
     </div>
 </div>
-<nz-modal [nzStyle]="{ top: '20px' }" [(nzVisible)]="modalOpen" [nzTitle]="addOREdit ? 'Add Clinical Reminder' : 'Edit Clinical Reminder'"
-    (nzOnCancel)="handleCancel()">
-    <div *ngIf="addOREdit == 1" class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto; padding: .5rem 1rem; border: 1px solid #e9e9e9; border-radius: 3px;">
-        <h4 style="text-align:center;color:#1890FF">Tick The Checkbox Next To The Reminder</h4>
-        <nz-checkbox-wrapper [ngModelOptions]="{standalone: true}" (nzOnChange)="logs($event)">
-            <div nz-row>
-                <div nz-col nzSpan="24" *ngFor="let reminder of remindersList">
-                    <label nz-checkbox [nzValue]="reminder.value" [(ngModel)]="reminder.checked" [ngModelOptions]="{standalone: true}">{{ reminder.label }}</label>
-                </div>
-            </div>
-        </nz-checkbox-wrapper>
-    </div>
-    <div [formGroup]="inputForm" *ngIf="addOREdit == 0">
-        <div nz-row>
-            <nz-form-item>
-                <nz-form-label [nzNoColon]="true">Reminder</nz-form-label>
-                <div class="form-group">
-                <nz-form-label>Title</nz-form-label>
-                    <input nz-input formControlName="staffAlert" disabled />
-                </div>
-            </nz-form-item>
-        </div>
-        <div nz-row [nzGutter]="12">
-            <div nz-col nzSpan="12" class="form-group">
-                <label for="">Reminder Date</label>
-                <nz-date-picker formControlName="reminderDate" [nzFormat]="dateFormat"></nz-date-picker>
-            </div>
-            <div nz-col nzSpan="12" class="form-group">
-                <label for="">Due Date</label>
-                <nz-date-picker formControlName="dueDate" [nzFormat]="dateFormat"></nz-date-picker>
-            </div>
-        </div>
-        <div nz-row [nzGutter]="12">
-            <div nz-col nzSpan="5" class="form-group">
-                <label for="">Recurring</label>
-                <label style="margin: 10px;" nz-checkbox formControlName="recurring"></label>
-            </div>
-            <div nz-col nzOffset = "3" nzSpan="8" class="form-group">
-                <nz-form-item>
-                    <nz-form-label [nzNoColon]="true">Recurring Every</nz-form-label>
-                    <nz-form-control nzErrorTip="Preferences is required!">
-                        <nz-select formControlName="recurrInt" nzAllowClear nzPlaceHolder="" [nzDropdownMatchSelectWidth]="false">
-                            <nz-option *ngFor="let d of dayInt" [nzValue]="d" [nzLabel]="d"></nz-option>
-                        </nz-select>
-                    </nz-form-control>
-                </nz-form-item>
-            </div>
-            <div nz-col nzSpan="8" class="form-group">
-                <nz-form-item>
-                    <nz-form-label [nzNoColon]="true"></nz-form-label>
-                    <nz-form-control nzErrorTip="Preferences is required!">
-                        <nz-select formControlName="recurrStr" nzAllowClear nzPlaceHolder="" [nzDropdownMatchSelectWidth]="false">
-                            <nz-option *ngFor="let d of dayStr" [nzValue]="d" [nzLabel]="d"></nz-option>
-                        </nz-select>
-                    </nz-form-control>
-                </nz-form-item>
-            </div>
-        </div>
-        <div nz-row [nzGutter]="12">
-            <div nz-col nzSpan="16" class="form-group">
-                <nz-form-item>
-                    <nz-form-label [nzNoColon]="true">Follow-up Email</nz-form-label>
-                    <nz-form-control nzErrorTip="Enter a valid email address!">
-                        <nz-input-group>
-                            <input type="text" nz-input formControlName="followUpEmail" />
-                        </nz-input-group>
-                    </nz-form-control>
-                </nz-form-item>
-            </div>
-        </div>
-        <div nz-row>
-            <div class="form-group">
-                <label for="">Notes</label>
-                <textarea rows="4" nz-input formControlName="notes"></textarea>
-            </div>
-        </div>
-    </div>
-    <div *nzModalFooter>
-        <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
-        <button nz-button nzType="primary" (click)="process()" [nzLoading]="isLoading">Save</button>
-    </div>
-</nz-modal>
 
+<nz-modal [(nzVisible)]="consentOpen" [nzTitle]="addOREdit == 0 ? 'Add Consent' : 'Edit Consent'" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+    <div>
+        
+        <div nz-row nzGutter="16">
+            <div nz-col nzSpan="12" [formGroup]="consentGroup">
+                <nz-select style="width:100%" nzAllowClear formControlName="consent"  nzPlaceHolder="Consent">
+                    <nz-option *ngFor="let data of lists"  [nzValue]="data" [nzLabel]="data"></nz-option>
+                </nz-select>
+            </div>
+            <div nz-col nzSpan="12" [formGroup]="consentGroup">                
+                <nz-date-picker formControlName="expiryDate" [nzFormat]="dateFormat" nzPlaceHolder="Expiry Date"></nz-date-picker>
+            </div>
+        </div>
+        <div nz-row nzGutter="16" >
+            <div nz-col [formGroup]="consentGroup">
+                <label for=""><h4>Notes</h4></label>
+                <textarea nz-input cols="30" rows="5" formControlName="notes"></textarea>
+            </div>
+        </div>
 
-<nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
-    <div class="col-md-12 spinner" *ngIf="loading">
-        <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
+        <div *nzModalFooter>
+            <ng-container>
+                <button nz-button nzType="default" (click)="handleCancel()">
+                    <span>Cancel</span>
+                </button>
+                <button nz-button nzType="primary" (click)="consentProcess()" [disabled]="!this.consentGroup.get('consent').value">
+                    <span>Save</span>
+                </button>
+            </ng-container>
+        </div>
     </div>
-    <div nz-row>
-        <iframe *ngIf="tryDoctype" [src]="tryDoctype" width="950" height="600"></iframe> 
-    </div>
-</nz-drawer>
+  </nz-modal>

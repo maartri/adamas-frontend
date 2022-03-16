@@ -8,7 +8,7 @@
     </div>
     <div nz-row>
         <div nz-col>
-            <nz-table #basicTable nzBordered [nzShowPagination]="true" [nzPageSize]="20" [nzSize]="'small'" [nzFrontPagination]="true" [nzLoading]="loading" [nzData]="tableData">
+            <nz-table #basicTable nzBordered [nzShowPagination]="true" [nzSize]="'small'" [nzFrontPagination]="true" [nzLoading]="loading" [nzData]="tableData">
                 <thead>
                     <tr>
                         <th nzLeft>Title</th>
@@ -896,9 +896,9 @@
                     </div>
                 </ng-container>
             </div>
-                 </div>
-             </div>
-        </nz-modal>
+        </div>
+    </div>
+</nz-modal>
 <nz-modal [nzWidth]="500"  [(nzVisible)]="competencymodal" nzTitle="COMPETENCIES" (nzOnCancel)="handleCompCancel()">
     <form nz-form [formGroup]="competencyForm" >
         <div nz-row>    

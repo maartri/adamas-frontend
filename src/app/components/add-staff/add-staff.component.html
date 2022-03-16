@@ -426,8 +426,9 @@
                 <div nz-col nzSpan="24">
                     <div class="form-group" [formGroup]="staffForm">
                         <nz-radio-group formControlName="radioGroup">
-                            <label nz-radio [nzValue]="'HRNOTE'">HR NOTE</label>
+                            <label nz-radio [nzValue]="'CASENOTE'">CASE NOTE</label>
                             <label nz-radio [nzValue]="'OPNOTE'">OP NOTE</label>
+                            <label nz-radio [nzValue]="'CLINOTE'">CLINICAL NOTE</label>
                         </nz-radio-group>
                         
                         <textarea rows="4" nz-input formControlName="notes" style="margin:15px 0"></textarea>
@@ -479,7 +480,7 @@
             <button nz-button nzType="default" (click)="next()" *ngIf="current < 11" [disabled]="!nextRequired">
                 <span>Next</span>
             </button>
-            <button nz-button nzType="primary" [nzLoading]="postLoad" (click)="save()" *ngIf="current == 11" >
+            <button nz-button nzType="primary" (click)="save()" *ngIf="current == 11" >
                 <span>Done</span>
             </button>
         </ng-container>

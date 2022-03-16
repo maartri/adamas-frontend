@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 
-import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, ClientService, 
-    BILLING_CYCLE, BILLING_RATE_IS, CREDITCARD } from '@services/index';
+import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, ClientService } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
 import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -45,49 +44,6 @@ import { NzModalService } from 'ng-zorro-antd/modal';
         .layer2 > *:last-child > *{
             width:12rem;
         }
-
-        .mk-group{
-            display:flex;
-            margin-bottom: 1rem;
-            flex-wrap: wrap;
-            padding: 0 1rem;
-        }
-        .mk-group label{
-            padding-top: calc(0.15rem + 1px);
-            padding-bottom: calc(0.15rem + 1px);
-            margin-bottom: 0;
-            font-size: inherit;
-            flex: 0 0 30%;
-            max-width: 30%;
-        }
-        .mk-group div{
-            flex: 0 0 70%;
-            max-width: 70%;
-        }
-        .mk-group div > *{
-            width:100%;
-        }
-        .check-group{
-            display: flex;
-            flex-wrap: wrap;
-            padding: 1rem 0;
-        }
-        .check-group > *{
-            padding:10px;
-            margin:0;
-        }
-        .mk-group-inline{
-            display:flex;
-            padding: 0 1rem;
-        }
-        .mk-group-inline > div > *{
-            padding: 4px 5px;
-        }
-        .mk-group-inline > div{
-            margin-right:10px;
-            background: #efefef;
-            border-radius: 5px;
-        }
         `
     ],
     templateUrl: './profile-accounting.html',
@@ -99,8 +55,6 @@ export class ProfileAccounting implements OnInit, OnDestroy {
     private unsubscribe: Subject<void> = new Subject();
     profileForm: FormGroup;
 
-    checked: boolean = true;
-
     user: any;
     loading: boolean = false;
     modalOpen: boolean = false;
@@ -108,12 +62,6 @@ export class ProfileAccounting implements OnInit, OnDestroy {
     inputForm: FormGroup;
     tableData: Array<any> = [];
     alist: Array<any> = [];
-
-    contributionActivities: Array<string> = [];
-    billingCycleList: Array<string> = BILLING_CYCLE;
-    billingrateList: Array<string> = BILLING_RATE_IS;
-    creditCardList: Array<string> = CREDITCARD;
-
 
     constructor(
         private timeS: TimeSheetService,
@@ -161,15 +109,11 @@ export class ProfileAccounting implements OnInit, OnDestroy {
 
     search(user: any = this.user) {
         this.cd.reattach();
-        this.loading = true;
 
+        this.loading = true;
         this.listS.getaccountingprofile(user.id).subscribe(data => {
             this.profileForm.patchValue(data);
             this.cd.markForCheck();
-        });
-
-        this.listS.getcontributionactivity().subscribe(data => {
-            this.contributionActivities = data.map(x => x).filter(x => x != '');
         });
     }
 
@@ -220,18 +164,11 @@ export class ProfileAccounting implements OnInit, OnDestroy {
             terms: null,
             title: null,
             type:null,
-            whs:null,
-            uniqueID: null
+            whs:null
         })
     }
 
     save() {
-        const profileForm = this.profileForm.value;
-
-        console.log(profileForm);
-
-        this.listS.updateaccountingprofile(profileForm, profileForm.uniqueID)
-            .subscribe(data => console.log(data));
 
     }
 

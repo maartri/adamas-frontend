@@ -1,5 +1,5 @@
 <nz-layout>
-    <nz-sider [nzCollapsible]="true" [(nzCollapsed)]="isCollapsed" [nzBreakpoint]="'lg'" [nzCollapsedWidth]="0"
+    <nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" [nzBreakpoint]="'lg'" [nzCollapsedWidth]="0"
         [nzZeroTrigger]="zeroTrigger">
         <div class="logo"></div>
         <ul nz-menu [nzMode]="'vertical'" nzTheme="dark" class="main-list">
@@ -12,8 +12,6 @@
             <li nz-menu-item *ngIf="!ISTAFF_BYPASS" routerLinkActive="ant-menu-item-selected" routerLink="/admin/time-attendance"><i nz-icon nzType="clock-circle" nzTheme="outline" style="margin-right: 15px;"></i>Time & Attendance</li>
             <li nz-menu-item *ngIf="!ISTAFF_BYPASS" routerLinkActive="ant-menu-item-selected" routerLink="/admin/reports"><i nz-icon class="material-icons"> poll </i> Reports</li>
             <li nz-menu-item *ngIf="!ISTAFF_BYPASS" routerLinkActive="ant-menu-item-selected" routerLink="/admin/hcp"><i nz-icon nzType="sliders" nzTheme="outline"></i> HCP</li>
-            <li nz-menu-item *ngIf="!ISTAFF_BYPASS" routerLinkActive="ant-menu-item-selected" routerLink="/admin/ndia"><i nz-icon nzType="sliders" nzTheme="outline"></i> NDIA</li>
-            <li nz-menu-item *ngIf="!ISTAFF_BYPASS" routerLinkActive="ant-menu-item-selected" routerLink="/admin/chspDex"><i nz-icon nzType="sliders" nzTheme="outline"></i> CHSP/DEX</li>
             <li nz-menu-item *ngIf="!ISTAFF_BYPASS" routerLinkActive="ant-menu-item-selected" routerLink="/admin/analyse-budget"><i nz-icon class="material-icons"> show_chart </i> Analyse & Budget</li> <!-- AHSAN -->
             <li nz-menu-item *ngIf="!ISTAFF_BYPASS" routerLinkActive="ant-menu-item-selected" routerLink="/admin/glance"><i nz-icon class="material-icons"> search </i> At A Glance</li>
             <li nz-menu-item *ngIf="!ISTAFF_BYPASS" routerLinkActive="ant-menu-item-selected" routerLink="/admin/configuration"><i nz-icon class="material-icons"> settings_applications </i> Configuration</li>
@@ -199,8 +197,6 @@
                 <router-outlet></router-outlet>
             </div>
         </nz-content>
-        
-        <app-global-alerts></app-global-alerts>
         <!-- <nz-footer>Put footer here</nz-footer> -->
     </nz-layout>
 </nz-layout>
@@ -208,6 +204,3 @@
 <ng-template #zeroTrigger>
     <i nz-icon nzType="menu-fold" nzTheme="outline"></i>
 </ng-template>
-
-
-

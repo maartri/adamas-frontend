@@ -1,114 +1,53 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 
-import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, ClientService } from '@services/index';
+import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, ClientService, dateFormat } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
 import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, ControlValueAccessor, FormArray } from '@angular/forms';
 
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { Filters } from '@modules/modules';
-import { AngularEditorConfig } from '@kolkov/angular-editor';
+import { RECIPIENT_OPTION, ModalVariables, ProcedureRoster, UserToken, CallAssessmentProcedure, Consents } from '@modules/modules';
+
+import format from 'date-fns/format';
+
 @Component({
-    styles: [`
-        nz-table{
-            margin-top:20px;
-        }
-         nz-select{
-            width:100%;
-        }
-        label.chk{
-            position: absolute;
-            top: 1.5rem;
-        }
-        .overflow-list{
-            overflow: auto;
-            height: 8rem;
-            border: 1px solid #e3e3e3;
-        }
-        ul{
-            list-style:none;
-        }
-        li{
-            margin:5px 0;
-        }
-        .chkboxes{
-            padding:4px;
-        }
-        button{
-            margin-right:1rem;
-        }
-    `],
+    selector: '',
     templateUrl: './note.html',
+    styles:[`
+    h4{
+        margin-top:10px;
+    }
+    `],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-
 
 export class ClinicalNote implements OnInit, OnDestroy {
     private unsubscribe: Subject<void> = new Subject();
     user: any;
-    inputForm: FormGroup;
-    caseFormGroup: FormGroup;
-    tableData: Array<any>;
-
-    checked: boolean = false;
-    isDisabled: boolean = false;
     loading: boolean = false;
 
-    modalOpen: boolean = false;
-    addOrEdit: number;
-    dateFormat: string = 'dd/MM/yyyy';
-    printLoad: boolean = false;
+    consentOpen: boolean = false;
+    consentGroup: FormGroup;
+    notesList: Array<any> = [];
 
-    filters: Filters = {
-        acceptedQuotes: false,
-        allDates: false,
-        archiveDocs: true,
-        display: 20
-    };
+    addOREdit: number;
 
+    lists: Array<any>;
 
-    alist: Array<any> = [];
-    blist: Array<any> = [];
-    clist: Array<any> = [];
-    dlist: Array<any> = [];
-    mlist: Array<any> = [];
-    public editorConfig:AngularEditorConfig = {
-        editable: true,
-        spellcheck: true,
-        height: '20rem',
-        minHeight: '5rem',
-        translate: 'no',
-        customClasses: []
-    };
-    recipientStrArr: Array<any> = [];
-
-    private default = {
-        notes: '',
-        publishToApp: false,
-        restrictions: '',
-        restrictionsStr: 'public',
-        alarmDate: null,
-        whocode: '',
-        program: '*VARIOUS',
-        discipline: '*VARIOUS',
-        careDomain: '*VARIOUS',
-        category: null,
-        recordNumber: null
-    }
-    restrict_list: any;
-
+    dateFormat: string = dateFormat;
+    
     constructor(
         private timeS: TimeSheetService,
         private sharedS: ShareService,
-        private clientS: ClientService,
-        private listS:ListService,
+        private listS: ListService,
         private router: Router,
         private globalS: GlobalService,
         private formBuilder: FormBuilder,
         private modalService: NzModalService,
         private cd: ChangeDetectorRef
     ) {
+        cd.detach();
         this.router.events.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (data instanceof NavigationEnd) {
                 if (!this.sharedS.getPicked()) {
@@ -118,7 +57,8 @@ export class ClinicalNote implements OnInit, OnDestroy {
         });
 
         this.sharedS.changeEmitted$.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-            if (this.globalS.isCurrentRoute(this.router, 'opnote')) {
+            if (this.globalS.isCurrentRoute(this.router, 'note')) {
+                console.log('sasd')
                 this.user = data;
                 this.search(data);
             }
@@ -126,263 +66,133 @@ export class ClinicalNote implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.user = this.sharedS.getPicked();
-        // this.search(this.user);
+        this.user = this.sharedS.getPicked();        
         this.buildForm();
-    }
-
-    print(){
-
-    }
-
-    ngOnDestroy(): void {
-        this.unsubscribe.next();
-        this.unsubscribe.complete();
-    }
-
-    search(user: any = this.user) {
-        this.getNotes(this.user);
-        this.getSelect();
-    }
-
-    filterChange(data: any){
         this.search(this.user);
+
+        this.listDropDowns()
     }
 
-    getNotes(user:any) {
-        this.loading = true;
-            this.listS.getclinicalnotes(user.id).subscribe(data=> {
-                this.tableData = data;
-                this.loading = false;
-                this.cd.markForCheck();
-                this.cd.detectChanges();
-            });
-    }
-
-    patchData(data: any) {
-        this.inputForm.patchValue({
-            autoLogout: data.autoLogout,
-            emailMessage: data.emailMessage,
-            excludeShiftAlerts: data.excludeShiftAlerts,
-            inAppMessage: data.inAppMessage,
-            logDisplay: data.logDisplay,
-            pin: data.pin,
-            rosterPublish: data.rosterPublish,
-            shiftChange: data.shiftChange,
-            smsMessage: data.smsMessage
-        });
-    }
-
-
-    buildForm() {
-
-        this.inputForm = this.formBuilder.group({
-            autoLogout: [''],
-            emailMessage: false,
-            excludeShiftAlerts: false,
-            inAppMessage: false,
-            logDisplay: false,
-            pin: [''],
-            rosterPublish: false,
-            shiftChange: false,
-            smsMessage: false
-        });
-
-        this.caseFormGroup = this.formBuilder.group({
+    buildForm(){
+        this.consentGroup = this.formBuilder.group({
+            recordNumber: null,
+            personID: null,
+            consent: '',
             notes: '',
-            publishToApp: false,
-            restrictions: '',
-            restrictionsStr: 'public',
-            alarmDate: null,
-            whocode: '',
-            program: '*VARIOUS',
-            discipline: '*VARIOUS',
-            careDomain: '*VARIOUS',
-            category: ['', [Validators.required]],
-            recordNumber: null
-        });
+            expiryDate: null
+         })
 
-        this.caseFormGroup.get('restrictionsStr').valueChanges.subscribe(data => {
-            if (data == 'restrict') {
-                this.getSelect();
-            } 
-        });
-    }
-
-    getSelect() {
-        this.timeS.getmanagerop().subscribe(data => {
-                data.forEach(x => {
-                    this.mlist.push({
-                         name:x, value:x, checked:false
-                      });
-                });
-                this.cd.markForCheck();
-        });
-
-        this.timeS.getdisciplineop().pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-            data.push('*VARIOUS');
-            this.blist = data;
-        });
-        this.timeS.getcaredomainop().pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-            data.push('*VARIOUS');
-            this.clist = data;
-        });
-        this.timeS.getprogramop(this.user.id).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-            data.push('*VARIOUS');
-            this.alist = data;
-        });
-
-        this.listS.getcasenotecategory(2).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-            this.dlist = data;
-        })
-    }
-
-    onKeyPress(data: KeyboardEvent) {
-        return this.globalS.acceptOnlyNumeric(data);
+        setTimeout(() => {
+            this.consentGroup.controls['consent'].enable();
+        }, 0);
     }
 
     trackByFn(index, item) {
         return item.id;
     }
 
-    save() {        
-        if (!this.globalS.IsFormValid(this.caseFormGroup))
-            return;
-        
-        const { alarmDate, restrictionsStr, whocode, restrictions } = this.caseFormGroup.value;
-        const cleanDate = this.globalS.VALIDATE_AND_FIX_DATETIMEZONE_ANOMALY(alarmDate);
-
-        let privateFlag = restrictionsStr == 'workgroup' ? true : false;
-        let restricts = restrictionsStr != 'restrict';
-
-        this.caseFormGroup.controls["restrictionsStr"].setValue(privateFlag);
-
-        this.caseFormGroup.controls["alarmDate"].setValue(cleanDate);
-        this.caseFormGroup.controls["whocode"].setValue(this.user.code);
-        this.caseFormGroup.controls["restrictions"].setValue(restricts ? '' : this.listStringify());
-
-        this.loading = true;
-        if (this.addOrEdit == 1) {            
-            this.clientS.postclinicalnotes(this.caseFormGroup.value, this.user.id)
-                .subscribe(data => {
-                    this.globalS.sToast('Success', 'Note inserted');
-                    this.handleCancel();
-                    this.getNotes(this.user);
-                });
-        }
-        if (this.addOrEdit == 2) {
-            this.clientS.updateclinicalnotes(this.caseFormGroup.value, this.caseFormGroup.value.recordNumber)
-                .subscribe(data => {
-                    this.globalS.sToast('Success', 'Note updated');
-                    this.handleCancel();
-                    
-                    if(!this.globalS.isEmpty(this.restrict_list)){
-                        this.mlist.forEach(element => {
-                                element.checked = false;
-                        });
-                    }
-                    this.restrict_list = [];
-                    this.getNotes(this.user);                    
-                });
-        }
+    resetAll(){
+        this.search();
     }
 
-    listStringify(): string {
-        let tempStr = '';
-        this.recipientStrArr.forEach((data, index, array) => {
-            array.length - 1 != index ?
-                tempStr += data.trim() + '|' :
-                tempStr += data.trim();
-        });
-        return tempStr;
-    }
+    consentProcess(){
+        const group = this.consentGroup.value;
+        // console.log(format(group.expiryDate, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"));
+        // this.competencyGroup.controls['mandatory'].setValue((this.competencyGroup.value.mandatory == null) ? false : this.competencyGroup.value.mandatory)
+        let _consentGroup: Consents = {
+            recordNumber: group.recordNumber,
+            personID: this.user.id,
+            notes: group.notes,
+            date1: group.expiryDate ? group.expiryDate : null,
+            name: group.consent
+        }
 
-    canDeactivate() {
-        if (this.inputForm && this.inputForm.dirty) {
-            this.modalService.confirm({
-                nzTitle: 'Save changes before exiting?',
-                nzContent: '',
-                nzOkText: 'Yes',
-                nzOnOk: () => {
-                    this.save();
-                },
-                nzCancelText: 'No',
-                nzOnCancel: () => {
+        console.log(_consentGroup);
+        // return;
 
+        if(this.addOREdit == 0){            
+            this.timeS.postconsents(_consentGroup).subscribe(data => {
+                if(data){
+                    this.resetAll();
+                    this.globalS.sToast('Success','Consent Inserted');
+                    this.handleCancel();
                 }
-            });
+            })
         }
-        return true;
+
+        if(this.addOREdit == 1){
+            this.timeS.updateconsents(_consentGroup).subscribe(data => {
+                if(data){
+                    this.resetAll();
+                    this.globalS.sToast('Success','Consent Updated');
+                    this.handleCancel();
+                }
+            })
+        }
     }
 
     showAddModal() {
-        this.addOrEdit = 1;
-        this.modalOpen = true;
+        this.addOREdit = 0;
+        this.buildForm();
+        this.consentOpen = true;
+        this.listDropDowns();
+
+    
     }
 
-    showEditModal(index: number) {
-
-        this.addOrEdit = 2;
-        
-        const { personID, recordNumber, privateFlag, whoCode, detailDate, craetor, detail, detailOriginal, extraDetail2, restrictions, alarmDate, program,discipline, careDomain, publishToApp } = this.tableData[index];
-        
-        
-        this.restrict_list = restrictions.split('|');
-        
-        if(!this.globalS.isEmpty(restrictions)){
-            this.mlist.forEach(element => {
-                if(this.restrict_list.includes(element.name)){
-                    element.checked = true;
-                    console.log(element.name + "yes")
-                }
-            });
-        }
+    listDropDowns(){
+        this.listS.getconsents(this.user.id).subscribe(data => this.lists = data)
+    }
 
 
-        this.caseFormGroup.patchValue({
-            notes: detail,
-            publishToApp: publishToApp,
-            restrictions: '',
-            restrictionsStr: this.determineRadioButtonValue(privateFlag, restrictions),
-            alarmDate: alarmDate,
-            program: program,
-            discipline: discipline,
-            careDomain: careDomain,
-            category: extraDetail2,
-            recordNumber: recordNumber
+    updateconsentmodal(data: any){
+
+        this.consentOpen = true;
+        this.addOREdit = 1;
+        
+        this.lists = [data.consent];
+
+        this.consentGroup.patchValue({
+            recordNumber: data.recordNumber,
+            personID: data.personID,
+            consent: data.consent,
+            notes: data.notes,
+            expiryDate: data.expiryDate
         });
-        this.modalOpen = true;
-        this.cd.detectChanges();
+
+        // this.consentGroup.controls['consent'].disable();
     }
 
-    determineRadioButtonValue(privateFlag: Boolean, restrictions: string): string {
-        if (!privateFlag && this.globalS.isEmpty(restrictions)) {
-            return 'public';
-        }
-
-        if (!privateFlag && !this.globalS.isEmpty(restrictions)) {
-            return 'restrict'
-        }
-        return 'workgroup';
+    deleteconsent(data: any){
+        this.timeS.deleteconsents(data.recordNumber)
+                    .subscribe(data => {
+                        if(data){
+                            this.resetAll();
+                            this.globalS.sToast('Success','Consent Deleted')
+                        }
+                    })
     }
 
-    delete(index: any) {
-        const { recordNumber } = this.tableData[index];
+    search(user: any = this.user){
+        this.cd.reattach();
+        this.loading = true;
 
-        this.clientS.deleteclinicalnotes(recordNumber).subscribe(data => {
-            this.globalS.sToast('Success', 'Note deleted');
-            this.handleCancel();
-            this.getNotes(this.user);
-        });
+        this.listS.getclinicalnotes(user.id).subscribe(notes => {
+            this.loading = false;
+            this.notesList = notes;
+            this.cd.markForCheck();
+        })        
     }
 
-    log(event: any) {
-        this.recipientStrArr = event;
+    ngOnDestroy(): void {
+
     }
 
-    handleCancel() {
-        this.modalOpen = false;
-        this.loading = false;
-        this.caseFormGroup.reset(this.default);
+    handleCancel(){
+        this.consentOpen = false;
+    }
+
+    handleOk(){
+
     }
 }

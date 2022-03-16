@@ -3,7 +3,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
-import { GlobalService, ListService ,MenuService, PrintService, TimeSheetService} from '@services/index';
+import { GlobalService, ListService ,MenuService, PrintService} from '@services/index';
 import { SwitchService } from '@services/switch.service';
 import { NzModalService } from 'ng-zorro-antd';
 import { Subject } from 'rxjs';
@@ -42,10 +42,12 @@ export class StaffUserGroupsComponent implements OnInit {
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
     private switchS:SwitchService,
-    private timeS:TimeSheetService,
+    private listS:ListService,
     private menuS:MenuService,
     private formBuilder: FormBuilder,
+    private http: HttpClient,
     private printS:PrintService,
+    private fb: FormBuilder,
     private sanitizer: DomSanitizer,
     private ModalS: NzModalService,
     ){}
@@ -182,23 +184,10 @@ export class StaffUserGroupsComponent implements OnInit {
               domain: 'STAFFTYPE',
             }
             ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-              if (data)
-              {
-                this.timeS.postaudithistory({
-                  Operator:this.tocken.user,
-                  actionDate:this.globalS.getCurrentDateTime(),
-                  auditDescription:'User Group Changed',
-                  actionOn:'STAFFTYPE',
-                  whoWhatCode:group.get('recordNumber').value, //inserted
-                  TraccsUser:this.tocken.user,
-                }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-                  this.globalS.sToast('Success', 'Update successful');
-                }
-                );
-              }else
-              {
-                this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
-              }
+              if (data) 
+              this.globalS.sToast('Success', 'Updated successful');     
+              else
+              this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
               this.loadData();
               this.postLoading = false;          
               this.isUpdate = false;
@@ -213,19 +202,9 @@ export class StaffUserGroupsComponent implements OnInit {
           this.postLoading = true;     
           const group = this.inputForm;
           this.menuS.deleteDomain(data.recordNumber)
-          .pipe(takeUntil(this.unsubscribe)).subscribe(datas => {
-            if (datas) {
-              this.timeS.postaudithistory({
-                Operator:this.tocken.user,
-                actionDate:this.globalS.getCurrentDateTime(),
-                auditDescription:'User Groups Deleted',
-                actionOn:'STAFFTYPE',
-                whoWhatCode:data.recordNumber, //inserted
-                TraccsUser:this.tocken.user,
-              }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-                this.globalS.sToast('Success', 'Deleted successful');
-              }
-              );
+          .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (data) {
+              this.globalS.sToast('Success', 'Data Deleted!');
               this.loadData();
               return;
             }

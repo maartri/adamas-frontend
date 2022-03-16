@@ -145,6 +145,19 @@ export class CloseRosterComponent implements OnInit {
       this.selectedFunding = event;
     if (index == 2)
       this.selectedPrograms = event;
+
+    if (index == 11 && event.target.checked) {
+      console.log("11")
+    }
+    if (index == 12 && event.target.checked) {
+      console.log("12")
+    }
+    if (index == 13 && event.target.checked) {
+      console.log("13")
+    }
+    if (index == 14 && event.target.checked) {
+      console.log("14")
+    }
   }
 
   checkAll(index: number): void {
@@ -202,6 +215,56 @@ export class CloseRosterComponent implements OnInit {
     });
   }
 
+  fetchID(index: number): void {
+    if (index == 1) {
+      this.BlockFunded = true;
+      console.log("1", this.BlockFunded)
+    }
+    if (index == 2) {
+      console.log("2")
+    }
+    if (index == 3) {
+      console.log("3")
+    }
+    if (index == 4) {
+      console.log("4")
+    }
+  }
+
+
+  // fetchID(e) {
+  //   debugger;
+  //   e = e || window.event;
+  //   e = e.target || e.srcElement;
+  //   this.chkId = e.id
+
+  //   switch (this.chkId) {
+  //     case 'chkBlockFunded':
+  //       this.whereString = "WHERE [GROUP] = 'PROGRAMS' AND ISNULL(UserYesNo2, 0) = 0 ";
+  //       break;
+  //     case 'chkIndividualPackages' && 'chkCDCPackages':
+  //       this.whereString = "WHERE [GROUP] = 'PROGRAMS' AND ISNULL(UserYesNo2, 0) = 1 AND ISNULL(UserYesNo1, 0) = 1 ";
+  //       break;
+  //     case 'chkIndividualPackages' && 'chkNonCDCPackages':
+  //       this.whereString = "WHERE [GROUP] = 'PROGRAMS' AND ISNULL(UserYesNo2, 0) = 1 AND ISNULL(UserYesNo1, 0) = 0 ";
+  //       break;
+  //     case 'chkIndividualPackages' && 'chkCDCPackages' && 'chkNonCDCPackages':
+  //       this.whereString = "WHERE [GROUP] = 'PROGRAMS' AND ISNULL(UserYesNo2, 0) = 1 ";
+  //       break;
+  //     case 'chkBlockFunded' && 'chkIndividualPackages' && 'chkNonCDCPackages':
+  //       this.whereString = "WHERE [GROUP] = 'PROGRAMS' AND (ISNULL(UserYesNo2, 0) = 0) OR (ISNULL(UserYesNo2, 0) = 1 AND ISNULL(UserYesNo1, 0) = 0) ";
+  //       break;
+  //     case 'chkBlockFunded' && 'chkIndividualPackages' && 'chkCDCPackages':
+  //       this.whereString = "WHERE [GROUP] = 'PROGRAMS' AND (ISNULL(UserYesNo2, 0) = 0) OR (ISNULL(UserYesNo2, 0) = 1 AND ISNULL(UserYesNo1, 0) = 1) ";
+  //       break;
+  //     case 'chkBlockFunded' && 'chkIndividualPackages' && 'chkCDCPackages' && 'chkNonCDCPackages':
+  //       this.whereString = "WHERE [GROUP] = 'PROGRAMS' AND (ISNULL(UserYesNo2, 0) = 0) OR (ISNULL(UserYesNo2, 0) = 1) ";
+  //       break;
+
+  //   }
+
+  // }
+
   fetchAll(e) {
     if (e.target.checked) {
       this.whereString = "WHERE";
@@ -209,6 +272,40 @@ export class CloseRosterComponent implements OnInit {
     } else {
       this.whereString = "Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
       this.loadPrograms();
+    }
+  }
+
+  loadProgramsNew(index: any) {
+    this.loading = true;
+    this.billingS.getlistProgramPackagesFilter(this.check).subscribe(data => {
+      this.programList = data;
+      this.tableData = data;
+      this.loading = false;
+      this.allProgramsChecked = true;
+      this.checkAll(2);
+    });
+  }
+
+  searchData(): void {
+    this.loading = true;
+
+    this.selectedPrograms = this.programList
+      .filter(opt => opt.checked)
+      .map(opt => opt.name).join("','")
+
+    this.selectedFunding = this.fundingList
+      .filter(opt => opt.checked)
+      .map(opt => opt.uniqueID).join("','")
+
+    var postdata = {
+      blockFunded: this.inputForm.value.chkBlockFunded,
+      individualPackages: this.inputForm.value.chkIndividualPackages,
+      nonCDCPackages: this.inputForm.value.chkNonCDCPackages,
+      cdcPackages: this.inputForm.value.chkCDCPackages,
+      allFunding: this.allFundingChecked,
+      selectedFunding: (this.allFundingChecked == false) ? this.selectedFunding : '',
+      allProgarms: this.allProgramsChecked,
+      selectedPrograms: (this.allProgramsChecked == false) ? this.selectedPrograms : ''
     }
   }
 

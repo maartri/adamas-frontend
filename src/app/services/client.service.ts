@@ -218,18 +218,6 @@ export class ClientService {
         return this.auth.delete(`${client}/opnotes/${id}`)
     }
 
-    
-
-    postclinicalnotes(data: any, personId: string): Observable<any> {
-        return this.auth.post(`${client}/clinicalnote/${personId}`, data)
-    }
-    updateclinicalnotes(data: any, recordNo: string): Observable<any> {
-        return this.auth.put(`${client}/clinicalnote/${recordNo}`, data)
-    }
-    deleteclinicalnotes(id: number): Observable<any> {
-        return this.auth.delete(`${client}/clinicalnote/${id}`)
-    }
-
     getincidents(id: string): Observable<any> {
         return this.auth.get(`${client}/incidents/${id}`)
     }

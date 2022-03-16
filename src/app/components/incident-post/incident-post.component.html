@@ -5,7 +5,7 @@
         <div class="flexy">
     
             <nz-steps [nzSize]="'small'" [nzCurrent]="current" nzDirection="vertical">
-                <nz-step [hidden]="hideIncidentType" class="mini" nzTitle="Incident Type" nzDescription=""></nz-step>
+                <nz-step class="mini" nzTitle="Incident Type" nzDescription=""></nz-step>
                 <nz-step class="mini" nzTitle="Step 1" nzDescription=""></nz-step>
                 <nz-step class="mini" nzTitle="Step 2" nzDescription=""></nz-step>
                 <nz-step class="mini" nzTitle="Step 3" nzDescription=""></nz-step>
@@ -59,7 +59,7 @@
                                                 <label for="">Case Manager</label>
                                                 <div>
                                                     <nz-select class="nzselect-min" formControlName="recipient" [nzDropdownMatchSelectWidth]="false" nzShowSearch nzAllowClear>
-                                                        <nz-option *ngFor="let d of listStaff" [nzLabel]="d" [nzValue]="d"></nz-option>
+                                                        <nz-option *ngFor="let d of listStaff" [nzLabel]="d.accountNo" [nzValue]="d.accountNo"></nz-option>
                                                     </nz-select>
                                                 </div>
                                             </div>
@@ -576,14 +576,14 @@
         </div>
         <div *nzModalFooter>
             <ng-container>
-                <button class="pos-left" nz-button nzType="primary" (click)="save()" *ngIf="current > 0">
+                <button nz-button nzType="primary" (click)="save()" *ngIf="current > 0">
                     <span>Save</span>
                 </button>
                 <button nz-button nzType="default" (click)="pre()" *ngIf="(current > 0 && operation?.process == 'ADD') || (current > 1 && operation?.process == 'UPDATE')">
                     <span>Previous</span>
                 </button>
                 <!-- [disabled]="!nextRequired" -->
-                <button nz-button nzType="default" (click)="next()" [disabled]="!(current < 9)">
+                <button nz-button nzType="default" (click)="next()" *ngIf="current < 9" >
                     <span>Next</span>
                 </button>
             </ng-container>

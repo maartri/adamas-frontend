@@ -73,15 +73,9 @@
                                                     <td>
                                                         <nz-checkbox-wrapper style="width: 100%;"
                                                             (nzOnChange)="log($event,1)">
-                                                            <!-- <div nz-row *ngFor="let list of fundingList; let i = index">
-                                                                <label nz-checkbox [nzValue]="list.description"
-                                                                    [(ngModel)]="list.checked" (change)="fetchAll($event)"
-                                                                    [ngModelOptions]="{standalone: true}">{{
-                                                                    list.description }}</label>
-                                                            </div> -->
                                                             <div nz-row *ngFor="let list of fundingList; let i = index">
                                                                 <label nz-checkbox [nzValue]="list.description"
-                                                                    [(ngModel)]="list.checked"
+                                                                    [(ngModel)]="list.checked" (change)="fetchAll($event)"
                                                                     [ngModelOptions]="{standalone: true}">{{
                                                                     list.description }}</label>
                                                             </div>

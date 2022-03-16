@@ -28,7 +28,7 @@ export class ClinicalMedication implements OnInit, OnDestroy {
     loading: boolean = false;
 
     consentOpen: boolean = false;
-    inputForm: FormGroup;
+    consentGroup: FormGroup;
     medicationList: Array<any> = [];
 
     addOREdit: number;
@@ -74,11 +74,17 @@ export class ClinicalMedication implements OnInit, OnDestroy {
     }
 
     buildForm(){
-        this.inputForm = this.formBuilder.group({
-            recordNumber: '',
-            personID: '',
-            list: '',
+        this.consentGroup = this.formBuilder.group({
+            recordNumber: null,
+            personID: null,
+            consent: '',
+            notes: '',
+            expiryDate: null
          })
+
+        setTimeout(() => {
+            this.consentGroup.controls['consent'].enable();
+        }, 0);
     }
 
     trackByFn(index, item) {
@@ -89,25 +95,36 @@ export class ClinicalMedication implements OnInit, OnDestroy {
         this.search();
     }
 
-    mediactionProcess(){
-        const group = this.inputForm.value;
-        const {list,recordNumber } = this.inputForm.value;
+    consentProcess(){
+        const group = this.consentGroup.value;
+        // console.log(format(group.expiryDate, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"));
+        // this.competencyGroup.controls['mandatory'].setValue((this.competencyGroup.value.mandatory == null) ? false : this.competencyGroup.value.mandatory)
+        let _consentGroup: Consents = {
+            recordNumber: group.recordNumber,
+            personID: this.user.id,
+            notes: group.notes,
+            date1: group.expiryDate ? group.expiryDate : null,
+            name: group.consent
+        }
+
+        console.log(_consentGroup);
+        // return;
+
         if(this.addOREdit == 0){            
-            this.timeS.postclinicalmedication({PersonID:this.user.id,Description: list}).subscribe(data => {
+            this.timeS.postconsents(_consentGroup).subscribe(data => {
                 if(data){
                     this.resetAll();
-                    this.globalS.sToast('Success','data Inserted');
+                    this.globalS.sToast('Success','Consent Inserted');
                     this.handleCancel();
                 }
             })
         }
 
         if(this.addOREdit == 1){
-            this.timeS.updateclinicalmedication({description: list,PersonID:this.user.id,recordNumber:recordNumber
-              },recordNumber).subscribe(data => {
+            this.timeS.updateconsents(_consentGroup).subscribe(data => {
                 if(data){
                     this.resetAll();
-                    this.globalS.sToast('Success','data Updated');
+                    this.globalS.sToast('Success','Consent Updated');
                     this.handleCancel();
                 }
             })
@@ -119,10 +136,12 @@ export class ClinicalMedication implements OnInit, OnDestroy {
         this.buildForm();
         this.consentOpen = true;
         this.listDropDowns();
+
+    
     }
 
     listDropDowns(){
-        this.listS.getmedication(this.user.id).subscribe(data => this.lists = data)
+        this.listS.getconsents(this.user.id).subscribe(data => this.lists = data)
     }
 
 
@@ -133,19 +152,23 @@ export class ClinicalMedication implements OnInit, OnDestroy {
         
         this.lists = [data.consent];
 
-        this.inputForm.patchValue({
+        this.consentGroup.patchValue({
             recordNumber: data.recordNumber,
             personID: data.personID,
-            list: data.description,
+            consent: data.consent,
+            notes: data.notes,
+            expiryDate: data.expiryDate
         });
+
+        // this.consentGroup.controls['consent'].disable();
     }
 
     deleteconsent(data: any){
-        this.timeS.deleteclinicalmedication(data.recordNumber)
+        this.timeS.deleteconsents(data.recordNumber)
                     .subscribe(data => {
                         if(data){
                             this.resetAll();
-                            this.globalS.sToast('Success','Medication Deleted')
+                            this.globalS.sToast('Success','Consent Deleted')
                         }
                     })
     }

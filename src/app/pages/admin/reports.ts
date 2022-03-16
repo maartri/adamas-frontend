@@ -133,8 +133,6 @@ const inputFormDefault = {
     frm_RosterInclusion: [false],
 
     frm_CustomRptbtn : [false],
-
-    EnableCSVExport : [false],
     
 
     whowhat: [''],
@@ -145,7 +143,7 @@ const inputFormDefault = {
     mta_time_early: [10],
 
 
-    csvExport : [false],
+    
 
     RecipientLeave: [false],
     RecipientUR: [true],
@@ -153,7 +151,6 @@ const inputFormDefault = {
     activeclients: [false],
 
     chkbx_incl_staff: [false],
-
     incl_unapproved_services: [false],
     incl_actuals: [false],
     Incl_inactive: [false],
@@ -242,7 +239,7 @@ const inputFormDefault = {
         '[style.overflow]': 'hidden'
     },
     styles: [`
-
+    
     
     
         button {
@@ -405,9 +402,6 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     frm_HRNotes: boolean;
     frm_OPNotes: boolean;
     chkbx_incl_staff: boolean;
-    
-    chkbx_CSVExport: boolean;
-
     incl_unapproved_services  : boolean;
     incl_actuals : boolean;
     Incl_inactive: boolean; 
@@ -447,7 +441,6 @@ export class ReportsAdmin implements OnInit, OnDestroy, AfterViewInit {
     frm_RosterInclusion:boolean;
 
     frm_CustomRptbtn: boolean;
-    EnableCSVExport : boolean;
 
     
 
@@ -609,12 +602,6 @@ stafftypeArr: Array<any> = constants.types;
     mta_time_overstayed: string;
     mta_time_early: string;
 
-    Viewfilter_Branches: string;
-    Viewfilter_Programs: string;
-    Viewfilter_Coordinater: string;
-
-   CSV_String: any;
-
     ModalName: string;
     FORptModelTitle: string;
     btnid: string;
@@ -668,7 +655,6 @@ stafftypeArr: Array<any> = constants.types;
     endmonth : Date;
     year : Date;
     startmonth: Date;
-    Rptformat : string;
     
 
     //   enddate: string ;  defaultsratdate defaultenddate
@@ -959,9 +945,10 @@ stafftypeArr: Array<any> = constants.types;
                
                 break;
         }  
-                         
-          
-    
+
+        
+
+
     }//ngOninit  
 
     /*   hello(data: any){
@@ -970,34 +957,6 @@ stafftypeArr: Array<any> = constants.types;
        }
    */
     ngAfterViewInit(): void {
-        
-        let filers = forkJoin([ 
-            this.ReportS.GetBranchFilters(this.tocken.user.toString()) ,                                    
-            this.ReportS.GetProgramFilters(this.tocken.user.toString()),
-            this.ReportS.GetCoordinaterFilters(this.tocken.user.toString()),
-            
-        ]);
-        filers.subscribe(data => { 
-            this.Viewfilter_Branches= data[0];
-            this.Viewfilter_Programs= data[1];
-            this.Viewfilter_Coordinater= data[2];  
-
-            if(this.Viewfilter_Programs != "" && this.Viewfilter_Programs != undefined){
-                var sql = "Select Program from Recipients " + this.Viewfilter_Programs.toString();
-                this.listS.getlist(sql).subscribe(x => {
-                   
-                    for(let i=0; i < x.length-1; i++){
-                        this.programsArr = [... this.programsArr ,x[i].program]               
-                    }
-                })
-               
-            }else{
-                this.listS.getreportcriterialist({
-                    listType: 'PROGRAMS',
-                    includeInactive:false
-                }).subscribe(x => this.programsArr = x);
-            }
-        });
 
         this.listS.getreportcriterialist({
             listType: 'FUNDERS',
@@ -1023,7 +982,7 @@ stafftypeArr: Array<any> = constants.types;
 
         
     //    this.listS.GetAllPrograms().subscribe(x => this.programsArr = x);
-    /*    this.listS.getreportcriterialist({
+        this.listS.getreportcriterialist({
             listType: 'PROGRAMS',
             includeInactive:false
         }).subscribe(x => this.programsArr = x);
@@ -1033,15 +992,6 @@ stafftypeArr: Array<any> = constants.types;
             includeInactive: false
         }).subscribe(x => this.branchesArr = x);
 
-           this.listS.getreportcriterialist({
-            listType: 'MANAGERS',
-            includeInactive: false
-        }).subscribe(x => this.managersArr = x)
-    */
-        //this.listS.getlisttimeattendancefilter("PROGRAMS").subscribe(x => this.programsArr = x);
-        this.listS.getlisttimeattendancefilter("BRANCHES").subscribe(x => this.branchesArr = x);
-        this.listS.getlisttimeattendancefilter("CASEMANAGERS").subscribe(x => this.managersArr = x);
-        
         this.listS.getcasenotecategory(0).subscribe(x => this.casenotesArr = x);
         this.listS.getcasenotecategory(1).subscribe(x => this.OPnotesArr = x);
         this.listS.Getrptincidents().subscribe(x => this.incidentArr = x);
@@ -1059,7 +1009,10 @@ stafftypeArr: Array<any> = constants.types;
         this.listS.Getrptsettings_vehicles().subscribe(x => this.settting_vehicleArr = x)
 
 
-     
+        this.listS.getreportcriterialist({
+            listType: 'MANAGERS',
+            includeInactive: false
+        }).subscribe(x => this.managersArr = x)
 
         this.listS.getreportcriterialist({
             listType: 'FUNDERS',
@@ -1072,11 +1025,6 @@ stafftypeArr: Array<any> = constants.types;
         }).subscribe(x => this.fundingRegionsArr = x)
 
         this.listS.getliststaffgroup().subscribe(x => this.staffgroupsArr = x)
-        
-
-        
-
-        
 
 
 
@@ -1123,9 +1071,6 @@ stafftypeArr: Array<any> = constants.types;
         this.frm_OPNotes = false;
 
         this.chkbx_incl_staff = false;
-
-        this.chkbx_CSVExport = false;
-
         this.incl_unapproved_services  = false;
         this.incl_actuals = false;
         this.Incl_inactive= false;
@@ -1169,7 +1114,7 @@ stafftypeArr: Array<any> = constants.types;
         this.UserRptFormatlist = [];
         this.UserRptSQLlist = [];
 
-        this.EnableCSVExport = false;
+
 
         this.ModalName = " CRITERIA "
         
@@ -1232,7 +1177,7 @@ stafftypeArr: Array<any> = constants.types;
         
         
       
-        switch (this.btnid) {          
+        switch (this.btnid) {
             case 'btn-refferallist':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
                 this.ModalName = "REFERRAL LIST  "
@@ -1243,7 +1188,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_options = true;
                 this.chkbx_incl_Contacts = true;
                 this.chkbx_asAddressLabel = true;
-                this.chkbx_CSVExport = true
 
                 break;
                 case 'btn-waitinglist':
@@ -1256,7 +1200,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_options = true;
                 this.chkbx_incl_Contacts = true;
                 this.chkbx_asAddressLabel = true;
-                this.chkbx_CSVExport = true
 
                 break;
             case 'btn-activepackagelist':
@@ -1265,7 +1208,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Date = true;
                 this.frm_Programs = true;
                 this.frm_Funders = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-recipientroster':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1282,7 +1224,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_RosterInclusion = true;
                 this.Rpt_Format = ['Presentation - with Activity', 'Presentation - with No Activity', 'Detail']   
                 this.Roster_staffinclusion   = ['Show Staff Code','Show Staff First Name','Show Staff #'] ;
-                this.chkbx_CSVExport = true
                
                
                 break;
@@ -1296,7 +1237,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Categories = true;
                 this.frm_options = true;
                 this.chkbx_asAddressLabel = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-vouchersummary':
                 this.bodystyle = { height:'300px', overflow: 'auto'}
@@ -1304,7 +1244,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Date = true;
                 this.frm_Recipients = true;
                 this.frm_Programs = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-packageusage':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1316,13 +1255,11 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_options = true;
                 this.chkbx_incl_approvedPrograms = true;
                 this.chkbx_incl_inactive = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-timelength':
                 this.bodystyle = { height:'200px', overflow: 'auto'}
                 this.ModalName = "RECIPIENTS TIME LENGTH REPORT "
                 this.frm_Date = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-unallocatedbookings':
                 this.bodystyle = { height:'400px', overflow: 'auto'}
@@ -1331,7 +1268,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Branches = true;
                 this.frm_Programs = true;
                 this.frm_SVCTypes = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-transportsummary':
                 this.bodystyle = { height:'400px', overflow: 'auto'}
@@ -1340,7 +1276,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Branches = true;
                 this.frm_Programs = true;
                 this.frm_vehicles = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-refferalduringperiod':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1350,7 +1285,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Managers = true;
                 this.frm_Programs = true;
                 this.frm_Categories = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-recipientMasterroster':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1368,7 +1302,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_RosterInclusion = true;
                 this.Rpt_Format = ['Presentation - with Activity', 'Presentation - with No Activity', 'Detail']   
                 this.Roster_staffinclusion   = ['Show Staff Code','Show Staff First Name','Show Staff #'] ;
-                this.chkbx_CSVExport = true
                 
                 break;
             case 'btn-activerecipient':
@@ -1384,7 +1317,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.chkbx_asAddressLabel = true;                
                 this.chkbx_incl_inactive = true;
                 this.chkbx_incl_approvedPrograms = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-inactiverecipient':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1396,7 +1328,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_options = true;
                 this.chkbx_asAddressLabel = true;
                 this.chkbx_incl_Contacts = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-adminduringperiod':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1406,7 +1337,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Managers = true;
                 this.frm_Programs = true;
                 this.frm_Categories = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-dischargeduringperiod':
                 this.bodystyle = { height:'400px', overflow: 'auto'}
@@ -1415,7 +1345,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Branches = true;
                 this.frm_Managers = true;
                 this.frm_Programs = true;
-                this.chkbx_CSVExport = true
 
                 break;
             case 'btn-absentclient':
@@ -1426,7 +1355,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Managers = true;
                 this.frm_Programs = true;
                 this.frm_Categories = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-careerlist':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1439,7 +1367,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.chkbx_asAddressLabel = true;
                 this.chkbx_incl_Contacts = true;
                 this.chkbx_incl_inactive = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-onlybillingclients':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1452,7 +1379,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.chkbx_asAddressLabel = true;
                 this.chkbx_incl_Contacts = true;
                 this.chkbx_incl_inactive = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-associatelist':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1465,7 +1391,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.chkbx_asAddressLabel = true;
                 this.chkbx_incl_Contacts = true;
                 this.chkbx_incl_inactive = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-unserviced':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1477,7 +1402,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_options = true;
             //    this.chkbx_incl_activeClients = true;
                 this.chkbx_activeClientsonly= true; 
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-staff-Activestaff':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1489,7 +1413,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_add_inclusion = true;
                 this.Additional_inclusion = ['Default Display', 'Include Staff Code', 'Include Staff ID']
                 this.chkbx_asAddressLabel = true;
-                this.chkbx_CSVExport = true
                 break;                
                 case 'btn-staff-competencyRegister':
                     this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1506,7 +1429,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.chkbx_incl_staff = true;
                 this.chkbx_incl_Volunteer = true;
                 this.chkbx_incl_Broker = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-staff-ActiveBrokerage':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1518,7 +1440,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_add_inclusion = true;
                 this.Additional_inclusion = ['Default Display', 'Include Staff Code', 'Include Staff ID']
                 this.chkbx_asAddressLabel = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-staff-Activevolunteers':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1530,7 +1451,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_add_inclusion = true;
                 this.Additional_inclusion = ['Default Display', 'Include Staff Code', 'Include Staff ID']
                 this.chkbx_asAddressLabel = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-staff-InactiveBrokerage':
                 this.bodystyle = { height:'400px', overflow: 'auto'}
@@ -1541,7 +1461,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_add_inclusion = true;
                 this.Additional_inclusion = ['Default Display', 'Include Staff Code', 'Include Staff ID']
                 this.chkbx_asAddressLabel = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-staff-InactiveVolunteer':
                 this.bodystyle = { height:'400px', overflow: 'auto'}    
@@ -1552,7 +1471,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_add_inclusion = true;
                 this.Additional_inclusion = ['Default Display', 'Include Staff Code', 'Include Staff ID']
                 this.chkbx_asAddressLabel = true;
-                this.chkbx_CSVExport = true
                 break;
 
             case 'btn-staff-Inactivestaff':
@@ -1564,7 +1482,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_add_inclusion = true;
                 this.Additional_inclusion = ['Default Display', 'Include Staff Code', 'Include Staff ID']
                 this.chkbx_asAddressLabel = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-staff-Userpermissions':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1575,14 +1492,12 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_StaffGroup = true;
                 this.frm_add_inclusion = true;
                 this.chkbx_asAddressLabel = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-Regis-mealregisterreport':
                 this.bodystyle = { height:'250px', overflow: 'auto'}
                 this.ModalName = "MEAL ORDER REPORT "
                 this.frm_Date = true;
                 this.frm_Recipients = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-Regis-LagTimeRegister':
                 this.bodystyle = { height:'350px', overflow: 'auto'}
@@ -1590,14 +1505,12 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Date = true;
                 this.frm_Branches = true;
                 this.frm_Programs = true;
-                this.chkbx_CSVExport = true
                 break;
                 case 'btn-Regis-masterrosteredhoursreport':
                 this.bodystyle = { height:'300px', overflow: 'auto'}
                 this.ModalName = "MASTER ROSTERED HOURS REGISTER "
                 this.frm_MasterRosterCycles = true;
                 this.frm_Programs = true;
-                this.chkbx_CSVExport = true
                 break;
                 
             case 'btn-Regis-hasreport':
@@ -1605,7 +1518,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.ModalName = "HAS REPORT "
                 this.frm_Date = true;
                 this.frm_Programs = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-Regis-cdcleavereport':
                 this.bodystyle = { height:'350px', overflow: 'auto'}
@@ -1613,7 +1525,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Date = true;
                 this.frm_Branches = true;
                 this.frm_Programs = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-Regis-cdcpackagebalance':
                 this.bodystyle = { height:'350px', overflow: 'auto'}
@@ -1621,7 +1532,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Date = true;
                 this.frm_Recipients = true;
                 this.frm_Programs = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-Regis-incidentregister':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1632,7 +1542,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Staff = true;
                 this.frm_Incidentcategories = true;
                 this.frm_Incidents = true;
-                this.chkbx_CSVExport = true
 
                 break;
             case 'btn-Regis-loanregister':
@@ -1647,13 +1556,11 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_options = true;
                 this.chkbx_incl_inactive = true;
                 this.chkbx_incl_outstanding = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-staff-leaveregister':
                 this.bodystyle = { height:'200px', overflow: 'auto'}
                 this.ModalName = "STAFF LEAVES REGISTER "
                 this.frm_Date = true;
-                this.chkbx_CSVExport = true
                 break;
                 case 'btn-staff-svcnotesregister':
                 this.bodystyle = { height:'450px', overflow: 'auto'}
@@ -1664,7 +1571,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_SVCNotes = true;
                 this.frm_options = true;
                 this.chkbx_incl_achived = true;
-                this.chkbx_CSVExport = true
                 break;
                 
             case 'btn-staff-staffnotworked':
@@ -1676,7 +1582,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_StaffGroup = true;
                 this.frm_options = true;
                 this.chkbx_activeStaffonly = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-staff-competencyrenewal':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1696,7 +1601,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.chkbx_incl_staff = true;
                 this.chkbx_incl_Volunteer = true;
                 this.chkbx_incl_Broker = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-staff-unavailability':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1708,7 +1612,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_StaffGroup = true;
                 this.frm_options = true;
                 this.chkbx_include_AdditionalInfo = true;
-                this.chkbx_CSVExport = true
 
                 break;
             case 'btn-staff-Roster':
@@ -1722,7 +1625,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_options = true;
                 this.chkbx_include_AdditionalInfo = true;
                 this.chkbx_include_unavailability = true;
-                this.chkbx_CSVExport = true
                 
                 break;
             case 'btn-staff-MasterRoster':
@@ -1735,7 +1637,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_StaffGroup = true;
                 this.frm_options = true;
                 this.chkbx_include_AdditionalInfo = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-staff-loanregister':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1748,7 +1649,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_StaffGroup = true;                
                 this.frm_options = true;
                 this.chkbx_incl_outstanding = true;
-                this.chkbx_CSVExport = true
                 break;                
             case 'btn-staff-staffservicenotesreg':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1756,8 +1656,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Date = true;
                 this.frm_Branches = true;
                 this.frm_CaseNots = true;
-                this.frm_Staff = true;         
-                this.chkbx_CSVExport = true       
+                this.frm_Staff = true;                
                 break;
             case 'btn-Regis-progcasenotes':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1771,7 +1670,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Programs = true;
                 this.frm_Categories = true;
                 this.frm_Managers = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-Regis-servicenotesreg':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1783,7 +1681,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Disciplines = true;
                 this.frm_CareDomain = true;
                 this.frm_Programs = true;
-                this.chkbx_CSVExport = true
                 break;            
             case 'btn-regis-serviceplan':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1792,8 +1689,7 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Programs = true;                
                 this.frm_Recipients = true;
                 this.frm_Managers = true;
-                this.frm_Categories = true; 
-                this.chkbx_CSVExport = true               
+                this.frm_Categories = true;                
                 break;   
             case 'btn-Regis-opnotesregister':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1805,7 +1701,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Disciplines = true;
                 this.frm_CareDomain = true;
                 this.frm_Programs = true;
-                this.chkbx_CSVExport = true
 
                 break;
             case 'btn-Regis-careplanstatus':
@@ -1814,7 +1709,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Date = true;
                 this.frm_PlanTypes = true;
                 this.frm_Recipients = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-staff-availability':
                 this.bodystyle = { height:'400px', overflow: 'auto'}
@@ -1824,7 +1718,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Staff = true;
                 this.frm_options = true;
                 this.chkbx_exclude_staffondate = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-staff-timeattandencecomp':
                 this.bodystyle = { height:'400px', overflow: 'auto'}
@@ -1834,7 +1727,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Staff = true;
                 this.frm_options = true;
                 this.chkbx_incl_inactive = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-staff-hrnotesregister':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1845,7 +1737,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Staff = true;
                 this.frm_options = true;
                 this.chkbx_pagebreak = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-staff-opnotes':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1857,7 +1748,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Disciplines = true;
                 this.frm_CareDomain = true;
                 this.frm_Programs = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-staff-incidentregister':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1868,7 +1758,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Staff = true;
                 this.frm_StaffGroup = true;
                 this.frm_Incidents = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-staff-training':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1883,7 +1772,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_StaffTeam = true;
                 this.frm_options = true;
                 this.chkbx_exclude_inactivestaff = true;
-                this.chkbx_CSVExport = true
 
                 break;
             case 'btn-competenciesrenewal':
@@ -1905,7 +1793,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.chkbx_incl_staff = true;
                 this.chkbx_incl_Volunteer = true;
                 this.chkbx_incl_Broker = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-Systm-AuditRegister':
                 this.bodystyle = { height:'400px', overflow: 'auto'}
@@ -1914,7 +1801,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_TraccsUsers = true;
                 this.frm_WhoWhat = true;
                 this.frm_Description = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-Systm-ActivityStatusAudit':
                 this.bodystyle = { height:'250px', overflow: 'auto', top:'50px'}
@@ -1922,7 +1808,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Programs = true;
                 this.chkbx_include_enddated = true;
                 this.frm_options = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-Systm-MTARegister':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1941,7 +1826,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.chkbx_overstayed = true;
                 this.chkbx_not_logon = true;
                 this.chkbx_forcedlogon = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-Systm-RosterOverlap':
                 this.bodystyle = { height:'500px', overflow: 'auto'}
@@ -1951,7 +1835,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Recipients = true;
                 this.frm_Staff = true;
                 this.frm_Programs = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-Systm-MTAVerification':
                 this.ModalName = "MTA ATTENDANCE VERIFICATION "
@@ -1970,7 +1853,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.chkbx_overstayed = true;
                 this.chkbx_not_logon = true;
                 this.chkbx_forcedlogon = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-UnsedFunding':
                 this.ModalName = "RECIPIENT UNUSED FUNDING REPORT "
@@ -1978,13 +1860,11 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Programs = true;
                 this.frm_Managers = true;
                 this.frm_Categories = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-BudgetAuditReport':
                 this.ModalName = "PROGRAM BUDGET AUDIT REPORT "
                 this.frm_Branches = true;
                 this.frm_Programs = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-ProgramSummaryRpt':
                 this.ModalName = "PROGRAM SUMMARY REPORT"
@@ -1992,13 +1872,11 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Programs = true;
                 this.frm_Managers = true;
                 this.frm_Categories = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-report-fundingAuditReport':
                 this.bodystyle = { height:'200px', overflow: 'auto'}
                 this.ModalName = "FUNDING AUDIT REPORT"
                 this.frm_Date = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-report-UnbilledItems':
                 this.bodystyle = { height:'450px', overflow: 'auto'}
@@ -2007,7 +1885,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Branches = true;
                 this.frm_Programs = true;
                 this.frm_SVCTypes = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-report-BilledItems':
                 this.bodystyle = { height:'450px', overflow: 'auto'}
@@ -2016,7 +1893,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Branches = true;
                 this.frm_Programs = true;
                 this.frm_SVCTypes = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-report-DatasetUnitCost':
                 this.bodystyle = { height:'350px', overflow: 'auto'}
@@ -2024,124 +1900,94 @@ stafftypeArr: Array<any> = constants.types;
                 this.frm_Date = true;
                 this.frm_Recipients = true;
                 this.frm_SVCTypes = true;
-                this.chkbx_CSVExport = true
                 break;
             case 'btn-FORPT-ProgramActivitySpread':
-               this.FORptModelTitle = "PROGRAM ACTIVITY SPREAD " ; 
-               this.chkbx_CSVExport = true                
+               this.FORptModelTitle = "PROGRAM ACTIVITY SPREAD " ;                 
                 break;                
             case 'btn-FORPT-AwardStaffPayRpt':
-               this.FORptModelTitle = "AWARD STAFF PAY REPORT " ;   
-               this.chkbx_CSVExport = true              
+               this.FORptModelTitle = "AWARD STAFF PAY REPORT " ;                 
                 break;                
             case 'btn-FORPT-AwardStaffProgramPayRpt':
-                this.FORptModelTitle = "AWARD STAFF PROGRAM PAY REPORT " ; 
-                this.chkbx_CSVExport = true                
+                this.FORptModelTitle = "AWARD STAFF PROGRAM PAY REPORT " ;                 
                     break;
             case 'btn-FORPT-ProgramStaffUtilized':
                 this.FORptModelTitle = "PROGRAM STAFF UTILIZED " ;
-                this.chkbx_CSVExport = true;
              break;
              case 'btn-FORPT-ProgramRecipientServiced':
                 this.FORptModelTitle = "PROGRAM RECIPIENT SERVICED " ;
-                this.chkbx_CSVExport = true;
              break;
              case 'btn-FORPT-ProgramBillingReport':
                 this.FORptModelTitle = "PROGRAM BILLING REPORT" ;
-                this.chkbx_CSVExport = true
              break;
              case 'btn-FORPT-ActivityRecipientRpt':
                 this.FORptModelTitle = "ACTIVITY RECIPIENT REPORT" ;
-                this.chkbx_CSVExport = true
              break;
              case 'btn-FORPT-ActivityProgramRpt':
                 this.FORptModelTitle = "ACTIVITY PROGRAM REPORT" ;
-                this.chkbx_CSVExport = true
              break;
              case 'btn-FORPT-ActivityStaff':
                 this.FORptModelTitle = "ACTIVITY STAFF REPORT" ;
-                this.chkbx_CSVExport = true
              break;
            
              case 'btn-FORPT-ActivityGroupRpt':
                 this.FORptModelTitle = "ACTIVITY GROUP  REPORT" ;
-                this.chkbx_CSVExport = true
              break;
             /* case 'btn-FORPT-fundingAuditReport':
                 this.FORptModelTitle = "FUNDING AUDIT REPORT CRITERIA" ;
-                this.chkbx_CSVExport = true;
              break;*/
              case 'btn-FORPT-DatasetActivityAnalysis':
                 this.FORptModelTitle = "DATA SET ACTIVITY ANALYSIS  REPORT" ;
-                this.chkbx_CSVExport = true;
              break;
              case 'btn-FORPT-DatasetoutputSummary':
                 this.FORptModelTitle = "DATA SET OUTPUT  REPORT" ;
-                this.chkbx_CSVExport = true;
              break;
              case 'btn-FORPT-DatasetUnitCost':
                 this.FORptModelTitle = "DATA SET RECIPIENT UNIT COST  REPORT" ;
-                this.chkbx_CSVExport = true;
              break;
              case 'btn-FORPT-StaffPaysRpt':
                 this.FORptModelTitle = "STAFF PAY  " ;
-                this.chkbx_CSVExport = true;
              break;             
              case 'btn-FORPT-FunderPayrollRpt':
-                this.FORptModelTitle = "FUNDER PAYROLL  " ;
-                this.chkbx_CSVExport = true;
+                this.FORptModelTitle = "FUNDER PAYROLL R " ;
              break;
              case 'btn-FORPT-StaffunderPayrollRpt':
                 this.FORptModelTitle = "STAFF FUNDER PAYROLL  " ;
-                this.chkbx_CSVExport = true;
                 break;
              case 'btn-FORPT-StaffAllowanceRpt':
                 this.FORptModelTitle = "STAFF ALLOWANCE  " ;
-                this.chkbx_CSVExport = true;
              break;             
              case 'btn-FORPT-StaffDateProgramRpt':
-                this.FORptModelTitle = "STAFF DATE PROGRAM  " ; 
-                this.chkbx_CSVExport = true;                                               
+                this.FORptModelTitle = "STAFF DATE PROGRAM  " ;                                                
              break;
              case 'btn-FORPT-StaffProgramUtilisation':
                 this.FORptModelTitle = "STAFF PROGRAM UTILIZATION  " ;
-                this.chkbx_CSVExport = true;
              break;            
              case 'btn-FORPT-StaffClientServiced':
                 this.FORptModelTitle = "STAFF CLIENT SERVICED  " ;
-                this.chkbx_CSVExport = true;
              break;
              case 'btn-FORPT-StaffAdminRpt':
                 this.FORptModelTitle = "STAFF ADMIN REPORT" ;
-                this.chkbx_CSVExport = true;
              break;
              case 'btn-FORPT-StaffActivityRpt':
                 this.FORptModelTitle = "STAFF ACTIVITY  REPORT" ;
-                this.chkbx_CSVExport = true;
              break;
              case 'btn-FORPT-DailyStaffHrs':
                 this.FORptModelTitle = "STAFF DAILY HOURS  REPORT" ;
-                this.chkbx_CSVExport = true;
              break;
              case 'btn-FORPT-PayTypeProgram':
                 this.FORptModelTitle = "PAY TYPE PROGRAM  REPORT" ;
-                this.chkbx_CSVExport = true;
              break;
              case 'btn-FORPT-StaffusageReport':
                 this.FORptModelTitle = "RECIPIENT STAFF USAGE  REPORT" ;
-                this.chkbx_CSVExport = true;
              break;
              case 'btn-FORPT-PaytypeReport':
                 this.FORptModelTitle = "RECIPIENT PAY TYPE  REPORT" ;
-                this.chkbx_CSVExport = true;
              break;
              case 'btn-FORPT-ProgramUtilisation':
                 this.FORptModelTitle = "RECIPIENT PROGRAM UTILIZATION  " ;
-                this.chkbx_CSVExport = true;
              break;
              case 'btn-FORPT-RecipientserviceReport':
                 this.FORptModelTitle = "RECIPIENT SERVICE REPORT " ;
-                this.chkbx_CSVExport = true;
                 break;
             
  
@@ -2226,7 +2072,7 @@ stafftypeArr: Array<any> = constants.types;
 
     handleOk() {
           this.btnid = this.test
-        console.log(this.btnid)
+    //    console.log(this.btnid)
         this.reportRender(this.btnid);
         this.tryDoctype = "";        
         this.btnid = "";
@@ -2427,9 +2273,12 @@ stafftypeArr: Array<any> = constants.types;
              default:
                       
          } */
+
+
+
         
    //      console.log(idbtn)   
-        switch (idbtn) {        
+        switch (idbtn) {
             case 'btn-refferallist':
                 this.Refeeral_list(s_Branches, s_Managers, s_ServiceRegions, s_Programs);
                 break;
@@ -2531,7 +2380,6 @@ stafftypeArr: Array<any> = constants.types;
                 this.DischargeDuringPeriod(s_Branches, s_Managers, s_ServiceRegions, s_Programs, strdate, endate, tempsdate, tempedate);
                 break;
             case 'btn-absentclient':
-                
                 this.AbsentClientStatus(s_Branches, s_Managers, s_ServiceRegions, s_Programs, strdate, endate, tempsdate, tempedate);
                 break;
             case 'btn-careerlist':
@@ -2841,56 +2689,16 @@ stafftypeArr: Array<any> = constants.types;
         
 
     }
-    //  start test
-    
-    ConvertToCSV(objArray, headerList) {      
-        let array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
-        
-        let str = '';
-        let row = 'S.No,';
-        for (let index in headerList) {
-         row += headerList[index] + ',';
-        }
-        row = row.slice(0, -1);
-        str += row + '\r\n';
-        for (let i = 0; i < array.length; i++) {
-         let line = (i+1)+'';
-         for (let index in headerList) {
-          let head = headerList[index];
-          line += ',' + array[i][head];         
-         }
-         str += line + '\r\n';
-        
-        }
-        return str;
-       }
-       downloadFile(data, filename,headings) {         
-        let csvData = this.ConvertToCSV(data, headings );        
-        let blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
-        let dwldLink = document.createElement("a");
-        let url = URL.createObjectURL(blob);
-        let isSafariBrowser = navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1;
-        if (isSafariBrowser) {  //if Safari open in new window to save file with random filename.
-            dwldLink.setAttribute("target", "_blank");
-        }
-        dwldLink.setAttribute("href", url);
-        dwldLink.setAttribute("download", filename + ".csv");
-        dwldLink.style.visibility = "hidden";
-        document.body.appendChild(dwldLink);
-        dwldLink.click();
-        document.body.removeChild(dwldLink);
-}
-    // end test
+    //           
     Refeeral_list(branch, manager, region, program) {
 
         var lblcriteria;
         var fQuery = "SELECT DISTINCT R.Title, R.UniqueID, R.AccountNo,Format(convert(datetime,(SELECT TOP 1 Date FROM Roster WHERE (SELECT DISTINCT MinorGroup FROM ItemTypes WHERE Title = Roster.[Service Type]) = 'REFERRAL-IN' AND [Client Code] = R.AccountNo ORDER BY Date DESC)),'dd/MM/yyyy') as RefferalDate ,CAST(ONIMainIssues.Description AS NVARCHAR(MAX)) as Reason , R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName,  R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, "
         if (this.inputForm.value.printaslabel == true){fQuery = fQuery + " Upper (NA.Address1) as Address1,  NA.Suburb, NA.Postcode, "}
-        fQuery = fQuery + " CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + '- ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, Format(convert(datetime,(SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC)),'dd/MM/yyyy') AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID left join ONIMainIssues on  R.UniqueID = ONIMainIssues.PersonID "
+        fQuery = fQuery + " CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, Format(convert(datetime,(SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC)),'dd/MM/yyyy') AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID left join ONIMainIssues on  R.UniqueID = ONIMainIssues.PersonID "
         if (this.inputForm.value.printaslabel == true){fQuery = fQuery + "  join NamesAndAddresses NA on NA.PersonID = R.UniqueID   "} 
         fQuery = fQuery + "WHERE R.[AccountNo] > '!MULTIPLE'   AND (R.DischargeDate is NULL)"
         
-       
         
 
         if (branch != "") {
@@ -2898,24 +2706,10 @@ stafftypeArr: Array<any> = constants.types;
             if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
 
         }
-        else { 
-           if( this.Viewfilter_Branches != ""){
-            var re = /Recipients/gi;                        
-            this.s_BranchSQL = this.Viewfilter_Branches.toString().replace(re, "R");
-            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
-            }
-
-        }
         if (manager != "") {
             this.s_CoordinatorSQL = "R.[RECIPIENT_COOrdinator] in ('" + manager.join("','") + "')";
             if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
 
-        }else{
-        if( this.Viewfilter_Coordinater != ""){  
-            var re = /Recipients/gi;                        
-            this.s_CoordinatorSQL = this.Viewfilter_Coordinater.toString().replace(re, "R");                                             
-            if (this.s_CoordinatorSQL != "") { fQuery = fQuery + " AND " + this.s_CoordinatorSQL };
-            }
         }
         if (region != "") {
             this.s_CategorySQL = "R.[AgencyDefinedGroup] in ('" + region.join("','") + "')";
@@ -2924,11 +2718,6 @@ stafftypeArr: Array<any> = constants.types;
         if (program != "") {
             this.s_ProgramSQL = " (RecipientPrograms.[Program] in ('" + program.join("','") + "'))";
             if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
-        }else{
-        if( this.Viewfilter_Programs != ""){                                   
-            this.s_ProgramSQL = this.Viewfilter_Programs.toString().substring(87,this.Viewfilter_Programs.toString().length);            
-            if (this.s_ProgramSQL != "") { fQuery = fQuery + " AND " + this.s_ProgramSQL }
-            }
         }
 
 
@@ -2973,15 +2762,13 @@ stafftypeArr: Array<any> = constants.types;
             fQuery = fQuery + " ORDER BY R.[Surname/Organisation], R.FirstName "
 
             var Title = "RECIPIENT REFERRAL LISTING"
-
-           
-                console.log(fQuery)
+            //    console.log(this.tocken.user)
                 const data = {
         
                     "template": { "_id": this.reportid },                                
                     "options": {
                         "reports": { "save": false },
-                        //   "sql": "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ' ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, (SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC) AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID WHERE R.[AccountNo] > '!MULTIPLE'   AND (R.DischargeDate is NULL)  AND  (RecipientPrograms.ProgramStatus = 'REFERRAL')  ORDER BY R.ONIRating, R.[Surname/Organisation]"
+                        //   "sql": "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, (SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC) AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID WHERE R.[AccountNo] > '!MULTIPLE'   AND (R.DischargeDate is NULL)  AND  (RecipientPrograms.ProgramStatus = 'REFERRAL')  ORDER BY R.ONIRating, R.[Surname/Organisation]"
                         "sql": fQuery,
                         "Criteria": lblcriteria,
                         "userid": this.tocken.user,
@@ -2990,27 +2777,10 @@ stafftypeArr: Array<any> = constants.types;
                     }
                 }
                 this.loading = true;
-                this.pdfTitle = "Referral list.pdf"
-                
                
-                if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
 
-                }else{
-                    this.drawerVisible = true; 
                 this.printS.printControl(data).subscribe((blob: any) => {
-                   
+                    this.pdfTitle = "Referral list.pdf"
                     this.drawerVisible = true;                   
                     let _blob: Blob = blob;
                     let fileURL = URL.createObjectURL(_blob);
@@ -3028,7 +2798,7 @@ stafftypeArr: Array<any> = constants.types;
                         },
                     });
                 });
-            }
+        
                 return;
                
         /*
@@ -3063,7 +2833,7 @@ stafftypeArr: Array<any> = constants.types;
                     }); */                                                             
                  //   this.drawerVisible = true;                  
         }        
-       
+        //console.log(fQuery)
         //  console.log(this.inputForm.value.printaslabel)                    
         }
     Waiting_list(branch, manager, region, program) {
@@ -3071,7 +2841,7 @@ stafftypeArr: Array<any> = constants.types;
         var lblcriteria;
         var fQuery = "SELECT DISTINCT R.Title, R.UniqueID, R.AccountNo,Format(convert(datetime,(SELECT TOP 1 Date FROM Roster WHERE (SELECT DISTINCT MinorGroup FROM ItemTypes WHERE Title = Roster.[Service Type]) = 'REFERRAL-IN' AND [Client Code] = R.AccountNo ORDER BY Date DESC)),'dd/MM/yyyy') as RefferalDate ,CAST(ONIMainIssues.Description AS NVARCHAR(MAX)) as Reason , R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, "
         if (this.inputForm.value.printaslabel == true){fQuery = fQuery + " Upper (NA.Address1) as Address1, NA.Suburb, NA.Postcode, "}
-        fQuery = fQuery + " CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ' ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, Format(convert(datetime,(SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC)),'dd/MM/yyyy') AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID left join ONIMainIssues on  R.UniqueID = ONIMainIssues.PersonID "
+        fQuery = fQuery + " CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, Format(convert(datetime,(SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC)),'dd/MM/yyyy') AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID left join ONIMainIssues on  R.UniqueID = ONIMainIssues.PersonID "
         if (this.inputForm.value.printaslabel == true){fQuery = fQuery + "  join NamesAndAddresses NA on NA.PersonID = R.UniqueID   "} 
         fQuery = fQuery + "WHERE R.[AccountNo] > '!MULTIPLE' "
         
@@ -3157,45 +2927,27 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-
        
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Waiting list.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Waiting list.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
 
@@ -3265,7 +3017,7 @@ stafftypeArr: Array<any> = constants.types;
 
         //  //////console.log(fQuery)
 
-        
+        this.drawerVisible = true;
 
         const data = {
             "template": { "_id": "Uer8Y39DEBqdWvvJ" },
@@ -3278,45 +3030,27 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-        var Title = "Active Packages"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Active Packages.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Active Packages.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
 
@@ -3433,45 +3167,27 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-       var Title = "Recipient Rosters"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Recipient Rosters.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Recipient Rosters.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -3479,7 +3195,7 @@ stafftypeArr: Array<any> = constants.types;
     SuspendedRecipient(branch, manager, region, program, startdate, enddate, tempsdate, tempedate) {
 
 
-        var fQuery = "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ' ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, Format(convert(datetime,(SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC)),'dd/MM/yyyy') AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END + CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID INNER JOIN Roster Rs on Rs.[client code]=R.[AccountNo] WHERE R.[AccountNo] > '!MULTIPLE'   AND   (ServiceOverview.ServiceStatus = 'ON HOLD') "
+        var fQuery = "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, Format(convert(datetime,(SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC)),'dd/MM/yyyy') AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END + CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID INNER JOIN Roster Rs on Rs.[client code]=R.[AccountNo] WHERE R.[AccountNo] > '!MULTIPLE'   AND   (ServiceOverview.ServiceStatus = 'ON HOLD') "
         //Condtion to be added on dynamic input   
         //HAVING MIN(CASE WHEN MINORGROUP = 'ADMISSION' THEN [DATE] END) <= '2020-07-01'  AND MIN(CASE WHEN MINORGROUP = 'DISCHARGE' THEN [DATE] END) >'2020-07-31' 
         if (branch != "") {
@@ -3551,45 +3267,27 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-        var Title = "Suspended Recipients"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Suspended Recipients.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Suspended Recipients.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -3667,45 +3365,27 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-       var Title = "Voucher Summary"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Voucher Summary.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Voucher Summary.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -3779,45 +3459,27 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-       var Title = "Package Usage Report"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Package Usage Report.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Package Usage Report.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -3858,44 +3520,26 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
 
-        var Title = "Recipient Time Length Report"
         
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Recipient Time Length Report.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Recipient Time Length Report.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -3958,7 +3602,8 @@ stafftypeArr: Array<any> = constants.types;
         console.log(s_CoordinatorSQL)*/
         // //////console.log(fQuery)
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": "BL1iE2Hn6FNsUpJN" },
             "options": {
@@ -3970,45 +3615,27 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-      var Title = "Unallocated Bookings"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Unallocated Bookings.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Unallocated Bookings.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -4089,44 +3716,26 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         
-       var Title = "Transport Summary Report"
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Transport Summary Report.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Transport Summary Report.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -4135,7 +3744,7 @@ stafftypeArr: Array<any> = constants.types;
     RefferalsduringPeriod(branch, manager, region, program, startdate, enddate, tempsdate, tempedate) {
 
 
-        var fQuery = "SELECT FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date], [Recipients].[UniqueID], [Recipients].[AccountNo], [Recipients].[AgencyIDReportingCode], [Recipients].[Surname/Organisation], UPPER([Recipients].[Surname/Organisation]) + ' ' + CASE WHEN [Recipients].[FirstName] <> '' THEN [Recipients].[FirstName]  ELSE ' ' END As [RecipientName], [Recipients].[Address1], [Recipients].[Address2], [Recipients].[pSuburb] As Suburb, [Recipients].[pPostcode] As Postcode,format([Recipients].[AdmissionDate],'dd/MM/yyyy') As [Activation Date], format([Recipients].[DischargeDate],'dd/MM/yyyy') As [DeActivation Date], [Recipients].[ONIRating], [Roster].[Client Code], [Roster].[Service Type], [Roster].[DischargeReasonType], [Roster].[Program]  ,Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID =Recipients.[UniqueID] For XML path ('')),1, 1, '') [Detail]  FROM Recipients With (NoLock)  INNER JOIN Roster With (NoLock) ON Recipients.accountno = Roster.[Client Code]  INNER JOIN ItemTypes With (NoLock) ON ItemTypes.Title = Roster.[Service Type]  AND ProcessClassification <> 'INPUT'    WHERE ItemTypes.MinorGroup = 'REFERRAL-IN'"
+        var fQuery = "SELECT FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date], [Recipients].[UniqueID], [Recipients].[AccountNo], [Recipients].[AgencyIDReportingCode], [Recipients].[Surname/Organisation], UPPER([Recipients].[Surname/Organisation]) + ', ' + CASE WHEN [Recipients].[FirstName] <> '' THEN [Recipients].[FirstName]  ELSE ' ' END As [RecipientName], [Recipients].[Address1], [Recipients].[Address2], [Recipients].[pSuburb] As Suburb, [Recipients].[pPostcode] As Postcode,format([Recipients].[AdmissionDate],'dd/MM/yyyy') As [Activation Date], format([Recipients].[DischargeDate],'dd/MM/yyyy') As [DeActivation Date], [Recipients].[ONIRating], [Roster].[Client Code], [Roster].[Service Type], [Roster].[DischargeReasonType], [Roster].[Program]  ,Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID =Recipients.[UniqueID] For XML path ('')),1, 1, '') [Detail]  FROM Recipients With (NoLock)  INNER JOIN Roster With (NoLock) ON Recipients.accountno = Roster.[Client Code]  INNER JOIN ItemTypes With (NoLock) ON ItemTypes.Title = Roster.[Service Type]  AND ProcessClassification <> 'INPUT'    WHERE ItemTypes.MinorGroup = 'REFERRAL-IN'"
 
         if (branch != "") {
             this.s_BranchSQL = "R.[BRANCH] in ('" + branch.join("','") + "')";
@@ -4191,7 +3800,8 @@ stafftypeArr: Array<any> = constants.types;
         console.log(s_CoordinatorSQL)*/
         //////console.log(fQuery)
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": "TwKNgf9F8SLUDgLo" },
             "options": {
@@ -4203,45 +3813,27 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-        var Title = "Referral During Period"
        
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Referral During Period.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Referral During Period.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -4321,7 +3913,8 @@ stafftypeArr: Array<any> = constants.types;
     }
 
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -4334,45 +3927,27 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-        var Title = "Recipients Master Roster"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Recipients Master Roster.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Recipients Master Roster.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -4459,7 +4034,7 @@ stafftypeArr: Array<any> = constants.types;
         console.log(s_CoordinatorSQL)*/
         //  //////console.log(fQuery)
 
-        
+        this.drawerVisible = true;
 
         const data = {
             "template": { "_id": "cNhkW3O0lp9TSQyg" },
@@ -4472,45 +4047,27 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-        var Title = "Master Rostered Hours Report"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Master Rostered Hours Report.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Master Rostered Hours Report.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -4521,7 +4078,7 @@ stafftypeArr: Array<any> = constants.types;
 
          
         if (this.inputForm.value.printaslabel == true){fQuery = fQuery + " Upper (NA.Address1) as Address1, NA.Suburb, NA.Postcode, "}        
-        fQuery = fQuery  +" CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ' ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, Format(convert(datetime,(SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC)),'dd/MM/yyyy') AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END + CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID  "
+        fQuery = fQuery  +" CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, Format(convert(datetime,(SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC)),'dd/MM/yyyy') AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END + CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID  "
         if (this.inputForm.value.printaslabel == true){fQuery = fQuery + "  join NamesAndAddresses NA on NA.PersonID = R.UniqueID  "} 
         fQuery = fQuery  + " WHERE R.[AccountNo] > '!MULTIPLE'  AND ([R].[Type] = 'RECIPIENT' OR [R].[Type] = 'CARER/RECIPIENT')   "       
 
@@ -4587,7 +4144,8 @@ stafftypeArr: Array<any> = constants.types;
             fQuery = fQuery + " ORDER BY R.[Surname/Organisation], R.FirstName"
 
             //    console.log(fQuery)
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -4601,45 +4159,27 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-        var Title = "Active Recipient List"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Active Recipient List.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Active Recipient List.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
         }
@@ -4653,7 +4193,7 @@ stafftypeArr: Array<any> = constants.types;
 
         var fQuery = "SELECT DISTINCT R.UniqueID,R.Title, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, format(R.AdmissionDate,'dd/MM/yyyy')  As [ActivationDate], format(R.DischargeDate,'dd/MM/yyyy')  As [DeActivationDate], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus,  "
         if (this.inputForm.value.printaslabel == true){fQuery = fQuery + " Upper (NA.Address1) as Address1,   NA.Suburb, NA.Postcode, "}        
-        fQuery = fQuery +" CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ' ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, Format(convert(datetime,(SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC)),'dd/MM/yyyy') AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID "
+        fQuery = fQuery +" CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, Format(convert(datetime,(SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC)),'dd/MM/yyyy') AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID "
 
         if (this.inputForm.value.printaslabel == true){fQuery = fQuery + "  join NamesAndAddresses NA on NA.PersonID = R.UniqueID  "} 
         fQuery = fQuery +"WHERE R.[AccountNo] > '!MULTIPLE'  AND ([R].[Type] = 'RECIPIENT' OR [R].[Type] = 'CARER/RECIPIENT') AND (DischargeDate is not null)"
@@ -4722,7 +4262,8 @@ stafftypeArr: Array<any> = constants.types;
             this.reportid   = "EqrRIePxJeNTXk0b" 
             fQuery = fQuery + " ORDER BY R.[Surname/Organisation], R.FirstName"
 
-           
+            this.drawerVisible = true;
+
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -4735,45 +4276,27 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-        var Title = "InActive Recipient List"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "InActive Recipient List.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "InActive Recipient List.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
         }
@@ -4787,7 +4310,7 @@ stafftypeArr: Array<any> = constants.types;
         var fQuery = "SELECT DISTINCT R.UniqueID,R.Title, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating,format(R.AdmissionDate ,'dd/MM/yyyy') As [Activation Date],format(R.DischargeDate,'dd/MM/yyyy')  As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus,  "
 
         if (this.inputForm.value.printaslabel == true){fQuery = fQuery + " Upper (NA.Address1) as Address1,   NA.Suburb, NA.Postcode, "}        
-        fQuery = fQuery + " CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ' ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, Format(convert(datetime,(SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC)),'dd/MM/yyyy') AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID "
+        fQuery = fQuery + " CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, Format(convert(datetime,(SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC)),'dd/MM/yyyy') AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID "
         if (this.inputForm.value.printaslabel == true){fQuery = fQuery + "  join NamesAndAddresses NA on NA.PersonID = R.UniqueID  "} 
         fQuery = fQuery + " WHERE R.[AccountNo] > '!MULTIPLE'  AND ([R].[Type] = 'CARER' OR [R].[Type] = 'CARER/RECIPIENT')   "
 
@@ -4851,7 +4374,8 @@ stafftypeArr: Array<any> = constants.types;
             this.reportid   = "pFy5Ej2Zdy6OhMKs" 
             fQuery = fQuery + "  ORDER BY R.[Surname/Organisation], R.FirstName"
 
-           
+            this.drawerVisible = true;
+
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -4864,45 +4388,27 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-       var Title = "Carer list"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Carer list.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Carer list.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
 
@@ -4917,7 +4423,7 @@ stafftypeArr: Array<any> = constants.types;
         var fQuery = "SELECT DISTINCT R.UniqueID, R.Title, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, format(R.AdmissionDate,'dd/MM/yyyy') As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus,  "
 
         if (this.inputForm.value.printaslabel == true){fQuery = fQuery + " Upper (NA.Address1) as Address1,   NA.Suburb, NA.Postcode, "}        
-        fQuery = fQuery + " CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ' ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, Format(convert(datetime,(SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC)),'dd/MM/yyyy') AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID "
+        fQuery = fQuery + " CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, Format(convert(datetime,(SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC)),'dd/MM/yyyy') AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID "
         if (this.inputForm.value.printaslabel == true){fQuery = fQuery + "  join NamesAndAddresses NA on NA.PersonID = R.UniqueID  "} 
         fQuery = fQuery + " WHERE R.[AccountNo] > '!MULTIPLE'  AND ([R].[Type] IN ('BILLING CLIENTS', 'BILLING CLIENT ONLY'))  "
 
@@ -4982,7 +4488,8 @@ stafftypeArr: Array<any> = constants.types;
             this.reportid   = "0BnEO8OTruJxvLwX" 
             fQuery = fQuery + "  ORDER BY R.[Surname/Organisation], R.FirstName"
 
-           
+            this.drawerVisible = true;
+
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -4994,45 +4501,27 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-        var Title = "Billing Clients"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Billing Clients.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Billing Clients.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
         }
@@ -5042,7 +4531,7 @@ stafftypeArr: Array<any> = constants.types;
     AdmissiionDuringPeriod(branch, manager, region, program, startdate, enddate, tempsdate, tempedate) {
 
 
-        var fQuery = "SELECT FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date], [Recipients].[UniqueID], [Recipients].[AccountNo], [Recipients].[AgencyIDReportingCode], [Recipients].[Surname/Organisation], UPPER([Recipients].[Surname/Organisation]) + ' ' + CASE WHEN [Recipients].[FirstName] <> '' THEN [Recipients].[FirstName]  ELSE ' ' END As [RecipientName], [Recipients].[Address1], [Recipients].[Address2], [Recipients].[pSuburb] As Suburb, [Recipients].[pPostcode] As Postcode, format([Recipients].[AdmissionDate],'dd/MM/yyyy') As [Activation Date], format([Recipients].[DischargeDate],'dd/MM/yyyy') As [DeActivation Date], [Recipients].[ONIRating], [Roster].[Client Code], [Roster].[Service Type], [Roster].[DischargeReasonType], [Roster].[Program]  FROM Recipients With (NoLock)  INNER JOIN Roster With (NoLock) ON Recipients.accountno = Roster.[Client Code]  INNER JOIN ItemTypes With (NoLock) ON ItemTypes.Title = Roster.[Service Type]  AND ProcessClassification <> 'INPUT'  WHERE ItemTypes.MinorGroup = 'ADMISSION'  "
+        var fQuery = "SELECT FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date], [Recipients].[UniqueID], [Recipients].[AccountNo], [Recipients].[AgencyIDReportingCode], [Recipients].[Surname/Organisation], UPPER([Recipients].[Surname/Organisation]) + ', ' + CASE WHEN [Recipients].[FirstName] <> '' THEN [Recipients].[FirstName]  ELSE ' ' END As [RecipientName], [Recipients].[Address1], [Recipients].[Address2], [Recipients].[pSuburb] As Suburb, [Recipients].[pPostcode] As Postcode, format([Recipients].[AdmissionDate],'dd/MM/yyyy') As [Activation Date], format([Recipients].[DischargeDate],'dd/MM/yyyy') As [DeActivation Date], [Recipients].[ONIRating], [Roster].[Client Code], [Roster].[Service Type], [Roster].[DischargeReasonType], [Roster].[Program]  FROM Recipients With (NoLock)  INNER JOIN Roster With (NoLock) ON Recipients.accountno = Roster.[Client Code]  INNER JOIN ItemTypes With (NoLock) ON ItemTypes.Title = Roster.[Service Type]  AND ProcessClassification <> 'INPUT'  WHERE ItemTypes.MinorGroup = 'ADMISSION'  "
 
         if (branch != "") {
             this.s_BranchSQL = "R.[BRANCH] in ('" + branch.join("','") + "')";
@@ -5100,7 +4589,8 @@ stafftypeArr: Array<any> = constants.types;
         console.log(s_CoordinatorSQL)*/
         //////console.log(fQuery)
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": "sedG2p1WPWiRPeIc" },
             "options": {
@@ -5112,52 +4602,34 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-        var Title = "Billing Clients"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Billing Clients.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Billing Clients.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
     DischargeDuringPeriod(branch, manager, region, program, startdate, enddate, tempsdate, tempedate) {
 
 
-        var fQuery = "SELECT [Recipients].[UniqueID], [Recipients].[AccountNo], [Recipients].[AgencyIDReportingCode], [Recipients].[Surname/Organisation], UPPER([Recipients].[Surname/Organisation]) + ' ' + CASE WHEN [Recipients].[FirstName] <> '' THEN [Recipients].[FirstName]  ELSE ' ' END As [RecipientName], [Recipients].[Address1], [Recipients].[Address2], [Recipients].[pSuburb] As Suburb, [Recipients].[pPostcode] As Postcode, format([Recipients].[AdmissionDate],'dd/MM/yyyy') As [Activation Date], format([Recipients].[DischargeDate],'dd/MM/yyyy') As [DeActivation Date], [Recipients].[ONIRating], [Roster].[Client Code], [Roster].[Service Type], [Roster].[DischargeReasonType], FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date], [Roster].[Program]  FROM Recipients With (NoLock)  INNER JOIN Roster With (NoLock) ON Recipients.accountno = Roster.[Client Code]  INNER JOIN ItemTypes With (NoLock) ON ItemTypes.Title = Roster.[Service Type]  AND ProcessClassification <> 'INPUT'  WHERE ItemTypes.MinorGroup = 'DISCHARGE' "
+        var fQuery = "SELECT [Recipients].[UniqueID], [Recipients].[AccountNo], [Recipients].[AgencyIDReportingCode], [Recipients].[Surname/Organisation], UPPER([Recipients].[Surname/Organisation]) + ', ' + CASE WHEN [Recipients].[FirstName] <> '' THEN [Recipients].[FirstName]  ELSE ' ' END As [RecipientName], [Recipients].[Address1], [Recipients].[Address2], [Recipients].[pSuburb] As Suburb, [Recipients].[pPostcode] As Postcode, format([Recipients].[AdmissionDate],'dd/MM/yyyy') As [Activation Date], format([Recipients].[DischargeDate],'dd/MM/yyyy') As [DeActivation Date], [Recipients].[ONIRating], [Roster].[Client Code], [Roster].[Service Type], [Roster].[DischargeReasonType], FORMAT(convert(datetime,[Roster].[Date]), 'dd/MM/yyyy') as [Date], [Roster].[Program]  FROM Recipients With (NoLock)  INNER JOIN Roster With (NoLock) ON Recipients.accountno = Roster.[Client Code]  INNER JOIN ItemTypes With (NoLock) ON ItemTypes.Title = Roster.[Service Type]  AND ProcessClassification <> 'INPUT'  WHERE ItemTypes.MinorGroup = 'DISCHARGE' "
         //AND (Date BETWEEN '2015/07/01' AND '2016/07/31'
 
 
@@ -5224,7 +4696,8 @@ stafftypeArr: Array<any> = constants.types;
 
 
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": "IcqccAG4IKFnbisd" },
             "options": {
@@ -5235,45 +4708,27 @@ stafftypeArr: Array<any> = constants.types;
                 "userid": this.tocken.user,
             }
         }
-       var Title = "Discharge During Period"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Discharge During Period.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Discharge During Period.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -5281,7 +4736,7 @@ stafftypeArr: Array<any> = constants.types;
     AbsentClientStatus(branch, manager, region, program, startdate, enddate, tempsdate, tempedate) {
 
 
-        var fQuery = "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ' ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, Format(convert(datetime,(SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC)),'dd/MM/yyyy') AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID INNER JOIN Roster Rs on Rs.[client code]=R.[AccountNo] WHERE R.[AccountNo] > '!MULTIPLE' AND Rs.[TYPE] = 4  AND ((admissiondate is not null) and (DischargeDate is null))"
+        var fQuery = "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, Format(convert(datetime,(SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC)),'dd/MM/yyyy') AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID INNER JOIN Roster Rs on Rs.[client code]=R.[AccountNo] WHERE R.[AccountNo] > '!MULTIPLE' AND Rs.[TYPE] = 4  AND ((admissiondate is not null) and (DischargeDate is null))"
 
         if (branch != "") {
             this.s_BranchSQL = "R.[BRANCH] in ('" + branch.join("','") + "')";
@@ -5340,11 +4795,10 @@ stafftypeArr: Array<any> = constants.types;
         console.log(s_CoordinatorSQL)*/
         //console.log(fQuery)
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": "usEk1DqdlD4V07eM" },
-              //"template": { "_id": "4g15sMWd23M427Jx" },
-            
             "options": {
                 "reports": { "save": false },
 
@@ -5355,45 +4809,27 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-       var Title = "Absent Client Status Report" 
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Absent Client Status Report.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }  
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Absent Client Status Report.pdf" 
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -5404,7 +4840,7 @@ stafftypeArr: Array<any> = constants.types;
 
 
         if (this.inputForm.value.printaslabel == true){fQuery = fQuery + " Upper (NA.Address1) as Address1,   NA.Suburb, NA.Postcode, "}        
-        fQuery = fQuery + " CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ' ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, Format(convert(datetime,(SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC)),'dd/MM/yyyy') AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID "
+        fQuery = fQuery + " CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, Format(convert(datetime,(SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC)),'dd/MM/yyyy') AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID "
         if (this.inputForm.value.printaslabel == true){fQuery = fQuery + "  join NamesAndAddresses NA on NA.PersonID = R.UniqueID  "} 
         fQuery = fQuery + " WHERE R.[AccountNo] > '!MULTIPLE'  AND ([R].[Type] = 'ASSOCIATE')   "
         var lblcriteria;
@@ -5482,7 +4918,7 @@ stafftypeArr: Array<any> = constants.types;
                 "template": { "_id": this.reportid },
                 "options": {
                     "reports": { "save": false },
-                    //   "sql": "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ' ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, (SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC) AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID WHERE R.[AccountNo] > '!MULTIPLE'   AND (R.DischargeDate is NULL)  AND  (RecipientPrograms.ProgramStatus = 'REFERRAL')  ORDER BY R.ONIRating, R.[Surname/Organisation]"
+                    //   "sql": "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, (SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC) AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID WHERE R.[AccountNo] > '!MULTIPLE'   AND (R.DischargeDate is NULL)  AND  (RecipientPrograms.ProgramStatus = 'REFERRAL')  ORDER BY R.ONIRating, R.[Surname/Organisation]"
                     "sql": fQuery,
                     "Criteria": lblcriteria,
                     "userid": this.tocken.user,
@@ -5587,7 +5023,8 @@ stafftypeArr: Array<any> = constants.types;
         console.log(s_CoordinatorSQL)*/
         ////console.log(fQuery)
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": "nsCXBTh7bFlCHSHX" },
             "options": {
@@ -5599,51 +5036,34 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-        var Title = "Unserviced Recipient Report"
+        
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Unserviced Recipient Report.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Unserviced Recipient Report.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
     ActiveStaffListing(manager, branch, stfgroup, inclusion) {
 
 
-        var fQuery = "Select s.UniqueID,s.Title, AccountNo, STF_CODE as StaffCode, StaffGroup,FirstName, [LastName], UPPER(s.[LastName]) + ' ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Upper (Address1) as Address1, Address2, Suburb, Postcode, format( CommencementDate,'dd/MM/yyyy') as CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX, Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID = s.UniqueID For XML path ('')),1, 1, '') [Detail] from Staff s  "
+        var fQuery = "Select s.UniqueID,s.Title, AccountNo, STF_CODE as StaffCode, StaffGroup,FirstName, [LastName], UPPER(s.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Upper (Address1) as Address1, Address2, Suburb, Postcode, format( CommencementDate,'dd/MM/yyyy') as CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX, Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID = s.UniqueID For XML path ('')),1, 1, '') [Detail] from Staff s  "
 
     //    if (this.inputForm.value.printaslabel == true){fQuery = fQuery + " NA.Address1,  NA.Suburb, NA.Postcode, "}        
     //    fQuery = fQuery + "  "
@@ -5702,7 +5122,7 @@ stafftypeArr: Array<any> = constants.types;
             this.reportid   = "LQO71slAArEu36fo" 
             fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
 
-                 
+            this.drawerVisible = true;        
             
             this.loading = true;
             
@@ -5718,43 +5138,25 @@ stafftypeArr: Array<any> = constants.types;
                 "userid": this.tocken.user,
             }
         }
-       var Title = "Active Staff List"
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-                    this.drawerVisible = true;  
-                this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Active Staff List.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Active Staff List.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
 
@@ -5766,7 +5168,7 @@ stafftypeArr: Array<any> = constants.types;
     InActiveStaffListing(manager, branch, stfgroup, inclusion) {
 
 
-        var fQuery = "Select s.UniqueID,s.Title, AccountNo, STF_CODE as StaffCode, StaffGroup, [LastName], UPPER(s.[LastName]) + ' ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Address1, Address2, Suburb, Postcode, format( CommencementDate,'dd/MM/yyyy') as CommencementDate, format(TerminationDate,'dd/MM/yyyy') as TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX, Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID = s.UniqueID For XML path ('')),1, 1, '') [Detail] from Staff s WHERE [Category] = 'STAFF'  AND ([commencementdate] is not null and [terminationdate] is not null) "
+        var fQuery = "Select s.UniqueID,s.Title, AccountNo, STF_CODE as StaffCode, StaffGroup, [LastName], UPPER(s.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Address1, Address2, Suburb, Postcode, format( CommencementDate,'dd/MM/yyyy') as CommencementDate, format(TerminationDate,'dd/MM/yyyy') as TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX, Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID = s.UniqueID For XML path ('')),1, 1, '') [Detail] from Staff s WHERE [Category] = 'STAFF'  AND ([commencementdate] is not null and [terminationdate] is not null) "
 
         if (branch != "") {
             this.s_BranchSQL = "[STF_DEPARTMENT] in ('" + branch.join("','") + "')";
@@ -5817,7 +5219,8 @@ stafftypeArr: Array<any> = constants.types;
             fQuery = fQuery + "Group by UniqueID,Title, AccountNo, STF_CODE, StaffGroup, [LastName],FirstName, Address1, Address2, Suburb, Postcode, CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX"
         fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -5830,44 +5233,26 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-       var Title = "InActive Staff"
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-                    this.drawerVisible = true;   
-                this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "InActive Staff.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "InActive Staff.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
         }
@@ -5876,7 +5261,7 @@ stafftypeArr: Array<any> = constants.types;
     ActiveBrokerage_Contractor(manager, branch, stfgroup, inclusion) {
 
 
-        var fQuery = "Select s.UniqueID,s.Title, AccountNo, STF_CODE as StaffCode, StaffGroup, [LastName], UPPER(s.[LastName]) + ' ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Upper (Address1) as Address1 , Address2, Suburb, Postcode, format( CommencementDate,'dd/MM/yyyy') as CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX, Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID = s.UniqueID For XML path ('')),1, 1, '') [Detail] from Staff s WHERE [Category] = 'BROKERAGE ORGANISATION'  AND ([commencementdate] is not null and [terminationdate] is null)  "
+        var fQuery = "Select s.UniqueID,s.Title, AccountNo, STF_CODE as StaffCode, StaffGroup, [LastName], UPPER(s.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Upper (Address1) as Address1 , Address2, Suburb, Postcode, format( CommencementDate,'dd/MM/yyyy') as CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX, Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID = s.UniqueID For XML path ('')),1, 1, '') [Detail] from Staff s WHERE [Category] = 'BROKERAGE ORGANISATION'  AND ([commencementdate] is not null and [terminationdate] is null)  "
 
         if (branch != "") {
             this.s_BranchSQL = "[STF_DEPARTMENT] in ('" + branch.join("','") + "')";
@@ -5926,7 +5311,7 @@ stafftypeArr: Array<any> = constants.types;
             fQuery = fQuery + "Group by UniqueID,Title, AccountNo, STF_CODE, StaffGroup, [LastName],FirstName, Address1, Address2, Suburb, Postcode, CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX"
             fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
 
-            
+            this.drawerVisible = true;
         
 
         const data = {
@@ -5941,45 +5326,27 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-        var Title = "Active Contractor List"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-                    this.drawerVisible = true;
-                this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Active Contractor List.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Active Contractor List.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
 
@@ -5990,7 +5357,7 @@ stafftypeArr: Array<any> = constants.types;
     InActiveBrokerage_Contractor(manager, branch, stfgroup, inclusion) {
 
 
-        var fQuery = "Select s.UniqueID,s.Title, AccountNo, STF_CODE as StaffCode, StaffGroup, [LastName], UPPER(s.[LastName]) + ' ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, upper(Address1) as Address1, Address2, Suburb, Postcode, format( CommencementDate,'dd/MM/yyyy') as CommencementDate, format(TerminationDate,'dd/MM/yyyy') as TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX, Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID = s.UniqueID For XML path ('')),1, 1, '') [Detail] from Staff s WHERE [Category] = 'BROKERAGE ORGANISATION'  AND ([commencementdate] is not null and [terminationdate] is not null)  "
+        var fQuery = "Select s.UniqueID,s.Title, AccountNo, STF_CODE as StaffCode, StaffGroup, [LastName], UPPER(s.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, upper(Address1) as Address1, Address2, Suburb, Postcode, format( CommencementDate,'dd/MM/yyyy') as CommencementDate, format(TerminationDate,'dd/MM/yyyy') as TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX, Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID = s.UniqueID For XML path ('')),1, 1, '') [Detail] from Staff s WHERE [Category] = 'BROKERAGE ORGANISATION'  AND ([commencementdate] is not null and [terminationdate] is not null)  "
 
         if (branch != "") {
             this.s_BranchSQL = "[STF_DEPARTMENT] in ('" + branch.join("','") + "')";
@@ -6041,7 +5408,8 @@ stafftypeArr: Array<any> = constants.types;
             fQuery = fQuery + "Group by UniqueID,Title, AccountNo, STF_CODE, StaffGroup, [LastName],FirstName, Address1, Address2, Suburb, Postcode, CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX"
             fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
 
-           
+            this.drawerVisible = true;
+
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -6054,45 +5422,27 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-       var Title = "InActive Contractor List"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-                    this.drawerVisible = true; 
-                this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "InActive Contractor List.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "InActive Contractor List.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
 
@@ -6103,7 +5453,7 @@ stafftypeArr: Array<any> = constants.types;
     ActiveVolunters(manager, branch, stfgroup, inclusion) {
 
 
-        var fQuery = "Select s.UniqueID, s.Title, AccountNo, STF_CODE as StaffCode, StaffGroup, [LastName], UPPER(s.[LastName]) + ' ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Address1, Address2, Suburb, Postcode, format( CommencementDate,'dd/MM/yyyy') as CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX, Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID = s.UniqueID For XML path ('')),1, 1, '') [Detail] from Staff s WHERE [Category] = 'VOLUNTEER'   AND ([commencementdate] is not null and [terminationdate] is null)  "
+        var fQuery = "Select s.UniqueID, s.Title, AccountNo, STF_CODE as StaffCode, StaffGroup, [LastName], UPPER(s.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Address1, Address2, Suburb, Postcode, format( CommencementDate,'dd/MM/yyyy') as CommencementDate, TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX, Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID = s.UniqueID For XML path ('')),1, 1, '') [Detail] from Staff s WHERE [Category] = 'VOLUNTEER'   AND ([commencementdate] is not null and [terminationdate] is null)  "
 
         if (branch != "") {
             this.s_BranchSQL = "[STF_DEPARTMENT] in ('" + branch.join("','") + "')";
@@ -6151,7 +5501,8 @@ stafftypeArr: Array<any> = constants.types;
 
             fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
 
-           
+            this.drawerVisible = true;
+
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -6164,45 +5515,27 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-        var Title = "Active Volunteers"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-                    this.drawerVisible = true;
-                this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Active Volunteers.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Active Volunteers.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
 
@@ -6214,7 +5547,7 @@ stafftypeArr: Array<any> = constants.types;
     InActiveVolunteers(manager, branch, stfgroup, inclusion) {
 
 
-        var fQuery = "Select s.UniqueID,s.Title, AccountNo, STF_CODE as StaffCode, StaffGroup, [LastName], UPPER(s.[LastName]) + ' ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Address1, Address2, Suburb, Postcode, format( CommencementDate,'dd/MM/yyyy') as CommencementDate, format(TerminationDate,'dd/MM/yyyy') as TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX, Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID = s.UniqueID For XML path ('')),1, 1, '') [Detail] from Staff s WHERE [Category] = 'VOLUNTEER'   AND ([commencementdate] is not null and [terminationdate] is not null)  "
+        var fQuery = "Select s.UniqueID,s.Title, AccountNo, STF_CODE as StaffCode, StaffGroup, [LastName], UPPER(s.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Address1, Address2, Suburb, Postcode, format( CommencementDate,'dd/MM/yyyy') as CommencementDate, format(TerminationDate,'dd/MM/yyyy') as TerminationDate, HRS_DAILY_MIN, HRS_DAILY_MAX, HRS_WEEKLY_MIN, HRS_WEEKLY_MAX, Stuff ((SELECT '; ' + Detail from PhoneFaxOther pf where pf.PersonID = s.UniqueID For XML path ('')),1, 1, '') [Detail] from Staff s WHERE [Category] = 'VOLUNTEER'   AND ([commencementdate] is not null and [terminationdate] is not null)  "
 
         if (branch != "") {
             this.s_BranchSQL = "[STF_DEPARTMENT] in ('" + branch.join("','") + "')";
@@ -6265,7 +5598,8 @@ stafftypeArr: Array<any> = constants.types;
 
             fQuery = fQuery + " ORDER BY s.[LastName], s.[FirstName]"
 
-           
+            this.drawerVisible = true;
+
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -6278,45 +5612,27 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-        var Title = "InActive Volunteers"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-                    this.drawerVisible = true;
-                this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "InActive Volunteers.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "InActive Volunteers.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
         }
@@ -6371,7 +5687,7 @@ stafftypeArr: Array<any> = constants.types;
 
         ///  //////console.log(fQuery)
 
-        
+        this.drawerVisible = true;
 
         const data = {
             "template": { "_id": "cHHdyk2ACQuXsxFw" },
@@ -6384,45 +5700,27 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-        var Title = "Staff User Permissions"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-                    this.drawerVisible = true;
-                this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Staff User Permissions.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Staff User Permissions.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -6453,7 +5751,7 @@ stafftypeArr: Array<any> = constants.types;
 
         ///  //////console.log(fQuery)
 
-        
+        this.drawerVisible = true;
 
         const data = {
             "template": { "_id": "zxZz19oiShZi9IuQ" },
@@ -6466,44 +5764,26 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-        var Title = "Meal Order Report"
         
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-                    this.drawerVisible = true;
-                this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Meal Order Report.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Meal Order Report.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -6567,45 +5847,27 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         this.loading = true;
-        var Title = "Lag Time Register"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-                    this.drawerVisible = true;
-                this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Lag Time Register.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Lag Time Register.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -6644,7 +5906,7 @@ stafftypeArr: Array<any> = constants.types;
 
         ///  //////console.log(fQuery)
 
-        
+        this.drawerVisible = true;
         
 
         const data = {
@@ -6665,44 +5927,26 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-        var Title = "HAS Report"
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-                    this.drawerVisible = true;
-                this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "HAS Report.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "HAS Report.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -6745,7 +5989,7 @@ stafftypeArr: Array<any> = constants.types;
 
         //  //////console.log(fQuery)
 
-        
+        this.drawerVisible = true;
 
         const data = {
             "template": { "_id": "ixpCLJFq7CjWgMqw" },
@@ -6761,44 +6005,26 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         this.loading = true;
-       var Title = "CDC Leave Register"
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-                    this.drawerVisible = true;
-                this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "CDC Leave Register.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "CDC Leave Register.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -6839,7 +6065,8 @@ stafftypeArr: Array<any> = constants.types;
 
         // //////console.log(fQuery)
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": "wRMaDCYI8N1RwmHp" },
             "options": {
@@ -6854,45 +6081,28 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         this.loading = true;
-        var Title = "CDC Package Balance"
+        
 
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-                    this.drawerVisible = true;
-                this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "CDC Package Balance.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "CDC Package Balance.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -6900,7 +6110,7 @@ stafftypeArr: Array<any> = constants.types;
     IncidentRegister(branch, SvcType, Staff, incidenttype, category, startdate, enddate, tempsdate, tempedate) {
 
 
-        var fQuery = "SELECT AccountNo, Branch, AccountNo + ' - ' + CASE WHEN [Surname/Organisation]<> '' THEN Upper([Surname/Organisation]) ELSE ' ' END + ' ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' ' END + ' ' + CASE WHEN MiddleNames <> '' THEN MiddleNames  ELSE '' END  + CASE WHEN Address1 <> '' THEN ' ' + Address1  ELSE ' '  END + CASE WHEN Address2 <> '' THEN ' ' + Address2  ELSE ' '  END + CASE WHEN pSuburb <> '' THEN ' ' + pSuburb  ELSE ' '  END + CASE WHEN R.[Phone] <> '' THEN ' Ph.' + R.[Phone]  ELSE ' '  END AS NameAddressPhone, (SELECT CASE WHEN LastName <> '' THEN Upper(LastName) ELSE ' ' END + ' ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' ' END + ' ' + CASE WHEN MiddleNames <> '' THEN MiddleNames  ELSE '' END  As StaffName FROM STAFF WHERE AccountNo = ReportedBy) As ReportedByStaff, (SELECT CASE WHEN LastName <> '' THEN Upper(LastName) ELSE ' ' END + ' ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' ' END + ' ' + CASE WHEN MiddleNames <> '' THEN MiddleNames  ELSE '' END  As StaffName FROM STAFF WHERE AccountNo = CurrentAssignee)  As AssignedToStaff , I.*, format(Date, 'dd/MM/yyyy') as ReportedDate FROM IM_Master I INNER JOIN RECIPIENTS R ON I.PERSONID = R.UNIQUEID WHERE"
+        var fQuery = "SELECT AccountNo, Branch, AccountNo + ' - ' + CASE WHEN [Surname/Organisation]<> '' THEN Upper([Surname/Organisation]) ELSE ' ' END + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' ' END + ' ' + CASE WHEN MiddleNames <> '' THEN MiddleNames  ELSE '' END  + CASE WHEN Address1 <> '' THEN ' ' + Address1  ELSE ' '  END + CASE WHEN Address2 <> '' THEN ' ' + Address2  ELSE ' '  END + CASE WHEN pSuburb <> '' THEN ' ' + pSuburb  ELSE ' '  END + CASE WHEN R.[Phone] <> '' THEN ' Ph.' + R.[Phone]  ELSE ' '  END AS NameAddressPhone, (SELECT CASE WHEN LastName <> '' THEN Upper(LastName) ELSE ' ' END + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' ' END + ' ' + CASE WHEN MiddleNames <> '' THEN MiddleNames  ELSE '' END  As StaffName FROM STAFF WHERE AccountNo = ReportedBy) As ReportedByStaff, (SELECT CASE WHEN LastName <> '' THEN Upper(LastName) ELSE ' ' END + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' ' END + ' ' + CASE WHEN MiddleNames <> '' THEN MiddleNames  ELSE '' END  As StaffName FROM STAFF WHERE AccountNo = CurrentAssignee)  As AssignedToStaff , I.*, format(Date, 'dd/MM/yyyy') as ReportedDate FROM IM_Master I INNER JOIN RECIPIENTS R ON I.PERSONID = R.UNIQUEID WHERE"
         var lblcriteria;
 
 
@@ -6958,7 +6168,8 @@ stafftypeArr: Array<any> = constants.types;
 
     //    console.log(fQuery)
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": "ufrXaKoSnk1utHyJ" },
             "options": {
@@ -6973,45 +6184,27 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         this.loading = true;
-        var Title = "Incident Register"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-                     this.drawerVisible = true;
-                this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Incident Register.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Incident Register.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -7088,7 +6281,8 @@ stafftypeArr: Array<any> = constants.types;
 
         //console.log(fQuery)
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": "3OJaZgWOBy3b9hOI" },
             "options": {
@@ -7104,44 +6298,26 @@ stafftypeArr: Array<any> = constants.types;
         }
         this.loading = true;
         
-        
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-                    this.drawerVisible = true;
-                this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Loan Item Register.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Loan Item Register.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -7165,7 +6341,8 @@ stafftypeArr: Array<any> = constants.types;
 
         //console.log(fQuery)
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": "w41oVwE0B5tGyRBi" },
             "options": {
@@ -7180,53 +6357,35 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         this.loading = true;
-        var Title = "Staff Leave Register"
         
 
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Staff Leave Register.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Staff Leave Register.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
     StaffSvcNotesRegister(branch,Staff,svcnotes,startdate, enddate, tempsdate, tempedate) {
 
 // History.DetailDate Between '06-01-2021' AND '06-30-2021 23:59:59'     
-        var fQuery = "SELECT DISTINCT * FROM ( SELECT  (S.[LastName]) + ' ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, CASE WHEN PRIMARYADDRESS <> '' THEN  lower(PRIMARYADDRESS) ELSE lower(OTHERADDRESS) END  AS Address, CASE WHEN PRIMARYPHONE <> '' THEN  PRIMARYPHONE ELSE OTHERPHONE END AS Contact, S.AccountNo AS StaffCode, History.RecordNumber AS NoteID, History.AlarmDate as [Reminder Date], CAST(History.Detail AS varchar(4000)) AS Detail, format(convert(datetime,History.DetailDate),'dd/MM/yyyy') AS DateCreated, History.Creator AS CreatedBy, History.ExtraDetail1 AS NoteType, CASE WHEN ISNULL(History.ExtraDetail2, '') = '' THEN 'UNKNOWN' ELSE History.ExtraDetail2 END AS NoteCategory, History.DeletedRecord , History.Program, History.Discipline, History.CareDomain FROM Roster Ro INNER JOIN History ON  CONVERT(varchar,Ro.RecordNo,100) = History.PersonID Left Join STAFF as S ON S.AccountNo = Ro.[Carer Code]  LEFT JOIN ( SELECT PERSONID, MAX(PADDRESS) AS PRIMARYADDRESS, MAX(OADDRESS) AS OTHERADDRESS From (  SELECT PERSONID,  CASE WHEN PRIMARYADDRESS = 1 THEN ISNULL(ADDRESS1,'') + ' ' + ISNULL(ADDRESS2,'') + ' '  +  ISNULL(SUBURB,'') + ' ' + ISNULL(POSTCODE,'')  ELSE '' END AS PADDRESS,  CASE WHEN PRIMARYADDRESS <> 1 THEN ISNULL(ADDRESS1,'') + ' ' + ISNULL(ADDRESS2,'') + ' '  +  ISNULL(SUBURB,'') + ' ' + ISNULL(POSTCODE,'')  ELSE '' END AS OADDRESS  From NamesAndAddresses ) AS TMP  GROUP BY PERSONID ) AS N ON S.UNIQUEID = N.PERSONID  LEFT JOIN (  SELECT PERSONID, MAX(PPHONE) AS PRIMARYPHONE, MAX(OPHONE) AS OTHERPHONE  FROM (  SELECT PERSONID,  CASE WHEN PRIMARYPHONE = 1 THEN DETAIL ELSE '' END AS PPHONE,  CASE WHEN PRIMARYPHONE <> 1 THEN DETAIL ELSE '' END AS OPHONE  From PhoneFaxOther ) AS T  GROUP BY PERSONID) AS P ON S.UNIQUEID = P.PERSONID WHERE ExtraDetail1 = 'SVCNOTE'  "
+        var fQuery = "SELECT DISTINCT * FROM ( SELECT  (S.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, CASE WHEN PRIMARYADDRESS <> '' THEN  lower(PRIMARYADDRESS) ELSE lower(OTHERADDRESS) END  AS Address, CASE WHEN PRIMARYPHONE <> '' THEN  PRIMARYPHONE ELSE OTHERPHONE END AS Contact, S.AccountNo AS StaffCode, History.RecordNumber AS NoteID, History.AlarmDate as [Reminder Date], CAST(History.Detail AS varchar(4000)) AS Detail, format(convert(datetime,History.DetailDate),'dd/MM/yyyy') AS DateCreated, History.Creator AS CreatedBy, History.ExtraDetail1 AS NoteType, CASE WHEN ISNULL(History.ExtraDetail2, '') = '' THEN 'UNKNOWN' ELSE History.ExtraDetail2 END AS NoteCategory, History.DeletedRecord , History.Program, History.Discipline, History.CareDomain FROM Roster Ro INNER JOIN History ON  CONVERT(varchar,Ro.RecordNo,100) = History.PersonID Left Join STAFF as S ON S.AccountNo = Ro.[Carer Code]  LEFT JOIN ( SELECT PERSONID, MAX(PADDRESS) AS PRIMARYADDRESS, MAX(OADDRESS) AS OTHERADDRESS From (  SELECT PERSONID,  CASE WHEN PRIMARYADDRESS = 1 THEN ISNULL(ADDRESS1,'') + ' ' + ISNULL(ADDRESS2,'') + ' '  +  ISNULL(SUBURB,'') + ' ' + ISNULL(POSTCODE,'')  ELSE '' END AS PADDRESS,  CASE WHEN PRIMARYADDRESS <> 1 THEN ISNULL(ADDRESS1,'') + ' ' + ISNULL(ADDRESS2,'') + ' '  +  ISNULL(SUBURB,'') + ' ' + ISNULL(POSTCODE,'')  ELSE '' END AS OADDRESS  From NamesAndAddresses ) AS TMP  GROUP BY PERSONID ) AS N ON S.UNIQUEID = N.PERSONID  LEFT JOIN (  SELECT PERSONID, MAX(PPHONE) AS PRIMARYPHONE, MAX(OPHONE) AS OTHERPHONE  FROM (  SELECT PERSONID,  CASE WHEN PRIMARYPHONE = 1 THEN DETAIL ELSE '' END AS PPHONE,  CASE WHEN PRIMARYPHONE <> 1 THEN DETAIL ELSE '' END AS OPHONE  From PhoneFaxOther ) AS T  GROUP BY PERSONID) AS P ON S.UNIQUEID = P.PERSONID WHERE ExtraDetail1 = 'SVCNOTE'  "
         var lblcriteria;
 
         if (startdate != "" || enddate != "") {
@@ -7284,7 +6443,7 @@ stafftypeArr: Array<any> = constants.types;
 
 //        console.log(fQuery)
 
-        
+        this.drawerVisible = true;
         
 
         const data = {
@@ -7302,44 +6461,26 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         this.loading = true;
-        var Title = "Staff Service Notes Register"
         
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Staff Service Notes Register.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Staff Service Notes Register.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -7395,7 +6536,8 @@ stafftypeArr: Array<any> = constants.types;
 
        // console.log(fQuery)
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": "01uDIoKwUysCboDf" },
             "options": {
@@ -7409,45 +6551,27 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-        var Title = "Staff Not Worked Report"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Staff Not Worked Report.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Staff Not Worked Report.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -7455,7 +6579,7 @@ stafftypeArr: Array<any> = constants.types;
     StaffCompetencyRenewal(branch, staff, competency, manager, staffteam,stfgroup, competencygroup, startdate, enddate, tempsdate, tempedate) {
 
 
-        var fQuery = "SELECT  IsNull([PAN_MANAGER],'') as Coordinator , UPPER(Staff.LastName) + ' ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName,Staff.StaffGroup,Staff.Category,Staff.STF_DEPARTMENT,HumanResources.Name as Competency,CASE WHEN HumanResources.Date1 IS NULL THEN 'MISSING' ELSE format (HumanResources.Date1, 'dd/MM/yyyy mm:hh') END AS [Expiry Date],HumanResources.Notes "
+        var fQuery = "SELECT  IsNull([PAN_MANAGER],'') as Coordinator , UPPER(Staff.LastName) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName,Staff.StaffGroup,Staff.Category,Staff.STF_DEPARTMENT,HumanResources.Name as Competency,CASE WHEN HumanResources.Date1 IS NULL THEN 'MISSING' ELSE format (HumanResources.Date1, 'dd/MM/yyyy mm:hh') END AS [Expiry Date],HumanResources.Notes "
         if(this.inputForm.value.printaslabel == true){ 
             fQuery = fQuery + " Title,AccountNo,Staff.Address1,Staff.Address2,Staff.Suburb,Staff.Postcode "
         }
@@ -7592,7 +6716,8 @@ stafftypeArr: Array<any> = constants.types;
 
     //  console.log(fQuery) 
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": this.reportid},
             "options": {
@@ -7608,45 +6733,27 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         this.loading = true;
-        var Title = "Staff Competency Renewal"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Staff Competency Renewal.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Staff Competency Renewal.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -7707,7 +6814,7 @@ stafftypeArr: Array<any> = constants.types;
 
         //console.log(fQuery)
 
-        
+        this.drawerVisible = true;
         
 
         const data = {
@@ -7725,45 +6832,27 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         this.loading = true;
-        var Title = "Staff UnAvailability Report"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Staff UnAvailability Report.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Staff UnAvailability Report.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -7827,7 +6916,7 @@ stafftypeArr: Array<any> = constants.types;
 
     //    console.log(fQuery)
 
-        
+        this.drawerVisible = true;
 
         const data = {
             "template": { "_id": "PV0M95ECHuYRp0QD" },
@@ -7844,45 +6933,27 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         this.loading = true;
-        var Title = "Staff Roster"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Staff Roster.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Staff Roster.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -7946,7 +7017,7 @@ stafftypeArr: Array<any> = constants.types;
 
         //console.log(fQuery)
 
-        
+        this.drawerVisible = true;
 
         const data = {
             "template": { "_id": "I2d0gKTCdLP2phas" },
@@ -7962,45 +7033,27 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-       var Title = "Staff Master Roster"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Staff Master Roster.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Staff Master Roster.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -8072,7 +7125,7 @@ stafftypeArr: Array<any> = constants.types;
     //    console.log(fQuery)
 
 
-        
+        this.drawerVisible = true;
 
         const data = {
             "template": { "_id": "3OJaZgWOBy3b9hOI" },
@@ -8088,44 +7141,26 @@ stafftypeArr: Array<any> = constants.types;
         }
         this.loading = true;
         
-        
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Staff Loan Register.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Staff Loan Register.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -8133,7 +7168,7 @@ stafftypeArr: Array<any> = constants.types;
     RecipientProg_CaseReport(branch, program, casenotecat, recipient, discipline, caredomain, category, manager, startdate, enddate, tempsdate, tempedate) {
 
 
-        var fQuery = "SELECT DISTINCT * FROM ( SELECT UPPER(R.[Surname/Organisation]) + ' ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as ClientName, CASE WHEN PRIMARYADDRESS <> '' THEN  PRIMARYADDRESS ELSE OTHERADDRESS END  AS Address, CASE WHEN PRIMARYPHONE <> '' THEN  PRIMARYPHONE ELSE OTHERPHONE END AS Contact, R.AccountNo AS ClientCode, R.[Type] AS RecipType, R.[Branch] AS Branch, History.RecordNumber AS NoteID, History.AlarmDate as [Reminder Date], CAST(History.Detail AS varchar(4000)) AS Detail, format(History.DetailDate,'dd/MM/yyyy') AS DateCreated, History.Creator AS CreatedBy, History.ExtraDetail1 AS NoteType, CASE WHEN ISNULL(History.ExtraDetail2, '') = '' THEN 'UNKNOWN' ELSE History.ExtraDetail2 END AS NoteCategory, History.DeletedRecord , History.Program, History.Discipline, History.CareDomain FROM Recipients as R INNER JOIN History ON R.UniqueID = History.PersonID LEFT JOIN ( SELECT PERSONID, MAX(PADDRESS) AS PRIMARYADDRESS, MAX(OADDRESS) AS OTHERADDRESS From (  SELECT PERSONID,  CASE WHEN PRIMARYADDRESS = 1 THEN ISNULL(ADDRESS1,'') + ' ' + ISNULL(ADDRESS2,'') + ' '  +  ISNULL(SUBURB,'') + ' ' + ISNULL(POSTCODE,'')  ELSE '' END AS PADDRESS,  CASE WHEN PRIMARYADDRESS <> 1 THEN ISNULL(ADDRESS1,'') + ' ' + ISNULL(ADDRESS2,'') + ' '  +  ISNULL(SUBURB,'') + ' ' + ISNULL(POSTCODE,'')  ELSE '' END AS OADDRESS  From NamesAndAddresses ) AS TMP  GROUP BY PERSONID ) AS N ON R.UNIQUEID = N.PERSONID  LEFT JOIN (  SELECT PERSONID, MAX(PPHONE) AS PRIMARYPHONE, MAX(OPHONE) AS OTHERPHONE  FROM (  SELECT PERSONID,  CASE WHEN PRIMARYPHONE = 1 THEN DETAIL ELSE '' END AS PPHONE,  CASE WHEN PRIMARYPHONE <> 1 THEN DETAIL ELSE '' END AS OPHONE  From PhoneFaxOther ) AS T  GROUP BY PERSONID) AS P ON R.UNIQUEID = P.PERSONID WHERE   "
+        var fQuery = "SELECT DISTINCT * FROM ( SELECT UPPER(R.[Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as ClientName, CASE WHEN PRIMARYADDRESS <> '' THEN  PRIMARYADDRESS ELSE OTHERADDRESS END  AS Address, CASE WHEN PRIMARYPHONE <> '' THEN  PRIMARYPHONE ELSE OTHERPHONE END AS Contact, R.AccountNo AS ClientCode, R.[Type] AS RecipType, R.[Branch] AS Branch, History.RecordNumber AS NoteID, History.AlarmDate as [Reminder Date], CAST(History.Detail AS varchar(4000)) AS Detail, format(History.DetailDate,'dd/MM/yyyy') AS DateCreated, History.Creator AS CreatedBy, History.ExtraDetail1 AS NoteType, CASE WHEN ISNULL(History.ExtraDetail2, '') = '' THEN 'UNKNOWN' ELSE History.ExtraDetail2 END AS NoteCategory, History.DeletedRecord , History.Program, History.Discipline, History.CareDomain FROM Recipients as R INNER JOIN History ON R.UniqueID = History.PersonID LEFT JOIN ( SELECT PERSONID, MAX(PADDRESS) AS PRIMARYADDRESS, MAX(OADDRESS) AS OTHERADDRESS From (  SELECT PERSONID,  CASE WHEN PRIMARYADDRESS = 1 THEN ISNULL(ADDRESS1,'') + ' ' + ISNULL(ADDRESS2,'') + ' '  +  ISNULL(SUBURB,'') + ' ' + ISNULL(POSTCODE,'')  ELSE '' END AS PADDRESS,  CASE WHEN PRIMARYADDRESS <> 1 THEN ISNULL(ADDRESS1,'') + ' ' + ISNULL(ADDRESS2,'') + ' '  +  ISNULL(SUBURB,'') + ' ' + ISNULL(POSTCODE,'')  ELSE '' END AS OADDRESS  From NamesAndAddresses ) AS TMP  GROUP BY PERSONID ) AS N ON R.UNIQUEID = N.PERSONID  LEFT JOIN (  SELECT PERSONID, MAX(PPHONE) AS PRIMARYPHONE, MAX(OPHONE) AS OTHERPHONE  FROM (  SELECT PERSONID,  CASE WHEN PRIMARYPHONE = 1 THEN DETAIL ELSE '' END AS PPHONE,  CASE WHEN PRIMARYPHONE <> 1 THEN DETAIL ELSE '' END AS OPHONE  From PhoneFaxOther ) AS T  GROUP BY PERSONID) AS P ON R.UNIQUEID = P.PERSONID WHERE   "
         var lblcriteria;
 
         // '08-01-2019' AND '08-31-2020 23:59:59' AND
@@ -8219,7 +7254,7 @@ stafftypeArr: Array<any> = constants.types;
 
         //  //////console.log(fQuery)
 
-        
+        this.drawerVisible = true;
 
         const data = {
             "template": { "_id": "BTHy0VhO1rkhv5VZ" },
@@ -8235,45 +7270,27 @@ stafftypeArr: Array<any> = constants.types;
         }
         
         this.loading = true;
-        var Title = "Recipient Case Notes Register"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Recipient Case Notes Register.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Recipient Case Notes Register.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -8281,7 +7298,7 @@ stafftypeArr: Array<any> = constants.types;
     ServiceNotesRegister(branch, program, casenotecat, recipient, discipline, caredomain, startdate, enddate, tempsdate, tempedate) {
 
 
-        var fQuery = "SELECT DISTINCT * FROM ( SELECT UPPER(R.[Surname/Organisation]) + ' ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as ClientName, CASE WHEN PRIMARYADDRESS <> '' THEN  PRIMARYADDRESS ELSE OTHERADDRESS END  AS Address, CASE WHEN PRIMARYPHONE <> '' THEN  PRIMARYPHONE ELSE OTHERPHONE END AS Contact, R.AccountNo AS ClientCode, R.[Type] AS RecipType, R.[Branch] AS Branch, History.RecordNumber AS NoteID, History.AlarmDate as [Reminder Date], CAST(History.Detail AS varchar(4000)) AS Detail,format(Convert (datetime,History.DetailDate,22),'dd/MM/yyyy MM:HH tt') AS DateCreated , History.Creator AS CreatedBy, History.ExtraDetail1 AS NoteType, CASE WHEN ISNULL(History.ExtraDetail2, '') = '' THEN 'UNKNOWN' ELSE History.ExtraDetail2 END AS NoteCategory, History.DeletedRecord , History.Program, History.Discipline, History.CareDomain FROM Roster Ro INNER JOIN History ON  CONVERT(varchar,Ro.RecordNo,100) = History.PersonID Left Join Recipients as R ON R.AccountNo = Ro.[Client Code]  LEFT JOIN ( SELECT PERSONID, MAX(PADDRESS) AS PRIMARYADDRESS, MAX(OADDRESS) AS OTHERADDRESS From (  SELECT PERSONID,  CASE WHEN PRIMARYADDRESS = 1 THEN ISNULL(ADDRESS1,'') + ' ' + ISNULL(ADDRESS2,'') + ' '  +  ISNULL(SUBURB,'') + ' ' + ISNULL(POSTCODE,'')  ELSE '' END AS PADDRESS,  CASE WHEN PRIMARYADDRESS <> 1 THEN ISNULL(ADDRESS1,'') + ' ' + ISNULL(ADDRESS2,'') + ' '  +  ISNULL(SUBURB,'') + ' ' + ISNULL(POSTCODE,'')  ELSE '' END AS OADDRESS  From NamesAndAddresses ) AS TMP  GROUP BY PERSONID ) AS N ON R.UNIQUEID = N.PERSONID  LEFT JOIN (  SELECT PERSONID, MAX(PPHONE) AS PRIMARYPHONE, MAX(OPHONE) AS OTHERPHONE  FROM (  SELECT PERSONID,  CASE WHEN PRIMARYPHONE = 1 THEN DETAIL ELSE '' END AS PPHONE,  CASE WHEN PRIMARYPHONE <> 1 THEN DETAIL ELSE '' END AS OPHONE  From PhoneFaxOther ) AS T  GROUP BY PERSONID) AS P ON R.UNIQUEID = P.PERSONID WHERE "
+        var fQuery = "SELECT DISTINCT * FROM ( SELECT UPPER(R.[Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as ClientName, CASE WHEN PRIMARYADDRESS <> '' THEN  PRIMARYADDRESS ELSE OTHERADDRESS END  AS Address, CASE WHEN PRIMARYPHONE <> '' THEN  PRIMARYPHONE ELSE OTHERPHONE END AS Contact, R.AccountNo AS ClientCode, R.[Type] AS RecipType, R.[Branch] AS Branch, History.RecordNumber AS NoteID, History.AlarmDate as [Reminder Date], CAST(History.Detail AS varchar(4000)) AS Detail,format(Convert (datetime,History.DetailDate,22),'dd/MM/yyyy MM:HH tt') AS DateCreated , History.Creator AS CreatedBy, History.ExtraDetail1 AS NoteType, CASE WHEN ISNULL(History.ExtraDetail2, '') = '' THEN 'UNKNOWN' ELSE History.ExtraDetail2 END AS NoteCategory, History.DeletedRecord , History.Program, History.Discipline, History.CareDomain FROM Roster Ro INNER JOIN History ON  CONVERT(varchar,Ro.RecordNo,100) = History.PersonID Left Join Recipients as R ON R.AccountNo = Ro.[Client Code]  LEFT JOIN ( SELECT PERSONID, MAX(PADDRESS) AS PRIMARYADDRESS, MAX(OADDRESS) AS OTHERADDRESS From (  SELECT PERSONID,  CASE WHEN PRIMARYADDRESS = 1 THEN ISNULL(ADDRESS1,'') + ' ' + ISNULL(ADDRESS2,'') + ' '  +  ISNULL(SUBURB,'') + ' ' + ISNULL(POSTCODE,'')  ELSE '' END AS PADDRESS,  CASE WHEN PRIMARYADDRESS <> 1 THEN ISNULL(ADDRESS1,'') + ' ' + ISNULL(ADDRESS2,'') + ' '  +  ISNULL(SUBURB,'') + ' ' + ISNULL(POSTCODE,'')  ELSE '' END AS OADDRESS  From NamesAndAddresses ) AS TMP  GROUP BY PERSONID ) AS N ON R.UNIQUEID = N.PERSONID  LEFT JOIN (  SELECT PERSONID, MAX(PPHONE) AS PRIMARYPHONE, MAX(OPHONE) AS OTHERPHONE  FROM (  SELECT PERSONID,  CASE WHEN PRIMARYPHONE = 1 THEN DETAIL ELSE '' END AS PPHONE,  CASE WHEN PRIMARYPHONE <> 1 THEN DETAIL ELSE '' END AS OPHONE  From PhoneFaxOther ) AS T  GROUP BY PERSONID) AS P ON R.UNIQUEID = P.PERSONID WHERE "
         var lblcriteria;
 
         // History. DetailDate Between '08-01-2019' AND '08-31-2020 23:59:59' 
@@ -8353,7 +7370,7 @@ stafftypeArr: Array<any> = constants.types;
 
     //    console.log(fQuery)
 
-        
+        this.drawerVisible = true;
 
         const data = {
             "template": { "_id": "H8diePMsfdr5gYyV" },
@@ -8368,45 +7385,27 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-        var Title = "Service Notes Register"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Service Notes Register.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Service Notes Register.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -8414,7 +7413,7 @@ stafftypeArr: Array<any> = constants.types;
     OPNotesRegister(branch, program, casenotecat, recipient, discipline, caredomain, startdate, enddate, tempsdate, tempedate) {
 
 
-        var fQuery = "SELECT DISTINCT * FROM ( SELECT UPPER(R.[Surname/Organisation]) + ' ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as ClientName, CASE WHEN PRIMARYADDRESS <> '' THEN  PRIMARYADDRESS ELSE OTHERADDRESS END  AS Address, CASE WHEN PRIMARYPHONE <> '' THEN  PRIMARYPHONE ELSE OTHERPHONE END AS Contact, R.AccountNo AS ClientCode, R.[Type] AS RecipType, R.[Branch] AS Branch, History.RecordNumber AS NoteID, History.AlarmDate as [Reminder Date], CAST(History.Detail AS varchar(4000)) AS Detail,format( History.DetailDate,'dd/MM/yyyy') AS DateCreated, History.Creator AS CreatedBy, History.ExtraDetail1 AS NoteType, CASE WHEN ISNULL(History.ExtraDetail2, '') = '' THEN 'UNKNOWN' ELSE History.ExtraDetail2 END AS NoteCategory, History.DeletedRecord , History.Program, History.Discipline, History.CareDomain FROM Recipients as R INNER JOIN History ON R.UniqueID = History.PersonID LEFT JOIN ( SELECT PERSONID, MAX(PADDRESS) AS PRIMARYADDRESS, MAX(OADDRESS) AS OTHERADDRESS From (  SELECT PERSONID,  CASE WHEN PRIMARYADDRESS = 1 THEN ISNULL(ADDRESS1,'') + ' ' + ISNULL(ADDRESS2,'') + ' '  +  ISNULL(SUBURB,'') + ' ' + ISNULL(POSTCODE,'')  ELSE '' END AS PADDRESS,  CASE WHEN PRIMARYADDRESS <> 1 THEN ISNULL(ADDRESS1,'') + ' ' + ISNULL(ADDRESS2,'') + ' '  +  ISNULL(SUBURB,'') + ' ' + ISNULL(POSTCODE,'')  ELSE '' END AS OADDRESS  From NamesAndAddresses ) AS TMP  GROUP BY PERSONID ) AS N ON R.UNIQUEID = N.PERSONID  LEFT JOIN (  SELECT PERSONID, MAX(PPHONE) AS PRIMARYPHONE, MAX(OPHONE) AS OTHERPHONE  FROM (  SELECT PERSONID,  CASE WHEN PRIMARYPHONE = 1 THEN DETAIL ELSE '' END AS PPHONE,  CASE WHEN PRIMARYPHONE <> 1 THEN DETAIL ELSE '' END AS OPHONE  From PhoneFaxOther ) AS T  GROUP BY PERSONID) AS P ON R.UNIQUEID = P.PERSONID WHERE ExtraDetail1 = 'OPNOTE'"
+        var fQuery = "SELECT DISTINCT * FROM ( SELECT UPPER(R.[Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as ClientName, CASE WHEN PRIMARYADDRESS <> '' THEN  PRIMARYADDRESS ELSE OTHERADDRESS END  AS Address, CASE WHEN PRIMARYPHONE <> '' THEN  PRIMARYPHONE ELSE OTHERPHONE END AS Contact, R.AccountNo AS ClientCode, R.[Type] AS RecipType, R.[Branch] AS Branch, History.RecordNumber AS NoteID, History.AlarmDate as [Reminder Date], CAST(History.Detail AS varchar(4000)) AS Detail,format( History.DetailDate,'dd/MM/yyyy') AS DateCreated, History.Creator AS CreatedBy, History.ExtraDetail1 AS NoteType, CASE WHEN ISNULL(History.ExtraDetail2, '') = '' THEN 'UNKNOWN' ELSE History.ExtraDetail2 END AS NoteCategory, History.DeletedRecord , History.Program, History.Discipline, History.CareDomain FROM Recipients as R INNER JOIN History ON R.UniqueID = History.PersonID LEFT JOIN ( SELECT PERSONID, MAX(PADDRESS) AS PRIMARYADDRESS, MAX(OADDRESS) AS OTHERADDRESS From (  SELECT PERSONID,  CASE WHEN PRIMARYADDRESS = 1 THEN ISNULL(ADDRESS1,'') + ' ' + ISNULL(ADDRESS2,'') + ' '  +  ISNULL(SUBURB,'') + ' ' + ISNULL(POSTCODE,'')  ELSE '' END AS PADDRESS,  CASE WHEN PRIMARYADDRESS <> 1 THEN ISNULL(ADDRESS1,'') + ' ' + ISNULL(ADDRESS2,'') + ' '  +  ISNULL(SUBURB,'') + ' ' + ISNULL(POSTCODE,'')  ELSE '' END AS OADDRESS  From NamesAndAddresses ) AS TMP  GROUP BY PERSONID ) AS N ON R.UNIQUEID = N.PERSONID  LEFT JOIN (  SELECT PERSONID, MAX(PPHONE) AS PRIMARYPHONE, MAX(OPHONE) AS OTHERPHONE  FROM (  SELECT PERSONID,  CASE WHEN PRIMARYPHONE = 1 THEN DETAIL ELSE '' END AS PPHONE,  CASE WHEN PRIMARYPHONE <> 1 THEN DETAIL ELSE '' END AS OPHONE  From PhoneFaxOther ) AS T  GROUP BY PERSONID) AS P ON R.UNIQUEID = P.PERSONID WHERE ExtraDetail1 = 'OPNOTE'"
         var lblcriteria;
 
         // History. DetailDate Between '08-01-2020' AND '08-31-2020 23:59:59'
@@ -8486,7 +7485,7 @@ stafftypeArr: Array<any> = constants.types;
 
         //  //////console.log(fQuery)
 
-        
+        this.drawerVisible = true;
 
         const data = {
             "template": { "_id": "5rDvU6JYKKsSsUEe" },
@@ -8502,45 +7501,27 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         this.loading = true;
-       var Title = "OP Notes Register"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "OP Notes Register.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "OP Notes Register.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -8613,7 +7594,7 @@ stafftypeArr: Array<any> = constants.types;
 
         //console.log(fQuery)
 
-        
+        this.drawerVisible = true;
 
         const data = {
             "template": { "shortid":"2RJgekOWt" },
@@ -8626,45 +7607,27 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         this.loading = true;
-        var Title = "Service Plan Register"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Service Plan Register.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Service Plan Register.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -8706,7 +7669,7 @@ stafftypeArr: Array<any> = constants.types;
 
         ///  //////console.log(fQuery)
 
-        
+        this.drawerVisible = true;
 
         const data = {
             "template": { "_id": "wck7EFbfopCd1OKi" },
@@ -8719,45 +7682,27 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-        var Title = "Care Plan Status Report"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Care Plan Status Report.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Care Plan Status Report.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -8823,7 +7768,8 @@ stafftypeArr: Array<any> = constants.types;
 
           //console.log(fQuery)
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": "rTZq9PlAzEYD9Jbc" },
             "options": {
@@ -8837,45 +7783,27 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-        var Title = "Staff Availability"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Staff Availability.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Staff Availability.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -8926,7 +7854,8 @@ stafftypeArr: Array<any> = constants.types;
 
         //console.log(fQuery)
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": "XTO8SlLEk5FLPTqL" },
             "options": {
@@ -8940,45 +7869,27 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-        var Title = "Time Attendance Comparison Report"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Time Attendance Comparison Report.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Time Attendance Comparison Report.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -8986,7 +7897,7 @@ stafftypeArr: Array<any> = constants.types;
     HRNotesRegister(branch, staff, casenotecat, startdate, enddate, tempsdate, tempedate) {
 
 
-        var fQuery = "SELECT UPPER(Staff.LastName) + ' ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE '' END +       CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE '' END + CASE WHEN Suburb <> '' THEN Suburb ELSE '' END AS Address, Staff.AccountNo AS StaffCode, Staff.StaffGroup, Staff.Category, Staff.STF_DEPARTMENT AS Branch, Staff.Contact1, History.AlarmDate as [Reminder Date], History.Detail,format( History.DetailDate,'dd/MM/yyyy') AS DateCreated, History.Creator AS CreatedBy, History.ExtraDetail1 AS NoteType, CASE WHEN History.ExtraDetail2 Is Null THEN ' UNKNOWN' WHEN History.ExtraDetail2 < 'A' THEN ' UNKNOWN' ELSE History.ExtraDetail2 END AS NoteCategory, History.DeletedRecord FROM Staff INNER JOIN History ON Staff.UniqueID = History.PersonID WHERE  ExtraDetail1 = 'HRNOTE'  AND (History.DeletedRecord = 0) AND (([PrivateFlag] = 0) OR ([PrivateFlag] = 1 AND [Creator] = 'sysmgr'))  ";
+        var fQuery = "SELECT UPPER(Staff.LastName) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE '' END +       CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE '' END + CASE WHEN Suburb <> '' THEN Suburb ELSE '' END AS Address, Staff.AccountNo AS StaffCode, Staff.StaffGroup, Staff.Category, Staff.STF_DEPARTMENT AS Branch, Staff.Contact1, History.AlarmDate as [Reminder Date], History.Detail,format( History.DetailDate,'dd/MM/yyyy') AS DateCreated, History.Creator AS CreatedBy, History.ExtraDetail1 AS NoteType, CASE WHEN History.ExtraDetail2 Is Null THEN ' UNKNOWN' WHEN History.ExtraDetail2 < 'A' THEN ' UNKNOWN' ELSE History.ExtraDetail2 END AS NoteCategory, History.DeletedRecord FROM Staff INNER JOIN History ON Staff.UniqueID = History.PersonID WHERE  ExtraDetail1 = 'HRNOTE'  AND (History.DeletedRecord = 0) AND (([PrivateFlag] = 0) OR ([PrivateFlag] = 1 AND [Creator] = 'sysmgr'))  ";
         var lblcriteria;
 
 
@@ -9034,7 +7945,8 @@ stafftypeArr: Array<any> = constants.types;
 
         //console.log(fQuery)
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": "tAljOfXOyqcdnOV8" },
             "options": {
@@ -9048,45 +7960,27 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-        var Title = "HR Notes Register"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "HR Notes Register.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "HR Notes Register.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -9094,7 +7988,7 @@ stafftypeArr: Array<any> = constants.types;
     StaffOPNotesRegister(branch, program, casenotecat, staff, discipline, caredomain, startdate, enddate, tempsdate, tempedate) {
 
 
-        var fQuery = "SELECT UPPER(Staff.LastName) + ' ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE '' END + CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE '' END + CASE WHEN Suburb <> '' THEN Suburb ELSE '' END AS Address, Staff.AccountNo AS StaffCode, Staff.StaffGroup, Staff.Category, Staff.STF_DEPARTMENT AS Branch, Staff.Contact1, History.AlarmDate as [Reminder Date], History.Detail,format(History.DetailDate,'dd/MM/yyyy') AS DateCreated, History.Creator AS CreatedBy, History.ExtraDetail1 AS NoteType, CASE WHEN History.ExtraDetail2 Is Null THEN ' UNKNOWN' WHEN History.ExtraDetail2 < 'A' THEN ' UNKNOWN' ELSE History.ExtraDetail2 END AS NoteCategory, History.DeletedRecord FROM Staff INNER JOIN History ON Staff.UniqueID = History.PersonID WHERE ExtraDetail1 <> 'HRNOTE'  AND (History.DeletedRecord = 0)  "
+        var fQuery = "SELECT UPPER(Staff.LastName) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE '' END + CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE '' END + CASE WHEN Suburb <> '' THEN Suburb ELSE '' END AS Address, Staff.AccountNo AS StaffCode, Staff.StaffGroup, Staff.Category, Staff.STF_DEPARTMENT AS Branch, Staff.Contact1, History.AlarmDate as [Reminder Date], History.Detail,format(History.DetailDate,'dd/MM/yyyy') AS DateCreated, History.Creator AS CreatedBy, History.ExtraDetail1 AS NoteType, CASE WHEN History.ExtraDetail2 Is Null THEN ' UNKNOWN' WHEN History.ExtraDetail2 < 'A' THEN ' UNKNOWN' ELSE History.ExtraDetail2 END AS NoteCategory, History.DeletedRecord FROM Staff INNER JOIN History ON Staff.UniqueID = History.PersonID WHERE ExtraDetail1 <> 'HRNOTE'  AND (History.DeletedRecord = 0)  "
         var lblcriteria;
 
 
@@ -9165,7 +8059,8 @@ stafftypeArr: Array<any> = constants.types;
 
         ////console.log(fQuery)
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": "CPX4RU8x2kvCKORP" },
             "options": {
@@ -9179,45 +8074,27 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-        var Title = "Staff OP Notes Register"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Staff OP Notes Register.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Staff OP Notes Register.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -9225,7 +8102,7 @@ stafftypeArr: Array<any> = constants.types;
     StaffIncidentRegister(branch, SvcType, Staff, incidenttype, category, startdate, enddate, tempsdate, tempedate) {
 
 
-        var fQuery = "SELECT AccountNo, STF_Department AS Branch, AccountNo + ' - ' + CASE WHEN LastName<> '' THEN Upper(LastName) ELSE ' ' END + ' ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' ' END + ' ' + CASE WHEN MiddleNames <> '' THEN MiddleNames  ELSE '' END  + CASE WHEN Address1 <> '' THEN ' ' + Address1  ELSE ' '  END + CASE WHEN Address2 <> '' THEN ' ' + Address2  ELSE ' '  END + CASE WHEN Suburb <> '' THEN ' ' + Suburb  ELSE ' '  END + CASE WHEN TelePhone <> '' THEN ' Ph.' + TelePhone  ELSE ' '  END AS NameAddressPhone, (SELECT CASE WHEN LastName <> '' THEN Upper(LastName) ELSE ' ' END + ' ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' ' END + ' ' + CASE WHEN MiddleNames <> '' THEN MiddleNames  ELSE '' END  As StaffName FROM STAFF WHERE AccountNo = ReportedBy) As ReportedByStaff, (SELECT CASE WHEN LastName <> '' THEN Upper(LastName) ELSE ' ' END + ' ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' ' END + ' ' + CASE WHEN MiddleNames <> '' THEN MiddleNames  ELSE '' END  As StaffName FROM STAFF WHERE AccountNo = CurrentAssignee)  As AssignedToStaff , I.* FROM IM_Master I INNER JOIN STAFF R ON I.PERSONID = R.UNIQUEID WHERE"
+        var fQuery = "SELECT AccountNo, STF_Department AS Branch, AccountNo + ' - ' + CASE WHEN LastName<> '' THEN Upper(LastName) ELSE ' ' END + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' ' END + ' ' + CASE WHEN MiddleNames <> '' THEN MiddleNames  ELSE '' END  + CASE WHEN Address1 <> '' THEN ' ' + Address1  ELSE ' '  END + CASE WHEN Address2 <> '' THEN ' ' + Address2  ELSE ' '  END + CASE WHEN Suburb <> '' THEN ' ' + Suburb  ELSE ' '  END + CASE WHEN TelePhone <> '' THEN ' Ph.' + TelePhone  ELSE ' '  END AS NameAddressPhone, (SELECT CASE WHEN LastName <> '' THEN Upper(LastName) ELSE ' ' END + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' ' END + ' ' + CASE WHEN MiddleNames <> '' THEN MiddleNames  ELSE '' END  As StaffName FROM STAFF WHERE AccountNo = ReportedBy) As ReportedByStaff, (SELECT CASE WHEN LastName <> '' THEN Upper(LastName) ELSE ' ' END + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' ' END + ' ' + CASE WHEN MiddleNames <> '' THEN MiddleNames  ELSE '' END  As StaffName FROM STAFF WHERE AccountNo = CurrentAssignee)  As AssignedToStaff , I.* FROM IM_Master I INNER JOIN STAFF R ON I.PERSONID = R.UNIQUEID WHERE"
         var lblcriteria;
 
 
@@ -9283,7 +8160,8 @@ stafftypeArr: Array<any> = constants.types;
 
     //    console.log(fQuery)
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": "elFITHKE2y1STfUR" },
             "options": {
@@ -9297,45 +8175,27 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-       var Title = "Staff Incident Register"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Staff Incident Register.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Staff Incident Register.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -9433,7 +8293,8 @@ stafftypeArr: Array<any> = constants.types;
 
       //  console.log(fQuery)
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": "7o1ScJuvyRZk8xZ6" },
             "options": {
@@ -9445,44 +8306,27 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-        var Title = "Staff Training Register"
+        
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Staff Training Register.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Staff Training Register.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -9532,7 +8376,8 @@ stafftypeArr: Array<any> = constants.types;
 
     //    console.log(fQuery)
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": "YD5T4jvODtGyusH8" },
             "options": {
@@ -9547,44 +8392,26 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         this.loading = true;
-        var Title = "Audit Register"
         
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Audit Register.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Audit Register.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
 
@@ -9613,7 +8440,8 @@ stafftypeArr: Array<any> = constants.types;
 
     //    console.log(fQuery)
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": "4bzgeVt7vedkx8Uh" },
             "options": {
@@ -9628,45 +8456,27 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         this.loading = true;
-        var Title = "Program Activity Status Audit"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Program Activity Status Audit.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Program Activity Status Audit.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
 
@@ -9675,7 +8485,7 @@ stafftypeArr: Array<any> = constants.types;
     MTARegister(program, manager, Staff, stfgroup, recipient, startdate, enddate, tempsdate, tempedate, XXLate, XXEarly, XXOverstayed) {
 
 
-        var fQuery = "select t0.*, ez.jobno, Convert(varchar(5),ez.datetime,108) AS ActualStart, DATEDIFF(n, t0.[Start Time], CONVERT(nVarchar(5),[DateTime],114)) AS StartVAR,Convert(varchar(5), ez.lodatetime,108) AS ActualEnd,  DATEDIFF(n, DateAdd(Minute, (t0.[Duration] * 5), t0.[Start Time]), CONVERT(nVarchar(5),ez.[LODateTime],114)) AS EndVAR, Round(ez.WorkDuration * 60, 0) AS [ActualDuration], DATEDIFF(n, DateAdd(Minute, (t0.[Duration] * 5), t0.[Start Time]), CONVERT(nVarchar(5),ez.[LODateTime],114)) - DATEDIFF(n, t0.[Start Time], CONVERT(nVarchar(5),[DateTime],114)) AS [DurationVAR], CASE WHEN (LOErrorCode = 0 AND ErrorCode = 0) THEN 'APP LOGON/APP LOGOFF' WHEN (LOErrorCode = 0 AND ErrorCode = 1) THEN 'MANUAL LOGON/APP LOGOFF'      WHEN (LOErrorCode = 1 AND ErrorCode = 0) THEN 'APP LOGON/MANUAL LOGOFF'      WHEN (LOErrorCode = 1 AND ErrorCode = 1) THEN 'MANUAL LOGON/MANUAL LOGOFF' ELSE CASE WHEN ErrorCode = 1 THEN 'MANUAL LOGON' WHEN ErrorCode = 0 THEN 'APP LOGON' WHEN IsNull(ez.DateTime,'')= ''  THEN 'NORMAL LOGOFF'  ELSE '' END END AS [Completion Status] from (    select    ro.RecordNo,    ro.[Client Code] as ClientCode,    ro.[Carer code] as StaffCode,     ro.[Service Type] as ItemCode,    ro.[Date],     ro.[Start Time],    ro.[Duration],    Convert(nvarchar(5), DateAdd(Minute, (ro.[Duration] * 5), ro.[Start Time]), 114) As [RosteredEnd],    Round(Duration * 5, 0) AS [RosteredDuration],    re.PANNoGoTH,     re.PANNoWorkTH,     re.PANEarlyStartTH,     re.PANLateStartTH,     re.PANEarlyFinishTH,     re.PANLateFinishTH,     re.PANOverstayTH,     re.PANUnderstayTH,     re.UniqueID AS RecipientID,    CASE WHEN st.[LastName] <> '' THEN st.[LastName] ELSE '?' END + ' ' +     CASE WHEN st.[FirstName] <> '' THEN st.[FirstName] ELSE '?' END AS [Staff] ,     CASE            WHEN re.Accountno = '!MULTIPLE' THEN ro.ServiceSetting            WHEN re.Accountno = '!INTERNAL' THEN '[Service Type]'            WHEN re.[Surname/Organisation] <> '' THEN  re.[Surname/Organisation] + CASE WHEN re.[FirstName] <> '' THEN ', ' + re.[FirstName] ELSE '?' END  END AS [Recipient]    from    roster ro    inner join recipients re on ro.[Client Code] = re.accountno    inner join staff st on ro.[carer code] = st.accountno    inner join itemtypes it on ro.[service type] = it.title    where  ";
+        var fQuery = "select t0.*, ez.jobno, Convert(varchar(5),ez.datetime,108) AS ActualStart, DATEDIFF(n, t0.[Start Time], CONVERT(nVarchar(5),[DateTime],114)) AS StartVAR,Convert(varchar(5), ez.lodatetime,108) AS ActualEnd,  DATEDIFF(n, DateAdd(Minute, (t0.[Duration] * 5), t0.[Start Time]), CONVERT(nVarchar(5),ez.[LODateTime],114)) AS EndVAR, Round(ez.WorkDuration * 60, 0) AS [ActualDuration], DATEDIFF(n, DateAdd(Minute, (t0.[Duration] * 5), t0.[Start Time]), CONVERT(nVarchar(5),ez.[LODateTime],114)) - DATEDIFF(n, t0.[Start Time], CONVERT(nVarchar(5),[DateTime],114)) AS [DurationVAR], CASE WHEN (LOErrorCode = 0 AND ErrorCode = 0) THEN 'APP LOGON/APP LOGOFF' WHEN (LOErrorCode = 0 AND ErrorCode = 1) THEN 'MANUAL LOGON/APP LOGOFF'      WHEN (LOErrorCode = 1 AND ErrorCode = 0) THEN 'APP LOGON/MANUAL LOGOFF'      WHEN (LOErrorCode = 1 AND ErrorCode = 1) THEN 'MANUAL LOGON/MANUAL LOGOFF' ELSE CASE WHEN ErrorCode = 1 THEN 'MANUAL LOGON' WHEN ErrorCode = 0 THEN 'APP LOGON' WHEN IsNull(ez.DateTime,'')= ''  THEN 'NORMAL LOGOFF'  ELSE '' END END AS [Completion Status] from (    select    ro.RecordNo,    ro.[Client Code] as ClientCode,    ro.[Carer code] as StaffCode,     ro.[Service Type] as ItemCode,    ro.[Date],     ro.[Start Time],    ro.[Duration],    Convert(nvarchar(5), DateAdd(Minute, (ro.[Duration] * 5), ro.[Start Time]), 114) As [RosteredEnd],    Round(Duration * 5, 0) AS [RosteredDuration],    re.PANNoGoTH,     re.PANNoWorkTH,     re.PANEarlyStartTH,     re.PANLateStartTH,     re.PANEarlyFinishTH,     re.PANLateFinishTH,     re.PANOverstayTH,     re.PANUnderstayTH,     re.UniqueID AS RecipientID,    CASE WHEN st.[LastName] <> '' THEN st.[LastName] ELSE '?' END + ', ' +     CASE WHEN st.[FirstName] <> '' THEN st.[FirstName] ELSE '?' END AS [Staff] ,     CASE            WHEN re.Accountno = '!MULTIPLE' THEN ro.ServiceSetting            WHEN re.Accountno = '!INTERNAL' THEN '[Service Type]'            WHEN re.[Surname/Organisation] <> '' THEN  re.[Surname/Organisation] + CASE WHEN re.[FirstName] <> '' THEN ', ' + re.[FirstName] ELSE '?' END  END AS [Recipient]    from    roster ro    inner join recipients re on ro.[Client Code] = re.accountno    inner join staff st on ro.[carer code] = st.accountno    inner join itemtypes it on ro.[service type] = it.title    where  ";
         var lblcriteria;
         var fQuery1 = " ";
 
@@ -9764,7 +8574,8 @@ stafftypeArr: Array<any> = constants.types;
 
     //    console.log(fQuery)
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": "l4nWCteKG2bDS0QA" },
             "options": {
@@ -9779,45 +8590,27 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         this.loading = true;
-       var Title = "MTA Attendance Register"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "MTA Attendance Register.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "MTA Attendance Register.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
 
@@ -9883,7 +8676,8 @@ stafftypeArr: Array<any> = constants.types;
 //
         // console.log(fQuery)
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": "lK0psB9gWfDQkZhG" },
             "options": {
@@ -9898,45 +8692,27 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         this.loading = true;
-        var Title = "Roster OverLap Register"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Roster OverLap Register.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Roster OverLap Register.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
             
@@ -9945,7 +8721,7 @@ stafftypeArr: Array<any> = constants.types;
     MTAVerificationAudit(program, manager, Staff, stfgroup, recipient, startdate, enddate, tempsdate, tempedate, XXLate, XXEarly, XXOverstayed) {
 
 
-        var fQuery = "select t0.RecordNo,t0.Date,Recipient_Signature,ClientCode,StaffCode, ez.jobno,CONVERT(VARCHAR(5),ez.datetime, 108)  AS ActualStart,CONVERT(VARCHAR(5),ez.lodatetime, 108)  AS ActualEnd,  Round(ez.WorkDuration * 60, 0) AS [ActualDuration], CASE WHEN (LOErrorCode = 0 AND ErrorCode = 0) THEN 'APP LOGON/APP LOGOFF'      WHEN (LOErrorCode = 0 AND ErrorCode = 1) THEN 'MANUAL LOGON/APP LOGOFF'      WHEN (LOErrorCode = 1 AND ErrorCode = 0) THEN 'APP LOGON/MANUAL LOGOFF'      WHEN (LOErrorCode = 1 AND ErrorCode = 1) THEN 'MANUAL LOGON/MANUAL LOGOFF'      ELSE CASE WHEN ErrorCode = 1 THEN 'MANUAL LOGON' WHEN ErrorCode = 0 THEN 'APP LOGON' WHEN IsNull(ez.DateTime,'')= ''  THEN 'NORMAL LOGOFF'  ELSE '' END END AS [Completion Status] from (    select    ro.RecordNo,    ro.Recipient_Signature,    ro.[Client Code] as ClientCode,    ro.[Carer code] as StaffCode,     ro.[Service Type] as ItemCode,    ro.[Date],     ro.[Start Time],    ro.[Duration],    Convert(nvarchar(5), DateAdd(Minute, (ro.[Duration] * 5), ro.[Start Time]), 114) As [RosteredEnd],    Round(Duration * 5, 0) AS [RosteredDuration],    re.UniqueID AS RecipientID,    CASE WHEN st.[LastName] <> '' THEN st.[LastName] ELSE '?' END + ' ' +         CASE WHEN st.[FirstName] <> '' THEN st.[FirstName] ELSE '?' END AS [Staff] ,     CASE WHEN re.Accountno = '!MULTIPLE' THEN ro.ServiceSetting   WHEN re.Accountno = '!INTERNAL' THEN '[Service Type]' WHEN re.[Surname/Organisation] <> '' THEN  re.[Surname/Organisation] + CASE WHEN re.[FirstName] <> '' THEN ', ' + re.[FirstName] ELSE '?' END  END AS [Recipient]    from    roster ro    inner join recipients re on ro.[Client Code] = re.accountno    inner join staff st on ro.[carer code] = st.accountno    inner join itemtypes it on ro.[service type] = it.title    where   ";
+        var fQuery = "select t0.RecordNo,t0.Date,Recipient_Signature,ClientCode,StaffCode, ez.jobno,CONVERT(VARCHAR(5),ez.datetime, 108)  AS ActualStart,CONVERT(VARCHAR(5),ez.lodatetime, 108)  AS ActualEnd,  Round(ez.WorkDuration * 60, 0) AS [ActualDuration], CASE WHEN (LOErrorCode = 0 AND ErrorCode = 0) THEN 'APP LOGON/APP LOGOFF'      WHEN (LOErrorCode = 0 AND ErrorCode = 1) THEN 'MANUAL LOGON/APP LOGOFF'      WHEN (LOErrorCode = 1 AND ErrorCode = 0) THEN 'APP LOGON/MANUAL LOGOFF'      WHEN (LOErrorCode = 1 AND ErrorCode = 1) THEN 'MANUAL LOGON/MANUAL LOGOFF'      ELSE CASE WHEN ErrorCode = 1 THEN 'MANUAL LOGON' WHEN ErrorCode = 0 THEN 'APP LOGON' WHEN IsNull(ez.DateTime,'')= ''  THEN 'NORMAL LOGOFF'  ELSE '' END END AS [Completion Status] from (    select    ro.RecordNo,    ro.Recipient_Signature,    ro.[Client Code] as ClientCode,    ro.[Carer code] as StaffCode,     ro.[Service Type] as ItemCode,    ro.[Date],     ro.[Start Time],    ro.[Duration],    Convert(nvarchar(5), DateAdd(Minute, (ro.[Duration] * 5), ro.[Start Time]), 114) As [RosteredEnd],    Round(Duration * 5, 0) AS [RosteredDuration],    re.UniqueID AS RecipientID,    CASE WHEN st.[LastName] <> '' THEN st.[LastName] ELSE '?' END + ', ' +         CASE WHEN st.[FirstName] <> '' THEN st.[FirstName] ELSE '?' END AS [Staff] ,     CASE WHEN re.Accountno = '!MULTIPLE' THEN ro.ServiceSetting   WHEN re.Accountno = '!INTERNAL' THEN '[Service Type]' WHEN re.[Surname/Organisation] <> '' THEN  re.[Surname/Organisation] + CASE WHEN re.[FirstName] <> '' THEN ', ' + re.[FirstName] ELSE '?' END  END AS [Recipient]    from    roster ro    inner join recipients re on ro.[Client Code] = re.accountno    inner join staff st on ro.[carer code] = st.accountno    inner join itemtypes it on ro.[service type] = it.title    where   ";
         var lblcriteria;
 
 
@@ -10033,7 +8809,8 @@ stafftypeArr: Array<any> = constants.types;
 
         //////console.log(fQuery)
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": "dpEyUTAAn5HXqGhK" },
             "options": {
@@ -10048,45 +8825,27 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         this.loading = true;
-       var Title = "MTA Attendance Verification Audit"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "MTA Attendance Verification Audit.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "MTA Attendance Verification Audit.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
             
@@ -10095,7 +8854,7 @@ stafftypeArr: Array<any> = constants.types;
     UnsedFunding(program, manager, recipient, region) {
 
 
-        var fQuery = "Select Recipients.UniqueID, Recipients.AccountNo, Recipients.Branch, Recipients.AdmissionDate,Recipients.DischargeDate, CASE WHEN Recipients.[Surname/Organisation] <> '' THEN [Surname/Organisation] ELSE '*' END + ' ' + CASE WHEN Recipients.FirstName <> '' THEN FirstName ELSE '*' END AS NameDetails, Recipients.RECIPIENT_Coordinator, RecipientPrograms.Program, RecipientPrograms.Quantity, RecipientPrograms.ItemUnit, RecipientPrograms.PerUnit, RecipientPrograms.TimeUnit, RecipientPrograms.Period, format(RecipientPrograms.ExpiryDate,'dd/MM/yyyy') as ExpiryDate , RecipientPrograms.TotalAllocation, RecipientPrograms.Used, RecipientPrograms.Remaining FROM RecipientPrograms INNER JOIN Recipients ON RecipientPrograms.PersonID = Recipients.UniqueID  WHERE AccountNo > '!z' AND ((Recipients.AdmissionDate is NOT NULL) and (Recipients.DischargeDate is NULL))    ";
+        var fQuery = "Select Recipients.UniqueID, Recipients.AccountNo, Recipients.Branch, Recipients.AdmissionDate,Recipients.DischargeDate, CASE WHEN Recipients.[Surname/Organisation] <> '' THEN [Surname/Organisation] ELSE '*' END + ', ' + CASE WHEN Recipients.FirstName <> '' THEN FirstName ELSE '*' END AS NameDetails, Recipients.RECIPIENT_Coordinator, RecipientPrograms.Program, RecipientPrograms.Quantity, RecipientPrograms.ItemUnit, RecipientPrograms.PerUnit, RecipientPrograms.TimeUnit, RecipientPrograms.Period, format(RecipientPrograms.ExpiryDate,'dd/MM/yyyy') as ExpiryDate , RecipientPrograms.TotalAllocation, RecipientPrograms.Used, RecipientPrograms.Remaining FROM RecipientPrograms INNER JOIN Recipients ON RecipientPrograms.PersonID = Recipients.UniqueID  WHERE AccountNo > '!z' AND ((Recipients.AdmissionDate is NOT NULL) and (Recipients.DischargeDate is NULL))    ";
         var lblcriteria;
 
 
@@ -10143,7 +8902,8 @@ stafftypeArr: Array<any> = constants.types;
 
     //    console.log(fQuery)
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": "X641oa708kHECwiT" },
             "options": {
@@ -10158,45 +8918,27 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         this.loading = true;
-        var Title = "Recipient Unused Funding Reprot"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Recipient Unused Funding Reprot.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Recipient Unused Funding Reprot.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
         
@@ -10609,7 +9351,8 @@ stafftypeArr: Array<any> = constants.types;
 
         }
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -10650,44 +9393,26 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
         
-        
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = Title + ".pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = Title + ".pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
             
@@ -11022,7 +9747,8 @@ stafftypeArr: Array<any> = constants.types;
 
 
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -11065,44 +9791,26 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
         
-        
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = Title + ".pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = Title + ".pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
           
@@ -11441,7 +10149,8 @@ stafftypeArr: Array<any> = constants.types;
         }
 
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -11481,44 +10190,26 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
         
-        
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = Title + ".pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = Title + ".pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
            
@@ -11932,7 +10623,8 @@ stafftypeArr: Array<any> = constants.types;
         //console.log(fQuery)
 
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -11972,44 +10664,26 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
         
-        
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = Title + ".pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = Title + ".pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
            
@@ -12347,7 +11021,8 @@ stafftypeArr: Array<any> = constants.types;
         }
 
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -12387,44 +11062,26 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
         
-        
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = Title + ".pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = Title + ".pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
            
@@ -12764,8 +11421,8 @@ stafftypeArr: Array<any> = constants.types;
                 break;
         }
 
-        //console.log(this.inputForm.value.InclFinancials)
-        
+        console.log(this.inputForm.value.InclFinancials)
+        this.drawerVisible = true;
         
         const data = {
             "template": { "_id": this.reportid },
@@ -12806,44 +11463,26 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
         
-        
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = Title + ".pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = Title + ".pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
            
@@ -12876,7 +11515,8 @@ stafftypeArr: Array<any> = constants.types;
 
         // //////console.log(fQuery)
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": "651WtSGmEJ257yjD" },
             "options": {
@@ -12892,46 +11532,28 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         this.loading = true;
-       var Title = "Program Budget Audit"
         
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Program Budget Audit.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Program Budget Audit.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
 
@@ -13001,7 +11623,7 @@ stafftypeArr: Array<any> = constants.types;
             "template": { "_id": "JzFkyOS6RlKiOeqD" },
             "options": {
                 "reports": { "save": false },
-                //   "sql": "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ' ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, (SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC) AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID WHERE R.[AccountNo] > '!MULTIPLE'   AND (R.DischargeDate is NULL)  AND  (RecipientPrograms.ProgramStatus = 'REFERRAL')  ORDER BY R.ONIRating, R.[Surname/Organisation]"
+                //   "sql": "SELECT DISTINCT R.UniqueID, R.AccountNo, R.AgencyIdReportingCode, R.[Surname/Organisation], R.FirstName, R.Branch, R.RECIPIENT_COORDINATOR, R.AgencyDefinedGroup, R.ONIRating, R.AdmissionDate As [Activation Date], R.DischargeDate As [DeActivation Date], HumanResourceTypes.Address2, RecipientPrograms.ProgramStatus, CASE WHEN RecipientPrograms.Program <> '' THEN RecipientPrograms.Program + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Quantity <> '' THEN RecipientPrograms.Quantity + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.ItemUnit <> '' THEN RecipientPrograms.ItemUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.PerUnit <> '' THEN RecipientPrograms.PerUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.TimeUnit <> '' THEN RecipientPrograms.TimeUnit + ' ' ELSE ' ' END + CASE WHEN RecipientPrograms.Period <> '' THEN RecipientPrograms.Period + ' ' ELSE ' ' END AS FundingDetails, UPPER([Surname/Organisation]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName ELSE ' ' END AS RecipientName, CASE WHEN N1.Address <> '' THEN  N1.Address ELSE N2.Address END  AS ADDRESS, CASE WHEN P1.Contact <> '' THEN  P1.Contact ELSE P2.Contact END AS CONTACT, (SELECT TOP 1 Date FROM Roster WHERE Type IN (2, 3, 7, 8, 9, 10, 11, 12) AND [Client Code] = R.AccountNo ORDER BY DATE DESC) AS LastDate FROM Recipients R LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID LEFT JOIN HumanResourceTypes ON HumanResourceTypes.Name = RecipientPrograms.Program LEFT JOIN ServiceOverview ON ServiceOverview.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress = 1)  AS N1 ON N1.PersonID = R.UniqueID LEFT JOIN (SELECT PERSONID,  CASE WHEN Address1 <> '' THEN Address1 + ' ' ELSE ' ' END +  CASE WHEN Address2 <> '' THEN Address2 + ' ' ELSE ' ' END +  CASE WHEN Suburb <> '' THEN Suburb + ' ' ELSE ' ' END +  CASE WHEN Postcode <> '' THEN Postcode ELSE ' ' END AS Address  FROM NamesAndAddresses WHERE PrimaryAddress <> 1)  AS N2 ON N2.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone = 1)  AS P1 ON P1.PersonID = R.UniqueID LEFT JOIN (SELECT PersonID,  PhoneFaxOther.Type + ' ' +  CASE WHEN Detail <> '' THEN Detail ELSE ' ' END AS Contact  FROM PhoneFaxOther WHERE PrimaryPhone <> 1)  AS P2 ON P2.PersonID = R.UniqueID WHERE R.[AccountNo] > '!MULTIPLE'   AND (R.DischargeDate is NULL)  AND  (RecipientPrograms.ProgramStatus = 'REFERRAL')  ORDER BY R.ONIRating, R.[Surname/Organisation]"
                 "sql": fQuery,
                 "Criteria": lblcriteria,
                 "userid": this.tocken.user,
@@ -13009,44 +11631,27 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         this.loading = true;
-       var Title = "Program Summary Report"
+        
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Program Summary Report.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Program Summary Report.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -13396,7 +12001,8 @@ stafftypeArr: Array<any> = constants.types;
         }
 
         
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -13439,44 +12045,26 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
         
-        
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = Title + ".pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = Title + ".pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
 
@@ -13828,7 +12416,8 @@ stafftypeArr: Array<any> = constants.types;
         }
 
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -13869,42 +12458,25 @@ stafftypeArr: Array<any> = constants.types;
         this.loading = true;
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = Title + ".pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = Title + ".pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
 
@@ -14252,7 +12824,8 @@ stafftypeArr: Array<any> = constants.types;
         }
 
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -14292,44 +12865,26 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
         
-        
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = Title + ".pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = Title + ".pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
 
@@ -14670,7 +13225,8 @@ stafftypeArr: Array<any> = constants.types;
         }
 
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -14710,44 +13266,26 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
         
-        
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = Title + ".pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = Title + ".pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
 
@@ -15091,7 +13629,8 @@ stafftypeArr: Array<any> = constants.types;
         }
 
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -15131,44 +13670,26 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
         
-        
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = Title + ".pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = Title + ".pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
 
@@ -15507,7 +14028,8 @@ stafftypeArr: Array<any> = constants.types;
         }
 
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -15547,44 +14069,26 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
         
-        
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = Title + ".pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = Title + ".pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
 
@@ -15917,7 +14421,8 @@ stafftypeArr: Array<any> = constants.types;
         }
 
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -15956,44 +14461,26 @@ stafftypeArr: Array<any> = constants.types;
         }
         this.loading = true;
         
-        
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = Title + ".pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = Title + ".pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
 
@@ -16326,7 +14813,8 @@ stafftypeArr: Array<any> = constants.types;
         }
 
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -16366,44 +14854,26 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
         
-        
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = Title + ".pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = Title + ".pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
 
@@ -16430,7 +14900,8 @@ stafftypeArr: Array<any> = constants.types;
 
         //////console.log(fQuery)
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": "cmkcZALxPRp1NQEw" },
             "options": {
@@ -16444,45 +14915,27 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-       var Title = "Funding Audit Report"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Funding Audit Report.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Funding Audit Report.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
 
@@ -16806,7 +15259,8 @@ stafftypeArr: Array<any> = constants.types;
         //////console.log(fQuery)
 
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": "y3AjmCjSbwvf2zGw" },
             "options": {
@@ -16846,44 +15300,26 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
         
-        
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = Title + ".pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = Title + ".pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
 
@@ -17222,7 +15658,8 @@ stafftypeArr: Array<any> = constants.types;
         }
 
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -17262,44 +15699,26 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
         
-        
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = Title + ".pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = Title + ".pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
 
@@ -17350,7 +15769,8 @@ stafftypeArr: Array<any> = constants.types;
 
      //   console.log(fQuery)
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": "FgNttxKsmc7gqOPj" },
             "options": {
@@ -17364,45 +15784,27 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-       var Title = "UnBilled Items Report"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "UnBilled Items Report.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "UnBilled Items Report.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -17452,7 +15854,8 @@ stafftypeArr: Array<any> = constants.types;
 
      //   console.log(fQuery)
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": "FgNttxKsmc7gqOPj" },
             "options": {
@@ -17466,45 +15869,27 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-        var Title = "Billed Items Report"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Billed Items Report.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Billed Items Report.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -17854,7 +16239,8 @@ stafftypeArr: Array<any> = constants.types;
                 break;
         }
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -17894,44 +16280,26 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
         
-        
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = Title + ".pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = Title + ".pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
 
@@ -18286,7 +16654,8 @@ stafftypeArr: Array<any> = constants.types;
         }
 
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -18327,44 +16696,26 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
         
-        
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = Title + ".pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = Title + ".pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
 
@@ -18711,7 +17062,8 @@ stafftypeArr: Array<any> = constants.types;
         }
 
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -18752,44 +17104,26 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
         
-        
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = Title + ".pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = Title + ".pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
 
@@ -18839,7 +17173,8 @@ stafftypeArr: Array<any> = constants.types;
 
         // //////console.log(fQuery)
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": "BziOYcDKGzLionPY" },
             "options": {
@@ -18853,45 +17188,27 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-       var Title = "Dataset Recipient Unit Cost Report"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Dataset Recipient Unit Cost Report.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Dataset Recipient Unit Cost Report.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -19243,7 +17560,8 @@ stafftypeArr: Array<any> = constants.types;
         }
 
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -19284,43 +17602,25 @@ stafftypeArr: Array<any> = constants.types;
 
         this.loading = true;
         
-        
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = Title + ".pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = Title + ".pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
 
@@ -19448,45 +17748,27 @@ stafftypeArr: Array<any> = constants.types;
             }
         }
         this.loading = true;
-       var Title = "Program Recipient Budget"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Program Recipient Budget.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Program Recipient Budget.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
         }
@@ -19494,8 +17776,8 @@ stafftypeArr: Array<any> = constants.types;
 CompetencyRegister(branch, Staff,stfgroup,competency) {
 
     var lblcriteria;
-    //SELECT DISTINCT Staff.[UniqueID], Staff.[AccountNo], Staff.[STF_CODE], Staff.[STF_DEPARTMENT], Staff.[StaffGroup], Staff.[LastName], UPPER(Staff.[LastName]) + ' ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Staff.[Address1], Staff.[Address2], Staff.[Suburb], Staff.[Postcode], Format(Staff.[CommencementDate],'dd/MM/yyyy') as [CommencementDate], Staff.[TerminationDate],  SB1, SB2, SB3, SB4, SB5, SB6, SB7, SB8, SB9, SB10, SB11, SB12, SB13, SB14, SB15, SB16, SB17, SB18, SB19, SB20, SB21, SB22, SB23, SB24, SB25, SB26, SB27, SB28, SB29, SB30, SB31, SB32, SB33, SB34, SB35 ,HumanResources.RecordNumber,HumanResources.[Type] ,case when HumanResources.type = 'STAFFATTRIBUTE' then HumanResources.Name else null end AS Attribute,case when HumanResources.type = 'STAFFATTRIBUTE' then Format( Date1,'dd/MM/yyyy') end as Anniversary,case when HumanResources.type = 'STAFFATTRIBUTE' then HumanResources.Address1 end AS Cert#,case when HumanResources.type = 'STAFFATTRIBUTE' then Notes end as Notes,Stuff ((SELECT  ', ' + Detail from PhoneFaxOther pf where pf.PersonID = Staff.UniqueID and (PrimaryPhone = '1' OR ([Type] like '<EMAIL>' OR [Type] like 'EMAIL') )  For XML path ('')),1, 1, '') [Detail] FROM Staff inner JOIN HumanResources ON UniqueID = PersonID  WHERE    Staff.[Category] = 'STAFF'  OR Staff.[Category] = 'STAFF'  OR Staff.[Category] = 'BROKERAGE ORGANISATION'   AND (Staff.[commencementdate] is not null and Staff.[terminationdate] is null)  ORDER BY Staff.[LastName]
-    var fQuery = "SELECT DISTINCT Staff.[UniqueID], Staff.[AccountNo], Staff.[STF_CODE], Staff.[STF_DEPARTMENT], Staff.[StaffGroup], Staff.[LastName],  Staff.[LastName] + ' ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Staff.[Address1] + ' ' + Staff.[Suburb] + ' ' + Staff.[Postcode] as Address1, Staff.[Address2], Staff.[Suburb], Staff.[Postcode], Format(Staff.[CommencementDate],'dd/MM/yyyy') as [CommencementDate], Staff.[TerminationDate],  SB1, SB2, SB3, SB4, SB5, SB6, SB7, SB8, SB9, SB10, SB11, SB12, SB13, SB14, SB15, SB16, SB17, SB18, SB19, SB20, SB21, SB22, SB23, SB24, SB25, SB26, SB27, SB28, SB29, SB30, SB31, SB32, SB33, SB34, SB35  ,case when HumanResources.type = 'STAFFATTRIBUTE' then HumanResources.Name else null end AS Attribute,case when HumanResources.type = 'STAFFATTRIBUTE' then Format( Date1,'dd/MM/yyyy') end as Anniversary,case when HumanResources.type = 'STAFFATTRIBUTE' then HumanResources.Address1 end AS Cert#,case when HumanResources.type = 'STAFFATTRIBUTE' then Notes end as Notes,Stuff ((SELECT  ', ' + Detail from PhoneFaxOther pf where pf.PersonID = Staff.UniqueID and (PrimaryPhone = '1' OR ([Type] like '<EMAIL>' OR [Type] like 'EMAIL') )  For XML path ('')),1, 1, '') [Detail],case when SB1 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0022')  end as Skill22 ,case when SB2 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0023')   end as Skill23 ,case when SB3 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0024')   end as Skill24 ,case when SB4 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0025')   end as Skill25,case when SB5 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0026')   end as Skill26,case when SB6 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0027')   end as Skill27 ,case when SB7 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0028')   end as Skill28 ,case when SB8 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0029')   end as Skill29 ,case when SB9 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0030')   end as Skill30 ,case when SB10 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0031')   end as Skill31 ,case when SB11 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0032')   end as Skill32 ,case when SB12 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0033')   end as Skill33 ,case when SB13 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0034')   end as Skill34,case when SB14 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0036')   end as Skill36 ,case when SB15 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0040')   end as Skill40 ,case when SB16 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0041')   end as Skill41 ,case when SB17 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0042')   end as Skill42 ,case when SB18 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0043')   end as Skill43 ,case when SB19 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0044')    end as Skill44 ,case when SB20 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0045')   end as Skill45 ,case when SB21 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0046')   end as Skill46 ,case when SB22 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0047')   end as Skill47 ,case when SB23 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0048')   end as Skill48 ,case when SB24 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0049')   end as Skill49 ,case when SB25 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0050')   end as Skill50 ,case when SB26 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0051')   end as Skill51 ,case when SB27 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0052')   end as Skill52 ,case when SB28 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0053')   end as Skill53 ,case when SB29 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0054')   end as Skill54 ,case when SB30 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0055')   end as Skill55 ,case when SB31 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0056')   end as Skill56 ,case when SB32 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0057')   end as Skill57 ,case  when SB33 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0058')   end as Skill58  ,case when SB34 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0059')    end as Skill59 ,case when SB35 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0060')   end as Skill60  FROM Staff inner JOIN HumanResources ON UniqueID = PersonID  WHERE  ([commencementdate] is not null and [terminationdate] is null)  "
+    //SELECT DISTINCT Staff.[UniqueID], Staff.[AccountNo], Staff.[STF_CODE], Staff.[STF_DEPARTMENT], Staff.[StaffGroup], Staff.[LastName], UPPER(Staff.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Staff.[Address1], Staff.[Address2], Staff.[Suburb], Staff.[Postcode], Format(Staff.[CommencementDate],'dd/MM/yyyy') as [CommencementDate], Staff.[TerminationDate],  SB1, SB2, SB3, SB4, SB5, SB6, SB7, SB8, SB9, SB10, SB11, SB12, SB13, SB14, SB15, SB16, SB17, SB18, SB19, SB20, SB21, SB22, SB23, SB24, SB25, SB26, SB27, SB28, SB29, SB30, SB31, SB32, SB33, SB34, SB35 ,HumanResources.RecordNumber,HumanResources.[Type] ,case when HumanResources.type = 'STAFFATTRIBUTE' then HumanResources.Name else null end AS Attribute,case when HumanResources.type = 'STAFFATTRIBUTE' then Format( Date1,'dd/MM/yyyy') end as Anniversary,case when HumanResources.type = 'STAFFATTRIBUTE' then HumanResources.Address1 end AS Cert#,case when HumanResources.type = 'STAFFATTRIBUTE' then Notes end as Notes,Stuff ((SELECT  ', ' + Detail from PhoneFaxOther pf where pf.PersonID = Staff.UniqueID and (PrimaryPhone = '1' OR ([Type] like '<EMAIL>' OR [Type] like 'EMAIL') )  For XML path ('')),1, 1, '') [Detail] FROM Staff inner JOIN HumanResources ON UniqueID = PersonID  WHERE    Staff.[Category] = 'STAFF'  OR Staff.[Category] = 'STAFF'  OR Staff.[Category] = 'BROKERAGE ORGANISATION'   AND (Staff.[commencementdate] is not null and Staff.[terminationdate] is null)  ORDER BY Staff.[LastName]
+    var fQuery = "SELECT DISTINCT Staff.[UniqueID], Staff.[AccountNo], Staff.[STF_CODE], Staff.[STF_DEPARTMENT], Staff.[StaffGroup], Staff.[LastName],  Staff.[LastName] + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, Staff.[Address1] + ' ' + Staff.[Suburb] + ' ' + Staff.[Postcode] as Address1, Staff.[Address2], Staff.[Suburb], Staff.[Postcode], Format(Staff.[CommencementDate],'dd/MM/yyyy') as [CommencementDate], Staff.[TerminationDate],  SB1, SB2, SB3, SB4, SB5, SB6, SB7, SB8, SB9, SB10, SB11, SB12, SB13, SB14, SB15, SB16, SB17, SB18, SB19, SB20, SB21, SB22, SB23, SB24, SB25, SB26, SB27, SB28, SB29, SB30, SB31, SB32, SB33, SB34, SB35  ,case when HumanResources.type = 'STAFFATTRIBUTE' then HumanResources.Name else null end AS Attribute,case when HumanResources.type = 'STAFFATTRIBUTE' then Format( Date1,'dd/MM/yyyy') end as Anniversary,case when HumanResources.type = 'STAFFATTRIBUTE' then HumanResources.Address1 end AS Cert#,case when HumanResources.type = 'STAFFATTRIBUTE' then Notes end as Notes,Stuff ((SELECT  ', ' + Detail from PhoneFaxOther pf where pf.PersonID = Staff.UniqueID and (PrimaryPhone = '1' OR ([Type] like '<EMAIL>' OR [Type] like 'EMAIL') )  For XML path ('')),1, 1, '') [Detail],case when SB1 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0022')  end as Skill22 ,case when SB2 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0023')   end as Skill23 ,case when SB3 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0024')   end as Skill24 ,case when SB4 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0025')   end as Skill25,case when SB5 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0026')   end as Skill26,case when SB6 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0027')   end as Skill27 ,case when SB7 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0028')   end as Skill28 ,case when SB8 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0029')   end as Skill29 ,case when SB9 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0030')   end as Skill30 ,case when SB10 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0031')   end as Skill31 ,case when SB11 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0032')   end as Skill32 ,case when SB12 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0033')   end as Skill33 ,case when SB13 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0034')   end as Skill34,case when SB14 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0036')   end as Skill36 ,case when SB15 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0040')   end as Skill40 ,case when SB16 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0041')   end as Skill41 ,case when SB17 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0042')   end as Skill42 ,case when SB18 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0043')   end as Skill43 ,case when SB19 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0044')    end as Skill44 ,case when SB20 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0045')   end as Skill45 ,case when SB21 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0046')   end as Skill46 ,case when SB22 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0047')   end as Skill47 ,case when SB23 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0048')   end as Skill48 ,case when SB24 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0049')   end as Skill49 ,case when SB25 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0050')   end as Skill50 ,case when SB26 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0051')   end as Skill51 ,case when SB27 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0052')   end as Skill52 ,case when SB28 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0053')   end as Skill53 ,case when SB29 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0054')   end as Skill54 ,case when SB30 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0055')   end as Skill55 ,case when SB31 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0056')   end as Skill56 ,case when SB32 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0057')   end as Skill57 ,case  when SB33 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0058')   end as Skill58  ,case when SB34 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0059')    end as Skill59 ,case when SB35 <> 0 then (SELECT text FROM Fieldnames WHERE identifier = 'fStaffContainer9-Competencies0060')   end as Skill60  FROM Staff inner JOIN HumanResources ON UniqueID = PersonID  WHERE  ([commencementdate] is not null and [terminationdate] is null)  "
     
     
 
@@ -19569,23 +17851,8 @@ CompetencyRegister(branch, Staff,stfgroup,competency) {
         }
     }
     this.loading = true;
-    var Title = "Staff Competency Register"
     
-    if(this.inputForm.value.csvExport == true){
-                   
-        this.listS.getlist(fQuery).subscribe((blob) => {
-            
-            const headings = Object.keys(blob[0]);
-            
-            let testArr:Array<any> = [];
-            for(let i=0; i < blob.length-1; i++){
-                testArr = [...testArr ,blob[i]]               
-            }
-           
-            this.downloadFile(testArr,Title,headings)
-        });
 
-    }else{
     this.printS.printControl(data).subscribe((blob: any) => {
         this.pdfTitle = "Staff Competency Register.pdf"
         this.drawerVisible = true;                   
@@ -19605,7 +17872,7 @@ CompetencyRegister(branch, Staff,stfgroup,competency) {
             },
         });
     });
-    }
+
     return;
     }
     ActivityProgramReport(branch, manager, region, stfgroup, funders, recipient, Staff, HACCCategory, RosterCategory, Age, Datetype, program, mdsagencyID, outletid, staffteam, status, startdate, enddate, rptname, stafftype, paytype, activity, settings, format, tempsdate, tempedate) {
@@ -19957,7 +18224,8 @@ CompetencyRegister(branch, Staff,stfgroup,competency) {
                 break;
         }
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": this.reportid },
             "options": {
@@ -19997,44 +18265,26 @@ CompetencyRegister(branch, Staff,stfgroup,competency) {
 
         this.loading = true;
         
-        
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = Title + ".pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = Title + ".pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
 
@@ -20390,7 +18640,7 @@ CompetencyRegister(branch, Staff,stfgroup,competency) {
                         break;
                 }
         
-                
+                this.drawerVisible = true;
                 var rptSQL = " SELECT [Date] , [MonthNo], [DayNo], [BlockNo], [Program], [Client Code], [Carer Code], [Service Type], [Anal], [Service Description], [Type], [ServiceSetting], [Start Time], [Duration], CASE WHEN [Type] = 9 THEN 0 ELSE [Duration] / 12 END AS [DecimalDuration], [CostQty], [CostUnit], CASE WHEN [Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Unit Pay Rate], [Unit Pay Rate] * [CostQty] As [LineCost], [BillQty], [BillUnit], [Unit Bill Rate], ([Unit Bill Rate] * [BillQty]) + ([Unit Bill Rate] * [BillQty] * (ISNULL(TaxPercent, 0) / 100)) As [LineBill], [Yearno] FROM Award_Roster_rpt  ORDER BY [Carer Code], [Service Description], Date, [Start Time]  "
                 var sql = " INSERT INTO Award_Roster_mufee (Award, RecordNo, [Date], [Start Time], Duration, PayType, RuleType, " +
                 " Program, Activity, Activity_Type, JobType, InfoOnly, NoOver, Ros_Day ) " +
@@ -20492,43 +18742,26 @@ CompetencyRegister(branch, Staff,stfgroup,competency) {
         
                 this.loading = true;
                 
-                
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-                this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = Title + ".pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = Title + ".pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
         
@@ -20884,7 +19117,7 @@ CompetencyRegister(branch, Staff,stfgroup,competency) {
                         break;
                 }
         
-                
+                this.drawerVisible = true;
                 var rptSQL = " SELECT [Date] , [MonthNo], [DayNo], [BlockNo], [Program], [Client Code], [Carer Code], [Service Type], [Anal], [Service Description], [Type], [ServiceSetting], [Start Time], [Duration], CASE WHEN [Type] = 9 THEN 0 ELSE [Duration] / 12 END AS [DecimalDuration], [CostQty], [CostUnit], CASE WHEN [Type] = 9 THEN 0 ELSE CostQty END AS PayQty, CASE WHEN [Type] <> 9 THEN 0 ELSE CostQty END AS AllowanceQty, [Unit Pay Rate], [Unit Pay Rate] * [CostQty] As [LineCost], [BillQty], [BillUnit], [Unit Bill Rate], ([Unit Bill Rate] * [BillQty]) + ([Unit Bill Rate] * [BillQty] * (ISNULL(TaxPercent, 0) / 100)) As [LineBill], [Yearno] FROM Award_Roster_rpt  ORDER BY [Carer Code], [Service Description], Date, [Start Time]  "
         
                 const data = {
@@ -20926,44 +19159,26 @@ CompetencyRegister(branch, Staff,stfgroup,competency) {
         
                 this.loading = true;
                 
-                
 
-               if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-                    this.drawerVisible = true;
                 this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = Title + ".pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+            this.pdfTitle = Title + ".pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
         
@@ -21043,7 +19258,7 @@ CompetencyRegister(branch, Staff,stfgroup,competency) {
     StaffServiceNotesRegister(branch,Staff , casenotecat, startdate, enddate, tempsdate, tempedate) {
 
     
-        var fQuery = "SELECT DISTINCT * FROM ( SELECT UPPER(S.[LastName]) + ' ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, CASE WHEN PRIMARYADDRESS <> '' THEN  PRIMARYADDRESS ELSE OTHERADDRESS END  AS Address, CASE WHEN PRIMARYPHONE <> '' THEN  PRIMARYPHONE ELSE OTHERPHONE END AS Contact, S.AccountNo AS StaffCode, History.RecordNumber AS NoteID, History.AlarmDate as [Reminder Date], CAST(History.Detail AS varchar(4000)) AS Detail, format(Convert (datetime,History.DetailDate,22),'dd/MM/yyyy MM:HH tt') AS DateCreated, History.Creator AS CreatedBy, History.ExtraDetail1 AS NoteType, CASE WHEN ISNULL(History.ExtraDetail2, '') = '' THEN 'UNKNOWN' ELSE History.ExtraDetail2 END AS NoteCategory, History.DeletedRecord , History.Program, History.Discipline, History.CareDomain FROM Roster Ro INNER JOIN History ON  CONVERT(varchar,Ro.RecordNo,100) = History.PersonID Left Join STAFF as S ON S.AccountNo = Ro.[Carer Code]  LEFT JOIN ( SELECT PERSONID, MAX(PADDRESS) AS PRIMARYADDRESS, MAX(OADDRESS) AS OTHERADDRESS From (  SELECT PERSONID,  CASE WHEN PRIMARYADDRESS = 1 THEN ISNULL(ADDRESS1,'') + ' ' + ISNULL(ADDRESS2,'') + ' '  +  ISNULL(SUBURB,'') + ' ' + ISNULL(POSTCODE,'')  ELSE '' END AS PADDRESS,  CASE WHEN PRIMARYADDRESS <> 1 THEN ISNULL(ADDRESS1,'') + ' ' + ISNULL(ADDRESS2,'') + ' '  +  ISNULL(SUBURB,'') + ' ' + ISNULL(POSTCODE,'')  ELSE '' END AS OADDRESS  From NamesAndAddresses ) AS TMP  GROUP BY PERSONID ) AS N ON S.UNIQUEID = N.PERSONID  LEFT JOIN (  SELECT PERSONID, MAX(PPHONE) AS PRIMARYPHONE, MAX(OPHONE) AS OTHERPHONE  FROM (  SELECT PERSONID,  CASE WHEN PRIMARYPHONE = 1 THEN DETAIL ELSE '' END AS PPHONE,  CASE WHEN PRIMARYPHONE <> 1 THEN DETAIL ELSE '' END AS OPHONE  From PhoneFaxOther ) AS T  GROUP BY PERSONID) AS P ON S.UNIQUEID = P.PERSONID WHERE  "
+        var fQuery = "SELECT DISTINCT * FROM ( SELECT UPPER(S.[LastName]) + ', ' + CASE WHEN FirstName <> '' THEN FirstName  ELSE ' '  END as StaffName, CASE WHEN PRIMARYADDRESS <> '' THEN  PRIMARYADDRESS ELSE OTHERADDRESS END  AS Address, CASE WHEN PRIMARYPHONE <> '' THEN  PRIMARYPHONE ELSE OTHERPHONE END AS Contact, S.AccountNo AS StaffCode, History.RecordNumber AS NoteID, History.AlarmDate as [Reminder Date], CAST(History.Detail AS varchar(4000)) AS Detail, format(Convert (datetime,History.DetailDate,22),'dd/MM/yyyy MM:HH tt') AS DateCreated, History.Creator AS CreatedBy, History.ExtraDetail1 AS NoteType, CASE WHEN ISNULL(History.ExtraDetail2, '') = '' THEN 'UNKNOWN' ELSE History.ExtraDetail2 END AS NoteCategory, History.DeletedRecord , History.Program, History.Discipline, History.CareDomain FROM Roster Ro INNER JOIN History ON  CONVERT(varchar,Ro.RecordNo,100) = History.PersonID Left Join STAFF as S ON S.AccountNo = Ro.[Carer Code]  LEFT JOIN ( SELECT PERSONID, MAX(PADDRESS) AS PRIMARYADDRESS, MAX(OADDRESS) AS OTHERADDRESS From (  SELECT PERSONID,  CASE WHEN PRIMARYADDRESS = 1 THEN ISNULL(ADDRESS1,'') + ' ' + ISNULL(ADDRESS2,'') + ' '  +  ISNULL(SUBURB,'') + ' ' + ISNULL(POSTCODE,'')  ELSE '' END AS PADDRESS,  CASE WHEN PRIMARYADDRESS <> 1 THEN ISNULL(ADDRESS1,'') + ' ' + ISNULL(ADDRESS2,'') + ' '  +  ISNULL(SUBURB,'') + ' ' + ISNULL(POSTCODE,'')  ELSE '' END AS OADDRESS  From NamesAndAddresses ) AS TMP  GROUP BY PERSONID ) AS N ON S.UNIQUEID = N.PERSONID  LEFT JOIN (  SELECT PERSONID, MAX(PPHONE) AS PRIMARYPHONE, MAX(OPHONE) AS OTHERPHONE  FROM (  SELECT PERSONID,  CASE WHEN PRIMARYPHONE = 1 THEN DETAIL ELSE '' END AS PPHONE,  CASE WHEN PRIMARYPHONE <> 1 THEN DETAIL ELSE '' END AS OPHONE  From PhoneFaxOther ) AS T  GROUP BY PERSONID) AS P ON S.UNIQUEID = P.PERSONID WHERE  "
         var lblcriteria;
 
         // History. DetailDate Between '07-01-2021' AND '07-31-2021 23:59:59'' 
@@ -21095,7 +19310,8 @@ CompetencyRegister(branch, Staff,stfgroup,competency) {
 
         //console.log(fQuery)
 
-       
+        this.drawerVisible = true;
+
         const data = {
             "template": { "_id": "D9xN7c09VjMDjdaz" },
             "options": {
@@ -21108,45 +19324,27 @@ CompetencyRegister(branch, Staff,stfgroup,competency) {
             }
         }
         this.loading = true;
-       var Title = "Staff Service Notes Register"
         
 
-       if(this.inputForm.value.csvExport == true){
-                   
-                    this.listS.getlist(fQuery).subscribe((blob) => {
-                        
-                        const headings = Object.keys(blob[0]);
-                        
-                        let testArr:Array<any> = [];
-                        for(let i=0; i < blob.length-1; i++){
-                            testArr = [...testArr ,blob[i]]               
-                        }
-                       
-                        this.downloadFile(testArr,Title,headings)
-                    });
-
-                }else{
-         this.drawerVisible = true;
-       this.printS.printControl(data).subscribe((blob: any) => {
-                    this.pdfTitle = "Staff Service Notes Register.pdf"
-                    this.drawerVisible = true;                   
-                    let _blob: Blob = blob;
-                    let fileURL = URL.createObjectURL(_blob);
-                    this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-                    this.loading = false;
-                    this.cd.detectChanges();
-                }, err => {
-                    console.log(err);
-                    this.loading = false;
-                    this.ModalS.error({
-                        nzTitle: 'TRACCS',
-                        nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-                        nzOnOk: () => {
-                            this.drawerVisible = false;
-                        },
-                    });
-                });
-            }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            this.pdfTitle = "Staff Service Notes Register.pdf"
+            this.drawerVisible = true;                   
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
 
         return;
     }
@@ -21169,7 +19367,7 @@ labelfilter(fQuery,rptid,RptTitle,inclusion,lblcriteria){
             fQuery = "Select Distinct Title,FirstName + ' ' + LastName  as AccountNo,LastName,Address1,Address2,Suburb,Postcode from  (" + fQuery + " )cr Order by LastName"      
            }
         //   console.log(fQuery)
-              
+            this.drawerVisible = true;   
             
             this.loading = true;
            
@@ -21287,51 +19485,41 @@ CustomReportSetting(){
 
 FetchRuntimeReport(strtitle){
 //    console.log("TITLE:  " +strtitle)
-this.EnableCSVExport = true;
-//this.RptFormat = ;
-    this.CSV_String = strtitle;
-    if(strtitle != 'CSVStr'){        
-        this.GlobalS.var2 = strtitle;
-    }else{
-        strtitle = this.GlobalS.var2.toString()
-        
-    }
-   
-    var strFilter  = strtitle.toString().substring(0,1)
- //   console.log(strFilter)
+    this.tryDoctype = ""; 
+    this.drawerVisible = true; 
+    this.loading = true;
+    var strFilter = strtitle.toString().substring(0,1)
+  //  console.log(strFilter)
     var title = strtitle.toString().substring(1,strtitle.length)
     
-    switch (strFilter.toString()) {
-        case "1":
-            this.Rptformat = 'AGENCYLIST'                        
+    switch (strFilter) {
+        case 1:
+            var format = 'AGENCYLIST'                        
             break;        
-        case "2":
-            this.Rptformat = 'USERLIST'        
+        case 2:
+            var format = 'USERLIST'        
             break;
-        case "3":
-            this.Rptformat = 'AGENCYSTFLIST'            
+        case 3:
+            var format = 'AGENCYSTFLIST'            
             break;
-        case "4":
-            this.Rptformat = 'USERSTFLIST'            
+        case 4:
+            var format = 'USERSTFLIST'            
             break;    
         default: 
             break;
     }
-
-   // console.log(this.Rptformat);
   const temp =  forkJoin([
     //    this.ReportS.GetReportFormat(title),
     
-        //this.ReportS.GetReportSql(title)
-        this.ReportS.GetReportSql(title,this.Rptformat)
+        this.ReportS.GetReportSql(title)
     ]);    
     temp.subscribe(data => {
         //this.UserRptFormatlist = data[0];
         this.UserRptSQLlist = data[0];   
         var re = /~/gi;    
-     //console.log((this.UserRptSQLlist.toString()).replace(re,"'"),title)
+     //   console.log((this.UserRptSQLlist.toString()).replace(re,"'"))
     
-        this.RenderRunTimeReport((this.UserRptSQLlist.toString()).replace(re,"'"),title)
+        this.RenderRunTimeReport((this.UserRptSQLlist.toString()).replace(re,"'"))
 
     });
 
@@ -21340,45 +19528,24 @@ this.EnableCSVExport = true;
    
 
 }
-RenderRunTimeReport(strSQL,RptTitle){
-    //console.log(strSQL)
-    
+RenderRunTimeReport(strSQL){
+  //  console.log(strSQL)
     const data = {
         
         //"template": { "_id": "qTQEyEz8zqNhNgbU" },
         "template": { "_id": "x8QVE8KhcjiJvD6c" },
                     
         "options": {
-            "reports": { "save": false },            
+            "reports": { "save": false },
+            
             "sql": strSQL,            
             "userid": this.tocken.user,
-            "txtTitle":RptTitle,                                                                                                     
+            
+            
         }
     }
     this.loading = true;
     
-    if(this.CSV_String == 'CSVStr'){
-
-        this.tryDoctype = ""; 
-        this.drawerVisible = false; 
-        this.loading = false;
-                   
-        this.listS.getlist(strSQL).subscribe((blob) => {
-            
-            const headings = Object.keys(blob[0]);
-            
-            let testArr:Array<any> = [];
-            for(let i=0; i < blob.length-1; i++){
-                testArr = [...testArr ,blob[i]]               
-            }
-           
-            this.downloadFile(testArr,RptTitle,headings)
-        });
-
-    }else{
-        this.tryDoctype = ""; 
-        this.drawerVisible = true; 
-        this.loading = true;
 
     this.printS.printControl(data).subscribe((blob: any) => {
         this.pdfTitle = "User Custom Report.pdf"
@@ -21399,8 +19566,7 @@ RenderRunTimeReport(strSQL,RptTitle){
             },
         });
     });
-    
-    }
+
     return;
 
 }

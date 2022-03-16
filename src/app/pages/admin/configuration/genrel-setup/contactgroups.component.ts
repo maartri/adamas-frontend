@@ -10,7 +10,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NzModalService } from 'ng-zorro-antd';
 import { PrintService } from '@services/print.service';
-import { TimeSheetService } from '@services/timesheet.service';
 
 @Component({
   selector: 'app-contactgroups',
@@ -47,7 +46,6 @@ export class ContactgroupsComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private listS:ListService,
     private menuS:MenuService,
-    private timeS:TimeSheetService,
     private switchS:SwitchService,
     private formBuilder: FormBuilder,
     private http: HttpClient,
@@ -183,24 +181,12 @@ export class ContactgroupsComponent implements OnInit {
               primaryId:group.get('recordNumber').value,
               domain: 'CONTACTGROUP',
             }
+            
             ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-              if (data)
-              {
-                this.timeS.postaudithistory({
-                  Operator:this.tocken.user,
-                  actionDate:this.globalS.getCurrentDateTime(),
-                  auditDescription:'Contact Group Changed',
-                  actionOn:'CONTACTGROUP',
-                  whoWhatCode:group.get('recordNumber').value, //inserted
-                  TraccsUser:this.tocken.user,
-                }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-                    this.globalS.sToast('Success', 'Update successful');
-                  }
-                );
-              }else
-              {
-                this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
-              }
+              if (data) 
+              this.globalS.sToast('Success', 'Updated successful');     
+              else
+              this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
               this.loadData();
               this.postLoading = false;          
               this.handleCancel();
@@ -222,19 +208,9 @@ export class ContactgroupsComponent implements OnInit {
           this.postLoading = true;     
           const group = this.inputForm;
           this.menuS.deleteDomain(data.recordNumber)
-          .pipe(takeUntil(this.unsubscribe)).subscribe(datas => {
-            if (datas) {
-              this.timeS.postaudithistory({
-                Operator:this.tocken.user,
-                actionDate:this.globalS.getCurrentDateTime(),
-                auditDescription:'Contact Group Deleted',
-                actionOn:'CONTACTGROUP',
-                whoWhatCode:data.recordNumber, //inserted
-                TraccsUser:this.tocken.user,
-              }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-                  this.globalS.sToast('Success', 'Deleted successful');
-                }
-              );
+          .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (data) {
+              this.globalS.sToast('Success', 'Data Deleted!');
               this.loadData();
               return;
             }

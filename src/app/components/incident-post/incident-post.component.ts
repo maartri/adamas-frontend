@@ -130,8 +130,6 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
   noteSearchForm: FormGroup;
   reportModal: boolean;
 
-  hideIncidentType: boolean = false;
-
   constructor(
     private fb: FormBuilder,
     private cd: ChangeDetectorRef,
@@ -160,14 +158,12 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
       if (property == 'operation' && !changes[property].firstChange && changes[property].currentValue != null) {
         this.operation = changes[property].currentValue;
         if(this.operation.process == 'UPDATE'){
-          this.current = 1;
+          this.current = 0;
           this.addEdit = 1;
-          this.hideIncidentType = true;
         }
         if(this.operation.process == 'ADD'){
           this.current = 0;
           this.addEdit = 0;
-          this.hideIncidentType = false;
         }
       }
     }
@@ -292,15 +288,16 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
 
   searchStaff(): void {
     this.listStaff = []
-    this.listS.getlistcasemanagers().pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-      // console.log(data);
-      this.listStaff = data;
-      // this.listStaff = data.map(x => {
-      //   return {
-      //     accountNo: x.accountNo,
-      //     checked: false
-      //   }
-      // });
+    this.timeS.getstaff({
+      User: this.globalS.decode().nameid,
+      SearchString: ''
+    }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+      this.listStaff = data.map(x => {
+        return {
+          accountNo: x.accountNo,
+          checked: false
+        }
+      });
     });
   }
 
@@ -468,13 +465,9 @@ export class IncidentPostComponent implements OnInit, OnChanges, ControlValueAcc
   //   });
   // }); 
   
-  this.timeS.Getincidentmandatorynotifications().subscribe(data => {    
-    this.incidentmandatoryNotifications = data.filter(x => !this.globalS.isEmpty(x));
-  });
+  this.timeS.Getincidentmandatorynotifications().subscribe(data => this.incidentmandatoryNotifications = data);
   
-  this.timeS.Getincidentnonmandatorynotifications().subscribe(data => {
-    this.incidentnonmandatoryNotifications = data.filter(x => !this.globalS.isEmpty(x));;
-  });
+  this.timeS.Getincidentnonmandatorynotifications().subscribe(data => this.incidentnonmandatoryNotifications = data);
     
     this.listS.getwizardnote('INCIDENT TYPE').subscribe(data =>{
         this.listIncidentTypes = data;
@@ -804,31 +797,13 @@ updateCheckBoxesInStep1(defaultString: string){
     return '1' == data ? true : false;
   }
   save(){
-
-    var { 
-      incidentType, 
-      serviceType,
-      program,
-      step4, step51, step52, step53, step54, step61, step7, 
-      reportEnter, 
-      communityService,
-      regionalComm, 
-      comments,
-      other, 
-      summary, 
-      description,
-      accountNo, 
-      dateOfIncident, 
-      reportedBy,
-      recipient,
-      recordNo,
-      startTimeOfIncident,
-      endTimeOfIncident, 
-      commentsStaff, 
-      incidentNotes,
-      organisation,
-      otherspecify, } = this.incidentForm.value;
-
+    var { incidentType, serviceType,program,
+          step4, step51, step52, step53, step54,
+          step61, step7, reportEnter, communityService, regionalComm, comments,
+          other, summary, description,
+          accountNo, dateOfIncident, reportedBy,recipient,recordNo,startTimeOfIncident , endTimeOfIncident, commentsStaff, incidentNotes,otherspecify, } = 
+      
+          this.incidentForm.value;
       if (this.current == 1 && endTimeOfIncident != null && format(startTimeOfIncident, 'HH:mm') > format(endTimeOfIncident, 'HH:mm') ){
         this.modal.error({
           nzTitle: 'TRACCS',
@@ -838,8 +813,7 @@ updateCheckBoxesInStep1(defaultString: string){
             },
           });
       
-    } else{
-
+    }else{
     var { 
       accountNo,
       primaryPhone
@@ -896,13 +870,8 @@ updateCheckBoxesInStep1(defaultString: string){
           IncidentNotes: incidentNotes,
           NewRelationship: this.listNewPeople
     };
-
-
     
     if(this.operation.process === Mode.UPDATE){
-      // console.log('update')
-      // console.log(im_master)
-      // return;
       this.timeS.updateincident(im_master).subscribe(data =>{
         this.globalS.sToast('Success', 'Data saved');
         this.reload.emit(true);
@@ -911,14 +880,11 @@ updateCheckBoxesInStep1(defaultString: string){
     }
 
     if(this.operation.process === Mode.ADD){
-      // console.log('add')
-      // console.log(im_master)
-      // return;
-      this.timeS.postincident(im_master).subscribe(data => {
-          this.globalS.sToast('Success', 'Data saved');
-          this.reload.emit(true);
-          this.open = false;
-      });
+    this.timeS.postincident(im_master).subscribe(data => {
+        this.globalS.sToast('Success', 'Data saved');
+        this.reload.emit(true);
+        this.open = false;
+    });
     }   
   }
   }
@@ -1029,7 +995,7 @@ updateCheckBoxesInStep1(defaultString: string){
 
   patchUpdateValues(data: any){
 
-    // console.log(data)
+    console.log(data)
     
     this.statuseffect = data.status;
     this.updateCheckBoxesInStep1(data.subjectType)
@@ -1079,7 +1045,7 @@ updateCheckBoxesInStep1(defaultString: string){
   writeValue(value: any) {
     if (value != null) {      
       this.innerValue = value;
-      // console.log(value);
+      console.log(value);
 
       if(value.operation == 'UPDATE'){
           
@@ -1252,7 +1218,7 @@ updateCheckBoxesInStep1(defaultString: string){
             this.loadingPDF = false;
             this.cd.detectChanges();
         }, err => {
-            // console.log(err);
+            console.log(err);
             this.loadingPDF = false;
             this.ModalS.error({
                 nzTitle: 'TRACCS',

@@ -10,7 +10,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NzModalService } from 'ng-zorro-antd';
 import { PrintService } from '@services/print.service';
-import { TimeSheetService } from '@services/timesheet.service';
 
 @Component({
   selector: 'app-phoneemailtypes',
@@ -45,11 +44,13 @@ export class PhoneemailtypesComponent implements OnInit {
   constructor(
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
+    private listS:ListService,
     private menuS:MenuService,
     private switchS:SwitchService,
     private formBuilder: FormBuilder,
+    private http: HttpClient,
+    private fb: FormBuilder,
     private printS:PrintService,
-    private timeS:TimeSheetService,
     private sanitizer: DomSanitizer,
     private ModalS: NzModalService
     ){}
@@ -175,23 +176,10 @@ export class PhoneemailtypesComponent implements OnInit {
             }
             
             ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-              if (data)
-              {
-                this.timeS.postaudithistory({
-                  Operator:this.tocken.user,
-                  actionDate:this.globalS.getCurrentDateTime(),
-                  auditDescription:'Phone/Email Type Changed',
-                  actionOn:'contacttype',
-                  whoWhatCode:group.get('recordNumber').value, //inserted
-                  TraccsUser:this.tocken.user,
-                }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-                    this.globalS.sToast('Success', 'Update successful');
-                  }
-                );
-              }else
-              {
-                this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
-              }
+              if (data) 
+              this.globalS.sToast('Success', 'Updated successful');     
+              else
+              this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
               this.loadData();
               this.postLoading = false;          
               this.handleCancel();
@@ -210,19 +198,9 @@ export class PhoneemailtypesComponent implements OnInit {
           this.postLoading = true;     
           const group = this.inputForm;
           this.menuS.deleteDomain(data.recordNumber)
-          .pipe(takeUntil(this.unsubscribe)).subscribe(datas => {
-            if (datas) {
-              this.timeS.postaudithistory({
-                Operator:this.tocken.user,
-                actionDate:this.globalS.getCurrentDateTime(),
-                auditDescription:'Phone/Email Type Deleted',
-                actionOn:'contacttype',
-                whoWhatCode:data.recordNumber, //inserted
-                TraccsUser:this.tocken.user,
-              }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-                  this.globalS.sToast('Success', 'Deleted successful');
-                }
-              );
+          .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (data) {
+              this.globalS.sToast('Success', 'Data Deleted!');
               this.loadData();
               return;
             }

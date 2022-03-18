@@ -2635,9 +2635,9 @@ stafftypeArr: Array<any> = constants.types;
             case 'btn-staff-leaveregister':
                 this.StaffLeaveRegister(strdate, endate, tempsdate, tempedate)
                 break;                
-                /*case 'btn-staff-svcnotesregister':
+                case 'btn-staff-svcnotesregister':
                 this.StaffSvcNotesRegister(s_Branches,s_Staff,s_StaffSvcNote ,strdate, endate, tempsdate, tempedate)
-                break; */
+                break; 
             case 'btn-staff-staffnotworked':
                 this.StaffNotWorkedReport(s_Branches, s_StfGroup, s_Staff, strdate, endate,tempsdate, tempedate)
                 break;
@@ -3934,7 +3934,7 @@ stafftypeArr: Array<any> = constants.types;
         console.log(s_BranchSQL)
         console.log(s_CategorySQL)
         console.log(s_CoordinatorSQL)*/
-        // //////console.log(fQuery)
+     //   console.log(fQuery)
 
         
 
@@ -4013,7 +4013,7 @@ stafftypeArr: Array<any> = constants.types;
         console.log(s_BranchSQL)
         console.log(s_CategorySQL)
         console.log(s_CoordinatorSQL)*/
-        //////console.log(fQuery)
+    //    console.log(fQuery)
 
         this.loading = true;
                 
@@ -7276,7 +7276,7 @@ stafftypeArr: Array<any> = constants.types;
     CDCPackageBalanceReport(recipient, program, startdate, enddate, tempsdate, tempedate) {
 
 
-        var fQuery = "SELECT R.AccountNo, HR.Name as Program, PB.[Date], PB.Balance, PB.BatchNumber, PB.BankedContingency FROM PackageBalances PB  INNER JOIN Recipients R ON PB.PersonID = R.SQLID  INNER JOIN HumanResourceTypes HR ON PB.ProgramID = HR.RecordNumber WHERE  "
+        var fQuery = "SELECT R.AccountNo, HR.Name as Program, format(PB.[Date], 'dd/MM/yyyy') as [Date], PB.Balance, PB.BatchNumber, PB.BankedContingency FROM PackageBalances PB  INNER JOIN Recipients R ON PB.PersonID = R.SQLID  INNER JOIN HumanResourceTypes HR ON PB.ProgramID = HR.RecordNumber WHERE  "
         var lblcriteria;
 
         if (startdate != "" || enddate != "") {

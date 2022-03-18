@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, AfterViewInit,Input,ViewChild } from '@angular/core'
 
-import { ListService,GlobalService, TimeSheetService } from '@services/index';
+import { ListService,GlobalService, TimeSheetService,EmailService } from '@services/index';
 import { forkJoin, Subject } from 'rxjs';
 import { FormGroup,FormBuilder } from '@angular/forms';
 import {takeUntil} from 'rxjs/operators';
@@ -9,6 +9,7 @@ import parseISO from 'date-fns/parseISO'
 import * as moment from 'moment';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import {ShiftDetail} from '../roster/shiftdetail'
+import { EmailMessage,EmailAddress } from '@modules/modules';
 
 export interface VirtualDataInterface {
   index: number;
@@ -174,6 +175,7 @@ export class AttendanceAdmin implements OnInit, AfterViewInit,OnDestroy {
       private formBuilder: FormBuilder,
       private timeS:TimeSheetService,
       private modalService: NzModalService,
+      private emailService:EmailService
     ) {
 
     }
@@ -267,6 +269,8 @@ export class AttendanceAdmin implements OnInit, AfterViewInit,OnDestroy {
           this.showConfirm_for_Pending('This will reset the service back to pending status the highlighted shift/s - do you wich to proceed');
          
           break;
+        case 7: 
+          this.sendEmail();
       }
 
       this.action=='Reset Pending'
@@ -441,6 +445,33 @@ selected_roster(r:any):any{
 return rst;
 }   
 
+sendEmail(){
+
+  let emailsMsg:EmailMessage =  <EmailMessage>{} ;
+  let emailFrom:EmailAddress =  <EmailAddress>{};
+  let emailTo:EmailAddress  =  <EmailAddress>{};
+
+  emailFrom.Address="arshad@adamas.net.au";
+  emailFrom.Name="Arshad Abbas";
+
+  emailTo.Address="arshadblouch81@gmail.com";
+  emailTo.Name="Arshad Abbas2";
+
+  emailsMsg.FromAddresses=[];
+  emailsMsg.ToAddresses=[];
+  emailsMsg.FromAddresses.push(emailFrom);
+  emailsMsg.ToAddresses.push(emailTo);
+
+  emailsMsg.Content="Testing email from web portal";
+  emailsMsg.Notes="Testing email note from web portal";
+  emailsMsg.Subject="Testing email";
+  emailsMsg.LeaveType="Causal Leave";
+  
+  this.emailService.sendMail(emailsMsg).subscribe(d=>{
+   console.log(d);
+  })
+
+}
 TimeDifference(data:any,  t:number=0){
       let diff:number=0
       let StartTime ;

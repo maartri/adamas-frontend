@@ -3781,12 +3781,13 @@ onChange(result: Date): void {
    
 ngOnDestroy(){
     console.log("ngDestroy");
-    window.location.reload();  
+   // window.location.reload();  
 }
 
 refreshPage() {
     //this._document.defaultView.location.reload();
-    window.location.reload();
+    //window.location.reload();
+    this.ngOnInit();
    
   }
 reloadVal: boolean = false;

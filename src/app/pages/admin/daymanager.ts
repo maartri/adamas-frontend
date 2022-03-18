@@ -1195,8 +1195,16 @@ ngAfterViewInit(){
       AddRoster(){
         this.info.IsMaster=false;
         this.info.ViewType=this.viewType;
-        this.info.StaffCode=this.selectedOption.staff;
-        this.info.date=this.selectedOption.date;
+        if (this.selectedOption!=null)        {
+            this.info.StaffCode=this.selectedOption.staff;
+            this.info.date=this.selectedOption.date;
+        }else  if (this.pastePosition!=null){
+            this.info.StaffCode=this.pastePosition.selected.carercode;
+            this.info.date= moment(this.pastePosition.selected.date).format('YYYY/MM/DD');
+        }else{
+            return;
+        }
+       
 
           this.optionsModal=false;
           this.AddRosterModel=true;

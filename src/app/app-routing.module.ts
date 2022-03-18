@@ -721,7 +721,7 @@ const routes: Routes = [
             component: StaffDocumentAdminRedirect
           },
           {
-            path: 'time-attendance',
+            path: 'staff-time-attendance',
             component: StaffAttendanceAdminRedirect,
             canDeactivate: [CanDeactivateGuard]
           },
@@ -1309,7 +1309,7 @@ const routes: Routes = [
             component: StaffDocumentAdmin
           },
           {
-            path: 'time-attendance',
+            path: 'staff-time-attendance',
             component: StaffAttendanceAdmin,
             canDeactivate: [CanDeactivateGuard]
           },

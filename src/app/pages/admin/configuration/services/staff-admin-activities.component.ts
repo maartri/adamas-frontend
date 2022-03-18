@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
-import { GlobalService, ListService,dataSetDropDowns,MenuService,PrintService,TimeSheetService,timeSteps } from '@services/index';
+import { GlobalService, ListService,dataSetDropDowns,datasetTypeDropDowns,MenuService,PrintService,TimeSheetService,timeSteps } from '@services/index';
 import { SwitchService } from '@services/switch.service';
 import { NzModalService } from 'ng-zorro-antd';
 import { Subject } from 'rxjs';
@@ -157,6 +157,7 @@ export class StaffAdminActivitiesComponent implements OnInit {
   rpthttp = 'https://www.mark3nidad.com:5488/api/report';
   emptyList: any[];
   ndiaItems: any;
+  ndiaItemss:any;
   selectedPrograms:any;
   competencyForm: FormGroup;
   chkListForm : FormGroup
@@ -167,7 +168,9 @@ export class StaffAdminActivitiesComponent implements OnInit {
   isNewRecord: boolean =  false;
   insertOne: number = 0;
   dataSetDropDowns: { CACP: string[]; CTP: string[]; DEX: string[]; DFC: string[]; DVA: any[]; HACC: string[]; HAS: string[]; QCSS: string[]; ICTD: string[]; NDIS: any[]; NRCP: string[]; NRCPSAR: string[]; OTHER: string[]; };
+  datasetTypeDropDowns: { CACP: string[]; CTP: string[]; DEX: string[]; DFC: string[]; DVA: any[]; HACC: string[]; HAS: string[]; QCSS: string[]; ICTD: string[]; NDIS: any[]; NRCP: string[]; NRCPSAR: string[]; OTHER: string[]; };
   dataset_group: any;
+  dataset_type:any;
   chklstmodal: boolean;
   selectedChklst: any[];
   chkList: any;
@@ -195,6 +198,7 @@ export class StaffAdminActivitiesComponent implements OnInit {
       
       this.checkedList = new Array<string>();
       this.dataSetDropDowns = dataSetDropDowns;
+      this.datasetTypeDropDowns = datasetTypeDropDowns;
       this.loadData();
       this.buildForm();
       this.populateDropdowns();
@@ -615,7 +619,9 @@ export class StaffAdminActivitiesComponent implements OnInit {
               this.listS.getndiaitems().subscribe(data => {
                 this.ndiaItems = data;
               })
-              
+              this.listS.getndiaitemss().subscribe(data=>{
+                this.ndiaItemss = data;
+              })
               this.mtaAlerts = ['NO ALERT','STAFF CASE MANAGER','RECIPIENT CASE MANAGER','BRANCH ROSTER EMAIL'];
               this.paytypes  = ['SALARY','ALLOWANCE'];
               this.subgroups  = ['NOT APPLICABLE','WORKED HOURS','PAID LEAVE','UNPAID LEAVE','N/C TRAVVEL BETWEEN','CHG TRAVVEL BETWEEN','N/C TRAVVEL WITHIN','CHG TRAVVEL WITHIN','OTHER ALLOWANCE'];
@@ -647,6 +653,9 @@ export class StaffAdminActivitiesComponent implements OnInit {
             }
             buildForm() {
               this.inputForm = this.formBuilder.group({
+                ALT_NDIANonLabTravelKmActivity:'',
+                ALT_AppKmWithinActivity:'',
+                ExcludeFromAppLogging:false,
                 dataSet:'',
                 datasetGroup:'',
                 haccType:'',
@@ -777,7 +786,9 @@ export class StaffAdminActivitiesComponent implements OnInit {
               })
               this.inputForm.get('iT_Dataset').valueChanges.subscribe(x => {
                 this.dataset_group = [];  
+                this.dataset_type  = [];
                 this.dataset_group = this.dataSetDropDowns[x];
+                this.dataset_type  = this.datasetTypeDropDowns[x];
               });
               
             }

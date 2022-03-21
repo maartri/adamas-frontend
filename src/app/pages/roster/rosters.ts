@@ -3253,10 +3253,10 @@ onStaffSearch(data:any){
        
             if (res.errorValue>0){
                 this.globalS.eToast('Error', res.errorValue +", "+ res.msg);
-                if( Option=='Copy' ||Option=='Cut')
+                if( Option=='Copy' || Option=='Cut' )
                     this.load_rosters();
                 return; 
-            } if( Option=='Copy' ||Option=='Cut'){
+            } if( Option=='Copy' ||Option=='Cut' ){
 
                 if (this.viewType=='Staff'){
                     this.current_roster = this.find_roster(parseInt(recordNo));
@@ -3268,6 +3268,8 @@ onStaffSearch(data:any){
                     this.show_alert=true;
                    
                 }
+            }else if (Option=='Re-Allocate'){
+                this.upORdown.next(true);
             }
           
     });

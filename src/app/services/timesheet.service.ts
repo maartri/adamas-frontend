@@ -259,6 +259,10 @@ export class TimeSheetService {
         return this.auth.post(`${timesheet}/delete-unapproved/all`, data);
     }
 
+    processStartJob(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/processStartJob`, data);
+    }
+
     getjobstatus(recordArr: Array<number>): Observable<any> {
         return this.auth.post(`${timesheet}/jobstatus-timesheet`, recordArr);
     }
@@ -1033,6 +1037,10 @@ export class TimeSheetService {
 
     getfilteredstaff(input: InputFilter): Observable<any> {
         return this.auth.get(`${timesheet}/staff/filtered`, input)
+    }
+
+    getrosterRecord(rosterNo: any): Observable<any> {
+        return this.auth.get(`${timesheet}/rosterRecord/${rosterNo}`);
     }
 
     getfiltteredrecipient(input: InputFilter): Observable<any> {

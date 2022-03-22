@@ -245,7 +245,7 @@
 <recipientexternal [isVisible]="recipientexternal" [AccountNo]="selected_data" (recipientexternalDone)="cancelRecipientExternal($event)" *ngIf="recipientexternal"></recipientexternal>
      
 <staffexternal [isVisible]="staffexternal" [AccountNo]="selected_data" (staffexternalDone)="cancelStaffExternal($event)" *ngIf="staffexternal"></staffexternal>
-<shiftdetail (timesheetDone)="shiftChanged($event)" ></shiftdetail>
+<shiftdetail  (timesheetDone)="shiftChanged($event)" ></shiftdetail>
 
 
 
@@ -633,7 +633,7 @@
 
 <nz-modal [nzStyle]="{ top: '15px' }"  hasBackdrop [nzWidth]="450" [(nzVisible)]="AddRosterModel" nzTitle="Day Manager "   (nzOnCancel)="AddRosterModel = false" >
     <div  class="flexy" style="min-height:20rem;" >
-        <dm-roster [loadRoster]="loadingRoster" ></dm-roster>    
+        <dm-roster  [loadRoster]="loadingRoster" (RosterDone)="load_rosters()" ></dm-roster>    
     </div>
     <div *nzModalFooter>
         <button nz-button nzType="default" (click)="AddRosterModel=false">OK</button>

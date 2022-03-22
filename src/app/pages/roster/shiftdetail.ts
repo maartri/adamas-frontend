@@ -60,6 +60,7 @@ interface UserView{
        recipientCode:string
        recordNo:string
        debtor:string;
+       date:string;
        dataset:any;
        viewType:string;
        multipleRecipientShow: boolean = false;
@@ -197,7 +198,8 @@ ngOnInit(){
     ngAfterViewInit(){
 
         console.log('Data in ngAfterViewInit of detail');
-        console.log(this.data);
+       // console.log(this.data);
+        //if (this.data==null) return;
         this.current=0;
         this.isConfirmLoading=true;
           if (this.data!=null){
@@ -1309,6 +1311,7 @@ GETSERVICEACTIVITY(program: any): Observable<any> {
         this.FetchCode=recipientCode;
         this.staffCode=staffCode;
         this.debtor=debtor;
+        this.date=date;
        
         this.defaultStartTime = parseISO(new Date(date + " " + startTime).toISOString());
         this.defaultEndTime = parseISO(new Date(date + " " + endTime).toISOString());

@@ -132,6 +132,9 @@ class Address {
         border-radius: 5px;  
         border-color: rgb(236, 236, 236);
    }
+
+   
+
       
     `],
     templateUrl: './daymanager.html'
@@ -856,7 +859,7 @@ menuAction(){
     console.log(this.optionsList)
     localStorage.setItem('dmOption1', JSON.stringify(this.optionsList));
     localStorage.setItem('dmOption2', JSON.stringify(this.optionsList2));
-    localStorage.setItem('PayPeriodEndDate', this.PayPeriodEndDate);
+    localStorage.setItem('PayPeriodEndDate', this.PayPeriodEndDate.toString());
     
 }
 change(event:any){
@@ -1193,8 +1196,16 @@ ngAfterViewInit(){
       AddRoster(){
         this.info.IsMaster=false;
         this.info.ViewType=this.viewType;
-        this.info.StaffCode=this.selectedOption.staff;
-        this.info.date=this.selectedOption.date;
+        if (this.selectedOption!=null)        {
+            this.info.StaffCode=this.selectedOption.staff;
+            this.info.date=this.selectedOption.date;
+        }else  if (this.pastePosition!=null){
+            this.info.StaffCode=this.pastePosition.selected.carercode;
+            this.info.date= moment(this.pastePosition.selected.date).format('YYYY/MM/DD');
+        }else{
+            return;
+        }
+       
 
           this.optionsModal=false;
           this.AddRosterModel=true;

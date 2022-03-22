@@ -78,6 +78,7 @@ const inputFormDefault = {
         button{
             width: 200pt !important;
             text-align: left !important;
+            text-transform: uppercase;
         }        
         .btn{
             border:none;
@@ -124,19 +125,41 @@ const inputFormDefault = {
             background:#f7f7f7;
         }
         .ant-menu-horizontal {
-            line-height: 36px;
+            line-height: 28px;
         }
         .conf-header{
             background-color: #85B9D5;
             color: #fff;
+            padding: 10px;
             border-color: #85B9D5;
         }
-        .ant-tabs-tab{
-            border-radius: 20px 20px 0px 0px !important;
-            border: 1px solid blue !important;
-            height:29px !important;
-            background:#fff !important;   
-            min-width: 12rem;     
+        .conf-header-darkorange{
+            line-height: 1;
+            background-color: #f18805;
+            color: #fff;
+            padding: 10px;
+            border-color: #f18805;
+        }
+        .conf-header-orange{
+            line-height: 1;
+            background-color: #ffba08;
+            color: #fff;
+            padding: 10px;
+            border-color: #ffba08;
+        }
+        .ant-tabs.ant-tabs-card .ant-tabs-card-bar .ant-tabs-tab-active {
+            color: #1890ff;
+            background: #85B9D5;
+            border-color: #e8e8e8;
+            border-bottom: 1px solid #fff;
+        }
+        .ant-tabs.ant-tabs-card .ant-tabs-card-bar .ant-tabs-tab {
+            line-height: 38px;
+            background: #fff;
+        }
+        .ant-btn{
+            height:auto;
+            border-radius: 0px;
         }
     `],
     templateUrl: './configuration.html'

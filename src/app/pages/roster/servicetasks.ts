@@ -112,13 +112,13 @@ export class ServiceTasks implements OnInit {
       this.current += 1;
     }
     loadSericeTasks(recordNo:string){
-      this.loading = true;
+      //this.loading = true;
       this.recordNo=recordNo;
       this.tableData=[];
       let sql =`SELECT roTA.RecordNo, '' AS C1, '' AS C2, roTA.TaskComplete as Comp , ddTA.Description AS task FROM Roster_TaskList roTA INNER JOIN DataDomains ddTA ON roTA.TaskID = ddTA.Recordnumber and Domain = 'TASK' WHERE RosterID = ${recordNo} `
       this.listS.getlist(sql).subscribe(data => {
         this.tableData = data;
-        this.loading = false;
+       // this.loading = false;
       });
     }
 

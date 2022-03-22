@@ -1,33 +1,236 @@
 <div nz-row>
     <div style="padding-left:8px" >        
         <div nz-row class="dm-input">
-            <div nz-col nzSpan="5" style="margin-left: 5px; font-size: 12px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+            <div nz-col nzSpan="5" style="margin-left: 5px; margin-top: 5px; ">
                 <label for="" > Day Manager Filter</label>
-                <nz-select [(ngModel)]="selectedPersonType" (ngModelChange)="personTypeChange($event)" style="width: 200px;">
+                <nz-select  [(ngModel)]="selectedPersonType" (ngModelChange)="personTypeChange($event)" style="width: 200px;">
                     <nz-option *ngFor="let p of personTypeList" [nzValue]="p"  [nzLabel]="p"></nz-option>
                 </nz-select>
             </div>
-            <div nz-col nzSpan="5">
+            <div nz-col nzSpan="4" class="date-title" *ngIf="master" style="margin: 5px; width:200px  ">
+                <label for="date"> Cycle</label>
+                <nz-select style="width:200px" [(ngModel)]="masterCycle" (ngModelChange)="setCycle()">                   
+                    <nz-option *ngFor="let cl of cycles" [nzValue]="cl.cycle" [nzLabel]="cl.cycle"></nz-option>
+                </nz-select>
+            </div>
+            <div nz-col nzSpan="3" *ngIf="!master" style=" margin-top: 5px;">
                 <label for="date"> Date</label>
                 <nz-date-picker nzMode="default" [nzFormat]="dateFormat" [(ngModel)]="date"></nz-date-picker>
             </div>
-            <div nz-col nzSpan="5">
-                <label for="dayview">Day View</label>
+            <div nz-col nzSpan="3" *ngIf="!master" style="margin-left: 5px; margin-top: 5px;">
+                <label for="dayview" >Day View</label>
                 <nz-select [(ngModel)]="dayView">
                     <nz-option *ngFor="let no of dayViewArr" [nzValue]="no" [nzLabel]="no"></nz-option>
-                </nz-select>
-            </div>     
-            <div nz-col nzSpan="5">
-                <button nz-button style="margin-top:1rem" (click)="workflowVisible = true" nzType="primary">Workflow</button>
-            </div>          
+                </nz-select> 
+            </div>
+            <div nz-col nzSpan="2" id="divMaster" style=" margin-top: 5px;  width:80px" >
+                <label for="dayview" >Master</label>
+                <!--                     
+                    <nz-label style="padding:4px; background-color: transparent; color: white; vertical-align: middle"> {{Master_Roster_label}}  </nz-label> -->
+                <div [ngStyle]="{'background-color':master === true ? '#F18805' : '#85B9D5' }" style=" background-color:  #1E91E8; vertical-align: middle; height: 32px; width:80px;  border-radius: 3px;   color: grey; padding-left: 2px; text-align: center;">
+                    <nz-switch  [class.master-class]="master" [(ngModel)]="master" style="padding:4px;  vertical-align: middle" (ngModelChange)="setMasterRoster($event)"></nz-switch>
+                </div>
+            </div>
+            <div nz-col nzSpan="10" style="margin-top: 25px; text-align: center;" > 
+                
+                    <button nz-button nzType="default"  (click)="showCustomFilter()" [nzSize]="size" nzShape="circle" nz-tooltip nzTooltipTitle="Create a new custom filter to limit activities to operator requirements"><i nz-icon nzType="filter" nzTheme="outline" ></i></button>
+                    <button nz-button nzType="default"  (click)="removeCustomFilter()" [disabled]="CustomFilters.length<=0" [nzSize]="size" nzShape="circle" nz-tooltip nzTooltipTitle="Delete ALL custom filters"><i nz-icon nzType="close-circle" nzTheme="outline" ></i></button>
+                    <button nz-button nzType="default"  (click)="ViewCustomFilter()" [disabled]="CustomFilters.length<=0" [nzSize]="size" nzShape="circle" nz-tooltip nzTooltipTitle="View existing custom filters"><i nz-icon nzType="question-circle" nzTheme="outline" ></i></button>
+                    <button nz-button nzType="default"  (click)="load_rosters()" [nzSize]="size" nzShape="circle" nz-tooltip nzTooltipTitle="Refresh the current Day Manager view"><i nz-icon nzType="reload" nzTheme="outline" ></i></button>
+                    <button nz-button nzType="default"  (click)="ViewQuickFilterDisplay()" [nzSize]="size" nzShape="circle" nz-tooltip nzTooltipTitle="Quiick Filters"><i nz-icon nzType="interaction" nzTheme="outline" ></i></button>
+                    <button nz-button nzType="default"  [nzSize]="size" nzShape="circle" nz-tooltip nzTooltipTitle="Print the Day Manager"><i nz-icon nzType="printer" nzTheme="outline" ></i></button>                   
+                    <button nz-button nzType="default"  (click)="openStaffModal(true)" [nzSize]="size" nzShape="circle" nz-tooltip nzTooltipTitle="Display Staff Inquiry Screen"><i nz-icon nzType="team" nzTheme="outline" ></i></button>
+                    <button nz-button nzType="default"  (click)="openRecipientModal(true)" [nzSize]="size" nzShape="circle" nz-tooltip nzTooltipTitle="Display Recipient Inquiry Screen"><i nz-icon nzType="user" nzTheme="outline"></i></button>
+                    <button nz-button nzType="default"  (click)="openMenu()"  [nzSize]="size" nzShape="circle"><i nz-icon nzType="menu" nzTheme="outline"></i></button>
+              
+            </div>
+            <div *ngIf="CustomFilter" >
+             
+                <div nz-col nzSpan="5" style="margin-left: 2px;">
+                    <label for="dayview">Limit To</label>
+                    <nz-select [(ngModel)]="LimitTo" style="width: 200px;" (ngModelChange)="FillLimitTo()">
+                        <nz-option *ngFor="let grp of lstGroup" [nzValue]="grp" [nzLabel]="grp"></nz-option>
+                    </nz-select> 
+                </div>
+              
+                <div nz-col nzSpan="6">
+                    <label for="">Starting With</label>
+                    <nz-select [(ngModel)]="startWith"  *ngIf="!showSimpleFilterInput"   style="width: 250px;" (ngModelChange)="AddCustomFilter()">
+                        <nz-option *ngFor="let t of lstStartWith" [nzValue]="t.title" [nzLabel]="t.title"></nz-option>
+                    </nz-select> 
+                    <nz-input-group *ngIf="showSimpleFilterInput" >                      
+                        <input nz-input  placeholder="{{nzFilterPlaceHolder}}" [(ngModel)]="startWith" style="width: 230px;" />
+                        
+                            <button nz-button nzType="default"  (click)="AddCustomFilter()"  [nzSize]="'default'" nz-tooltip nzTooltipTitle="Add in Filter">
+                                <i nz-icon nzType="border-inner" nzTheme="outline" ></i>
+                            </button>
+                         
+                    </nz-input-group >
+                    <!-- <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
+                        <input type="text" nz-input placeholder="input search text" />
+                      </nz-input-group>
+                      <ng-template #suffixIconButton>
+                        <button nz-button nzType="default" nzSearch><i nz-icon nzType="border-inner"></i></button>
+                      </ng-template> -->
+                </div>
+                <div nz-col nzSpan="6" style="margin-top: 10px;">
+                    <div>
+                        <label nz-checkbox [(ngModel)]="addInExisting" style="margin-right: 10px;">Add in existing filter</label> 
+                    </div>
+                    <button nz-button nzType="primary"  (click)="ApplyCustomFilter()"  [nzSize]="'small'" nzShape="round"><i nz-icon nzType="filter" nzTheme="outline"></i>Apply</button>
+                    <button nz-button nzType="primary"  (click)="CloseCustomFilter()"  [nzSize]="'small'" nzShape="round"><i nz-icon nzType="close" nzTheme="outline"></i>Close</button>
+                    <button nz-button nzType="primary"  (click)="ViewCustomFilter()"  [nzSize]="'small'" nzShape="round"><i nz-icon nzType="view" nzTheme="outline"></i>View</button>
+                </div>
+               
+            </div>
         </div>
+        
+        <nz-modal  [nzStyle]="{ top: '10px' }" hasBackdrop [nzWidth]="900" [(nzVisible)]="ViewExistingFilter" nzTitle="Day Manager Filters"   (nzOnCancel)="ViewExistingFilter = false" >
+            <div  class="flexy" style="min-height:25rem; margin-top: 5px;" >
+                <div nz-row >
+                    <div nz-row *ngFor="let fltr of CustomFilters; let i=index">
+                        <div>
+                                {{i+1}} - {{fltr.key}} = {{fltr.value}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div *nzModalFooter>
+                <button  nz-button nzType="default" (click)="ViewExistingFilter=false">OK</button>
+                <button  nz-button nzType="default" (click)="ViewExistingFilter=false">Cancel</button>
+            </div>
+        </nz-modal>                 
+           
+        <nz-modal  [nzStyle]="{ top: '10px' }" hasBackdrop [nzWidth]="700" [(nzVisible)]="showMenu" nzTitle="Day Manager Options"   (nzOnCancel)="showMenu = false" >
+        <div  class="flexy" style="min-height:20rem; margin-top: 5px;" >
+            <div nz-row >
+                <div nz-col nzSpan="24"  >
+                   
+                    <div *ngFor="let opt of optionsList; let i=index">
+                        <label nz-checkbox [(ngModel)]="optionsList[i].checked" >{{opt.name}}</label> 
+                    </div>
+                   
+                    <div style="margin-top: 20px;">
+                        <label for="">Set Rostering Pay Preriod</label> 
+                        <nz-date-picker [(ngModel)]="PayPeriodEndDate" [nzFormat]="dateFormat" ></nz-date-picker>
+                    </div>
+                </div>
+            </div>
+        
+            <div nz-row >
+                <div nz-col nzSpan="24" >
+                    <div *ngFor="let opt of optionsList2; let i=index">
+                        <label nz-checkbox [(ngModel)]="optionsList2[i].checked" >{{opt.name}}</label> 
+                    </div>
+                </div>
+            </div>       
+
+        </div>
+            <div *nzModalFooter>
+                <button  nz-button nzType="default" (click)="menuAction()">Save & Apply</button>
+                <button  nz-button nzType="default" (click)="showMenu=false">Cancel</button>
+            </div>
+        </nz-modal>
+       
+        <nz-modal  [nzStyle]="{ top: '10px' }" hasBackdrop [nzWidth]="900" [(nzVisible)]="viewQuickFilter" nzTitle="Quick Filters Benchtop"   (nzOnCancel)="viewQuickFilter = false" >
+            <div  class="flexy" style="min-height:25rem; " >
+                <div nz-row  nzGutter="4">   
+                            
+                        <div nz-col nzSpan="8" >
+                            <nz-table  #basicTable [nzData]="branchesList" [nzShowPagination]="false" [nzBordered]="true"  [nzScroll]="{x:'250px', y:'350px' }">
+                                <thead>
+                                  <tr>
+                                         <th colSpan="2" style="font-weight: bold;">Branches</th>                                  
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td colSpan="2" >
+                                        <label nz-checkbox [(ngModel)]="AllBranches" (nzCheckedChange)="onAllChecked($event,'Branch')">All Branches</label>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="!AllBranches">
+                                   <td>
+                                    <tr  *ngFor="let data of branchesList">                                   
+                                        <td nzWidth="50px" >
+                                            <label nz-checkbox [nzChecked]="this.selectedBranches.indexOf(data)>=0"  (nzCheckedChange)="onItemChecked(data, $event,'Branch')" ></label>
+                                        </td>
+                                        <td  nzWidth="200px">{{ data.title }}</td>                                    
+                                    
+                                        </tr>
+                                    </td>
+                                </tr>
+                                </tbody>
+                              </nz-table>
+                        </div>
+                        <div nz-col nzSpan="8" >
+                            <nz-table  #basicTable [nzData]="programsList" [nzShowPagination]="false" [nzBordered]="true"  [nzScroll]="{x:'250px', y:'350px' }">
+                                <thead>
+                                    <tr >
+                                            <th style="font-weight: bold;" colSpan="2" >Programs</th>                                  
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td colSpan="2" >
+                                        <label nz-checkbox [(ngModel)]="AllPrograms" (nzCheckedChange)="onAllChecked($event,'Program')">All Programs</label>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="!AllPrograms">
+                                  <td>
+                                    <tr *ngFor="let data of programsList">                                        
+                                        <td nzWidth="50px">
+                                            <label nz-checkbox [nzChecked]="this.selectedPrograms.indexOf(data)>=0"  (nzCheckedChange)="onItemChecked(data, $event,'Program')" ></label>
+                                        </td>
+                                        <td nzWidth="200px">{{ data.title }}</td>                                        
+                                    </tr>
+                                    </td>
+                                </tr>
+                              </tbody>
+                             </nz-table>
+                        </div>
+                        <div nz-col nzSpan="8" >
+                            <nz-table  #basicTable [nzData]="activityList" [nzShowPagination]="false" [nzBordered]="true"  [nzScroll]="{x:'250px', y:'350px' }">
+                                <thead>
+                                    <tr>
+                                            <th style="font-weight: bold;" colSpan="2" >Activities</th>                                  
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td colSpan="2" >
+                                        <label nz-checkbox [(ngModel)]="AllActivities" (nzCheckedChange)="onAllChecked($event,'Activity')">All Activities</label>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="!AllActivities">
+                                    <td>
+                                        <tr *ngFor="let data of activityList">
+                                        
+                                            <td nzWidth="50px">
+                                                <label nz-checkbox [nzChecked]="this.selectedActivities.indexOf(data)>=0"  (nzCheckedChange)="onItemChecked(data, $event,'Activity')" ></label>
+                                            </td>
+                                            <td nzWidth="200px">{{ data.title }}</td>
+                                        </tr>
+                                    </td>
+                                 </tr>
+                                </tbody>
+                                </nz-table>
+                        </div>
+                </div>  
+            </div>
+            <div *nzModalFooter>
+                <button  nz-button nzType="default" (click)="ApplyQuickFilter()">Apply</button>
+                <button  nz-button nzType="default" (click)="viewQuickFilter=false">Cancel</button>
+            </div>
+         </nz-modal>
+           
     </div>
     <div>
         <dm-calendar [startDate]="date" [dayView]="dayView" [reload]="reload" [personType]="selectedPersonType"  [copyPaste]="toBePasted?.length > 0"
-            (showDetail)="showDetail($event)" (showOptions)="showOptions($event)" (highlighted)="highlighted($event)"
-            (data)="data($event)" (paste)="pasteSelectedRecords($event)">
-        </dm-calendar>
+            (showDetail)="showDetail($event)" (showOptions)="showOptions($event)" (highlighted)="highlighted($event)" [master]="master"
+            (data)="data($event)" (paste)="pasteSelectedRecords($event)" [applyFilter]="applyFilter" [dmOptions]="dmOptions"></dm-calendar>
     </div>
+   
 </div>
 
 
@@ -195,7 +398,7 @@
                       </nz-input-group>               
                 </div>
           
-                <app-search-list [reload]="reloadVal" [view]="1" [(ngModel)]="sample" (ngModelChange)="listChange($event)"></app-search-list>
+                <!-- <app-search-list [reload]="reloadVal" [view]="1" [(ngModel)]="sample" (ngModelChange)="listChange($event)"></app-search-list> -->
 
                        
             </div>
@@ -212,7 +415,9 @@
         <button nz-button nzType="default"  (click)="AllocateStaffModal=false">Cancel</button>
     </div>
 </nz-modal> 
-<staff-search [findModalOpen]="openSearchStaffModal" (searchDone)="onStaffSearch($event)"></staff-search>
+<staff-search [findModalOpen]="openSearchStaffModal" [bookingData]="bookingData"  (searchDone)="onStaffSearch($event)"></staff-search>
+<recipient-search [findModalOpen]="openSearchRecipientModal" [bookingData]="bookingDataRecipient" (searchDone)="onRecipientSearch($event)"></recipient-search>
+
 
 <nz-modal [nzStyle]="{ top: '15px' }" [nzWidth]="900" [(nzVisible)]="ViewServiceNoteModal" nzTitle="Service / Shift Notes "   (nzOnCancel)="ViewServiceNoteModal = false" >
     <div class="flexy" style="min-height:25rem;">

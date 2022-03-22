@@ -170,6 +170,170 @@
         <div nz-row >
             <div nz-col nzSpan="24" [formGroup]="inputForm">
                 <nz-divider nzText="Mental Health Data Collection" nzOrientation="left"></nz-divider>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                        <label>Medical Diagnosis :</label>
+                    </div>
+                    <div nz-col nzSpan="8" class="pad-r-5">
+                        <div class="staff-wrapper" style="height: 12rem;border: 1px solid #e9e9e9;width: 100%; overflow: auto; padding: .5rem 1rem;">
+                            <div nz-col nzSpan="24">
+                                <label nz-checkbox formControlName="flag">COPD</label>
+                            </div>
+                            <div nz-col nzSpan="24">
+                                <label nz-checkbox formControlName="flag">Diabets Type 1</label>
+                            </div>
+                            <div nz-col nzSpan="24">
+                                <label nz-checkbox formControlName="flag">Osteoporosis</label>
+                            </div>
+                            <div nz-col nzSpan="24">
+                                <label nz-checkbox formControlName="flag">ABI</label>
+                            </div>
+                            <div nz-col nzSpan="24">
+                                <label nz-checkbox formControlName="flag">Intellectual Disability</label>
+                            </div>
+                            <div nz-col nzSpan="24">
+                                <label nz-checkbox formControlName="flag">Epilepsy</label>
+                            </div>
+                            <div nz-col nzSpan="24">
+                                <label nz-checkbox formControlName="flag">Asthma</label>
+                            </div>
+                            <div nz-col nzSpan="24">
+                                <label nz-checkbox formControlName="flag">Congestive Cardic Failure</label>
+                            </div>
+                            <div nz-col nzSpan="24">
+                                <label nz-checkbox formControlName="flag">Multiple</label>
+                            </div>
+                            <div nz-col nzSpan="24">
+                                <label nz-checkbox formControlName="flag">Abdominical Pain</label>
+                            </div>
+                            <div nz-col nzSpan="24">
+                                <label nz-checkbox formControlName="flag">Hep C</label>
+                            </div>
+                            <div nz-col nzSpan="24">
+                                <label nz-checkbox formControlName="flag">Diabets Type 2</label>
+                            </div>
+                            <div nz-col nzSpan="24">
+                                <label nz-checkbox formControlName="flag">Anaemia</label>
+                            </div>
+                            <div nz-col nzSpan="24">
+                                <label nz-checkbox formControlName="flag">Other</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div nz-col nzSpan="6">
+                        <div id="boxhlder">
+                            <label for="Details"> Details : </label>
+                            <textarea rows="3" nz-input formControlName="title"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                        <label for="Not Proceeded">Not Proceeded : </label>
+                    </div>
+                    <div nz-col nzSpan="3">
+                        <nz-date-picker formControlName="title" [nzFormat]="dateFormat"></nz-date-picker>
+                    </div>
+                    <div nz-col nzSpan="1">
+
+                    </div>
+                    <div nz-col nzSpan="2" class="text-center pad-r-5">
+                        <label for="Discharge Date">Discharge Date : </label>
+                    </div>
+                    <div nz-col nzSpan="3">
+                        <nz-date-picker formControlName="title" [nzFormat]="dateFormat"></nz-date-picker>
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                        <label for="Reasons For Exit">Reasons For Exit : </label>
+                    </div>
+                    <div nz-col nzSpan="8">
+                        <nz-select nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        </nz-select>
+                    </div>
+                    <div nz-col nzSpan="2" class="text-right pad-r-5">
+                        <label for="Others">Others : </label>
+                    </div>
+                    <div nz-col nzSpan="8">
+                        <input nz-input placeholder=""  formControlName="title" readonly />
+                    </div>
+                </div>  
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                        <label for="Non Accepted Reasons">Non Accepted Reasons : </label>
+                    </div>
+                    <div nz-col nzSpan="8">
+                        <nz-select nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        </nz-select>
+                    </div>
+                    <div nz-col nzSpan="2" class="text-right pad-r-5">
+                        <label for="Others">Others : </label>
+                    </div>
+                    <div nz-col nzSpan="8">
+                        <input nz-input placeholder=""  formControlName="title" readonly />
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                        <label for="Services Linked Into">Services Linked Into : </label>
+                    </div>
+                    <div nz-col nzSpan="8">
+                        <input nz-input placeholder=""  formControlName="title" readonly />
+                    </div>
+                    <div nz-col nzSpan="2" class="text-right pad-r-5">
+                        <label for="Detais">Detais : </label>
+                    </div>
+                    <div nz-col nzSpan="8">
+                        <textarea rows="2" nz-input formControlName="title"></textarea>
+                    </div>
+                </div>
+                <nz-divider nzText="AOD Issues" nzOrientation="left"></nz-divider>   
+                
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="5">
+                        
+                    </div>
+                    <div nz-col nzSpan="5" class="pad-r-5">
+                        <label nz-checkbox formControlName="flag">Current AOD Use</label>
+                    </div>
+                    <div nz-col nzSpan="2" class="text-right pad-r-5">
+                        <label for="Details">Details : </label>
+                    </div>
+                    <div nz-col nzSpan="11">
+                        <textarea rows="2" nz-input formControlName="title"></textarea>
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="5">
+                        
+                    </div>
+                    <div nz-col nzSpan="5" class="pad-r-5">
+                        <label nz-checkbox formControlName="flag">Past AOD Use</label>
+                    </div>
+                    <div nz-col nzSpan="2" class="text-right pad-r-5">
+                        <label for="Details">Details : </label>
+                    </div>
+                    <div nz-col nzSpan="11">
+                        <textarea rows="2" nz-input formControlName="title"></textarea>
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="5">
+
+                    </div>
+                    <div nz-col nzSpan="5" class="pad-r-5">
+                        <label nz-checkbox formControlName="flag">Engaged with AOD Services</label>
+                    </div>
+                    <div nz-col nzSpan="2" class="text-right pad-r-5">
+                        <label for="Details">Details : </label>
+                    </div>
+                    <div nz-col nzSpan="11">
+                        <textarea rows="2" nz-input formControlName="title"></textarea>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -177,6 +341,86 @@
         <div nz-row >
             <div nz-col nzSpan="24" [formGroup]="inputForm">
                 <nz-divider nzText="Mental Health Data Collection" nzOrientation="left"></nz-divider>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="10" class="text-right pad-r-5">
+                        <label>No Of Services Linked On Intake : </label>
+                    </div>
+                    <div nz-col nzSpan="6">
+                        <input nz-input placeholder=""  formControlName="title" readonly />
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="10" class="text-right pad-r-5">
+                        <label>No Of Services Linked On Exit : </label>
+                    </div>
+                    <div nz-col nzSpan="6">
+                        <input nz-input placeholder=""  formControlName="title" readonly />
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="10" class="text-right pad-r-5">
+                        <label># Residential Moves : </label>
+                    </div>
+                    <div nz-col nzSpan="6">
+                        <input nz-input placeholder=""  formControlName="title" readonly />
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="10" class="text-right pad-r-5">
+                        <label>Date Of Residential Change of Address : </label>
+                    </div>
+                    <div nz-col nzSpan="4">
+                        <nz-date-picker formControlName="title" [nzFormat]="dateFormat"></nz-date-picker>
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="10" class="text-right pad-r-5">
+                        <label>Location of new Adress (Suburb) : </label>
+                    </div>
+                    <div nz-col nzSpan="6">
+                        <input nz-input placeholder=""  formControlName="title" readonly />
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="10" class="text-right pad-r-5">
+                        <label>Housing Type On Exit : </label>
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="7" class="text-right pad-r-5">
+                    </div>
+                    <div nz-col nzSpan="9">
+                        <div class="staff-wrapper" style="height: 16rem;border: 1px solid #e9e9e9;width: 100%; overflow: auto; padding: .5rem 1rem;">
+                            <div nz-col nzSpan="24">
+                                <label nz-checkbox formControlName="flag">Private</label>
+                            </div>
+                            <div nz-col nzSpan="24">
+                                <label nz-checkbox formControlName="flag">Department of Housing</label>
+                            </div>
+                            <div nz-col nzSpan="24">
+                                <label nz-checkbox formControlName="flag">Community Housing</label>
+                            </div>
+                            <div nz-col nzSpan="24">
+                                <label nz-checkbox formControlName="flag">Supported Accomodation</label>
+                            </div>
+                            <div nz-col nzSpan="24">
+                                <label nz-checkbox formControlName="flag">Emergency/ Crisis Accomodation I.E Pindarri,Roma House,Ozcare</label>
+                            </div>
+                            <div nz-col nzSpan="24">
+                                <label nz-checkbox formControlName="flag">Boarding Houses</label>
+                            </div>
+                            <div nz-col nzSpan="24">
+                                <label nz-checkbox formControlName="flag">Sleeping Rough/Couch Surfing</label>
+                            </div>
+                            <div nz-col nzSpan="24">
+                                <label nz-checkbox formControlName="flag">Cravan Park</label>
+                            </div>
+                            <div nz-col nzSpan="24">
+                                <label nz-checkbox formControlName="flag">Hostels</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -184,6 +428,205 @@
         <div nz-row >
             <div nz-col nzSpan="24" [formGroup]="inputForm">
                 <nz-divider nzText="Mental Health Data Collection (KPIs)" nzOrientation="left"></nz-divider>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="9" class="text-right pad-r-5">
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center">
+                        <label for=""> <b> Intake KPIs </b> </label>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center">
+                        <label for=""> <b>3 Months <br> Reviews KPIs</b> </label>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center">
+                        <label for=""> <b> 6 Months <br> Reviews KPIs</b> </label>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center">
+                        <label for=""> <b> 9 Months <br> Reviews KPIs</b> </label>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center">
+                        <label for=""> <b> Exit KPIs </b> </label>
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="9" class="text-right pad-r-5">
+                        <label for=""> Dates : </label>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <nz-date-picker formControlName="title" [nzFormat]="dateFormat"></nz-date-picker>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <nz-date-picker formControlName="title" [nzFormat]="dateFormat"></nz-date-picker>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <nz-date-picker formControlName="title" [nzFormat]="dateFormat"></nz-date-picker>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <nz-date-picker formControlName="title" [nzFormat]="dateFormat"></nz-date-picker>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <nz-date-picker formControlName="title" [nzFormat]="dateFormat"></nz-date-picker>
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="9" class="text-right pad-r-5">
+                        <label for=""> Integrated Community Support Sytem(1) : </label>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="9" class="text-right pad-r-5">
+                        <label for=""> Primary Care and Special Services(2) : </label>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="9" class="text-right pad-r-5">
+                        <label for="">Self-Management Strategies in Mental Health(3-MH) : </label>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="9" class="text-right pad-r-5">
+                        <label for=""> Self-Management Strategies in Physical Health(3-PH) : </label>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="9" class="text-right pad-r-5">
+                        <label for=""> Maintaing Tenancy (4) : </label>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="9" class="text-right pad-r-5">
+                        <label for=""> Group / Community Participation (5) : </label>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="9" class="text-right pad-r-5">
+                        <label for=""> No of Emergency Department Presentations (6) : </label>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="9" class="text-right pad-r-5">
+                        <label for=""> No of Hospital Admissions (7) : </label>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                    <div nz-col nzSpan="3" class="text-center pad-r-5">
+                        <input nz-input placeholder=""  formControlName="title"/>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -191,6 +634,50 @@
         <div nz-row >
             <div nz-col nzSpan="24" [formGroup]="inputForm">
                 <nz-divider nzText="NDIA Info" nzOrientation="left"></nz-divider>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                        <label>Type : </label>
+                    </div>
+                    <div nz-col nzSpan="6">
+                        <nz-select nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        </nz-select>
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                        <label>Comments : </label>
+                    </div>
+                    <div nz-col nzSpan="12">
+                        <textarea rows="3" nz-input formControlName="title"></textarea>
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                        <label>NDIS Number : </label>
+                    </div>
+                    <div nz-col nzSpan="6">
+                        <input nz-input placeholder=""  formControlName="title" readonly />
+                    </div>
+                </div>
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                        <label>Apeal/Review : </label>
+                    </div>
+                    <div nz-col nzSpan="6">
+                        <nz-select nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        </nz-select>
+                    </div>
+                </div>  
+                <div nz-row nzJustify class="mrg-btm">
+                    <div nz-col nzSpan="6" class="text-right pad-r-5">
+                        <label>Comments : </label>
+                    </div>
+                    <div nz-col nzSpan="12">
+                        <textarea rows="3" nz-input formControlName="title"></textarea>
+                    </div>
+                </div>        
             </div>
         </div>
     </div>

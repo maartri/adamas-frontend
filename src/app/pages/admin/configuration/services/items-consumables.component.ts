@@ -233,7 +233,6 @@ export class ItemsConsumablesComponent implements OnInit {
         x.checked = true;
         this.selectedPrograms = x.name;
       });
-      console.log("programs : " + this.selectedPrograms);
     }
     
     loadTitle()

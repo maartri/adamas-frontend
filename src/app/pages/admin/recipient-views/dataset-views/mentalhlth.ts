@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
-import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, ClientService,dateFormat } from '@services/index';
+import { ndiaTypes,GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, ClientService,dateFormat } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
 import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -32,6 +32,9 @@ import { NzModalService } from 'ng-zorro-antd/modal';
     nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-nav-scroll div.ant-tabs-nav div div.ant-tabs-tab.ant-tabs-tab-active{
         background: #85B9D5;
         color: #fff;
+    }
+    #boxhlder{
+        margin-top:6rem;
     }
     `],
     templateUrl: './mentalhlth.html',

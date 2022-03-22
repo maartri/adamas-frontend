@@ -18,14 +18,6 @@ import { takeUntil } from 'rxjs/operators';
   textarea{
     resize:none;
   }
-  .staff-wrapper{
-    height: 20rem;
-    width: 100%;
-    overflow: auto;
-    padding: .5rem 1rem;
-    border: 1px solid #e9e9e9;
-    border-radius: 3px;
-  }
   nz-tabset{
     margin-top:1rem;
   }
@@ -55,8 +47,46 @@ import { takeUntil } from 'rxjs/operators';
     border: 1px solid #e9e9e9;
     border-radius: 3px;
   }
-  .ant-modal-body{
-    padding:0px 14px !important;
+  nz-select{
+    min-width:100%;
+  }
+  .ant-modal-content .ant-modal-header .ant-modal-title .ng-star-inserted"{
+    width: 40% !important;
+    margin: auto !important;
+    background: #85b9d5 !important;
+    text-align: center !important;
+    color: white !important;
+    border-radius: 5px !important;
+    padding: 5px !important;
+  }
+  .ant-modal-header {
+    padding: 4px 24px !important;
+  }
+  legend + * {
+    -webkit-margin-top-collapse: separate;
+    margin-top: 10px;
+  }
+  .ant-tabs-bar{
+    margin:0px
+  } 
+  #main-wrapper{
+    border:1px solid #85B9D5;padding:10px 0px;min-height:28rem;
+  }
+  #mta-btn-group{
+  margin-left: 12px !important;margin-right: 12px;padding:10px;
+  }
+  #mta-btn-group .ant-tabs-bar {
+    margin: 0px;
+    border: 0px;
+  }
+  #mta-btn-group nz-tabset[_ngcontent-gwp-c604] {
+    margin-top: 0px;
+  }
+  .redColor{
+    color:red
+  }
+  .whiteColor{
+    color:rgba(0, 0, 0, 0);
   }
   `]
 })

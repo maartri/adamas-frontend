@@ -120,7 +120,24 @@ const inputFormDefault = {
             margin:1rem auto;
             width:1px;
         }
-        
+        .custom-btn{
+            background:#f7f7f7;
+        }
+        .ant-menu-horizontal {
+            line-height: 36px;
+        }
+        .conf-header{
+            background-color: #85B9D5;
+            color: #fff;
+            border-color: #85B9D5;
+        }
+        .ant-tabs-tab{
+            border-radius: 20px 20px 0px 0px !important;
+            border: 1px solid blue !important;
+            height:29px !important;
+            background:#fff !important;   
+            min-width: 12rem;     
+        }
     `],
     templateUrl: './configuration.html'
 })

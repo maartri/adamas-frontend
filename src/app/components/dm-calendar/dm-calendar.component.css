@@ -24,19 +24,9 @@
     line-height: 10px;
     margin: 6px 0;
 }
-.icon{
-     font-size: 14px;
-    padding-right: 4px;    
-    padding-top: 4px;
-}
-.icon2{
-   font-size: 12px;
-   padding-right: 0px;    
-   padding-top: 0px;
-   width: 20px;
-   height: 20px;
-   background-color: transparent;
-}
+ .slant-position{
+    transform: rotate(45deg);
+ }
 .service-logo{
     background: #fff;
     background-repeat: no-repeat;
@@ -80,9 +70,9 @@
     color: #000;
     font-weight: 500;
     line-height:16px;
-    font-size:10px;
+    font-size:11px;
     position: relative;
-   
+    padding-left: 4px;
     width: auto;
     white-space: nowrap;
     overflow: hidden;
@@ -104,6 +94,89 @@
     overflow-wrap: break-word;
     word-break: break-all;
     word-break:auto; */
+}
+
+
+.icon{
+    width: 18px;
+    height: 18px;  
+    font-size:12px;  
+    position: relative;   
+    display: inline-block;
+    background-color: transparent;
+}
+.icon2{
+   
+    width: 18px;
+    height: 18px;  
+    font-size:12px;  
+    position: relative;   
+    display: inline-block;
+    background-color: transparent;
+}
+.icon3{
+    font-size:8px;    
+    width: 16px;
+    height: 16px;    
+    background-color: transparent;
+    position: relative;   
+    display: inline-block;
+ }
+ .icon4{
+    font-size:7px;    
+    width: 12px;
+    height: 13px;    
+    background-color: transparent;
+  
+ }
+
+.time{
+    margin-left: 4px;
+    padding-left: 2px;
+   font-size:12px;  
+   position: relative;   
+   display: inline-block;
+   
+}
+
+.time2{
+    margin-left: 4px;
+    padding-left: 2px;
+    font-size:12px;
+    position: relative;   
+    display: inline-block;    
+    overflow-wrap: break-word;
+}
+
+.time3{
+    padding-left: 2px;
+    font-size:11px;
+    position: relative;   
+    display: inline-block;    
+    overflow-wrap: break-word;
+}
+
+.time4{   
+   
+    font-size:9px;
+    position: relative;   
+    display: inline-block;
+    inline-size: 50px;
+    overflow-wrap: break-word;
+}
+
+.detail2{   
+    font-size:11px; 
+    padding-left: 3px;
+}
+
+.detail3{   
+    font-size:10px;
+    padding-left: 2px;
+}
+.detail4{   
+    font-size:9px;
+    padding-left: 2px;
 }
 
 .header-wrapper{
@@ -301,4 +374,16 @@ h5{
 .spinner{
     margin:1rem auto;
     width:1px;
+}
+
+
+.rectangle{
+    margin-top: 5px;
+    padding: 5px;     
+    border-style: unset; 
+    border-bottom: solid;
+    border-width: 1px; 
+    border-radius: 0px;  
+    width: auto;
+    border-color: rgb(207, 202, 202);
 }

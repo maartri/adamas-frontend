@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, ChangeDetectorRef,ElementRef,ViewEncapsulation,    
+import { Component, Input,Output,EventEmitter, ViewChild, ChangeDetectorRef,ElementRef,ViewEncapsulation,    
     AfterViewInit,   
     OnDestroy,
     OnInit, 
@@ -181,6 +181,7 @@ info = {StaffCode:'', ViewType:'',IsMaster:false, date:''};
 
 
 @Input() loadRoster :Subject<any> = new Subject() 
+@Output() RosterDone :EventEmitter<boolean>= new EventEmitter(); 
  
 selectedrow: string ="class.selected"   
 timesheets: Array<any> = [];
@@ -836,7 +837,7 @@ AddRoster_Entry(){
 
                 this.show_alert=true;
             }
-               
+                this.RosterDone.emit(true);
            });
            tsheet.date=this.addDays(tsheet.date,1);
            inputs.date=format(tsheet.date,'yyyy/MM/dd')
@@ -3753,13 +3754,13 @@ onChange(result: Date): void {
    
 ngOnDestroy(){
     console.log("ngDestroy");
-    window.location.reload();  
+   // window.location.reload();  
 }
 
 refreshPage() {
     //this._document.defaultView.location.reload();
-    window.location.reload();
-   
+    //window.location.reload();
+    this.ngOnInit();
   }
 reloadVal: boolean = false;
 reload(reload: boolean){
@@ -4424,6 +4425,7 @@ getPublicHolidyas(s_StaffCode:string){
                 this.listS.getlist(sql)          
             .pipe(
                 tap(output => {
+                    if (output==null) return;
                     console.log(output);
                     this.publicHolidayRegionData=output[0];
                     s_PubHolRegion = this.publicHolidayRegionData.publicHolidayRegion;

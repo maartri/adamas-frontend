@@ -6,6 +6,9 @@ import { filter, switchMap } from 'rxjs/operators';
 import format from 'date-fns/format';
 import { NzFormatEmitEvent } from 'ng-zorro-antd/core';
 import { EMPTY, forkJoin } from 'rxjs';
+import { stringify } from '@angular/compiler/src/util';
+import { forEach } from 'lodash';
+import { Subscription, Subject } from 'rxjs';
 
 @Component({
     selector: 'staff-search',
@@ -14,17 +17,42 @@ import { EMPTY, forkJoin } from 'rxjs';
     .disabled{
       pointer-events:none;
     
-    }`]
+    }
+    nz-tabset{
+      margin-top:1rem;
+    }
+    nz-tabset >>> div > div.ant-tabs-nav-container{
+      height: 25px !important;
+      font-size: 13px !important;
+    }
+    
+    nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-nav-scroll div.ant-tabs-nav div div.ant-tabs-tab{
+      line-height: 24px;
+      height: 25px;
+    }
+    nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-nav-scroll div.ant-tabs-nav div div.ant-tabs-tab.ant-tabs-tab-active{
+      background: #85B9D5;
+      color: #fff;
+    }
+    nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-nav-scroll div.ant-tabs-nav div div.ant-tabs-tab{
+      border-radius: 4px 4px 0 0;
+    }
+    
+    
+    `]
   })
   export class StaffSearch implements AfterViewInit{
-      @Input() findModalOpen:boolean=false;
+      @Input() findModalOpen:boolean=false;      
+      @Input() bookingData = new Subject<any>();
       @Output() searchDone:EventEmitter<any>= new EventEmitter();
 
+      booking :any;
       selectedStaff:any;
       extendedSearch: any;
       allBranches:boolean = true;
       allBranchIntermediate:boolean = false;
       filteredResult: any;
+      originalList: any;
       selectedTypes:any;
       selectedbranches: any[];
       testcheck : boolean = false;
@@ -32,7 +60,8 @@ import { EMPTY, forkJoin } from 'rxjs';
       selectedCordinators: any;
       selectedCategories: any;
       selectedSkills:any;
-      
+      txtSearch:string;
+
       loading: boolean;    
       allProgarms:boolean = true;
       allprogramIntermediate:boolean = false;
@@ -100,6 +129,10 @@ import { EMPTY, forkJoin } from 'rxjs';
       this.nodelist = staffnodes;
         this.buildForms();
         this.getUserData();
+
+        this.bookingData.subscribe(data=>{
+          this.loadModel(data);
+        })
     }
     ngAfterViewInit(){
 
@@ -110,8 +143,13 @@ import { EMPTY, forkJoin } from 'rxjs';
     }
 
     handleOk(){ 
-
-      this.searchDone.emit({selected:this.selectedStaff});
+      if (this.selectedStaff==null) return;
+      this.searchDone.emit(this.selectedStaff);
+      this.findModalOpen=false;
+    }
+    loadModel(data:any){
+      this.booking=data;
+      this.findModalOpen=true;
     }
     buildForms(){
         
@@ -220,39 +258,104 @@ import { EMPTY, forkJoin } from 'rxjs';
         .filter(opt => opt.checked)
         .map(opt => this.sbFieldsSkill[opt.identifier])
         
+        // if (this.booking==null){
+        //   this.booking={
+        //     recipientCode: 'TT',
+        //     userName:'sysmgr',
+        //     date:'2022/01/01',
+        //     startTime:'07:00',
+        //     endTime:'17:00',
+        //     endLimit:'20:00'
+        //   }
+        // }
+      
+        if (this.booking==null){
+          let dt= new Date();
+          this.booking={
+            recipientCode: '',
+            userName:'',
+            date: '',
+            startTime:'',
+            endTime:'',
+            endLimit:''
+          }
+        }
+      
         var postdata = {
+          firstRecipient:this.booking.recipientCode,
+          userName:this.booking.userName,
+          date:this.booking.date,
+          startTime:this.booking.startTime,
+          endTime:this.booking.endTime,
+          endLimit:this.booking.endLimit,
           status:this.quicksearch.value.status,
-          gender:this.quicksearch.value.gender,
+          gender:this.quicksearch.value.gender=="Any Gender"? "MALE,FEMALE" : this.quicksearch.value.gender,
           staff:this.quicksearch.value.staff,
           brokers:this.quicksearch.value.brokers,
           volunteers:this.quicksearch.value.volunteers,
           onleaveStaff:this.quicksearch.value.onleaveStaff,
-          searchText:this.quicksearch.value.searchText,
+          searchText:this.txtSearch,
           
           allTeamAreas      : this.allProgarms,
-          selectedTeamAreas : (this.allProgarms == false) ? this.selectedPrograms : '',
+          selectedTeamAreas : (this.allProgarms == false) ? this.selectedPrograms : [],
           
           allcat:this.allcat,
-          selectedCategories:(this.allcat == false) ? this.selectedCategories : '',
+          selectedCategories:(this.allcat == false) ? this.selectedCategories : [],
           
           allBranches:this.allBranches,
-          selectedbranches:(this.allBranches == false) ? this.selectedbranches : '',
+          selectedbranches:(this.allBranches == false) ? this.selectedbranches : [],
           
           allCordinatore:this.allCordinatore,
-          selectedCordinators:(this.allCordinatore == false) ? this.selectedCordinators : '',
+          selectedCordinators:(this.allCordinatore == false) ? this.selectedCordinators : [],
           
           allSkills:(this.selectedSkills.length) ? false : true,
-          selectedSkills: (this.selectedSkills.length) ? this.selectedSkills : '',
+          selectedSkills: (this.selectedSkills.length) ? this.selectedSkills : [],
           criterias:this.cariteriaList
           // list of rules
         }
         
+        let value:string;
+        if (this.txtSearch!=null)
+          value = this.txtSearch.toUpperCase();
+            
+        //console.log (this.selectedSkills);
         this.timeS.getQualifiedStaff(postdata).subscribe(data => {
+          
           this.filteredResult = data;
+          this.originalList=data;
           this.loading = false;
           this.cd.detectChanges();
+          if (value!=null && value!=''){
+            this.filteredResult=this.originalList.filter(element=>element.name.includes(value));
+          }
         });
       }
+    
+      onTextChangeEvent(event:any){
+        // console.log(this.txtSearch);
+        let value = this.txtSearch.toUpperCase();
+        if (this.originalList==null){
+          this.searchData();
+        }
+         
+         //console.log(this.serviceActivityList[0].description.includes(value));
+         this.filteredResult=this.originalList.filter(element=>element.name.includes(value));
+     }
+
+     onItemSelected(sel:any ) : void {
+      if (sel==null) return;
+        this.selectedStaff=sel;     
+  
+  }
+  onItemDbClick(sel:any ) : void {
+      if (sel==null) return;
+
+      this.selectedStaff=sel;
+      this.searchDone.emit(sel);
+      this.findModalOpen=false;
+  
+  }
+  
       allcompetencieschecked(): void {
         console.log("added");
         this.skillsList = this.skillsList.map(item => 

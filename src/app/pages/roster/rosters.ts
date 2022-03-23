@@ -305,6 +305,7 @@ searchAvaibleModal:boolean=false;
     selected_Cell:any;
     sel:any;
     viewType: any ;
+    s_DayMask:string
     // start_date:string="";
     // end_date:string=""
     ForceAll:Boolean=true;
@@ -314,7 +315,18 @@ searchAvaibleModal:boolean=false;
     EndTime:String=""
     Duration:String="5";
     EnforceActivityLimits:boolean=true;
-   
+
+    openSearchStaffModal:boolean;
+    booking:{
+        recipientCode: 'TT',
+        userName:'sysmgr',
+        date:'2022/01/01',
+        startTime:'07:00',
+        endTime:'17:00',
+        endLimit:'20:00'
+      };
+    @Input() bookingData = new Subject<any>();
+
     master:boolean=false;
     Master_Roster_label="Current Roster";
     tval:number;
@@ -3159,6 +3171,27 @@ showConfirm(): void {
 
     
   }
+  
+  openStaffModal(){
+    this.openSearchStaffModal=true;
+    
+    if (this.selectedOption!=null)
+        this.booking = {
+                     recipientCode: this.current_roster.recipientCode,
+                     userName:this.token.user,
+                     date:this.current_roster.date,
+                     startTime:this.current_roster.startTime,
+                     endTime:this.current_roster.endTime,
+                     endLimit:'20:00'
+                    };
+                
+    this.bookingData.next(this.booking) ;               
+}
+onStaffSearch(data:any){
+    this.openSearchStaffModal=false;
+    this.selectedCarer=data.accountno;
+}
+
   addGroupShift(){
       this.showGroupShiftModal=false;
       this.addBooking(0);
@@ -3220,10 +3253,10 @@ showConfirm(): void {
        
             if (res.errorValue>0){
                 this.globalS.eToast('Error', res.errorValue +", "+ res.msg);
-                if( Option=='Copy' ||Option=='Cut')
+                if( Option=='Copy' || Option=='Cut' )
                     this.load_rosters();
                 return; 
-            } if( Option=='Copy' ||Option=='Cut'){
+            } if( Option=='Copy' ||Option=='Cut' ){
 
                 if (this.viewType=='Staff'){
                     this.current_roster = this.find_roster(parseInt(recordNo));
@@ -3235,6 +3268,8 @@ showConfirm(): void {
                     this.show_alert=true;
                    
                 }
+            }else if (Option=='Re-Allocate'){
+                this.upORdown.next(true);
             }
           
     });
@@ -3244,16 +3279,19 @@ showConfirm(): void {
 
     find_roster(RecordNo:number):any{
         let rst:any;
-        for(var r of this.rosters)
-       {
-                if (r.recordNo == RecordNo){
-                    rst= r;
-                    break;
-                }
+    //     for(var r of this.rosters)
+    //    {
+    //             if (r.recordNo == RecordNo){
+    //                 rst= r;
+    //                 break;
+    //             }
             
-        } 
+    //     } 
+
+    let r = this.rosters.filter(x=>x.recordNo==RecordNo)[0];
         
         rst = {
+         
             "shiftbookNo": r.recordNo,
             "date": r.roster_Date,
             "startTime": r.start_Time,
@@ -3745,12 +3783,13 @@ onChange(result: Date): void {
    
 ngOnDestroy(){
     console.log("ngDestroy");
-    window.location.reload();  
+   // window.location.reload();  
 }
 
 refreshPage() {
     //this._document.defaultView.location.reload();
-    window.location.reload();
+    //window.location.reload();
+    this.ngOnInit();
    
   }
 reloadVal: boolean = false;
@@ -4541,7 +4580,7 @@ GETSERVICEACTIVITY(program: any): Observable<any> {
         }
 
               
-        var s_DayMask= this.GetDayMask();
+         this.s_DayMask= this.GetDayMask();
        // return this.listS.getserviceactivityall({
            return this.timeS.getActivities({            
             recipient: recipientCode,
@@ -4550,7 +4589,7 @@ GETSERVICEACTIVITY(program: any): Observable<any> {
             mainGroup: this.IsGroupShift ? this.GroupShiftCategory : serviceType,
             subGroup: '-',           
             viewType: this.viewType,
-            AllowedDays: s_DayMask,
+            AllowedDays: this.s_DayMask,
             duration: this.durationObject?.duration            
         });
     }
@@ -4844,22 +4883,43 @@ GETSERVICEACTIVITY2(program: any): Observable<any> {
 
     GETPAYTYPE(type: string): Observable<any> {
         // `SELECT TOP 1 RosterGroup, Title FROM  ItemTypes WHERE Title = '${type}'`
-        let sql;
-        if (!type) return EMPTY;
-        this.Select_Pay_Type="Select Pay Type"
-        if (type === 'ALLOWANCE CHARGEABLE' || type === 'ALLOWANCE NON-CHARGEABLE') {
-            sql = `SELECT Recnum, Title, ''as HACCCode FROM ItemTypes WHERE RosterGroup = 'ALLOWANCE ' 
-                AND Status = 'NONATTRIBUTABLE' AND ProcessClassification = 'INPUT' AND (EndDate Is Null OR EndDate >= '${this.currentDate}') ORDER BY TITLE`
-        } else if (this.IsGroupShift && this.GroupShiftCategory=="TRANSPORT" ){
-            this.Select_Pay_Type="Select Transportation Reason";
-            sql= `SELECT RecordNumber as Recnum, Description  AS Title,HACCCode FROM DataDomains WHERE Domain = 'TRANSPORTREASON' ORDER BY Description`
+        // let sql;
+        // if (!type) return EMPTY;
+        // this.Select_Pay_Type="Select Pay Type"
+        // if (type === 'ALLOWANCE CHARGEABLE' || type === 'ALLOWANCE NON-CHARGEABLE') {
+        //     sql = `SELECT Recnum, Title, ''as HACCCode FROM ItemTypes WHERE RosterGroup = 'ALLOWANCE ' 
+        //         AND Status = 'NONATTRIBUTABLE' AND ProcessClassification = 'INPUT' AND (EndDate Is Null OR EndDate >= '${this.currentDate}') ORDER BY TITLE`
+        // } else if (this.IsGroupShift && this.GroupShiftCategory=="TRANSPORT" ){
+        //     this.Select_Pay_Type="Select Transportation Reason";
+        //     sql= `SELECT RecordNumber as Recnum, Description  AS Title,HACCCode FROM DataDomains WHERE Domain = 'TRANSPORTREASON' ORDER BY Description`
        
-        }else  {
-          sql = `SELECT Recnum, LTRIM(RIGHT(Title, LEN(Title) - 0)) AS Title, '' as HACCCode
-            FROM ItemTypes WHERE RosterGroup = 'SALARY'   AND Status = 'NONATTRIBUTABLE'   AND ProcessClassification = 'INPUT' AND Title BETWEEN '' 
-            AND 'zzzzzzzzzz'AND (EndDate Is Null OR EndDate >= '${this.currentDate}') ORDER BY TITLE`
-        }
-        return this.listS.getlist(sql);
+        // }else  {
+        //   sql = `SELECT Recnum, LTRIM(RIGHT(Title, LEN(Title) - 0)) AS Title, '' as HACCCode
+        //     FROM ItemTypes WHERE RosterGroup = 'SALARY'   AND Status = 'NONATTRIBUTABLE'   AND ProcessClassification = 'INPUT' AND Title BETWEEN '' 
+        //     AND 'zzzzzzzzzz'AND (EndDate Is Null OR EndDate >= '${this.currentDate}') ORDER BY TITLE`
+        // }
+        // return this.listS.getlist(sql);
+
+        let inputs={
+            
+            chooseEach :0,
+            payTypeMode :'Filter for Pay Group',
+            s_PayItem :'',
+            s_PayUnit :'',
+            s_PayRate :'',
+            s_Status :'',
+            s_DayMask : this.s_DayMask,
+            b_Award :0,
+            s_RosterStaff : this.selectedCarer,
+            b_TestForSingle : 0,
+            s_TimespanStart : moment(this.defaultStartTime).format('HH:mm'),
+            s_TimespanEnd : moment(this.defaultEndTime).format('HH:mm'),
+            
+           }
+   
+           return this.timeS.determinePayType(inputs);
+           
+   
     }
 
     // Add Timesheet

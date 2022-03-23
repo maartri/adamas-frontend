@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input,Output,EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef,AfterViewInit } from '@angular/core'
 
-import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, ClientService } from '@services/index';
+import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, ClientService ,PrintService} from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
 import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -9,6 +9,9 @@ import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, Con
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { Filters } from '@modules/modules';
 import { values } from 'lodash';
+import { DomSanitizer } from '@angular/platform-browser';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { AngularEditorConfig } from '@kolkov/angular-editor';
 
 @Component({
     styles: [`
@@ -64,8 +67,19 @@ export class GNotes implements OnInit, OnDestroy, AfterViewInit {
     addOrEdit: number;
     dateFormat: string = 'dd/MM/yyyy';
     printLoad: boolean = false;
-
-    
+    pdfTitle: string;
+    tryDoctype: any;
+    drawerVisible: boolean =  false;
+    rpthttp = 'https://www.mark3nidad.com:5488/api/report'
+    tocken: any;
+    public editorConfig:AngularEditorConfig = {
+        editable: true,
+        spellcheck: true,
+        height: '20rem',
+        minHeight: '5rem',
+        translate: 'no',
+        customClasses: []
+    };
 
     filters: Filters = {
         acceptedQuotes: false,
@@ -106,7 +120,11 @@ export class GNotes implements OnInit, OnDestroy, AfterViewInit {
         private globalS: GlobalService,
         private formBuilder: FormBuilder,
         private modalService: NzModalService,
-        private cd: ChangeDetectorRef
+        private cd: ChangeDetectorRef,
+        private http: HttpClient,
+        private sanitizer: DomSanitizer,
+        private ModalS: NzModalService,
+        private printS: PrintService
     ) {
         
 
@@ -120,10 +138,18 @@ export class GNotes implements OnInit, OnDestroy, AfterViewInit {
 
     ngOnInit(): void {
      
-        //  this.user = this.sharedS.getPicked();     
+        this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
+    //     this.user = this.sharedS.getPicked();
+      
+    //    if(this.user){
+    //        this.search(this.user);
+    //        this.buildForm();           
+    //    }             
+        
+            // user s coming from component call
              
-          this.search(this.user);
-        this.buildForm();
+           this.search(this.user);
+         this.buildForm();
         this.loadNote.subscribe(d=>{
             this.search(d);
         })
@@ -143,7 +169,7 @@ export class GNotes implements OnInit, OnDestroy, AfterViewInit {
     }
 
     search(user: any = this.user) {
-        if (user.id=='0' || user.id==null) return;
+        if (user==null) return;
         this.filters.type=this.user.noteType;
         this.getNotes(this.user);
         this.getSelect();
@@ -412,5 +438,65 @@ export class GNotes implements OnInit, OnDestroy, AfterViewInit {
         this.modalOpen = false;
         this.loading = false;
         this.caseFormGroup.reset(this.default);
+    }
+
+    handleOkTop() {
+        this.generatePdf();
+        this.tryDoctype = ""
+        this.pdfTitle = ""
+    }
+    handleCancelTop(): void {
+        this.drawerVisible = false;
+        this.pdfTitle = ""
+    }
+    generatePdf(){
+        this.drawerVisible = true;
+        
+        this.loading = true;
+        
+        var fQuery = "Select CONVERT(varchar, [DetailDate],105) as Field1, Detail as Field2, CONVERT(varchar, [AlarmDate],105) as Field4, Creator as Field3 From History HI INNER JOIN Staff ST ON ST.[UniqueID] = HI.[PersonID] WHERE ST.[AccountNo] = '"+this.user.code+"' AND HI.DeletedRecord <> 1 AND (([PrivateFlag] = 0) OR ([PrivateFlag] = 1 AND [Creator] = 'sysmgr')) AND ExtraDetail1 = 'OPNOTE' ORDER BY DetailDate DESC, RecordNumber DESC";
+        const headerDict = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        }
+        
+        const requestOptions = {
+            headers: new HttpHeaders(headerDict)
+        };
+        
+        const data = {
+            "template": { "_id": "0RYYxAkMCftBE9jc" },
+            "options": {
+                "reports": { "save": false },
+                "txtTitle": "Staff OP NOTES List",
+                "sql": fQuery,
+                "userid":this.tocken.user,
+                "head1" : "Date",
+                "head2" : "Detail",
+                "head3" : "Created By",
+                "head4" : "Remember Date",
+            }
+        }
+        this.printS.printControl(data).subscribe((blob: any) => {
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+            this.cd.detectChanges();
+        }, err => {
+            console.log(err);
+            this.loading = false;
+            this.ModalS.error({
+                nzTitle: 'TRACCS',
+                nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+                nzOnOk: () => {
+                    this.drawerVisible = false;
+                },
+            });
+        });
+        this.cd.detectChanges();
+        this.loading = true;
+        this.tryDoctype = "";
+        this.pdfTitle = "";
     }
 }

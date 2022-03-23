@@ -260,8 +260,8 @@
                                             </nz-select>
                                         </div>
                                     </div>
-                                    <div nz-row nzJustify class="mrg-btm">
-                                        <div nz-col nzSpan="10" class="text-right pad-r-5">
+                                    <div nz-row nzJustify class="mrg-btm" *ngIf="inputForm.get('iT_Dataset').value == 'NDIS'">
+                                        <div nz-col nzSpan="3" class="text-right pad-r-5">
                                             Activity Code For Non Labour Travel KM :
                                         </div>
                                         <div nz-col nzSpan="12"> 
@@ -270,11 +270,11 @@
                                             </nz-select>
                                         </div>
                                     </div>
-                                    <div nz-row nzJustify class="mrg-btm" style="display:none;">
+                                    <div nz-row nzJustify class="mrg-btm" *ngIf="inputForm.get('iT_Dataset').value == 'NDIS'">
                                         <div nz-col nzSpan="4" class="text-right pad-r-5">
                                         </div>
                                         <div nz-col nzSpan="20" class="pad-r-5"> 
-                                            <label nz-checkbox  class="mrg-btm" formControlName="ndiaTravel"></label> NDIA Travel Before Applicable 
+                                            <label nz-checkbox  class="mrg-btm" formControlName="ndiaTravel"></label> NDIA Travel Before KM Claiming Applicable 
                                         </div>
                                     </div>
                                     <div nz-row nzJustify class="mrg-btm" style="display:none;">

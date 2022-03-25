@@ -135,7 +135,7 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     AgGridModule.withComponents([]),
     InfiniteScrollModule,
     FullCalendarModule,
-    SpreadSheetsModule,
+    SpreadSheetsModule,BrowserModule,
     ContextMenuModule.forRoot()
   ],
   providers: [

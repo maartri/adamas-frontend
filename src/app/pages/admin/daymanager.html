@@ -622,9 +622,9 @@
     </div>
 </nz-modal>
 
-<nz-modal [nzStyle]="{ top: '15px' }"  hasBackdrop [nzWidth]="450" [(nzVisible)]="AddRosterModel" nzTitle="Day Manager "   (nzOnCancel)="AddRosterModel = false" >
+<nz-modal [nzStyle]="{ top: '15px' }"  hasBackdrop [nzWidth]="470" [(nzVisible)]="AddRosterModel" nzTitle="Day Manager "   (nzOnCancel)="AddRosterModel = false" >
     <div  class="flexy" style="min-height:20rem;" >
-        <dm-roster  [loadRoster]="loadingRoster" (RosterDone)="load_rosters()" ></dm-roster>    
+        <dm-roster  [loadRoster]="loadingRoster" (RosterDone)="load_rosters()" (reLoadGrid)="reLoadGridRosterModel()" ></dm-roster>    
     </div>
     <div *nzModalFooter>
         <button nz-button nzType="default" (click)="AddRosterModel=false">OK</button>

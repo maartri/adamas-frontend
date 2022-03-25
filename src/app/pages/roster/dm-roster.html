@@ -10,7 +10,7 @@
                       
      <div nz-row *ngIf="formloading" style="margin-left: 2px; background-color: transparent;">
         
-            <div nz-col nzSpan="12" >
+            <div nz-col nzSpan="24" >
                 <div class="calendar-title" >  
                           
                     <label *ngIf="!showDefault && defaultCode" >{{defaultCode}}</label>   
@@ -74,25 +74,24 @@
           
      </div>     
         
-    </div>         
+    </div >         
     <!-- <div nz-row nzSpan="8" *ngIf="formloading" style=" border: solid; background-color:thistle;">
           <div  nzSpan="7" style=" border: solid; background-color: wheat;" > -->
-    <!-- <div *ngIf="formloading" style=" border: solid; background-color:white; width: 420px;"> -->
-            <button *ngIf="spreadsheet==null"  nz-button nzType="primary" (click)="refreshPage()"  >Reload Grid</button> 
+     <div *ngIf="formloading" style="height: 580px; width: 50%">
+            
+        <button *ngIf="spreadsheet==null"  nz-button nzType="primary" (click)="refreshPage()"  >Reload Grid</button> 
+        <!-- <button   nz-button nzType="primary" (click)="refreshPage()"  >Reload Grid</button>  -->
                    
         <gc-spread-sheets  id="#ss"        
-        [backColor]="spreadBackColor"  
-       
+        [backColor]="spreadBackColor"         
         [hostStyle]="hostStyle"  
         (workbookInitialized)="workbookInit($event)"  
         >   
-            <gc-worksheet [name]="sheetName" 
-          
-            ></gc-worksheet>
+            <gc-worksheet [name]="sheetName"></gc-worksheet>
             
         </gc-spread-sheets>
             
-    <!-- </div> -->
+    </div>
 
     <!-- Search staff model -->
     

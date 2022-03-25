@@ -2,7 +2,9 @@ import { Component, Input,Output,EventEmitter, ViewChild, ChangeDetectorRef,Elem
     AfterViewInit,   
     OnDestroy,
     OnInit, 
-    HostListener} from '@angular/core'
+    HostListener,
+    ViewContainerRef,
+    ComponentFactoryResolver} from '@angular/core'
 import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { getLocaleDateFormat, getLocaleFirstDayOfWeek, Time,DatePipe } from '@angular/common';
 
@@ -46,6 +48,7 @@ import { SetLeftFeature } from 'ag-grid-community';
 import { style } from '@angular/animations';
 import { stringify } from '@angular/compiler/src/util';
 import { environment } from 'src/environments/environment';
+import { validateVerticalPosition } from '@angular/cdk/overlay';
 
  
 interface AddTimesheetModalInterface {
@@ -163,7 +166,7 @@ OnDestroy  {
     sheetName = "Staff Rosters";  
 
     hostStyle = {
-        width: '400px',
+        width: '500px',
         height: '580px',
         overflow: 'auto',
         float: 'left'
@@ -182,6 +185,8 @@ info = {StaffCode:'', ViewType:'',IsMaster:false, date:''};
 
 @Input() loadRoster :Subject<any> = new Subject() 
 @Output() RosterDone :EventEmitter<boolean>= new EventEmitter(); 
+@Output() reLoadGrid :EventEmitter<boolean>= new EventEmitter(); 
+
  
 selectedrow: string ="class.selected"   
 timesheets: Array<any> = [];
@@ -1458,7 +1463,7 @@ load_rosters(){
       let sheet = spread.getActiveSheet();  
       
       sheet.setRowCount(this.time_slot, GC.Spread.Sheets.SheetArea.viewport);
-      sheet.setColumnCount(31,GC.Spread.Sheets.SheetArea.viewport);
+      sheet.setColumnCount(1,GC.Spread.Sheets.SheetArea.viewport);
      
 
         spread.suspendPaint();
@@ -1469,9 +1474,15 @@ load_rosters(){
       spread.options.columnResizeMode = GC.Spread.Sheets.ResizeMode.split;
       spread.options.rowResizeMode = GC.Spread.Sheets.ResizeMode.split;
       spread.options.scrollbarAppearance = GC.Spread.Sheets.ScrollbarAppearance.mobile;
-     // spread.options.scrollByPixel = true;
-     // spread.options.scrollPixel = 5;
+      spread.options.scrollByPixel = true;
+      spread.options.scrollPixel = 5;
       sheet.options.selectionBorderColor = 'blue';
+      
+      spread.options.showVerticalScrollbar = true;
+    // disable the horizontal scrollbar
+        spread.options.showHorizontalScrollbar = false;
+
+      
      // sheet.options.selectionBackColor = '#BDCED1';
      //sheet.options.selectionBackColor = 'transparent';
      
@@ -3463,7 +3474,8 @@ return rst;
         public datepipe: DatePipe,
         private sharedS: ShareService,
         private route: ActivatedRoute,
-        
+        private host: ElementRef<HTMLElement>,
+        private vcrf: ViewContainerRef, private cfr: ComponentFactoryResolver, private elementRef: ElementRef
       
     ) {
         this.router.routeReuseStrategy.shouldReuseRoute = function () {        
@@ -3756,11 +3768,51 @@ ngOnDestroy(){
     console.log("ngDestroy");
    // window.location.reload();  
 }
+async openModal(info:any) {
+    const { DMRoster } = await import(
+      /* webpackPrefetch: true */ 
+      '../roster/dm-roster'
+    );
+   
+    const modalRef = this.modalService.create({
+        nzTitle :'Day Manager',
+        nzContent: DMRoster,
+        nzWidth:470,
+        nzStyle : {top: '15px' },
+        nzFooter: [
+            {
+              label: "Cancel",
+              type: "danger",
+              nzOnOk: () => modalRef.close(),
+              nzOnCancel: () => modalRef.close()
+            }
+          ]
+    });
+    this.loadRosterData(info);    
+  }
+  reloadComponent() {
+    let currentUrl = this.router.url;
+        this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+        this.router.onSameUrlNavigation = 'reload';
+        this.router.navigate([currentUrl]);
+    }
+    
+    async reloadPage(url: string): Promise<boolean> {
+        await this.router.navigateByUrl('.', { skipLocationChange: true });
+        return this.router.navigateByUrl(url);
+      }
 
 refreshPage() {
     //this._document.defaultView.location.reload();
     //window.location.reload();
-    this.ngOnInit();
+  //  this.ngOnInit();
+   //  this.reloadPage('./roster/dm-roster');
+    // this.host.nativeElement.remove();
+    this.reLoadGrid.emit(true);
+    this.openModal(this.info);
+
+   // this.reloadComponent();
+
   }
 reloadVal: boolean = false;
 reload(reload: boolean){
@@ -4415,6 +4467,7 @@ getPublicHolidyas(s_StaffCode:string){
     let s_PubHolRegion:string;
     let s_PubHolFilter:string;
     let s_FilterMask:string
+    if (s_StaffCode==null) return;
 
        let sql=`SELECT st.PublicHolidayRegion, sta.Postcode FROM Staff st INNER JOIN NamesAndAddresses sta ON st.Uniqueid = sta.personid WHERE (ISNULL(sta.primaryAddress, 0) = 1 or sta.Type = '<USUAL>') AND st.AccountNo = '${s_StaffCode}'`
 

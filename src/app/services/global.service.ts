@@ -213,6 +213,9 @@ export const datasetTypeDropDowns = {
   NRCPSAR:['COMMUNITY ACCESS - GROUP','COMMUNITY ACCESS - INDIVIDUAL','DAY CARE - CENTRE BASED','DAYTIME RESPITE - IN HOME','HOST FAMILY - DAY','HOST FAMILY - OVERNIGHT','OVERNIGHT - OTHER','OVERNIGHT COMMUNITY RESPITE HOUSES','OVERNIGHT RESPITE - IN HOME','REFERRAL TO NON RESPITE SERVICES','REFERRAL TO OTHER RESPITE SERVICES'],
   OTHER:[]
 }
+export const ndiaTypes = ['','Client eligibility pending','Client found eligible for the NDIS','Client found not eligible for the NDIS','Client has declined to apply','Client ineligible for the NDIS based on age or residency','NDIS Criteria met (likelihood)','NDIS Criteria not met (likelihood)']
+export const appealReview = ['','Appeal','Review'];
+export const HealthResasons = ['','Client Died','Client moved out of catchment area','Client no longer needs support','Client referred into another Service','Client was not eligible for program','Client Withdrawn from Program','Client Withdrew consent','Other'];
 export const notificationTypes = ['Referral Notification','Assessment Notification','Admission Notification','Refer On Notification','Not Proceed Notification','Discharge Notification','Suspend Notification','Reinstate Notification','Admin Notification','Lifecycle Event Notification','Staff Onboard Notification','Staff Terminate Notification']
 export const othersType = ['REFERRAL','WAITING LIST','CARER','RECIPIENT','CARER/RECIPIENT','BILLING CLIENT ONLY','ASSOCIATE']
 export const attendance = ['NO ALERT','STAFF CASE MANAGER','RECIPIENT CASE MANAGER','BRANCH ROSTER EMAIL']

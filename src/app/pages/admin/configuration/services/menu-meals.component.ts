@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
-import { GlobalService, ListService, MenuService,dataSetDropDowns,PrintService, timeSteps } from '@services/index';
+import { GlobalService, ListService, MenuService,dataSetDropDowns,datasetTypeDropDowns,PrintService, timeSteps } from '@services/index';
 import { SwitchService } from '@services/switch.service';
 import { NzModalService } from 'ng-zorro-antd';
 import { Subject } from 'rxjs';
@@ -18,34 +18,26 @@ import { takeUntil } from 'rxjs/operators';
   textarea{
     resize:none;
   }
-  .staff-wrapper{
-    height: 20rem;
-    width: 100%;
-    overflow: auto;
-    padding: .5rem 1rem;
-    border: 1px solid #e9e9e9;
-    border-radius: 3px;
-  }
   nz-tabset{
     margin-top:1rem;
   }
   .ant-divider-horizontal.ant-divider-with-text-center, .ant-divider-horizontal.ant-divider-with-text-left, .ant-divider-horizontal.ant-divider-with-text-right {
-      margin:1px 0
+    margin:1px 0
   }
   nz-tabset >>> div > div.ant-tabs-nav-container{
-      height: 25px !important;
-      font-size: 13px !important;
+    height: 25px !important;
+    font-size: 13px !important;
   }
-
+  
   nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-nav-scroll div.ant-tabs-nav div div.ant-tabs-tab{
-      line-height: 24px;
-      height: 25px;
-      border-radius:15px 4px 0 0;
-      margin:0 -10px 0 0;
+    line-height: 24px;
+    height: 25px;
+    border-radius:15px 4px 0 0;
+    margin:0 -10px 0 0;
   }
   nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-nav-scroll div.ant-tabs-nav div div.ant-tabs-tab.ant-tabs-tab-active{
-      background: #85B9D5;
-      color: #fff;
+    background: #85B9D5;
+    color: #fff;
   }
   .staff-wrapper{
     height: 20rem;
@@ -55,8 +47,46 @@ import { takeUntil } from 'rxjs/operators';
     border: 1px solid #e9e9e9;
     border-radius: 3px;
   }
-  .ant-modal-body{
-    padding:0px 14px !important;
+  nz-select{
+    min-width:100%;
+  }
+  .ant-modal-content .ant-modal-header .ant-modal-title .ng-star-inserted"{
+    width: 40% !important;
+    margin: auto !important;
+    background: #85b9d5 !important;
+    text-align: center !important;
+    color: white !important;
+    border-radius: 5px !important;
+    padding: 5px !important;
+  }
+  .ant-modal-header {
+    padding: 4px 24px !important;
+  }
+  legend + * {
+    -webkit-margin-top-collapse: separate;
+    margin-top: 10px;
+  }
+  .ant-tabs-bar{
+    margin:0px
+  } 
+  #main-wrapper{
+    border:1px solid #85B9D5;padding:10px 0px;min-height:28rem;
+  }
+  #mta-btn-group{
+  margin-left: 12px !important;margin-right: 12px;padding:10px;
+  }
+  #mta-btn-group .ant-tabs-bar {
+    margin: 0px;
+    border: 0px;
+  }
+  #mta-btn-group nz-tabset[_ngcontent-gwp-c604] {
+    margin-top: 0px;
+  }
+  .redColor{
+    color:red
+  }
+  .whiteColor{
+    color:rgba(0, 0, 0, 0);
   }
   `]
 })
@@ -91,6 +121,7 @@ export class MenuMealsComponent implements OnInit {
   competencymodal: boolean = false;
   check : boolean = false;
   current: number = 0;
+  current_mta:number = 0;
   checkedflag:boolean = true;
   dateFormat: string = 'dd/MM/yyyy';
   inputForm: FormGroup;
@@ -122,7 +153,11 @@ export class MenuMealsComponent implements OnInit {
   addOrEdit: number = 0;
   isNewRecord: any;
   dataSetDropDowns: { CACP: string[]; CTP: string[]; DEX: string[]; DFC: string[]; DVA: any[]; HACC: string[]; HAS: string[]; QCSS: string[]; ICTD: string[]; NDIS: any[]; NRCP: string[]; NRCPSAR: string[]; OTHER: string[]; };
+  datasetTypeDropDowns: { CACP: string[]; CTP: string[]; DEX: string[]; DFC: string[]; DVA: any[]; HACC: string[]; HAS: string[]; QCSS: string[]; ICTD: string[]; NDIS: any[]; NRCP: string[]; NRCPSAR: string[]; OTHER: string[]; };
   dataset_group: any[];
+  dataset_type:any;
+  ndiaItemss: any;
+  travelandAlernatelist: any;
   checkList: any;
   chkListForm: any;
   insertOne: number;
@@ -149,6 +184,7 @@ export class MenuMealsComponent implements OnInit {
       this.userRole = this.tocken.role;
       this.checkedList = new Array<string>();
       this.dataSetDropDowns = dataSetDropDowns;
+      this.datasetTypeDropDowns = datasetTypeDropDowns;
       this.loadData();
       this.buildForm();
       this.populateDropdowns();
@@ -191,6 +227,12 @@ export class MenuMealsComponent implements OnInit {
         x.checked = false
       });
       this.selectedPrograms = [];
+    }
+    selectProgram(){
+      this.programz.forEach(x => {
+        x.checked = true;
+        this.selectedPrograms = x.name;
+      });
     }
     loadTitle()
     {
@@ -488,6 +530,13 @@ export class MenuMealsComponent implements OnInit {
           
           let todayDate       = this.globalS.curreentDate();
           
+          this.listS.GettravelandAlternateCode().subscribe(data => {
+            this.travelandAlernatelist = data;
+          })
+          this.listS.getndiaitemss().subscribe(data=>{
+            this.ndiaItemss = data;
+          })
+
           let sql ="SELECT distinct Description from DataDomains Where  Domain = 'LIFECYCLEEVENTS'";
           this.loading = true;
           this.listS.getlist(sql).subscribe(data => {
@@ -553,113 +602,122 @@ export class MenuMealsComponent implements OnInit {
         
         buildForm() {
           this.inputForm = this.formBuilder.group({
-            dataSet:'',
-            datasetGroup:'',
-            haccType:'',
-            title:'',
-            billText:'',
-            processClassification:'OUTPUT',
-            rosterGroup:'',
-            minorGroup:'',
-            status:'',
-            amount:'',
-            minChargeRate:'',
-            lifecycle:'',
-            unit:'',
-            budgetGroup:'',
-            iT_Dataset:'',
-            colorCode:'',
-            autoApprove:false,
-            excludeFromAutoLeave:false,
-            infoOnly:false,
-            groupMapping:'',
-            NDIA_ID:'',
-            ndiA_ID:'',
-            accountingIdentifier:'',
-            glRevenue:'',
-            job:'',
-            glCost:'',
-            unitCostUOM:'',
-            unitCost:'',
-            price2:0.0,
-            price3:0.0,
-            price4:0.0,
-            price5:0.0,
-            price6:0.0,
-            excludeFromPayExport:false,
-            excludeFromUsageStatements:false,
-            endDate:'',
-            excludeFromConflicts:false,
-            noMonday   : false,//day1
-            noTuesday  : false,//day2
-            noWednesday: false,//day3
-            noThursday : false,//day4
-            noFriday   : false,//day5
-            noSaturday : false,//day6
-            noSunday   : false,//day7
-            noPubHol   : false,//day0
-            startTimeLimit:'',
-            endTimeLimit:'',
-            maxDurtn:0,
-            minDurtn:0,
-            fixedTime:0,
-            noChangeDate:false,
-            noChangeTime:false,
-            timeChangeLimit:0,
-            defaultAddress:'',
-            defaultPhone:'',
-            autoActivityNotes:false,
-            autoRecipientDetails:false,
-            jobSheetPrompt:false,
-            activityNotes:'',
-            excludeFromHigherPayCalculation:false,
-            noOvertimeAccumulation:false,
-            payAsRostered:false,
-            excludeFromTimebands:false,
-            excludeFromInterpretation:false,
-            jobType:'',
-            mtacode:'',
-            tA_LOGINMODE:'',
-            excludeFromClientPortalDisplay: false,
-            excludeFromTravelCalc: false,
-            tA_EXCLUDEGEOLOCATION:false,
-            appExclude1:false,
-            taexclude1:false,
-            taEarlyStartTHEmail:false,
-            taLateStartTHEmail:false,
-            taEarlyStartTH:'',
-            taLateStartTH:'',
-            taEarlyStartTHWho:'',
-            taLateStartTHWho:'',
-            taNoGoResend:'',
-            taNoShowResend:'',
-            taEarlyFinishTHEmail:false,
-            taLateFinishTHEmail:false,
-            taEarlyFinishTH:'',
-            taLateFinishTH:'',
-            taLateFinishTHWho:'',
-            taEarlyFinishTHWho:'',
-            taOverstayTHEmail:false,
-            taUnderstayTHEmail:false,
-            taNoWorkTHEmail:false,
-            taOverstayTH:'',
-            taUnderstayTH:'',
-            taNoWorkTH:'',
-            taUnderstayTHWho:'',
-            taOverstayTHWho:'',
-            taNoWorkTHWho:'',
-            deletedRecord:false,
-            HACCUse:false,
-            CSTDAUse:false,
-            NRCPUse:false,
-            ndiaClaimType:"",
-            ndiaPriceType:"",
-            ndiaTravel:false,
-            DeletedRecord:false,
-            excludeFromRecipSummarySheet:false,
-            ndiA_LEVEL2:'',
-            ndiA_LEVEL3:'',
-            ndiA_LEVEL4:'',
+            ALT_NDIANonLabTravelKmActivity:'',
+                ALT_AppKmWithinActivity:'',
+                ExcludeFromAppLogging:false,
+                dataSet:'',
+                datasetGroup:'',
+                haccType:'',
+                title:'',
+                billText:'',
+                processClassification:'OUTPUT',
+                rosterGroup:'',
+                minorGroup:'',
+                status:'',
+                amount:0.0,
+                minChargeRate:'',
+                lifecycle:'',
+                unit:'',
+                budgetGroup:'',
+                iT_Dataset:'',
+                colorCode:'',
+                autoApprove:false,
+                excludeFromAutoLeave:false,
+                infoOnly:false,
+                groupMapping:'',
+                NDIA_ID:'',
+                ndiA_ID:'',
+                accountingIdentifier:'',
+                glRevenue:'',
+                job:'',
+                glCost:'',
+                unitCostUOM:'',
+                unitCost:'',
+                price2:0.0,
+                price3:0.0,
+                price4:0.0,
+                price5:0.0,
+                price6:0.0,
+                excludeFromPayExport:false,
+                excludeFromUsageStatements:false,
+                endDate:'',
+                excludeFromConflicts:false,
+                noMonday   : false,//day1
+                noTuesday  : false,//day2
+                noWednesday: false,//day3
+                noThursday : false,//day4
+                noFriday   : false,//day5
+                noSaturday : false,//day6
+                noSunday   : false,//day7
+                noPubHol   : false,//day0
+                startTimeLimit:'',
+                endTimeLimit:'',
+                maxDurtn:0,
+                minDurtn:0,
+                fixedTime:0,
+                noChangeDate:false,
+                noChangeTime:false,
+                timeChangeLimit:0,
+                defaultAddress:'',
+                defaultPhone:'',
+                autoActivityNotes:false,
+                autoRecipientDetails:false,
+                jobSheetPrompt:false,
+                activityNotes:'',
+                excludeFromHigherPayCalculation:false,
+                noOvertimeAccumulation:false,
+                payAsRostered:false,
+                excludeFromTimebands:false,
+                excludeFromInterpretation:false,
+                jobType:'',
+                mtacode:'',
+                tA_LOGINMODE:'',
+                excludeFromClientPortalDisplay: false,
+                excludeFromTravelCalc: false,
+                tA_EXCLUDEGEOLOCATION:false,
+                appExclude1:false,
+                taexclude1:false,
+                taEarlyStartTHEmail:false,
+                taLateStartTHEmail:false,
+                taEarlyStartTH:'',
+                taLateStartTH:'',
+                taEarlyStartTHWho:'',
+                taLateStartTHWho:'',
+                taNoGoResend:'',
+                taNoShowResend:'',
+                taEarlyFinishTHEmail:false,
+                taLateFinishTHEmail:false,
+                taEarlyFinishTH:'',
+                taLateFinishTH:'',
+                taLateFinishTHWho:'',
+                taEarlyFinishTHWho:'',
+                taOverstayTHEmail:false,
+                taUnderstayTHEmail:false,
+                taNoWorkTHEmail:false,
+                taOverstayTH:'',
+                taUnderstayTH:'',
+                taNoWorkTH:'',
+                taUnderstayTHWho:'',
+                taOverstayTHWho:'',
+                taNoWorkTHWho:'',
+                deletedRecord:false,
+                HACCUse:false,
+                CSTDAUse:false,
+                NRCPUse:false,
+                ndiaClaimType:"",
+                ndiaPriceType:"",
+                ndiaTravel:false,
+                DeletedRecord:false,
+                excludeFromRecipSummarySheet:false,
+                ExcludeFromMinHoursCalculation:false,
+                OnSpecial:false,
+                Discountable:false,
+                ndiA_LEVEL2:'',
+                ndiA_LEVEL3:'',
+                ndiA_LEVEL4:'',
+                ALT_PHActivityCode:'',
+                PHAction:'',
+                recnum:0,
           });
           this.competencyForm = this.formBuilder.group({
             competencyValue: '',
@@ -697,6 +755,9 @@ export class MenuMealsComponent implements OnInit {
             this.loadChecklist();
           }
           this.current = index;
+        }
+        viewMTA(index: number){
+          this.current_mta = index;
         }
         handleOkTop() {
           this.generatePdf();

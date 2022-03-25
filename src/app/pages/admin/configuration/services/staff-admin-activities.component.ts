@@ -313,18 +313,6 @@ export class StaffAdminActivitiesComponent implements OnInit {
     isChecked(data: string): boolean{
       return '1' == data ? true : false;
     }
-    // onIndexChange(index: number): void {
-    //   // if(this.isUpdate)
-    //   // {
-    //     if(index == 7){
-    //       this.loadCompetency();
-    //     }
-    //     if(index == 8){
-    //       this.loadChecklist();
-    //     }
-    //   // }
-    //   this.current = index;
-    // }
     
     view(index: number){
       if(index == 7){
@@ -336,7 +324,6 @@ export class StaffAdminActivitiesComponent implements OnInit {
       this.current = index;
     }
     viewMTA(index: number){
-      console.log(index + "111");
       this.current_mta = index;
     }
     save() {

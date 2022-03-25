@@ -90,6 +90,11 @@ const inputFormDefault = {
         text-align: center !important;
         width: 100px !important;
     }
+    button.success{
+        background-color: #85B9D5 !important;
+        color: #fff !important;
+        border-color: #85B9D5 !important;
+    }
     label{
         font-weight: bold; 
     }

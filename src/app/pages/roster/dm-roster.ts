@@ -166,7 +166,7 @@ OnDestroy  {
     sheetName = "Staff Rosters";  
 
     hostStyle = {
-        width: '500px',
+        width: '400px',
         height: '580px',
         overflow: 'auto',
         float: 'left'

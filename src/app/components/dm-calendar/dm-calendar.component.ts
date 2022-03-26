@@ -265,6 +265,13 @@ HighlightColum(indx:number){
   
   clickCount:number=0;
   RosterClick(event:any, value:any){
+
+    if  (event.ctrlKey){
+      value.isSelected=true;
+      this.akonani.push(value);
+      return;
+    }
+    this.deselect(null, event);
     value.isSelected=true;
     this.clickedRoster=value;
     
@@ -1049,6 +1056,12 @@ getfilterType(type:String)
 
   }
   rightClickMenu(event: any, value: any) {
+    
+    if (this.clickedRoster==null && this.akonani.length==0){ 
+      value.isSelected=true;  
+      this.clickedRoster=value;
+      this.akonani.push(value);
+    }
     this.optionMenuDisplayed=true;
     event.preventDefault();
     this.optionEmitter(value);

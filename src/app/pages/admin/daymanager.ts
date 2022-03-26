@@ -433,14 +433,14 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
         if (data==1){  
             //Copy Operation                        
            
-            this.toBePasted.push(this.selectedOption)
+           // this.toBePasted.push(this.selectedOption)
             this.operation="Copy"
             
         }else if (data==2){ 
             //Cut Operation                         
           
             this.operation="cut"
-            this.toBePasted.push(this.selectedOption)
+          //  this.toBePasted.push(this.selectedOption)
             
          }else if (data==3){                          
             //Paste Operation
@@ -772,10 +772,10 @@ pasteSelectedRecords(event:any){
         v.date=moment(event.selected.date).format('YYYY/MM/DD');
         if (dmType=="1" || dmType=="2" || dmType=="11"){
          
-            v.carercode = event.selected.carercode;
+          //  v.carercode = event.selected.carercode;
         }else if (dmType=="10" || dmType=="12" ){
           
-            v.recipient = event.selected.carercode;       
+          //  v.recipient = event.selected.carercode;       
          
         }
         setTimeout(() => {
@@ -812,7 +812,9 @@ openStaffModal(OpenSearch:boolean=false){
 }
 onStaffSearch(data:any){
     this.openSearchStaffModal=false;
+   
     this.selectedStaff=data.accountno;
+    this.selectedCarer=this.selectedStaff
     if (this.OpenSearchOfStaff){
         this.LimitTo='STAFF';
         this.startWith=data.accountno;
@@ -1008,7 +1010,7 @@ return rst;
 }   
 load_rosters(){
     
-    
+    this.loading=true;
     this.reload.next(true);
     
 }

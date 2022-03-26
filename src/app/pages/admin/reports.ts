@@ -3720,16 +3720,20 @@ stafftypeArr: Array<any> = constants.types;
     VoucherSummary(branch, manager, region, program, startdate, enddate,tempsdate, tempedate) {
 
 
-        var fQuery = "SELECT Recipients.AccountNo as [Recipient],  COUNT(SrNo) as  [Vouchers Issued], COUNT(CASE Cancelled WHEN 1 then 'True' else NULL END) as [Vouchers Cancelled], COUNT(CASE Redeemed WHEN 1 then 'True' else NULL END) as [Vouchers Redeemed], SUM(((CASE Redeemed WHEN 1 then 1 else 0 END) * SubsidyAmountt)) as [Value] FROM LMVoucher LEFT JOIN Recipients on LMVoucher.PersonID = Recipients.UniqueID  WHERE  "
+        var fQuery = "SELECT R.AccountNo as [Recipient],  COUNT(SrNo) as  [Vouchers Issued], COUNT(CASE Cancelled WHEN 1 then 'True' else NULL END) as [Vouchers Cancelled], COUNT(CASE Redeemed WHEN 1 then 'True' else NULL END) as [Vouchers Redeemed], SUM(((CASE Redeemed WHEN 1 then 1 else 0 END) * SubsidyAmountt)) as [Value] FROM LMVoucher LEFT JOIN Recipients R on LMVoucher.PersonID = R.UniqueID  "
+        if( this.Viewfilter_Programs != ""){                                   
+            fQuery = fQuery + " LEFT JOIN RecipientPrograms ON RecipientPrograms.PersonID = R.UniqueID "
+            }
+        fQuery = fQuery +" WHERE  "
         if (branch != "") {
             this.s_BranchSQL = "R.[BRANCH] in ('" + branch.join("','") + "')";
-            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+            if (this.s_BranchSQL != "") { fQuery = fQuery + "  " + this.s_BranchSQL }
         }
         else { 
            if( this.Viewfilter_Branches != ""){
             var re = /Recipients/gi;                        
             this.s_BranchSQL = this.Viewfilter_Branches.toString().replace(re, "R");
-            if (this.s_BranchSQL != "") { fQuery = fQuery + " AND " + this.s_BranchSQL }
+            if (this.s_BranchSQL != "") { fQuery = fQuery + "  " + this.s_BranchSQL }
             }
         }
         if (manager != "") {
@@ -3765,7 +3769,7 @@ stafftypeArr: Array<any> = constants.types;
         
         if (startdate != "" || enddate != "") {
             this.s_DateSQL = "  DATEOFISSUE BETWEEN '" + tempsdate + ("'AND'") + tempedate + "'";
-            if (this.s_DateSQL != "") { fQuery = fQuery + "  " + this.s_DateSQL };
+            if (this.s_DateSQL != "") { fQuery = fQuery + " and " + this.s_DateSQL };
         }
         if (startdate != "") {
             var lblcriteria = " Date Between " + startdate + " and " + enddate + "; "
@@ -3794,14 +3798,14 @@ stafftypeArr: Array<any> = constants.types;
         }
         else { lblcriteria = lblcriteria + "All Programs." }
 
-        fQuery = fQuery + " GROUP BY Recipients.AccountNo ORDER BY Recipients.AccountNo"
+        fQuery = fQuery + " GROUP BY R.AccountNo ORDER BY R.AccountNo"
         /*   
         console.log(s_BranchSQL)
         console.log(s_CategorySQL)
         console.log(s_CoordinatorSQL)
         */
 
-        console.log(fQuery)
+        //console.log(fQuery)
 
       
 
@@ -6499,9 +6503,6 @@ stafftypeArr: Array<any> = constants.types;
             lblcriteria = lblcriteria + " Staff Groups: " + stfgroup.join(",") + "; "
         }
         else { lblcriteria = " All Staff, " }
-
-
-
         
         //    console.log(fQuery)
         if (this.inputForm.value.printaslabel == true){ 
@@ -6929,7 +6930,7 @@ stafftypeArr: Array<any> = constants.types;
 
         fQuery = fQuery + "  ORDER BY [CLIENT CODE],DATE "
 
-        ///  //////console.log(fQuery)
+        //console.log(fQuery)
 
         
 
@@ -8568,9 +8569,7 @@ stafftypeArr: Array<any> = constants.types;
         fQuery = fQuery + " ORDER BY HumanResources.Name "
 
     //    console.log(fQuery)
-
-
-        
+       
 
         const data = {
             "template": { "_id": "3OJaZgWOBy3b9hOI" },

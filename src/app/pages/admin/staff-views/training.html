@@ -1,24 +1,79 @@
 <div nz-row>
+    <button nz-button nzType="primary" (click)="handleOkTop()" style="float: right;"> <i nz-icon nzType="file-pdf"></i> Print </button>
+</div>
+<div nz-row>
+    <div class="example-container">
+        <ul
+            cdkDropList
+            cdkDropListOrientation="horizontal"
+            #todoList="cdkDropList"
+            [cdkDropListData]="dragOrigin"
+            [cdkDropListConnectedTo]="[doneList]"
+            class="drag-list"
+            (cdkDropListDropped)="drop($event)">
+            <li class="drag-box" *ngFor="let item of dragOrigin" [cdkDragDisabled]="true" cdkDrag>
+                <div>
+                    {{item}} <span (click)="removeTodo(item)"><i nz-icon nzType="close" nzTheme="outline"></i></span>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+<div nz-row>
     <div nz-col>
-        <button nz-button nzType="primary" (click)="handleOkTop()" style="float: right;"> <i nz-icon nzType="file-pdf"></i> Print </button>
         <div style="clear: both;"></div>
         <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading"
             [nzData]="tableData" style="margin-top:15px;">
             <thead>
-                <tr>
+                <!-- <tr>
                     <th class="left">Date</th>
                     <th>Training</th>
                     <th>Expiry Date</th>
                     <th>Notes</th>
+                </tr> -->
+                <tr cdkDropList #doneList="cdkDropList" [cdkDropListData]="dragDestination" [cdkDropListConnectedTo]="[todoList]">
+                    <th cdkDrag [cdkDragData]="'date'" class="left" style="width: 50%">Date</th>
+                    <th cdkDrag [cdkDragData]="'training'">Training</th>
+                    <th cdkDrag [cdkDragData]="'expiryDate'">Expiry Date</th>
+                    <th cdkDrag [cdkDragData]="'notes'">Notes</th>
+                    <th><th>
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let data of basicTable.data;let i = index;trackBy: trackByFn">
+                <!-- <tr *ngFor="let data of basicTable.data;let i = index;trackBy: trackByFn">
                     <td class="left">{{ data.date  | date: 'dd/MM/yyyy'   }}</td>
                     <td>{{ data.training }}</td>
                     <td>{{ data.expiryDate }}</td>
                     <td>{{ data.notes }}</td>
-                </tr>
+                </tr> -->
+
+                <ng-container *ngIf="isSome(tableData)">
+                    <ng-container *ngFor="let titleData of tableData;">
+                        <tr  *ngIf="!isArray(titleData)">
+                            <td colspan="9">
+                                <p [ngStyle]="{'margin': '0 0 0 '+titleData.counter + 'rem'}">{{ titleData.key }}</p>
+                            </td>
+                        </tr>
+                        
+                        <ng-container *ngIf="isArray(titleData)">
+                            <tr style="background: #d9efff;" *ngFor="let data of titleData;let i = index;trackBy: trackByFn">
+                                <td class="left">{{ data.date  | date: 'dd/MM/yyyy'   }}</td>
+                                <td>{{ data.training }}</td>
+                                <td>{{ data.expiryDate }}</td>
+                                <td>{{ data.notes }}</td>
+                            </tr>
+                        </ng-container>
+                    </ng-container>
+                </ng-container>
+    
+                <ng-container *ngIf="!isSome(tableData)">
+                    <tr *ngFor="let data of tableData;let i = index;trackBy: trackByFn">
+                        <td class="left">{{ data.date  | date: 'dd/MM/yyyy'   }}</td>
+                        <td>{{ data.training }}</td>
+                        <td>{{ data.expiryDate }}</td>
+                        <td>{{ data.notes }}</td>
+                    </tr>
+                </ng-container>
             </tbody>
         </nz-table>
     </div>

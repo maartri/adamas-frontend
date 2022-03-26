@@ -1,5 +1,6 @@
 <div nz-row>
     <div nz-col>
+
         <div nz-row>
             <div nz-col nzSpan="12">
                 <button class="botton success" (click)="showAddModal()">Add Leave</button>
@@ -32,10 +33,31 @@
                 </div>
             </div>
         </div>
+
+        <div nz-row>
+            <div class="example-container">
+                <ul
+                    cdkDropList
+                    cdkDropListOrientation="horizontal"
+                    #todoList="cdkDropList"
+                    [cdkDropListData]="dragOrigin"
+                    [cdkDropListConnectedTo]="[doneList]"
+                    class="drag-list"
+                    (cdkDropListDropped)="drop($event)">
+                    <li class="drag-box" *ngFor="let item of dragOrigin" [cdkDragDisabled]="true" cdkDrag>
+                        <div>
+                            {{item}} <span (click)="removeTodo(item)"><i nz-icon nzType="close" nzTheme="outline"></i></span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
         <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading"
         [nzData]="tableData">
+
         <thead>
-            <tr>
+            <!-- <tr>
                 <th class="left">Leave Type</th>
                 <th>Start</th>
                 <th>End</th>
@@ -43,10 +65,21 @@
                 <th>Reminder Date</th>
                 <th>Approved</th>
                 <th>Action</th>
+            </tr> -->
+            <tr cdkDropList #doneList="cdkDropList" [cdkDropListData]="dragDestination" [cdkDropListConnectedTo]="[todoList]">
+                <th cdkDrag [cdkDragData]="'leaveType'" class="left">Leave Type</th>
+                <th cdkDrag [cdkDragData]="'startDate'">Start</th>
+                <th cdkDrag [cdkDragData]="'endDate'">End</th>
+                <th cdkDrag [cdkDragData]="'notes'">Notes</th>
+                <th cdkDrag [cdkDragData]="'reminderDate'">Reminder Date</th>
+                <th>Approved</th>
+                <th></th>
             </tr>
         </thead>
+        
         <tbody>
-            <tr *ngFor="let data of basicTable.data;let i = index;trackBy: trackByFn">
+
+            <!-- <tr *ngFor="let data of basicTable.data;let i = index;trackBy: trackByFn">
                 <td class="left">{{ data.leaveType  }}</td>
                 <td>{{ data.startDate | date: 'dd/MM/y' }}</td>
                 <td>{{ data.endDate | date: 'dd/MM/y' }}</td>
@@ -57,11 +90,57 @@
                 </td>
                 <td>
                     <a *ngIf="isUpdateValid(i)" (click)="showEditModal(data)">Update</a>
-                    <nz-divider *ngIf="isUpdateValid(i)" nzType="vertical"></nz-divider>
-                    <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this Leave from the List?"
-                    nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>
+                        <nz-divider *ngIf="isUpdateValid(i)" nzType="vertical"></nz-divider>
+                    <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this Leave from the List?" nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>
                 </td>
-            </tr>
+            </tr> -->
+
+            <ng-container *ngIf="isSome(tableData)">
+                <ng-container *ngFor="let titleData of tableData;">
+                    <tr  *ngIf="!isArray(titleData)">
+                        <td colspan="9">
+                            <p [ngStyle]="{'margin': '0 0 0 '+titleData.counter + 'rem'}">{{ titleData.key }}</p>
+                        </td>
+                    </tr>
+                    
+                    <ng-container *ngIf="isArray(titleData)">
+                        <tr style="background: #d9efff;" *ngFor="let data of titleData;let i = index;trackBy: trackByFn">
+                            <td class="left">{{ data.leaveType  }}</td>
+                            <td>{{ data.startDate | date: 'dd/MM/y' }}</td>
+                            <td>{{ data.endDate | date: 'dd/MM/y' }}</td>
+                            <td>{{ data.notes  }}</td>
+                            <td>{{ data.reminderDate }}</td>
+                            <td>
+                                <label nz-checkbox nzDisabled [ngModel]="data.approved" nzDisabled [ngModelOptions]="{standalone: true}"></label>
+                            </td>
+                            <td>
+                                <a *ngIf="isUpdateValid(i)" (click)="showEditModal(data)">Update</a>
+                                    <nz-divider *ngIf="isUpdateValid(i)" nzType="vertical"></nz-divider>
+                                <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this Leave from the List?" nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </ng-container>
+            </ng-container>
+
+            <ng-container *ngIf="!isSome(tableData)">
+                <tr *ngFor="let data of tableData;let i = index;trackBy: trackByFn">
+                    <td class="left">{{ data.leaveType  }}</td>
+                    <td>{{ data.startDate | date: 'dd/MM/y' }}</td>
+                    <td>{{ data.endDate | date: 'dd/MM/y' }}</td>
+                    <td>{{ data.notes  }}</td>
+                    <td>{{ data.reminderDate }}</td>
+                    <td>
+                        <label nz-checkbox nzDisabled [ngModel]="data.approved" nzDisabled [ngModelOptions]="{standalone: true}"></label>
+                    </td>
+                    <td>
+                        <a *ngIf="isUpdateValid(i)" (click)="showEditModal(data)">Update</a>
+                            <nz-divider *ngIf="isUpdateValid(i)" nzType="vertical"></nz-divider>
+                        <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this Leave from the List?" nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>
+                    </td>
+                </tr>
+            </ng-container>
+
         </tbody>
     </nz-table>
 </div>

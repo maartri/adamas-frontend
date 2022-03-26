@@ -9,6 +9,9 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { NzMessageService } from 'ng-zorro-antd/message';
 
+import {CdkDragDrop, moveItemInArray, transferArrayItem, copyArrayItem } from '@angular/cdk/drag-drop';
+import * as groupArray from 'group-array';
+
 interface NewDocument{
     file: string,
     newFile: string,
@@ -35,10 +38,6 @@ interface NewDocument{
         }
         ul{
             list-style:none;
-        }
-        ul li {
-            padding:5px;
-            cursor:pointer;
         }
         ul li.active{
             background:#e6f1ff;
@@ -132,6 +131,9 @@ export class RecipientDocumentsAdmin implements OnInit, OnDestroy, AfterViewInit
         this.timeS.getdocumentsrecipients(user.id).subscribe(data => {
             console.log(data)
             this.tableData = data;
+            this.originalTableData = data;
+
+
             this.loading = false;
             this.cd.detectChanges();
         });
@@ -274,5 +276,135 @@ export class RecipientDocumentsAdmin implements OnInit, OnDestroy, AfterViewInit
 
     next(): void {
         this.current += 1;
+    }
+
+    originalTableData: Array<any>;
+    dragOrigin: Array<string> = [];
+
+    columnDictionary = [{
+        key: 'Title',
+        value: 'title'
+    },{
+        key: 'Status',
+        value: 'status'
+    },{
+        key: 'Classification',
+        value: 'classification'
+    },{
+        key: 'Category',
+        value: 'category'
+    },{
+        key: 'Created',
+        value: 'created'
+    },{
+        key: 'Author',
+        value: 'author'
+    },{
+        key: 'Modified',
+        value: 'modified'
+    },{
+        key: 'Filename',
+        value: 'filename'
+    },{
+        key:'Type',
+        value:'type'
+    },{
+        key:'Original Location',
+        value:'originalLocation'
+    }];
+    
+    
+    
+
+    dragDestination = [
+        'Title',
+        'Status',
+        'Classification',
+        'Category',
+        'Created',
+        'Author',
+        'Modified',
+        'Filename',
+        'Type',
+        'Original Location',
+    ];
+
+
+    flattenObj = (obj, parent = null, res = {}) => {
+        for (const key of Object.keys(obj)) {
+            const propName = parent ? parent + '.' + key : key;
+            if (typeof obj[key] === 'object') {
+                this.flattenObj(obj[key], propName, res);
+            } else {
+                res[propName] = obj[key];
+            }
+        }
+        return res;
+    }
+
+    searchColumnDictionary(data: Array<any>, tobeSearched: string){
+        let index = data.findIndex(x => x.key == tobeSearched);        
+        return data[index].value;
+    }
+
+    drop(event: CdkDragDrop<string[]>) {
+        if (event.previousContainer === event.container) {
+            moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);            
+        } else {
+            if(!event.container.data.includes(event.item.data)){
+                copyArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.container.data.length)
+            }
+        }
+        this.generate();
+    }
+
+    generate(){
+        const dragColumns = this.dragOrigin.map(x => this.searchColumnDictionary(this.columnDictionary, x));
+        console.log(dragColumns)
+
+        var convertedObj = groupArray(this.originalTableData, dragColumns);
+
+        console.log(convertedObj)
+        var flatten = this.flatten(convertedObj, [], 0);
+        console.log(flatten)
+        if(dragColumns.length == 0){
+            this.tableData = this.originalTableData;
+        } else {
+            this.tableData = flatten;
+        }
+    }
+
+    flatten(obj: any, res: Array<any> = [], counter = null){
+        for (const key of Object.keys(obj)) {
+            const propName = key;
+            if(typeof propName == 'string'){                   
+                res.push({key: propName, counter: counter});
+                counter++;
+            }
+            if (!Array.isArray(obj[key])) {
+                this.flatten(obj[key], res, counter);
+                counter--;
+            } else {
+                res.push(obj[key]);
+                counter--;
+            }
+        }
+        return res;
+    }
+
+    removeTodo(data: any){
+        this.dragOrigin.splice(this.dragOrigin.indexOf(data),1);
+        this.generate();
+    }
+
+    isArray(data: any){
+        return Array.isArray(data);
+    }
+ 
+    isSome(data: any){
+        if(data){
+            return data.some(d => 'key' in d);
+        }
+        return true;        
     }
 }

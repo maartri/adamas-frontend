@@ -799,9 +799,7 @@ resetPending(){
           }
     }
     // End Categories
-
-
-    
+        
     reload(){
       this.loadingPending = true;
       

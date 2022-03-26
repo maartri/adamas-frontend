@@ -131,3 +131,44 @@ export class GetTextFromHtml implements PipeTransform {
     }
   }
 
+@Pipe({ name: 'tablarize' })
+export class TablarizePipe implements PipeTransform {    
+
+    transform(data: any, ...args: any[]) {  
+        
+        // const flattened = {}
+
+        // Object.keys(data).forEach((key) => {
+        //   const value = data[key]
+      
+        //   if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+        //     Object.assign(flattened, flattenObject(value))
+        //   } else {
+        //     flattened[key] = value
+        //   }
+        // })
+      
+        // return flattened
+
+        // if(!data)   return []  
+        // if(Array.isArray(data)){
+        //     return data;
+        // } else{
+        //     for (const [key, value] of Object.entries(data)) {
+        //         console.log(`${key}: ${value}`);
+    
+        //         if(Array.isArray(value)){
+        //             return value;
+        //         } else if(typeof key === 'string'){
+        //             return key;
+        //         } else {
+        //             this.transform(key, []);
+        //         }
+        //     }
+        // }
+        
+        
+        // console.log(sss[0].values);
+        return [1,2,3,4,5];
+    }
+}

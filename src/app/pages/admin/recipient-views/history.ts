@@ -22,7 +22,7 @@ export class RecipientHistoryAdmin implements OnInit, OnDestroy {
     user: any;
     inputForm: FormGroup;
     tableData: Array<any>;
-    originalTableData: Array<any>;
+    
     
     checked: boolean = false;
     isDisabled: boolean = false;
@@ -67,17 +67,10 @@ export class RecipientHistoryAdmin implements OnInit, OnDestroy {
         this.loading = true;
 
         this.clientS.gethistory(user.code).subscribe(data => {
-
-            console.log(data.list)
             this.tableData = data.list;
             this.originalTableData = data.list;
 
             this.loading = false;
-
-            // console.log(groupArray(data.list, 'event', 'program'))
-
-    
-
             this.cd.markForCheck();
         });
     }
@@ -87,29 +80,30 @@ export class RecipientHistoryAdmin implements OnInit, OnDestroy {
     }
 
 
-   todo: Array<string> = [];
+     
+    originalTableData: Array<any>;
+    dragOrigin: Array<string> = [];
+    dragDestination = [
+        'Date',
+        'Program',
+        'Event',
+        'Staff',
+        'Amount',
+        'Notes'
+    ];
 
-  done = [
-    'Date',
-    'Program',
-    'Event',
-    'Staff',
-    'Amount',
-    'Notes'
-  ];
 
-
-  flattenObj = (obj, parent = null, res = {}) => {
-    for (const key of Object.keys(obj)) {
-      const propName = parent ? parent + '.' + key : key;
-      if (typeof obj[key] === 'object') {
-        this.flattenObj(obj[key], propName, res);
-      } else {
-        res[propName] = obj[key];
-      }
+    flattenObj = (obj, parent = null, res = {}) => {
+        for (const key of Object.keys(obj)) {
+        const propName = parent ? parent + '.' + key : key;
+        if (typeof obj[key] === 'object') {
+            this.flattenObj(obj[key], propName, res);
+        } else {
+            res[propName] = obj[key];
+        }
+        }
+        return res;
     }
-    return res;
-  }
 
     drop(event: CdkDragDrop<string[]>) {
 
@@ -120,60 +114,42 @@ export class RecipientHistoryAdmin implements OnInit, OnDestroy {
                 copyArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.container.data.length)
             }
         }
-
         this.generate();
-        
     }
 
     generate(){
-        const todo = this.todo.map(x => x.toLowerCase());      
+        const dragColumns = this.dragOrigin.map(x => x.toLowerCase());
 
-        var convertedObj = groupArray(this.originalTableData, todo);
-        var flatten = this.flatten(convertedObj, [], 1);
+        var convertedObj = groupArray(this.originalTableData, dragColumns);
+        var flatten = this.flatten(convertedObj, [], 0);
 
-        // console.log(convertedObj)
-        // console.log(flatten);
-
-        if(todo.length == 0){
+        if(dragColumns.length == 0){
             this.tableData = this.originalTableData;
         } else {
             this.tableData = flatten;
         }
-
-        console.log(this.tableData)
-    }
-
-    dropFromTable(event: CdkDragDrop<string[]>){
-        console.log(event);
-        if (event.previousContainer === event.container) {
-            moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-            } else {
-            transferArrayItem(event.previousContainer.data,
-                                event.container.data,
-                                event.previousIndex,
-                                event.currentIndex);
-            }
-
-            console.log(groupArray(this.tableData, this.todo));
     }
 
     flatten(obj: any, res: Array<any> = [], counter = null){
         for (const key of Object.keys(obj)) {
             const propName = key;
-            if(typeof propName == 'string'){                
-                res.push({titlezzzfsdfsdfsdf: propName, counter: counter })
+            if(typeof propName == 'string'){                   
+                res.push({key: propName, counter: counter});
+                counter++;
             }
             if (!Array.isArray(obj[key])) {
                 this.flatten(obj[key], res, counter);
+                counter--;
             } else {
                 res.push(obj[key]);
+                counter--;
             }
-          }
-          return res;
+        }
+        return res;
     }
 
     removeTodo(data: any){
-        this.todo.splice(this.todo.indexOf(data),1);
+        this.dragOrigin.splice(this.dragOrigin.indexOf(data),1);
         this.generate();
     }
 
@@ -183,10 +159,9 @@ export class RecipientHistoryAdmin implements OnInit, OnDestroy {
  
     isSome(data: any){
         if(data){
-            return data.some(d => 'titlezzzfsdfsdfsdf' in d);
+            return data.some(d => 'key' in d);
         }
-        return true;
-        
+        return true;        
     }
 
 }

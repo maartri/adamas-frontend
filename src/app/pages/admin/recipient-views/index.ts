@@ -16,3 +16,5 @@ export * from './attendance';
 export * from './others';
 export * from './accounting';
 export * from './documents';
+export * from './suspensions';
+export * from './shift-reports'

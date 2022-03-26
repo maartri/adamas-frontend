@@ -5,26 +5,89 @@
     <app-filter [(ngModel)]="filters" (ngModelChange)="filterChange($event)"></app-filter>
     <!-- {{ filters | json }} -->
 </div>
+
+<div class="example-container">
+    <ul
+        cdkDropList
+        cdkDropListOrientation="horizontal"
+        #todoList="cdkDropList"
+        [cdkDropListData]="dragOrigin"
+        [cdkDropListConnectedTo]="[doneList]"
+        class="drag-list"
+        (cdkDropListDropped)="drop($event)">
+        <li class="drag-box" *ngFor="let item of dragOrigin" [cdkDragDisabled]="true" cdkDrag>
+            <div>
+                {{item}} <span (click)="removeTodo(item)"><i nz-icon nzType="close" nzTheme="outline"></i></span>
+            </div>
+        </li>
+    </ul>
+</div>
+
 <div nz-row>
     <div nz-col>
         <nz-table #basicTable [nzLoading]="loading" [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
         [nzData]="tableData">
         <thead>
-            <tr>
-                <th class="left">Quote #</th>
-                <th>Name/Description</th>
-                <th>Quote Type</th>
-                <th>St</th>
-                <th>Valid From</th>
-                <th>Valid To</th>
-                <th>Created</th>
-                <th>Modified</th>
-                <th>Related Careplan</th>
+            <tr cdkDropList #doneList="cdkDropList" [cdkDropListData]="dragDestination" [cdkDropListConnectedTo]="[todoList]">
+                <th cdkDrag [cdkDragData]="'quoteNumber'" class="left">Quote #</th>
+                <th cdkDrag [cdkDragData]="'carePlan'">Name/Description</th>
+                <th cdkDrag [cdkDragData]="'planType'">Quote Type</th>
+                <th cdkDrag [cdkDragData]="'st'">St</th>
+                <th cdkDrag [cdkDragData]="'startDate'">Valid From</th>
+                <th cdkDrag [cdkDragData]="'endDate'">Valid To</th>
+                <th cdkDrag [cdkDragData]="'created'">Created</th>
+                <th cdkDrag [cdkDragData]="'modified'">Modified</th>
+                <th cdkDrag [cdkDragData]="'filename'">Related Careplan</th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let data of basicTable.data;let i = index;trackBy: trackByFn" [contextMenu]="basicMenu" [contextMenuSubject]="data" >
+
+            <ng-container *ngIf="isSome(tableData)">
+                <ng-container *ngFor="let titleData of tableData;">
+                    <tr  *ngIf="!isArray(titleData)">
+                        <td colspan="9">
+                            <p [ngStyle]="{'margin': '0 0 0 '+titleData.counter + 'rem'}">{{ titleData.key }}</p>
+                        </td>
+                    </tr>
+                    
+                    <ng-container *ngIf="isArray(titleData)">
+                        <tr style="background: #d9efff;" *ngFor="let data of titleData">
+                            <td class="left">{{ data.quoteNumber  }}</td>
+                            <td>{{ data.carePlan }}</td>
+                            <td>{{ data.planType }}</td>
+                            <td>{{ data.st }}</td>
+                            <td>{{ data.startDate | date: 'dd/MM/y' }}</td>
+                            <td>{{ data.endDate | date: 'dd/MM/y' }}</td>
+                            <td>{{ data.created }}</td>
+                            <td>{{ data.modified }}</td>
+                            <td>{{ data.filename }}</td>
+                            <td>
+                                <a (click)="updateQuoteModal(data)">Update</a>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </ng-container>
+            </ng-container>
+
+            <ng-container *ngIf="!isSome(tableData)">
+                <tr *ngFor="let data of tableData;let i = index;trackBy: trackByFn">
+                    <td class="left">{{ data.quoteNumber  }}</td>
+                    <td>{{ data.carePlan }}</td>
+                    <td>{{ data.planType }}</td>
+                    <td>{{ data.st }}</td>
+                    <td>{{ data.startDate | date: 'dd/MM/y' }}</td>
+                    <td>{{ data.endDate | date: 'dd/MM/y' }}</td>
+                    <td>{{ data.created }}</td>
+                    <td>{{ data.modified }}</td>
+                    <td>{{ data.filename }}</td>
+                    <td>
+                        <a (click)="updateQuoteModal(data)">Update</a>
+                    </td>
+                </tr>
+            </ng-container>
+
+            <!-- <tr *ngFor="let data of basicTable.data;let i = index;trackBy: trackByFn" [contextMenu]="basicMenu" [contextMenuSubject]="data" >
                 <td class="left">{{ data.quoteNumber  }}</td>
                 <td>{{ data.carePlan }}</td>
                 <td>{{ data.planType }}</td>
@@ -37,7 +100,7 @@
                 <td>
                     <a (click)="updateQuoteModal(data)">Update</a>
                 </td>
-            </tr>
+            </tr> -->
         </tbody>
     </nz-table>
 </div>

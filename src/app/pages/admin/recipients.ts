@@ -416,6 +416,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
     this.timeS.getbuttonstatusofwizard(loginuser)
     .subscribe(data => {
       this.rights = data[0];
+      console.log(this.rights)
       this.detectChanges();
     });
   }
@@ -773,6 +774,7 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
         this.categoriesList = x[3];
       });
     }
+
     view(index: number) {
       this.nzSelectedIndex = index;
       
@@ -829,6 +831,12 @@ export class RecipientsAdmin implements OnInit, AfterViewInit, OnDestroy {
       }
       if (index == 18) {
         this.router.navigate(['/admin/recipient/dataset'])
+      }
+      if (index == 19) {
+        this.router.navigate(['/admin/recipient/shift-reports'])
+      }
+      if (index == 20) {
+        this.router.navigate(['/admin/recipient/suspensions'])
       }
     }
     

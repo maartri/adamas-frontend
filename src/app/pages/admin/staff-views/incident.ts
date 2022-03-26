@@ -9,6 +9,9 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { DomSanitizer } from '@angular/platform-browser';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
+import {CdkDragDrop, moveItemInArray, transferArrayItem, copyArrayItem } from '@angular/cdk/drag-drop';
+import * as groupArray from 'group-array';
+
 @Component({
     styles: [`
     nz-table{
@@ -110,6 +113,8 @@ export class StaffIncidentAdmin implements OnInit, OnDestroy {
             this.loading = true;
             this.timeS.getincidents(user.code).subscribe(data => {
                 this.tableData = data;
+                this.originalTableData = data;
+                
                 this.loading = false;
                 this.cd.detectChanges();
             });
@@ -234,4 +239,116 @@ export class StaffIncidentAdmin implements OnInit, OnDestroy {
             this.tryDoctype = "";
             this.pdfTitle = "";
         }
+
+
+
+    originalTableData: Array<any>;
+    dragOrigin: Array<string> = [];
+
+    columnDictionary = [{
+        key: 'Status',
+        value: 'status'
+    },{
+        key: 'Date',
+        value: 'date'
+    },{
+        key: 'Type',
+        value: 'type'
+    },{
+        key: 'Description',
+        value: 'description'
+    },{
+        key: 'Assigned To',
+        value: 'assigned'
+    }];
+    
+    
+    
+
+    dragDestination = [    
+        'Status',   
+        'Date',
+        'Type',
+        'Description',
+        'Assigned To'
+    ];
+
+
+    flattenObj = (obj, parent = null, res = {}) => {
+        for (const key of Object.keys(obj)) {
+            const propName = parent ? parent + '.' + key : key;
+            if (typeof obj[key] === 'object') {
+                this.flattenObj(obj[key], propName, res);
+            } else {
+                res[propName] = obj[key];
+            }
         }
+        return res;
+    }
+
+    searchColumnDictionary(data: Array<any>, tobeSearched: string){
+        let index = data.findIndex(x => x.key == tobeSearched);        
+        return data[index].value;
+    }
+
+    drop(event: CdkDragDrop<string[]>) {
+        if (event.previousContainer === event.container) {
+            moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);            
+        } else {
+            if(!event.container.data.includes(event.item.data)){
+                copyArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.container.data.length)
+            }
+        }
+        this.generate();
+    }
+
+    generate(){
+        const dragColumns = this.dragOrigin.map(x => this.searchColumnDictionary(this.columnDictionary, x));
+        console.log(dragColumns)
+
+        var convertedObj = groupArray(this.originalTableData, dragColumns);
+
+        console.log(convertedObj)
+        var flatten = this.flatten(convertedObj, [], 0);
+
+        if(dragColumns.length == 0){
+            this.tableData = this.originalTableData;
+        } else {
+            this.tableData = flatten;
+        }
+    }
+
+    flatten(obj: any, res: Array<any> = [], counter = null){
+        for (const key of Object.keys(obj)) {
+            const propName = key;
+            if(typeof propName == 'string'){                   
+                res.push({key: propName, counter: counter});
+                counter++;
+            }
+            if (!Array.isArray(obj[key])) {
+                this.flatten(obj[key], res, counter);
+                counter--;
+            } else {
+                res.push(obj[key]);
+                counter--;
+            }
+        }
+        return res;
+    }
+
+    removeTodo(data: any){
+        this.dragOrigin.splice(this.dragOrigin.indexOf(data),1);
+        this.generate();
+    }
+
+    isArray(data: any){
+        return Array.isArray(data);
+    }
+    
+    isSome(data: any){
+        if(data){
+            return data.some(d => 'key' in d);
+        }
+        return true;        
+    }
+}

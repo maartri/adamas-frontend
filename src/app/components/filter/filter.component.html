@@ -48,15 +48,13 @@
         </div>
 
         <div nz-col nzSpan="6" *ngIf="openFilter" class="filter-icons">
-            <nz-select [(ngModel)]="selectedValue" nzAllowClear nzPlaceHolder="Limit To">
-                <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
-                <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
-                <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
+            <nz-select nzAllowClear nzPlaceHolder="Limit To">
+                <nz-option *ngFor="let tab of LIMIT_TABS" [nzValue]="tab" [nzLabel]="tab"></nz-option>
             </nz-select>
         </div>
 
         <div nz-col nzSpan="6" *ngIf="openFilter" class="filter-icons">
-            <input nz-input placeholder="Basic usage" [(ngModel)]="selectedValue" />
+            <input nz-input placeholder="Starting With" />
         </div>
 
         <div nz-col nzSpan="6" *ngIf="openFilter" class="filter-icons">

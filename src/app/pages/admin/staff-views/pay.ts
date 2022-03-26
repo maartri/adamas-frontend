@@ -24,6 +24,7 @@ import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, Con
       }
       tbody.work-chart tr td{
           width:3rem;
+          border-right:1px solid #fff;
       }
       tbody.work-chart tr td:not(:first-child){
           text-align:center;

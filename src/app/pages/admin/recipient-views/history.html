@@ -1,58 +1,31 @@
 <div nz-row>
-    <app-filter></app-filter>
+    <app-filter [LIMIT_TABS]="FILTERS"></app-filter>
 </div>
 
-<!-- <div class="example-container">
-    <h2>To do</h2>
-  
-    <div
-      cdkDropList
-      #todoList="cdkDropList"
-      [cdkDropListData]="todo"
-      [cdkDropListConnectedTo]="[doneList]"
-      class="example-list"
-      (cdkDropListDropped)="drop($event)">
-      <div class="example-box" *ngFor="let item of todo" cdkDrag>{{item}}</div>
-    </div>
-  </div>
-  
   <div class="example-container">
-    <h2>Done</h2>
-  
-    <div
-      cdkDropList
-      #doneList="cdkDropList"
-      [cdkDropListData]="done"
-      [cdkDropListConnectedTo]="[todoList]"
-      class="example-list"
-      (cdkDropListDropped)="drop($event)">
-      <div class="example-box" *ngFor="let item of done" cdkDrag>{{item}}</div>
-    </div>
-  </div> -->
-
-  <div class="example-container">
-    <ul
-      cdkDropList
-      cdkDropListOrientation="horizontal"
-      #todoList="cdkDropList"
-      [cdkDropListData]="todo"
-      [cdkDropListConnectedTo]="[doneList]"
-      class="example-list"
-      (cdkDropListDropped)="drop($event)">
-      <li class="example-box" *ngFor="let item of todo" [cdkDragDisabled]="true" cdkDrag>
-          <div>
-            {{item}} <span (click)="removeTodo(item)"><i nz-icon nzType="close" nzTheme="outline"></i></span>
-          </div>
-      </li>
-  </ul>
+        <ul
+            cdkDropList
+            cdkDropListOrientation="horizontal"
+            #todoList="cdkDropList"
+            [cdkDropListData]="dragOrigin"
+            [cdkDropListConnectedTo]="[doneList]"
+            class="drag-list"
+            (cdkDropListDropped)="drop($event)">
+            <li class="drag-box" *ngFor="let item of dragOrigin" [cdkDragDisabled]="true" cdkDrag>
+                <div>
+                    {{item}} <span (click)="removeTodo(item)"><i nz-icon nzType="close" nzTheme="outline"></i></span>
+                </div>
+            </li>
+        </ul>
   </div>
 
 <div nz-row>
     <div nz-col>
-        <!-- <nz-table #basicTable [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false"
-            [nzData]="tableData">
+
+        <nz-table #basicTable [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false" [nzData]="tableData">
+            
             <thead>
-                <tr cdkDropList #doneList="cdkDropList" [cdkDropListData]="done" [cdkDropListConnectedTo]="[todoList]">
+                <tr cdkDropList #doneList="cdkDropList" [cdkDropListData]="dragDestination" [cdkDropListConnectedTo]="[todoList]">
                     <th cdkDrag [cdkDragData]="'Date'" class="left">Date</th>
                     <th cdkDrag [cdkDragData]="'Program'">Program</th>
                     <th cdkDrag [cdkDragData]="'Event'">Event</th>
@@ -61,38 +34,14 @@
                     <th cdkDrag [cdkDragData]="'Notes'">Notes</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr *ngFor="let data of tableData;let i = index;trackBy: trackByFn">
-                    <td class="left">{{ data.date  }}</td>
-                    <td>{{ data.program }}</td>
-                    <td>{{ data.event }}</td>
-                    <td>{{ data.staff }}</td>
-                    <td>{{ data.amount || '0' | number : '1.2-2' }}</td>
-                    <td>{{ data.notes }}</td>
-                </tr>
-            </tbody>
-        </nz-table> -->
 
-
-        <nz-table #basicTable [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false"
-            [nzData]="tableData">
-            <thead>
-                <tr cdkDropList #doneList="cdkDropList" [cdkDropListData]="done" [cdkDropListConnectedTo]="[todoList]">
-                    <th cdkDrag [cdkDragData]="'Date'" class="left">Date</th>
-                    <th cdkDrag [cdkDragData]="'Program'">Program</th>
-                    <th cdkDrag [cdkDragData]="'Event'">Event</th>
-                    <th cdkDrag [cdkDragData]="'Staff'">Staff</th>
-                    <th cdkDrag [cdkDragData]="'Amount'">Amount</th>
-                    <th cdkDrag [cdkDragData]="'Notes'">Notes</th>
-                </tr>
-            </thead>
             <tbody>
 
                 <ng-container *ngIf="isSome(tableData)">
                     <ng-container *ngFor="let titleData of tableData;">
                         <tr  *ngIf="!isArray(titleData)">
                             <td colspan="6">
-                                <p style="margin:0">{{ titleData.titlezzzfsdfsdfsdf }}</p>
+                                <p [ngStyle]="{'margin': '0 0 0 '+titleData.counter + 'rem'}">{{ titleData.key }}</p>
                             </td>
                         </tr>
                         

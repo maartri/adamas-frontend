@@ -32,6 +32,8 @@ export class FilterComponent implements OnInit, ControlValueAccessor {
 
   @Input() tabs: TABS; 
 
+  @Input() LIMIT_TABS: Array<string> = []
+
 
   filterFormGroup: FormGroup;
   dateFormat: string = dateFormat;
@@ -89,6 +91,7 @@ export class FilterComponent implements OnInit, ControlValueAccessor {
       })
     ).subscribe(([data, data1] : any) => {
       setTimeout(() => {
+        console.log(this.filterFormGroup.value)
         this.onChangeCallback(this.filterFormGroup.value);
       }, 0);
     });

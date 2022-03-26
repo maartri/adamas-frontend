@@ -9,6 +9,13 @@ import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, Con
 import * as groupArray from 'group-array';
 import {CdkDragDrop, moveItemInArray, transferArrayItem, copyArrayItem } from '@angular/cdk/drag-drop';
 
+ export const FILTERS: Array<string> = [
+    'CARE DOMAIN',
+    'CREATOR',
+    'DISCIPLINE',
+    'PROGRAM',
+    'ROSTER/SVC GROUP'
+ ]
  
 
 @Component({
@@ -26,8 +33,9 @@ export class RecipientHistoryAdmin implements OnInit, OnDestroy {
     
     checked: boolean = false;
     isDisabled: boolean = false;
-
     loading: boolean = false;
+
+    FILTERS = FILTERS;
 
     constructor(
         private timeS: TimeSheetService,

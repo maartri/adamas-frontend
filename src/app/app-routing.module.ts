@@ -98,6 +98,7 @@ import {
   GlanceAdmin, //AHSAN
   BillingAdmin,   //AHSAN
   TimesheetProcessingAdmin,   //AHSAN
+
 } from '@admin/index'
 
 import {
@@ -186,6 +187,11 @@ import {
   RostersAdmin,ShiftDetail,AddRoster,RecipientExternal,StaffExternal,GNotes,StaffSearch,RecipientSearch,DMRoster
   ,ServiceTasks, RosterExtraInfo
 } from './pages/roster/index';
+
+import {
+   RecipientShiftReportsAdmin,
+   RecipientSuspensionAdmin
+} from '@admin/recipient-views/index';
 
 import { ExtraComponent } from './pages/extra/extra';
 
@@ -1522,6 +1528,14 @@ const routes: Routes = [
           {
             path: 'media',
             component: MediaList,
+          },
+          {
+            path: 'shift-reports',
+            component: RecipientShiftReportsAdmin   
+          },
+          {
+            path: 'suspensions',
+            component: RecipientSuspensionAdmin,
           }
         ]
       }

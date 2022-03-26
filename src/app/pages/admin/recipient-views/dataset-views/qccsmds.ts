@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 
-import { GlobalService, ListService, TimeSheetService, ShareService, leaveTypes, ClientService, dateFormat } from '@services/index';
+import { GlobalService, ListService, TimeSheetService, ShareService,functionalStatus,leaveTypes, ClientService, dateFormat } from '@services/index';
 import { Router, NavigationEnd } from '@angular/router';
 import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -49,7 +49,7 @@ export class DatasetQccsmda implements OnInit, OnDestroy {
     modalOpen: boolean = false;
     addOREdit: number;
     inputForm: FormGroup;
-    
+    functionalStatus = functionalStatus;
     tableData: Array<any> = [];
     branches: Array<any> = [];
     

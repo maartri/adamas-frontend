@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import format from 'date-fns/format';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { BillingService, TimeSheetService, GlobalService, ListService, MenuService } from '@services/index';
 import { takeUntil, timeout } from 'rxjs/operators';
 import { setDate } from 'date-fns';
@@ -86,6 +86,7 @@ export class CloseRosterComponent implements OnInit {
   selectedFunding: any;
   date: moment.MomentInput;
   checkedIDs: any[];
+  updatedRecords: any;
 
   constructor(
     private cd: ChangeDetectorRef,
@@ -212,10 +213,7 @@ export class CloseRosterComponent implements OnInit {
     }
   }
 
-  closeRosterPeriod() {
-
-    this.postLoading = true;
-
+  checkValidation() {
     this.selectedFunding = this.fundingList
       .filter(opt => opt.checked)
       .map(opt => opt.description).join(",")
@@ -225,28 +223,34 @@ export class CloseRosterComponent implements OnInit {
       .map(opt => opt.title).join(",")
 
     this.dtpEndDate = this.inputForm.get('dtpEndDate').value;
-    // this.dtpEndDate = formatDate(this.dtpEndDate, 'MM-dd-yyyy','en_US');
+    this.dtpEndDate = formatDate(this.dtpEndDate, 'yyyy-MM-dd hh:mm', 'en_US');
 
-    //this code is to close roster using direct query
-    // let sql = "UPDATE HumanResourceTypes set CloseDate = '"+this.dtpEndDate+"' WHERE [NAME] IN ('"+this.selectedPrograms+"') AND [TYPE] IN ('"+this.selectedFunding+"') AND CloseDate <= '"+this.dtpEndDate+"'"; 
-    // // console.log(sql);
-    // this.menuS.updatUDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{        
-    //   if (data) 
-    //   this.globalS.sToast('Success', 'Saved successful');     
-    //   else
-    //   this.globalS.sToast('Success', 'Saved successful');
-    //   this.ngOnInit();
-    //   this.postLoading = false;          
-    // });
+    if (this.selectedFunding != '' && this.selectedPrograms != '' && this.dtpEndDate != '') {
+      this.closeRosterPeriod();
+    } else if (this.selectedFunding == '') {
+      this.globalS.eToast('Error', 'Please select atleast one Funding to proceed')
+    } else if (this.selectedPrograms == '') {
+      this.globalS.eToast('Error', 'Please select atleast one Program to proceed')
+    } else if (this.dtpEndDate == '') {
+      this.globalS.eToast('Error', 'Please select valid Date to proceed')
+    }
+  }
 
-    this.billingS.updateCloseRosterPeriod({
+  closeRosterPeriod() {
+    this.postLoading = true;
+    this.billingS.closeRosterPeriod({
       Closedate: this.dtpEndDate,
       Programs: this.selectedPrograms,
       Fundings: this.selectedFunding,
     }).pipe(
       takeUntil(this.unsubscribe)).subscribe(data => {
         if (data) {
-          this.globalS.sToast('Success', 'Date Updated')
+          this.updatedRecords = data[0].updatedRecords
+          if (this.updatedRecords == 0) {
+            this.globalS.iToast('Information', 'No Roster Entries are existing to Close Date.')
+          } else {
+            this.globalS.sToast('Success', 'Close Roster Date has been updated successfully on ' + this.updatedRecords + ' Records.')
+          }
           this.postLoading = false;
           this.ngOnInit();
           return false;

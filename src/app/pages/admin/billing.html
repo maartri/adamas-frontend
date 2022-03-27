@@ -4,7 +4,7 @@
             <nz-tabset  [nzTabPosition]="'top'" [nzType]="'card'" >            
                 <nz-tab nzTitle="Billing">                     
                     <div nz row>
-                        <div nz-col [nzSpan]="24">
+                        <div nz-col [nzSpan]="8">
                             <ul nz-menu nzMode="horizontal">
                                 <li nz-menu-item >
                                     <i nz-icon nzType="user"></i>
@@ -19,6 +19,32 @@
                                         <button nz-button nzType="default" (click)="view(4)" id="btn-Systm-DebtorUpdatesAndExports" >
                                             <i nz-icon nzType="read"></i>
                                             Debtor Updates and Exports
+                                        </button>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div nz-col [nzSpan]="8">
+                            <ul nz-menu nzMode="horizontal">
+                                <li nz-menu-item >
+                                    <i nz-icon nzType="user"></i>
+                                    <strong>Roster / Timesheet Rollbacks</strong> 
+                                    <div>
+                                        <button nz-button nzType="default" (click)="view(11)" id="btn-Systm-RollbackInvoiceBatch" >
+                                            <i nz-icon nzType="read"></i>
+                                            Rollback Selected Invoice Batch
+                                        </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" (click)="view(12)" id="btn-Systm-RollbackPayrollBatch" >
+                                            <i nz-icon nzType="read"></i>
+                                            Rollback Selected Payroll Batch
+                                        </button>
+                                    </div>
+                                    <div>
+                                        <button nz-button nzType="default" (click)="view(13)" id="btn-Systm-RollbackRosterBatch" >
+                                            <i nz-icon nzType="read"></i>
+                                            Rollback Roster Copy Batch
                                         </button>
                                     </div>
                                 </li>

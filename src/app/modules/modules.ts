@@ -799,7 +799,9 @@ export interface Filters{
     display?: number,
     startDate?: Date,
     endDate?: Date,
-    type?:string
+    type?:string,
+    limitTo?: string,
+    startingWith?: string
 }
 
 export interface CallProcedure {

@@ -1,5 +1,5 @@
 <div nz-row>
-    <app-filter [LIMIT_TABS]="FILTERS"></app-filter>
+    <app-filter [(ngModel)]="filterParameters" (ngModelChange)="filterChange($event)" [LIMIT_TABS]="FILTERS"></app-filter>
 </div>
 
   <div class="example-container">

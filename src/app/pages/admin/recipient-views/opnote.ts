@@ -13,6 +13,15 @@ import { AngularEditorConfig } from '@kolkov/angular-editor';
 import {CdkDragDrop, moveItemInArray, transferArrayItem, copyArrayItem } from '@angular/cdk/drag-drop';
 import * as groupArray from 'group-array';
 
+
+const FILTERS: Array<string> = [
+    'CARE DOMAIN',
+    'CATEGORY',
+    'CREATOR',
+    'DISCIPLINE',
+    'PROGRAMS'
+ ]
+
 @Component({
     styles: [`
         nz-table{
@@ -67,6 +76,8 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
         archiveDocs: true,
         display: 20
     };
+
+    FILTERS = FILTERS;
 
 
     alist: Array<any> = [];
@@ -145,14 +156,15 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
         this.getSelect();
     }
 
-    filterChange(data: any){
-        this.search(this.user);
+    filterChange(filters: any){
+        this.getNotes(this.user, filters);
+        this.getSelect();
     }
 
-    getNotes(user:any) {
+    getNotes(user:any, filters: any = null) {
         this.loading = true;
 
-        this.clientS.getopnoteswithfilters(user.id, this.filters).subscribe(data => {
+        this.clientS.getopnoteswithfilters(user.id, filters).subscribe(data => {
             let list: Array<any> = data.list || [];
             
             if (list.length > 0) {

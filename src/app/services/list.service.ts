@@ -17,8 +17,8 @@ export class ListService {
         public auth: AuthService
     ) { }
 
-    getstartswithvalue(key: string): Observable<any>{
-        return this.auth.get(`${list}/starts-with-value/${key}`);
+    getstartswithvalue(tab: string, key: string): Observable<any>{
+        return this.auth.get(`${list}/starts-with-value/${tab}/${key}`);
     }
 
     updateaccountingprofile(data: any, id: string):Observable<any>{

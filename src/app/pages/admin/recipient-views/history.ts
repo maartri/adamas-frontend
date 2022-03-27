@@ -9,7 +9,7 @@ import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, Con
 import * as groupArray from 'group-array';
 import {CdkDragDrop, moveItemInArray, transferArrayItem, copyArrayItem } from '@angular/cdk/drag-drop';
 
- export const FILTERS: Array<string> = [
+ const FILTERS: Array<string> = [
     'CARE DOMAIN',
     'CREATOR',
     'DISCIPLINE',

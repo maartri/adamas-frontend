@@ -33,7 +33,7 @@ export class FilterComponent implements OnInit, ControlValueAccessor {
   private onTouchedCallback: () => void = noop;
   private onChangeCallback: (_: any) => void = noop;  
 
-  @Input() tabs: TABS;
+  @Input() tabs: string;
   @Input() LIMIT_TABS: Array<string> = []
 
   limitTo: string;
@@ -77,7 +77,7 @@ export class FilterComponent implements OnInit, ControlValueAccessor {
             this.filterFormGroup.patchValue({
               startingWith: null
             });
-            return this.listS.getstartswithvalue(x)
+            return this.listS.getstartswithvalue(this.tabs,x)
           })
         )
         .subscribe(data => {

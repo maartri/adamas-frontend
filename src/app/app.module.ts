@@ -143,9 +143,9 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     AgGridModule.withComponents([]),
     InfiniteScrollModule,
     FullCalendarModule,
-    SpreadSheetsModule,
-    ContextMenuModule.forRoot(),
-    DragDropModule
+    DragDropModule,
+    SpreadSheetsModule,BrowserModule,
+    ContextMenuModule.forRoot()
   ],
   providers: [
     { provide: NZ_I18N, useValue: en_US },

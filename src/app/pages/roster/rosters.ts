@@ -3788,8 +3788,8 @@ ngOnDestroy(){
 
 refreshPage() {
     //this._document.defaultView.location.reload();
-    //window.location.reload();
-    this.ngOnInit();
+    window.location.reload();
+    //this.ngOnInit();
    
   }
 reloadVal: boolean = false;

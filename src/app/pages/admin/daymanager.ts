@@ -4,7 +4,7 @@ import { Component, OnInit, OnDestroy, Output, Input ,ViewChild, AfterViewInit
 import { GlobalService, ClientService, TimeSheetService,ShareService, ListService } from '@services/index';
 import { forkJoin,  Subject ,  Observable } from 'rxjs';
 import {ShiftDetail} from '../roster/shiftdetail'
-//import {DMRoster} from '../roster/dm-roster'
+import {DMRoster} from '../roster/dm-roster'
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { ThrowStmt } from '@angular/compiler';
 import { BrowserModule } from '@angular/platform-browser';
@@ -15,7 +15,7 @@ import { format, formatDistance, formatRelative, nextDay, subDays } from 'date-f
 import { forEach } from 'lodash';
 import * as moment from 'moment';
 import { stringify } from '@angular/compiler/src/util';
-
+import {NzModalComponent} from 'ng-zorro-antd/modal';;
 
 class Address {
     postcode: string;
@@ -166,7 +166,7 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
     nzFilterPlaceHolder:string="Input to Search";
     showSimpleFilterInput:boolean;
     @ViewChild(ShiftDetail) detail!:ShiftDetail;
-   // @ViewChild(DMRoster) dmroster:DMRoster;
+    @ViewChild(DMRoster) dmroster!:DMRoster;
     optionsModal: boolean = false;
     displayOption:boolean=true;
     pastePosition:any;
@@ -309,6 +309,7 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
         private sharedS:ShareService,
         private formBuilder: FormBuilder,
         private listS:ListService
+       
     ) {
 
 
@@ -433,14 +434,14 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
         if (data==1){  
             //Copy Operation                        
            
-            this.toBePasted.push(this.selectedOption)
+           // this.toBePasted.push(this.selectedOption)
             this.operation="Copy"
             
         }else if (data==2){ 
             //Cut Operation                         
           
             this.operation="cut"
-            this.toBePasted.push(this.selectedOption)
+          //  this.toBePasted.push(this.selectedOption)
             
          }else if (data==3){                          
             //Paste Operation
@@ -772,10 +773,10 @@ pasteSelectedRecords(event:any){
         v.date=moment(event.selected.date).format('YYYY/MM/DD');
         if (dmType=="1" || dmType=="2" || dmType=="11"){
          
-            v.carercode = event.selected.carercode;
+          //  v.carercode = event.selected.carercode;
         }else if (dmType=="10" || dmType=="12" ){
           
-            v.recipient = event.selected.carercode;       
+          //  v.recipient = event.selected.carercode;       
          
         }
         setTimeout(() => {
@@ -812,7 +813,9 @@ openStaffModal(OpenSearch:boolean=false){
 }
 onStaffSearch(data:any){
     this.openSearchStaffModal=false;
+   
     this.selectedStaff=data.accountno;
+    this.selectedCarer=this.selectedStaff
     if (this.OpenSearchOfStaff){
         this.LimitTo='STAFF';
         this.startWith=data.accountno;
@@ -1008,9 +1011,55 @@ return rst;
 }   
 load_rosters(){
     
+    this.loading=true;
     this.reload.next(true);
     
 }
+reLoadGridRosterModel(){
+
+    this.info.IsMaster=false;
+    this.info.ViewType=this.viewType;
+    if (this.selectedOption!=null)        {
+        this.info.StaffCode=this.selectedOption.staff;
+        this.info.date=this.selectedOption.date;
+    }else  if (this.pastePosition!=null){
+        this.info.StaffCode=this.pastePosition.selected.carercode;
+        this.info.date= moment(this.pastePosition.selected.date).format('YYYY/MM/DD');
+    }else{
+        return;
+    }
+   
+      this.AddRosterModel=false;      
+     // this.openModal();
+    // this.dmroster.ngOnInit();
+    // this.dmroster.loadRosterData(this.info)
+    // this.AddRosterModel=true;
+   
+  
+}
+async openModal() {
+
+    const { DMRoster } = await import(
+      /* webpackPrefetch: true */ 
+      '../roster/dm-roster'
+    );
+    
+    const modalRef = this.modalService.create({
+        nzTitle :'Day Manager',
+        nzContent: DMRoster,
+        nzWidth:470,
+        nzStyle : {top: '15px' },
+        nzFooter: [
+            {
+              label: "Cancel",
+              type: "danger",
+              nzOnOk: () => modalRef.close(),
+              nzOnCancel: () => modalRef.close()
+            }
+          ]
+    });
+   
+  }
 ngOnInit(): void {
     this.token = this.globalS.decode(); 
     this.buildForm(); 
@@ -1149,7 +1198,7 @@ ngAfterViewInit(){
             this.load_rosters();
         }
      }
-     
+    
      showAlertForm(operationDone:string){
 
 
@@ -1209,7 +1258,7 @@ ngAfterViewInit(){
 
           this.optionsModal=false;
           this.AddRosterModel=true;
-          
+          //this.openModal();
           this.loadingRoster.next(this.info);
          //this.dmroster.info = this.info;
          //this.dmroster.ngAfterViewInit();

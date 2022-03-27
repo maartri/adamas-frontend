@@ -144,7 +144,8 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     InfiniteScrollModule,
     FullCalendarModule,
     DragDropModule,
-    SpreadSheetsModule,BrowserModule,
+    SpreadSheetsModule,
+    BrowserModule,
     ContextMenuModule.forRoot()
   ],
   providers: [

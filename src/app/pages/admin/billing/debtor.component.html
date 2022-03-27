@@ -185,7 +185,6 @@
                             <label nz-checkbox style="margin-top: 5px;"></label>
                         </div>
                         <div nz-col nzSpan="5" [formGroup]="inputForm">
-                            <!-- <nz-date-picker formControlName="dtpStartDate" [nzFormat]="dateFormat"></nz-date-picker> -->
                             <nz-date-picker nzPlaceHolder="Start Date" formControlName="dtpStartDate"
                                 [nzFormat]="dateFormat"></nz-date-picker>
                         </div>
@@ -193,7 +192,6 @@
                             <p style="text-align: center; margin-top: 5px;"> TO </p>
                         </div>
                         <div nz-col nzSpan="5" [formGroup]="inputForm">
-                            <!-- <nz-date-picker formControlName="dtpEndDate" [nzFormat]="dateFormat"></nz-date-picker> -->
                             <nz-date-picker nzPlaceHolder="End Date" formControlName="dtpEndDate"
                                 [nzFormat]="dateFormat"></nz-date-picker>
                         </div>
@@ -227,13 +225,6 @@
                                             [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false"
                                             [nzLoading]="loading" [nzData]="tableData">
                                             <tbody>
-                                                <!-- <tr>
-                                                <td>
-                                                <nz-checkbox-wrapper style="width: 100%;" (nzOnChange)="log($event , null)">
-                                                    <div nz-row *ngFor="let list of branchList; let i = index">
-                                                        <label nz-checkbox [nzValue]="list.description" [(ngModel)]="list.checked" [ngModelOptions]="{standalone: true}">{{ list.description }}</label>
-                                                    </div>
-                                                </nz-checkbox-wrapper> -->
                                                 <tr>
                                                     <td>
                                                         <nz-checkbox-wrapper style="width: 100%;"
@@ -432,7 +423,8 @@
                         <p style="margin: 0px;"></p>
                     </div>
                     <div nz-col nzSpan="8">
-                        <label nz-checkbox>Seperate Invoice Per Recipient</label>
+                        <label nz-checkbox [(ngModel)]="sepInvRecipient"
+                        [ngModelOptions]="{standalone: true}">Seperate Invoice Per Recipient</label>
                     </div>
                     <div nz-col nzSpan="8">
                         <label nz-checkbox>Use Recipients Preferred Name</label>

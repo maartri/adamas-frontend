@@ -41,6 +41,7 @@ export class DebtorComponent implements OnInit {
   branchList: Array<any>;
   programList: Array<any>;
   categoriesList: Array<any>;
+  billingCycleList: Array<any>;
   batchHistoryList: Array<any>;
   debtorRecordList: Array<any>;
   weeksList: Array<any>;
@@ -82,6 +83,7 @@ export class DebtorComponent implements OnInit {
   selectedBranches: any;
   selectedPrograms: any;
   selectedCategories: any;
+  selectedBillingCycle: any;
   selectedWeeks: any;
   allBranchesChecked: boolean;
   allProgramsChecked: boolean;
@@ -111,9 +113,10 @@ export class DebtorComponent implements OnInit {
   lockBranches: any = false;
   lockPrograms: any = false;
   lockCategories: any = false;
-  billingCycleList: Array<any>;
-  selectedBillingCycle: any;
   lockBillingCycle: any = false;
+  sepInvRecipient: any = false;
+  currentDateTime: any;
+
 
   constructor(
     private cd: ChangeDetectorRef,
@@ -142,7 +145,6 @@ export class DebtorComponent implements OnInit {
     this.populateDropdowns();
     this.loadBatchHistory();
     // this.loadDebtorRecords();
-    this.getBatchRecord();
     this.loading = false;
     this.modalOpen = true;
   }
@@ -167,6 +169,7 @@ export class DebtorComponent implements OnInit {
       invType: 'General',
       dtpStartDate: startOfMonth(new Date()),
       dtpEndDate: endOfMonth(new Date()),
+      sepInvPerRecipient: false,
       billingUpdate: true,
     });
 
@@ -321,7 +324,7 @@ export class DebtorComponent implements OnInit {
       this.tableData = data;
       this.loading = false;
       this.allBranchesChecked = true;
-      this.checkAll(4);
+      this.checkAll(1);
     });
   }
 
@@ -365,87 +368,79 @@ export class DebtorComponent implements OnInit {
     });
   }
 
-  startDebUpdate(): void {
-    this.getBatchRecord();
+  startDebUpdate() {
+    this.loading = true;
+    this.billingS.getBatchRecord(null).subscribe(data => {
+      this.batchNumber = data[0].batchRecordNumber;
+        this.validateDebUpdate();
+    });
+  }
+
+  validateDebUpdate(): void {
     this.operatorID = this.token.nameid;
     this.batchNumber = this.batchNumber + 1;
-    this.BatchDetail = "Invoice Update",
-      this.BatchType = "B",
-
+    this.currentDateTime = this.globalS.getCurrentDateTime();
+    this.currentDateTime = formatDate(this.currentDateTime, 'yyyy-MM-dd hh:mm', 'en_US');
     this.dtpStartDate = this.inputForm.get('dtpStartDate').value;
     this.dtpEndDate = this.inputForm.get('dtpEndDate').value;
     this.dtpStartDate = formatDate(this.dtpStartDate, 'yyyy/MM/dd', 'en_US');
     this.dtpEndDate = formatDate(this.dtpEndDate, 'yyyy/MM/dd', 'en_US');
-
     this.invoiceType = this.inputForm.get('invType').value;
 
     if (this.lockBranches == false) {
       this.selectedBranches = null
     } else {
-    this.selectedBranches = this.branchList
-      .filter(opt => opt.checked)
-      .map(opt => opt.description).join(",")
+      this.selectedBranches = this.branchList
+        .filter(opt => opt.checked)
+        .map(opt => opt.description).join(",")
     }
-    
+
     if (this.lockPrograms == false) {
       this.selectedPrograms = null
     } else {
       this.selectedPrograms = this.programList
-      .filter(opt => opt.checked)
-      .map(opt => opt.title).join(",")
+        .filter(opt => opt.checked)
+        .map(opt => opt.title).join(",")
     }
 
     if (this.lockCategories == false) {
       this.selectedCategories = null
     } else {
-    this.selectedCategories = this.categoriesList
-      .filter(opt => opt.checked)
-      .map(opt => opt.description).join(",")  
+      this.selectedCategories = this.categoriesList
+        .filter(opt => opt.checked)
+        .map(opt => opt.description).join(",")
     }
 
-    if (this.selectedBranches != '' && this.selectedPrograms != '' && this.selectedCategories != '') {
-      console.log(this.selectedBranches)
-      console.log(this.selectedPrograms)
-      console.log(this.selectedCategories)
-      console.log(this.invoiceType)
-      this.insertBatchRecord();
+    if (this.lockBillingCycle == false) {
+      this.selectedBillingCycle = null
+    } else {
+      this.selectedBillingCycle = this.billingCycleList
+        .filter(opt => opt.checked)
+        .map(opt => opt.description).join(",")
+    }
+
+    if (this.selectedBillingCycle != '' && this.selectedBranches != '' && this.selectedPrograms != '' && this.selectedCategories != '') {
+      // console.log(this.batchNumber);
+      // console.log(this.selectedBranches);
+      // console.log(this.selectedPrograms);
+      // console.log(this.selectedCategories);
+      // console.log(this.dtpStartDate);
+      // console.log(this.dtpEndDate);
+      // console.log(this.invoiceType);
+      // console.log(this.selectedBillingCycle);
+      // console.log(this.sepInvRecipient);
+      // console.log(this.operatorID);
+      // console.log(this.currentDateTime);
       this.updateRosterDebtorRecord();
+    } else if (this.selectedBillingCycle == '') {
+      this.globalS.eToast('Error', 'Please select atleast one Billing Cycle to proceed')
     } else if (this.selectedBranches == '') {
-      this.globalS.sToast('Alert', 'Please select atleast one Branch to proceed')
+      this.globalS.eToast('Error', 'Please select atleast one Branch to proceed')
     } else if (this.selectedPrograms == '') {
-      this.globalS.sToast('Alert', 'Please select atleast one Program to proceed')
+      this.globalS.eToast('Error', 'Please select atleast one Program to proceed')
     } else if (this.selectedCategories == '') {
-      this.globalS.sToast('Alert', 'Please select atleast one Category to proceed')
+      this.globalS.eToast('Error', 'Please select atleast one Category to proceed')
     }
-  }
-
-  getBatchRecord() {
-    this.loading = true;
-
-    this.billingS.getBatchRecord(null).subscribe(data => {
-      setTimeout(() => {
-        this.batchNumber = data[0].batchRecordNumber;
-      }, 100);
-      this.loading = false
-    });
-  }
-
-  insertBatchRecord() {
-    this.postLoading = true;
-    this.billingS.insertPayBillBatch({
-      OperatorID: this.operatorID,
-      BatchDate: this.globalS.getCurrentDateTime(),
-      BatchNumber: this.batchNumber,
-      BatchDetail: this.BatchDetail,
-      BatchType: this.BatchType,
-    }).pipe(
-      takeUntil(this.unsubscribe)).subscribe(data => {
-        if (data) {
-          // this.globalS.sToast('Success', 'Batch Updated')
-          this.postLoading = false;
-          return false;
-        }
-      });
   }
 
   updateRosterDebtorRecord() {
@@ -458,43 +453,47 @@ export class DebtorComponent implements OnInit {
       Categories: this.selectedCategories,
       StartDate: this.dtpStartDate,
       EndDate: this.dtpEndDate,
-      InvoiceType: this.invoiceType
+      InvoiceType: this.invoiceType,
+      sepInvRecipient: this.sepInvRecipient,
+      OperatorID: this.operatorID,
+      CurrentDateTime: this.currentDateTime
     }).pipe(
       takeUntil(this.unsubscribe)).subscribe(data => {
         if (data) {
           this.updatedRecords = data[0].updatedRecords
           if (this.updatedRecords == 0) {
-            this.globalS.sToast('Alert', 'There are no approved roster entries to process for the selected date range and program/s')
+            this.globalS.iToast('Information', 'There are no approved roster entries to process for the selected date range and program/s')
           } else {
             this.globalS.sToast('Success', this.updatedRecords + ' - Debtor Records Updated')
-            this.postLoading = false;
-            return false;
           }
-        }
-      });
-  }
-
-  getSelectedDebtorRecord() {
-
-    this.dtpStartDate = this.inputForm.get('dtpStartDate').value;
-    this.dtpEndDate = this.inputForm.get('dtpEndDate').value;
-
-    this.billingS.getDebtorRecords({
-      StartDate: this.dtpStartDate,
-      EndDate: this.dtpEndDate,
-      Branches: this.selectedBranches,
-      Programs: this.selectedPrograms,
-      Categories: this.selectedCategories,
-    }).pipe(
-      takeUntil(this.unsubscribe)).subscribe(data => {
-        if (data) {
-          this.globalS.sToast('Success', 'Debtor Records Fetched')
           this.postLoading = false;
+          this.ngOnInit();
           return false;
         }
       });
-
   }
+
+  // getSelectedDebtorRecord() {
+
+  //   this.dtpStartDate = this.inputForm.get('dtpStartDate').value;
+  //   this.dtpEndDate = this.inputForm.get('dtpEndDate').value;
+
+  //   this.billingS.getDebtorRecords({
+  //     StartDate: this.dtpStartDate,
+  //     EndDate: this.dtpEndDate,
+  //     Branches: this.selectedBranches,
+  //     Programs: this.selectedPrograms,
+  //     Categories: this.selectedCategories,
+  //   }).pipe(
+  //     takeUntil(this.unsubscribe)).subscribe(data => {
+  //       if (data) {
+  //         this.globalS.sToast('Success', 'Debtor Records Fetched')
+  //         this.postLoading = false;
+  //         return false;
+  //       }
+  //     });
+
+  // }
 
   // GetPayPeriodEndDate() {
   //   let sql = "SELECT convert(varchar, PayPeriodEndDate, 101) AS PayPeriodEndDate FROM SysTable"

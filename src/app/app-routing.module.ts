@@ -295,7 +295,9 @@ import { DebtorComponent } from '@admin/billing/debtor.component'; //AHSAN
 import { TravelComponent } from '@admin/billing/travel.component'; //AHSAN 
 import { PayComponent } from '@admin/timesheet-processing-views/pay.Component'; //AHSAN 
 import { PayIntegrityComponent } from '@admin/billing/payIntegrity.component'; //AHSAN
-import { CloseRosterComponent } from '@admin/billing/closeRoster.component'; //AHSAN
+import { CloseRosterComponent } from '@admin/billing/closeRoster.component'; //AHSAN 
+import { RollbackInvoiceComponent } from '@admin/billing/rollbackInvoice.component'; //AHSAN 
+import { RollbackPayrollComponent } from '@admin/billing/rollbackPayroll.component'; //AHSAN 
 import { MediaList } from '@admin/recipient-views/mediaList';
 import { UserDetail } from '@admin/configuration/genrel-setup/userdetail';
 import { Checklist } from '@admin/configuration/genrel-setup/checklist';
@@ -832,6 +834,14 @@ const routes: Routes = [
       {
         path: 'close-roster-period', //AHSAN
         component: CloseRosterComponent
+      },
+      {
+        path: 'rollback-invoice-batch', //AHSAN
+        component: RollbackInvoiceComponent
+      },
+      {
+        path: 'rollback-payroll-batch', //AHSAN
+        component: RollbackPayrollComponent
       },
       {
         path: 'hcp',
@@ -1640,6 +1650,8 @@ export const PAGE_COMPONENTS = [
   PayComponent, //AHSAN 
   PayIntegrityComponent, //AHSAN 
   CloseRosterComponent, //AHSAN 
+  RollbackInvoiceComponent, //AHSAN
+  RollbackPayrollComponent, //AHSAN
   BudgetgroupsComponent,
   BudgetsComponent,
   ContactgroupsComponent,

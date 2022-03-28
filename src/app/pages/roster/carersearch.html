@@ -168,10 +168,10 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let result of fixedTable.data" (click)="onItemSelected(result)" (dblclick)="onItemDbClick(result)"
-                  (contextmenu)="rightClickMenu($event,result)" [class.selected]="selectAll">
-                  <td nzWidth="100px" nzLeft="0PX" [class.selected]="selectAll">{{result.id}}</td>
-                  <td nzWidth="50px" nzLeft="100PX" [class.selected]="selectAll">{{result.hfmin}}</td>
-                  <td nzWidth="50px" nzLeft="150PX" [class.selected]="selectAll">{{result.hfmax}}</td>
+                  >
+                  <td nzWidth="100px" nzLeft="0PX" >{{result.id}}</td>
+                  <td nzWidth="50px" nzLeft="100PX" >{{result.hfmin}}</td>
+                  <td nzWidth="50px" nzLeft="150PX" >{{result.hfmax}}</td>
                   <td nzWidth="200px">{{result.type}}</td>
                   <td nzWidth="200px">{{result.name}}</td>
                   <td nzWidth="200px">{{result.suburb}}</td>
@@ -184,7 +184,7 @@
                   <td nzWidth="200px">{{result.alerts}}</td>
                   <td nzWidth="200px">{{result.lastKnownLocation}}</td>
                   <td nzWidth="100px">{{result.rating}}</td>
-                  <td nzWidth="0px" nzRight="0px" [class.selected]="selectAll">{{result.costFactor}}</td>
+                  <td nzWidth="0px" nzRight="0px" >{{result.costFactor}}</td>
                   </tr>
                 </tbody>
               </nz-table>
@@ -489,47 +489,3 @@
       </div>
   </div> <!-- end of model -->
   </nz-modal>
-
-  <nz-modal class="options" [nzStyle]="{ top: '15px' }" [(nzVisible)]="showMenu" nzTitle="Staff Search" (nzOnCancel)="showMenu = false" 
-    style="background-color: #002060; margin-top: 5px; color: white;">
-   
-    <div  nz-row style="background-color: #fff; margin-top: 5px; ">
-        <ul >
-            <li class="listitem"  (click)="menuItems.next(0)">View Map</li>
-            <li class="listitem"   (click)="menuItems.next(1)">Map Last known Location to Job</li>
-            <li class="listitem"  (click)="menuItems.next(2)" >View Daily Gaps</li>           
-            <li class="listitem"  (click)="menuItems.next(3)">View Gaps Full Month</li>
-            <li class="listitem"  (click)="menuItems.next(4)">Select All displayed Staff</li>
-            <hr/>
-            <li class="listitem"  (click)="menuItems.next(5)"> Email Selected Staff</li>
-            <li class="listitem"  (click)="menuItems.next(6)"> Email Job Query to Selected Staff</li>
-            <li class="listitem"  (click)="menuItems.next(7)"> SMS Selected Staff via SMSEmail</li>
-            <li class="listitem"  (click)="menuItems.next(8)"> SMS Job Query to Selected Staff via SMSEmail</li>
-            <li class="listitem"  (click)="menuItems.next(9)"> SMS Job Query to Selected Staff via Skype</li>
-            <li class="listitem"  (click)="menuItems.next(10)"> Send Traccs Message to Staff</li>
-            <hr/>
-            <li class="listitem"  (click)="menuItems.next(11)"> Add Job to Outlook Diary</li>
-            <hr/>
-            <li class="listitem"  (click)="menuItems.next(12)"> View Staff Profile</li>
-          </ul>
-        </div>
-        <div *nzModalFooter>
-            <!-- <span>Modal Footer: </span>
-            <button nz-button nzType="default" (click)="handleCancel()">Custom Callback</button>
-            <button nz-button nzType="primary" (click)="handleOk()" [nzLoading]="isConfirmLoading">Custom Submit</button> -->
-          </div>
-      </nz-modal>
-
-      <nz-modal [(nzVisible)]="openRoster" [nzStyle]="{ top: '20px' }" nzWidth="1200" [nzZIndex]="1000" nzTitle="" (nzOnCancel)="openRoster=false" >  
-        <!-- <div  class="flexy" style="min-height:20rem;" > -->
-        <div style="background-color: white; min-height:40rem;">
-          <roster-component  [reloadRoster]="reloadRoster"></roster-component>
-         
-        </div>
-        <div *nzModalFooter>
-            <!-- <button nz-button nzType="default" (click)="openRoster=false">OK</button>
-            <button nz-button nzType="default" (click)="openRoster=false">Cancel</button> -->
-        </div>
-    </nz-modal>
-    
-  

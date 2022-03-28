@@ -9,4 +9,5 @@ export * from './recipientsearch'
 export * from './dm-roster'
 export * from './servicetasks'
 export * from './rosterextrainfo' 
+export * from './carersearch'
 

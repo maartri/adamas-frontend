@@ -143,7 +143,7 @@ class Address {
 
 export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
     date: any = new Date();
-    
+    refreshCalander:boolean;
     serviceType:string;
     dateFormat:string="dd/MM/YYYY"
     dayView: number = 7;
@@ -389,7 +389,7 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
         
             this.serviceType  =this.selectedOption.activity;                    
             this.defaultStartTime  =this.selectedOption.startTime;
-            this.notes=this.selectedOption.notes;
+            this.notes=this.selectedOption.snotes;
             if (data!=null)
             this.ViewAdditionalModal=true;  
         
@@ -405,9 +405,11 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.optionsModal=false;
         if (data==1){ 
             //Un-Allocate staff
+            this.operation='Un-Allocate'
             this.UnAllocate();
         }else  if (data==2){ 
             //Re-Allocate staff
+            this.operation='Re-Allocate'
             this.AllocateStaffModal=true;
         
         }else  if (data==3){ 
@@ -562,6 +564,8 @@ data(event:any){
 pasted(event:any){
 }
 ApplyQuickFilter(){
+    this.loading=true;
+    this.CustomFilters=[];
     if (!this.AllBranches){
         this.LimitTo="BRANCH LIST"
         this.startWith = JSON.stringify(this.selectedBranches.map(x=>x.title));
@@ -587,7 +591,7 @@ ApplyQuickFilter(){
      this.viewQuickFilter=false;
 }
 ApplyCustomFilter(){
-   
+    this.loading=true;
     this.applyFilter.next(this.CustomFilters);
     
 }
@@ -758,7 +762,8 @@ pasteSelectedRecords(event:any){
 
     if (this._highlighted.length<=0)
         this._highlighted=this.toBePasted;
-
+    
+   
     // this._highlighted.forEach(function (value) {
     //     //console.log(value);
     //     value.date=moment(event.selected).format('YYYY/MM/DD');
@@ -783,7 +788,7 @@ pasteSelectedRecords(event:any){
             this.pasting_records(v)                 
         }, 100);   
     }
-
+   
 }
 onTextChangeEvent(event:any){
    // console.log(this.txtSearch);
@@ -1300,12 +1305,17 @@ ngAfterViewInit(){
             
             if( Option=='Copy' ||Option=='Cut'){
                 this.showAlertForm('Add')
-                if (this._highlighted[this._highlighted.length-1].recordno==record.recordno)
+                if (this._highlighted[this._highlighted.length-1].recordno==record.recordno){
                     this.load_rosters();
+               
+                }
             }else if (Option=='Delete'){
                 this.showAlertForm('Delete')
-                if (this._highlighted[this._highlighted.length-1].recordno==record.recordno)
+                if (this._highlighted[this._highlighted.length-1].recordno==record.recordno){
                     this.load_rosters();
+                   
+                  
+                }
                 
             }else{
                 this.load_rosters();
@@ -1379,6 +1389,7 @@ ProcessChangeResources(type :number){
         this.serviceActivityList=data;
         this.originalList=data;
         this.ViewAllocateResourceModal=true;;
+        this.loading=false;
     });
 
 }
@@ -1614,7 +1625,7 @@ SaveDayTime(){
           
 
     this.listS.updatelist(sql).subscribe(data=>{
-        this.globalS.sToast("Day Manager","Record Updated Successfully");
+       // this.globalS.sToast("Day Manager","Record Updated Successfully");
         this.ViewChangeDayTimeModal=false;
         this.load_rosters();
     });
@@ -1778,7 +1789,7 @@ UnAllocate(){
  
 reAllocate(){
     if (this.selectedOption==null || this.selectedOption.recordNo==0) return;
-
+   
     this.ProcessRoster("Re-Allocate", this.selectedOption);
   
     var text=   this.selectedCarer + " (" + this.selectedOption.activity + ")";            
@@ -1824,7 +1835,7 @@ listChange(event: any) {
 }
 
 onItemChecked(data: any, checked: boolean, type:string): void {
-    if (type=='Branches'){
+    if (type=='Branch'){
         if (checked)
             this.selectedBranches.push(data)
         else           

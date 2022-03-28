@@ -170,7 +170,7 @@ import {
 
 
 import {  
-  RostersAdmin,ShiftDetail,AddRoster,RecipientExternal,StaffExternal,GNotes,StaffSearch,RecipientSearch,DMRoster
+  RostersAdmin,ShiftDetail,AddRoster,RecipientExternal,StaffExternal,GNotes,CarerSearch,StaffSearch,RecipientSearch,DMRoster
   ,ServiceTasks, RosterExtraInfo
 } from './pages/roster/index';
 
@@ -1011,9 +1011,14 @@ const routes: Routes = [
         component:GNotes
       },
       {
+        path: 'carer-search',
+        component:CarerSearch
+      },
+      {
         path: 'staff-search',
         component:StaffSearch
       },
+      
       {
         path: 'recipient-search',
         component:RecipientSearch
@@ -1351,6 +1356,7 @@ export const PAGE_COMPONENTS = [
   RecipientExternal,
   StaffExternal,
   GNotes,
+  CarerSearch,
   StaffSearch,
   RecipientSearch,
   DMRoster,

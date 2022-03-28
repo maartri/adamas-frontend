@@ -37,7 +37,7 @@
                     <button nz-button nzType="default"  (click)="showCustomFilter()" [nzSize]="size" nzShape="circle" nz-tooltip nzTooltipTitle="Create a new custom filter to limit activities to operator requirements"><i nz-icon nzType="filter" nzTheme="outline" ></i></button>
                     <button nz-button nzType="default"  (click)="removeCustomFilter()" [disabled]="CustomFilters.length<=0" [nzSize]="size" nzShape="circle" nz-tooltip nzTooltipTitle="Delete ALL custom filters"><i nz-icon nzType="close-circle" nzTheme="outline" ></i></button>
                     <button nz-button nzType="default"  (click)="ViewCustomFilter()" [disabled]="CustomFilters.length<=0" [nzSize]="size" nzShape="circle" nz-tooltip nzTooltipTitle="View existing custom filters"><i nz-icon nzType="question-circle" nzTheme="outline" ></i></button>
-                    <button nz-button nzType="default"  (click)="load_rosters()" [nzSize]="size" nzShape="circle" nz-tooltip nzTooltipTitle="Refresh the current Day Manager view"><i nz-icon nzType="reload" nzTheme="outline" ></i></button>
+                    <button nz-button nzType="default"  (click)="refreshCalander=!refreshCalander" [nzSize]="size" nzShape="circle" nz-tooltip nzTooltipTitle="Refresh the current Day Manager view"><i nz-icon nzType="reload" nzTheme="outline" ></i></button>
                     <button nz-button nzType="default"  (click)="ViewQuickFilterDisplay()" [nzSize]="size" nzShape="circle" nz-tooltip nzTooltipTitle="Quiick Filters"><i nz-icon nzType="interaction" nzTheme="outline" ></i></button>
                     <button nz-button nzType="default"  [nzSize]="size" nzShape="circle" nz-tooltip nzTooltipTitle="Print the Day Manager"><i nz-icon nzType="printer" nzTheme="outline" ></i></button>                   
                     <button nz-button nzType="default"  (click)="openStaffModal(true)" [nzSize]="size" nzShape="circle" nz-tooltip nzTooltipTitle="Display Staff Inquiry Screen"><i nz-icon nzType="team" nzTheme="outline" ></i></button>
@@ -227,7 +227,7 @@
            
     </div>
     <div>
-        <dm-calendar [startDate]="date" [dayView]="dayView" [reload]="reload" [personType]="selectedPersonType"  [copyPaste]="toBePasted?.length > 0"
+        <dm-calendar [startDate]="date" [dayView]="dayView" [reload]="reload" [personType]="selectedPersonType"  [refreshCalander]="refreshCalander"
             (showDetail)="showDetail($event)" (showOptions)="showOptions($event)" (highlighted)="highlighted($event)" [master]="master"
             (data)="data($event)" (paste)="pasteSelectedRecords($event)" [applyFilter]="applyFilter" [dmOptions]="dmOptions"></dm-calendar>
     </div>
@@ -278,7 +278,7 @@
             <li *ngIf="displayOption" class="listitem" >View <i nz-icon nzType="right" nzTheme="outline"></i>
                 <ul class="listitem">
                     <li (click)="ViewDetails.next(1)">View Recipient Details</li>                    
-                    <li (click)="ViewDetails.next(2)">View Staff Details</li>
+                    <li *ngIf="selectedStaff!='BOOKED' && selectedStaff!='!INTERNAL' && selectedStaff!='!MULTIPLE'" (click)="ViewDetails.next(2)">View Staff Details</li>
                     <li (click)="ViewDetails.next(3)">View Extra/Additional Info</li>
                     <li (click)="ViewDetails.next(4)">View Shift/Service Details</li>
                   

@@ -176,6 +176,7 @@ OnDestroy  {
       float: 'left'
     };  
 @Input() info = {StaffCode:'', ViewType:'',IsMaster:false}; 
+@Input() reloadRoster = new Subject<any>();
 @ViewChild(ShiftDetail) detail:ShiftDetail;
 selectedrow: string ="class.selected"   
 timesheets: Array<any> = [];
@@ -2446,10 +2447,11 @@ load_rosters(){
      // Set the default size.
      this.spreadsheet.getHost().style.width = (this.screenWidth - 260) + 'px';
      this.spreadsheet.getHost().style.height = (this.screenHeight - 170) + 'px';
-   
+    console.log('spreadsheet width'+this.spreadsheet.getHost().style.width)
 
-    sheet.clearSelection();
-
+    sheet.clearSelection(); 
+    
+    
     var style = new GC.Spread.Sheets.Style();
     //style.backColor = "red";
     // style.borderLeft = new GC.Spread.Sheets.LineBorder("blue",GC.Spread.Sheets.LineStyle.medium);
@@ -3479,7 +3481,7 @@ return rst;
     private unsubscribe = new Subject();
   //  private rosters: Array<any>;
     //private current_roster: any;
-    private upORdown = new Subject<boolean>();
+     upORdown = new Subject<boolean>();
 
     constructor(
         private router: Router,
@@ -3705,6 +3707,8 @@ return rst;
             
             this.router.navigate(['/']);
             return;
+
+            
         }
      
         GC.Spread.Sheets.LicenseKey = license;
@@ -3737,7 +3741,20 @@ return rst;
          this.tval=96;
          this.dval=14;
      
-      
+         this.reloadRoster.subscribe(d=>{
+          
+             this.info=d;
+             this.defaultCode=this.info.StaffCode;
+           //  this.screenHeight = 1000;
+           //  this.screenWidth = 800;
+             let dt=new Date('2022/03/01');
+             this.date=dt;
+           //  this.ngAfterViewInit();
+           
+             this.onChange(dt);
+
+        
+        })
       
 }
 

@@ -86,7 +86,7 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
   @Input() applyFilter: Subject<any>= new Subject()
   @Input() dmOptions: Subject<any>= new Subject()
   
-  @Input() copyPaste: boolean = false
+  @Input() refreshCalander: boolean = false
   @Input() personType: string;
 
   @Output() showDetail = new EventEmitter();
@@ -183,6 +183,7 @@ export class DmCalendarComponent implements OnInit, OnChanges, AfterViewInit, On
     this.getLocalStorage();
     this.reload.subscribe(v => { 
       this.alertChange();
+      this.akonani=[];
      // this.reload.next(false);
     });
     this.applyFilter.subscribe(data=>{
@@ -690,12 +691,14 @@ getfilterType(type:String)
      
     }
     
-   
-    if (changes['copyPaste'] && !changes['copyPaste'].isFirstChange()) {
-      this.copyPaste = changes['copyPaste'].currentValue
-      this.highLightCopyWrappers(this.copyPaste)
-      return;
+    if (changes['refreshCalander'] ) {
+      this.akonani=[];
     }
+    // if (changes['copyPaste'] && !changes['copyPaste'].isFirstChange()) {
+    //   this.copyPaste = changes['copyPaste'].currentValue
+    //   this.highLightCopyWrappers(this.copyPaste)
+    //   return;
+    // }
     this.dmType="2";
     if (this.personType!=null){
       this.currentFilter=this.getfilterType(this.personType);
@@ -1056,12 +1059,17 @@ getfilterType(type:String)
 
   }
   rightClickMenu(event: any, value: any) {
-    
-    if (this.clickedRoster==null && this.akonani.length==0){ 
-      value.isSelected=true;  
-      this.clickedRoster=value;
-      this.akonani.push(value);
+
+    if (this.akonani.length<=0){
+    value.isSelected=true;
+    this.clickedRoster=value;
+    this.akonani.push(value);
     }
+    // if (this.clickedRoster==null && this.akonani.length==0){ 
+    //   value.isSelected=true;  
+    //   this.clickedRoster=value;
+    //   this.akonani.push(value);
+    // }
     this.optionMenuDisplayed=true;
     event.preventDefault();
     this.optionEmitter(value);

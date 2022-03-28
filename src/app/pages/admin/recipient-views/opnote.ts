@@ -12,7 +12,10 @@ import { AngularEditorConfig } from '@kolkov/angular-editor';
 
 import {CdkDragDrop, moveItemInArray, transferArrayItem, copyArrayItem } from '@angular/cdk/drag-drop';
 import * as groupArray from 'group-array';
+// import * as rtf2text from '@bacali/rtf-parser';
 
+// import * as iconvLite from 'iconv-lite';
+// import { deEncapsulateSync } from 'rtf-stream-parser';
 
 const FILTERS: Array<string> = [
     'CARE DOMAIN',
@@ -140,6 +143,7 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
         this.user = this.sharedS.getPicked();
         // this.search(this.user);
         this.buildForm();
+        // console.log(rtf2text)
     }
 
     print(){
@@ -169,8 +173,10 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
             
             if (list.length > 0) {
                 list.forEach(x => {
+                    // x.detail = deEncapsulateSync(x.detailOriginal, { decode: iconvLite.decode });
+                    // x.detail = this.globalS.CleanWordHTML(x.detail)
                     if (!this.globalS.IsRTF2TextRequired(x.detailOriginal)) {
-                        x.detail = x.detailOriginal
+                        x.detail = x.detailOriginal;                        
                     }
                 });
                 this.tableData = list;

@@ -259,12 +259,12 @@
             <li class="listitem" *ngIf="displayOption" (click)="ViewRecipientDetails.next(2)" >View Service Shift Notes</li>
             <hr/>
             <li class="listitem" *ngIf="selectedStaff!='BOOKED' && displayOption" (click)="AllocateView.next(1)">Un-Allocate Staff</li>
-            <li class="listitem" *ngIf="displayOption" (click)="AllocateView.next(2)">Allocate Staff</li>
+            <li class="listitem" *ngIf="displayOption" (click)="AllocateView.next(2)">Re-Allocate Staff</li>
             <li class="listitem" *ngIf="displayOption" (click)="ViewChangeDayTime.next(1)"> Change Day or Times</li>
             <hr/>
-            <li class="listitem" (click)="AddRoster()" >Add NEW Staff Activity / View Shift and Gaps</li>
-            <li class="listitem" (click)="AddRoster()">Add NEW Recipient Activity / View Daily Services</li>
-            <li class="listitem" (click)="AddRoster()" >My Diary / Appointments - Day View</li>
+            <li class="listitem" (click)="AddRoster(1)" >Add NEW Staff Activity / View Shift and Gaps</li>
+            <li class="listitem" (click)="AddRoster(2)">Add NEW Recipient Activity / View Daily Services</li>
+            <li class="listitem" (click)="AddRoster(3)" >My Diary / Appointments - Day View</li>
             <hr/>
             <li class="listitem" *ngIf="displayOption" (click)="openCaseLoad()">Set Caseload Name</li>
             <li *ngIf="displayOption" (click)="openAllocateResource()">Allocate Resource</li>
@@ -631,9 +631,9 @@
     </div>
 </nz-modal>
 
-<nz-modal [nzStyle]="{ top: '15px' }"  hasBackdrop [nzWidth]="470" [(nzVisible)]="AddRosterModel" nzTitle="Day Manager "   (nzOnCancel)="AddRosterModel = false" >
+<nz-modal [nzStyle]="{ top: '15px' }"  hasBackdrop [nzWidth]="450" [(nzVisible)]="AddRosterModel" nzTitle="Day Manager "   (nzOnCancel)="AddRosterModel = false" >
     <div  class="flexy" style="min-height:20rem;" >
-        <dm-roster  [loadRoster]="loadingRoster" (RosterDone)="load_rosters()" (reLoadGrid)="reLoadGridRosterModel()" ></dm-roster>    
+        <dm-roster  [loadRoster]="loadingRoster" (RosterDone)="load_rosters()"  (reLoadGrid)="reLoadGridRosterModel()" ></dm-roster>    
     </div>
     <div *nzModalFooter>
         <button nz-button nzType="default" (click)="AddRosterModel=false">OK</button>

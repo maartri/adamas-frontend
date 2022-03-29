@@ -1142,6 +1142,7 @@ ngAfterViewInit(){
             this.pastePosition=data;
             this.optionsModal = true;
             this.displayOption=false;
+            this.selectedOption=null;
             return
         }
         this.displayOption=true;
@@ -1259,13 +1260,19 @@ ngAfterViewInit(){
             this.info.StaffCode=this.selectedOption.recipient;
             this.info.date=this.selectedOption.date;
             this.info.ViewType='Recipient';
-        }else  if (this.selectedOption!=null && view==3) {        
+        }else  if (view==3) {        
             this.info.StaffCode=this.token.code
-            this.info.date=this.selectedOption.date;
+            this.info.date=this.selectedOption!=null ? this.selectedOption.date : moment(this.pastePosition.selected.date).format('YYYY/MM/DD');
             this.info.ViewType='Staff';
         } else  if (this.pastePosition!=null){
-            this.info.StaffCode=this.pastePosition.selected.carercode;
-            this.info.date= moment(this.pastePosition.selected.date).format('YYYY/MM/DD');
+            if (view==2){
+                this.info.StaffCode='';
+                this.info.date=moment(this.pastePosition.selected.date).format('YYYY/MM/DD');
+                this.info.ViewType='Recipient';
+            }else{
+                this.info.StaffCode=this.pastePosition.selected.carercode;
+                this.info.date= moment(this.pastePosition.selected.date).format('YYYY/MM/DD');
+            }
         }else{
             return;
         }

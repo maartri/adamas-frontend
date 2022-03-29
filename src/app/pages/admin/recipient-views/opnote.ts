@@ -173,8 +173,6 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
             
             if (list.length > 0) {
                 list.forEach(x => {
-                    // x.detail = deEncapsulateSync(x.detailOriginal, { decode: iconvLite.decode });
-                    // x.detail = this.globalS.CleanWordHTML(x.detail)
                     if (!this.globalS.IsRTF2TextRequired(x.detailOriginal)) {
                         x.detail = x.detailOriginal;                        
                     }

@@ -19,6 +19,15 @@ import { AngularEditorConfig } from '@kolkov/angular-editor';
 import {CdkDragDrop, moveItemInArray, transferArrayItem, copyArrayItem } from '@angular/cdk/drag-drop';
 import * as groupArray from 'group-array';
 
+
+const FILTERS: Array<string> = [
+    'CARE DOMAIN',
+    'CATEGORY',
+    'CREATOR',
+    'DISCIPLINE',
+    'PROGRAMS'
+ ]
+
 @Component({
     styles: [`
     nz-table{
@@ -67,6 +76,8 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
     clist: Array<any> = [];
     dlist: Array<any> = [];
     mlist: Array<any> = [];
+
+    FILTERS = FILTERS;
     
     public editorConfig:AngularEditorConfig = {
         editable: true,
@@ -147,14 +158,14 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
             // this.getSelect();
         }
         
-        filterChange(data: any){
-            this.getNotes(this.user);
+        filterChange(filters: any){
+            this.getNotes(this.user, filters);
         }
         
-        getNotes(user: any) {
+        getNotes(user: any, filters: any = null) {
             this.loading = true;
             
-            this.clientS.getcasenoteswithfilters(user.code, this.filters).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            this.clientS.getcasenoteswithfilters(user.code, filters).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
                 let list: Array<any> = data.list || [];
                 
                 if (list.length > 0) {

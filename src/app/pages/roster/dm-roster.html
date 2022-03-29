@@ -14,7 +14,7 @@
                 <div class="calendar-title" >  
                           
                     <label *ngIf="!showDefault && defaultCode" >{{defaultCode}}</label>   
-                    <app-search-timesheet [defautValue]="defaultCode"  [view]="view" (selected)="selected_person($event)"></app-search-timesheet>
+                    <app-search-timesheet [defautValue]="defaultCode" [reload]="reloadSearchList" [view]="view" (selected)="selected_person($event)"></app-search-timesheet>
                 </div>
             </div>
     </div>

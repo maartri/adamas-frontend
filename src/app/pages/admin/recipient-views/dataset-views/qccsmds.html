@@ -134,8 +134,8 @@
                         <label>Housework :</label>
                     </div>
                     <div nz-col nzSpan="18">
-                        <nz-select nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
-                            <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        <nz-select nzShowSearch nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of functionalStatus.housework" [nzValue]="list" [nzLabel]="list"></nz-option>                           
                         </nz-select>
                     </div>
                 </div>
@@ -144,8 +144,8 @@
                         <label>Transport :</label>
                     </div>
                     <div nz-col nzSpan="18">
-                        <nz-select nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
-                            <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        <nz-select nzShowSearch nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of functionalStatus.transport" [nzValue]="list" [nzLabel]="list"></nz-option>                           
                         </nz-select>
                     </div>
                 </div>
@@ -154,8 +154,8 @@
                         <label>Shopping :</label>
                     </div>
                     <div nz-col nzSpan="18">
-                        <nz-select nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
-                            <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        <nz-select nzShowSearch nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of functionalStatus.shopping" [nzValue]="list" [nzLabel]="list"></nz-option>                           
                         </nz-select>
                     </div>
                 </div>
@@ -164,8 +164,8 @@
                         <label>Medication :</label>
                     </div>
                     <div nz-col nzSpan="18">
-                        <nz-select nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
-                            <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        <nz-select nzShowSearch nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of functionalStatus.medication" [nzValue]="list" [nzLabel]="list"></nz-option>                           
                         </nz-select>
                     </div>
                 </div>
@@ -174,8 +174,8 @@
                         <label>Money :</label>
                     </div>
                     <div nz-col nzSpan="18">
-                        <nz-select nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
-                            <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        <nz-select nzShowSearch nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of functionalStatus.money" [nzValue]="list" [nzLabel]="list"></nz-option>                           
                         </nz-select>
                     </div>
                 </div>
@@ -184,8 +184,8 @@
                         <label>Walking :</label>
                     </div>
                     <div nz-col nzSpan="18">
-                        <nz-select nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
-                            <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        <nz-select nzShowSearch nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of functionalStatus.walking" [nzValue]="list" [nzLabel]="list"></nz-option>                           
                         </nz-select>
                     </div>
                 </div>
@@ -194,8 +194,8 @@
                         <label>Bath/Shower :</label>
                     </div>
                     <div nz-col nzSpan="18">
-                        <nz-select nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
-                            <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        <nz-select nzShowSearch nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of functionalStatus.bathShower" [nzValue]="list" [nzLabel]="list"></nz-option>                           
                         </nz-select>
                     </div>
                 </div>
@@ -204,8 +204,8 @@
                         <label>Memory Probs/Confusion :</label>
                     </div>
                     <div nz-col nzSpan="4">
-                        <nz-select nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
-                            <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        <nz-select nzShowSearch nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of functionalStatus.confusion" [nzValue]="list" [nzLabel]="list"></nz-option>                           
                         </nz-select>
                     </div>
                 </div>
@@ -214,8 +214,8 @@
                         <label>Behavioural Problems :</label>
                     </div>
                     <div nz-col nzSpan="4">
-                        <nz-select nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
-                            <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        <nz-select nzShowSearch nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of functionalStatus.behaviouralProblems" [nzValue]="list" [nzLabel]="list"></nz-option>                           
                         </nz-select>
                     </div>
                 </div>
@@ -224,8 +224,8 @@
                         <label>Communication :</label>
                     </div>
                     <div nz-col nzSpan="18">
-                        <nz-select nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
-                            <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        <nz-select nzShowSearch nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of functionalStatus.communication" [nzValue]="list" [nzLabel]="list"></nz-option>                           
                         </nz-select>
                     </div>
                 </div>
@@ -234,8 +234,8 @@
                         <label>Dressing :</label>
                     </div>
                     <div nz-col nzSpan="18">
-                        <nz-select nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
-                            <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        <nz-select nzShowSearch nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of functionalStatus.dressing" [nzValue]="list" [nzLabel]="list"></nz-option>                           
                         </nz-select>
                     </div>
                 </div>
@@ -244,8 +244,8 @@
                         <label>Eating :</label>
                     </div>
                     <div nz-col nzSpan="18">
-                        <nz-select nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
-                            <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        <nz-select nzShowSearch nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of functionalStatus.eating" [nzValue]="list" [nzLabel]="list"></nz-option>                           
                         </nz-select>
                     </div>
                 </div>
@@ -254,8 +254,8 @@
                         <label>Toileting :</label>
                     </div>
                     <div nz-col nzSpan="18">
-                        <nz-select nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
-                            <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        <nz-select nzShowSearch nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of functionalStatus.toileting" [nzValue]="list" [nzLabel]="list"></nz-option>                           
                         </nz-select>
                     </div>
                 </div>
@@ -264,8 +264,8 @@
                         <label>Getting Up/Moving :</label>
                     </div>
                     <div nz-col nzSpan="18">
-                        <nz-select nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
-                            <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                        <nz-select nzShowSearch nzAllowClear formControlName="title" [nzDropdownMatchSelectWidth]="false">
+                            <nz-option *ngFor="let list of functionalStatus.gettingUp" [nzValue]="list" [nzLabel]="list"></nz-option>                           
                         </nz-select>
                     </div>
                 </div>

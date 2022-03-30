@@ -23,6 +23,10 @@ export class UserDetail implements OnInit {
     modalOpen: boolean = false;
     current: number = 0;
     inputForm: FormGroup;
+    rosterForm: FormGroup;
+    dayManagerForm:FormGroup;
+    clientPortalForm:FormGroup;
+    mainMenuForm:FormGroup;
     postLoading: boolean = false;
     isUpdate: boolean = false;
     modalVariables: any;
@@ -486,11 +490,135 @@ export class UserDetail implements OnInit {
                 buildForm() {
                     this.inputForm = this.formBuilder.group({
                         name: '',
+                        password:'',
+                        usertype:'',
+                        staffCode:'',
+                        loginMode:'',
+                        homeBranch:'',
+                        system:false,
+                        recipient:'',
+                        staff:'',
+                        roster:'',
+                        dayManager:'',
+                        timesheet:false,
+                        timesheetPreviousPeriod:false,
+                        statistics:false,
+                        financial:false,
+                        reportPreview:false,
+                        invoiceEnquiry:false,
+                        allowTypeAhead:true,
+                        suggestedTimesheets:false,
+                        payIntegrityCheck:false,
+                        timesheetUpdate:false,
+                        accessCDC:false,
                         title:'',
                         end_date:'',
                         recordNumber:null,
                     });
+
+                    this.documents        = this.formBuilder.group({
+                        CanMoveImportedDocuments:false,
+                        KeepOriginalAsImport:false,
+
+                        RecipientDocFolder:'',
+                        Force_RecipDocFolder:false,
+                        
+                        ONIImportExportFolder:'',
+                        Force_ONIImportFolder:false,
+
+                        ONIArchiveFolder:'',
+                        Force_ONIArchiveFolder:false,
+
+                        StaffDocFolder:'',
+                        Force_StaffDocFolder:false,
+
+                        StaffRostersFolder:'',
+                        Force_StaffRosterFolder:false,
+
+                        ReportExportFolder:'',
+                        Force_ReportExportFolder:false,
+
+                        ReportSavesFolder:'',
+                        Force_ReportSavesFolder:false,
+
+                        HACCMDSFolder:'',
+                        Force_HACCMDSFolder:false,
+
+                        CSTDAMDSFolder:'',
+                        Force_CSTDAMDSFolder:false,
+
+                        NRCPMDSFolder:'',
+                        Force_NRCPMDSFolder:false,
+
+                        PayExportFolder:'',
+                        Force_PayExportFolder:false,
+
+                        BillingExportFolder:'',
+                        Force_BillingExportFolder:false,
+
+                    })
+
+                    this.rosterForm       = this.formBuilder.group({
+                        ChangeMasterRoster:false,
+                        AllowRosterReallocate:false,
+                        AllowMasterSaveAs:false,
+                        ManualRosterCopy:false,
+                        AutoCopyRoster:false,
+                        CanRosterOvertime:false,
+                        CanRosterBreakless:false,
+                        CanRosterConflicts:false,
+                        EditRosterRecord:false,
+                        OwnRosterOnly:false,
+                    })
+                    this.dayManagerForm   = this.formBuilder.group({
+                        UseDMv2:false,
+                        APPROVEDAYMANAGER:false,
+                        RECIPMGTVIEW:false,
+                        AllowStaffSwap:false,
+                        AdminChangeOutputType:false,
+                        AdminChangeProgram:false,
+                        AdminChangeActivityCode:false,
+                        AdminChangePaytype:false,
+                        AdminChangeDebtor:false,
+                        AdminChangeBillAmount:false,
+                        AttendeesChangeBillAmount:false,
+                        AdminChangePayQty:false,
+                        LowChangeActivityCode:false,
+                    })
+                    this.clientPortalForm = this.formBuilder.group({
+                        AllowsMarketing:false,
+                        ViewPackageStatement:false,
+                        CanManagePreferences:false,
+                        AllowBooking:false,
+                        CanCreateBooking:false,
+                        BookingLeadTime:'',
+                        CanChooseProvider:false,
+                        ShowProviderPhoto:false,
+                        CanSeeProviderPhoto:false,
+                        CanSeeProviderGender:false,
+                        CanSeeProviderAge:false,
+                        CanSeeProviderReviews:false,
+                        CanEditProviderReviews:false,
+                        HideProviderName:false,
+                        CanManageServices:false,
+                        CanCancelService:false,
+                        CanQueryService:false,
+                    })
+                    this.mainMenuForm     = this.formBuilder.group({
+                        MMPublishPrintRosters:false,
+                        MMTimesheetProcessing:false,
+                        MMBilling:false,
+                        MMPriceUpdates:false,
+                        MMDexUploads:false,
+                        MMNDIA:false,
+                        MMHacc:false,
+                        MMOtherDS:false,
+                        MMAccounting:false,
+                        MMAnalyseBudget:false,
+                        MMAtAGlance:false,
+                    })
                 }
+
                 handleOkTop() {
                     this.generatePdf();
                     this.tryDoctype = ""

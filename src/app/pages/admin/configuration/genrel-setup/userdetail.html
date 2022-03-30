@@ -124,7 +124,7 @@
         </div>
     </div>
     <div *ngIf="tabFindIndex == 8">
-        <div nz-row [nzGutter]="8" *ngIf="inputForm" [formGroup]="inputForm">
+        <div nz-row [nzGutter]="8" *ngIf="dayManagerForm" [formGroup]="dayManagerForm">
             <div nz-col class="gutter-row" nzSpan="12" >
                 <nz-card [nzSize]="'small'" nzTitle="Day Manager Options">
                     <div nz-row nzJustify class="mrg-btm">
@@ -132,7 +132,7 @@
                             <label for="Use DayManager v2">Use DayManager v2 :</label>
                         </div>
                         <div nz-col nzSpan="9">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="UseDMv2"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -140,7 +140,7 @@
                             <label for="Approve In Day Manager">Approve in Day Manager :</label>
                         </div>
                         <div nz-col nzSpan="9">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="APPROVEDAYMANAGER"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -148,7 +148,7 @@
                             <label for="Recipient Management View">Recipient Management View :</label>
                         </div>
                         <div nz-col nzSpan="9">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="RECIPMGTVIEW"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -156,7 +156,7 @@
                             <label for="Allow Quick Staff Swap">Allow Quick Staff Swap :</label>
                         </div>
                         <div nz-col nzSpan="9">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="AllowStaffSwap"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -164,7 +164,7 @@
                             <label for="Admin Change Outpul Type">Admin Change Outpul Type :</label>
                         </div>
                         <div nz-col nzSpan="9">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="AdminChangeOutputType"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -172,7 +172,7 @@
                             <label for="Admin Change Program">Admin Change Program :</label>
                         </div>
                         <div nz-col nzSpan="9">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="AdminChangeProgram"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -180,7 +180,7 @@
                             <label for="Admin Change Activity Code">Admin Change Activity Code :</label>
                         </div>
                         <div nz-col nzSpan="9">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="AdminChangeActivityCode"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -188,15 +188,7 @@
                             <label for="Admin Change Pay Type">Admin Change Pay Type :</label>
                         </div>
                         <div nz-col nzSpan="9">
-                            <label nz-checkbox formControlName="title"></label>
-                        </div>
-                    </div>
-                    <div nz-row nzJustify class="mrg-btm">
-                        <div nz-col nzSpan="15" class="text-right pad-r-5">
-                            <label for="Pay Integrity Check">Pay Integrity Check :</label>
-                        </div>
-                        <div nz-col nzSpan="9">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="AdminChangePaytype"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -204,7 +196,7 @@
                             <label for="Admin Change Debtor">Admin Change Debtor :</label>
                         </div>
                         <div nz-col nzSpan="9">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="AdminChangeDebtor"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -212,7 +204,7 @@
                             <label for="Admin Change Bill Amount">Admin Change Bill Amount :</label>
                         </div>
                         <div nz-col nzSpan="9">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="AdminChangeBillAmount"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -220,7 +212,7 @@
                             <label for="Attendees Change Bill Amount">Attendees Change Bill Amount :</label>
                         </div>
                         <div nz-col nzSpan="9">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="AttendeesChangeBillAmount"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -228,7 +220,7 @@
                             <label for="Admin Change Bill Quantity">Admin Change Bill Quantity :</label>
                         </div>
                         <div nz-col nzSpan="9">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="AdminChangeBillQty"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -236,7 +228,7 @@
                             <label for="Attendees Change Bill Quantity">Attendees Change Bill Quantity :</label>
                         </div>
                         <div nz-col nzSpan="9">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="AttendeesChangeBillAmount"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -244,7 +236,7 @@
                             <label for="Admin Change Pay Quantity">Admin Change Pay Quantity :</label>
                         </div>
                         <div nz-col nzSpan="9">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="AdminChangePayQty"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -252,7 +244,7 @@
                             <label for="Validated Change Activity Code">Validated Change Activity Code :</label>
                         </div>
                         <div nz-col nzSpan="9">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="LowChangeActivityCode"></label>
                         </div>
                     </div>
                 </nz-card>
@@ -260,7 +252,7 @@
         </div>
     </div>
     <div *ngIf="tabFindIndex == 9">
-        <div nz-row [nzGutter]="8" *ngIf="inputForm" [formGroup]="inputForm">
+        <div nz-row [nzGutter]="8" *ngIf="clientPortalForm" [formGroup]="clientPortalForm">
             <div nz-col class="gutter-row" nzSpan="16" >
                 <nz-card [nzSize]="'small'" nzTitle="Client Portal Settings">
                     <div nz-row nzJustify class="mrg-btm">
@@ -268,7 +260,7 @@
                             <label for="Allow Marketing">Allow Marketing :</label>
                         </div>
                         <div nz-col nzSpan="4">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="AllowsMarketing"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -276,7 +268,7 @@
                             <label for="View Package Statement">View Package Statement :</label>
                         </div>
                         <div nz-col nzSpan="4">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="ViewPackageStatement"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -284,7 +276,7 @@
                             <label for="Can Manage Preferences">Can Manage Preferences :</label>
                         </div>
                         <div nz-col nzSpan="4">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="CanManagePreferences"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -292,7 +284,7 @@
                             <label for="Can See Booking Tab"><b>Can See Booking Tab</b> :</label>
                         </div>
                         <div nz-col nzSpan="4">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="AllowBooking"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -300,13 +292,13 @@
                             <label for="Can Create Booking">Can Create Booking :</label>
                         </div>
                         <div nz-col nzSpan="2">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="CanCreateBooking"></label>
                         </div>
                         <div nz-col nzSpan="6" class=" pad-r-5">
                             <label for="Booking Lead Time" style="color: #85B9D5">Booking Lead Time :</label>
                         </div>
                         <div nz-col nzSpan="3">
-                            <input nz-input placeholder=""  formControlName="title" />
+                            <input nz-input placeholder=""  formControlName="BookingLeadTime" />
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -314,7 +306,7 @@
                             <label for="Can Chose Provider">Can Chose Provider :</label>
                         </div>
                         <div nz-col nzSpan="4">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="CanChooseProvider"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -322,7 +314,7 @@
                             <label for="Show Provider Photo">Show Provider Photo :</label>
                         </div>
                         <div nz-col nzSpan="4">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="ShowProviderPhoto"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -330,7 +322,7 @@
                             <label for="Can See Provider Photo">Can See Provider Photo :</label>
                         </div>
                         <div nz-col nzSpan="4">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="CanSeeProviderPhoto"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -338,7 +330,7 @@
                             <label for="Can See Provider Gender">Can See Provider Gender :</label>
                         </div>
                         <div nz-col nzSpan="4">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="CanSeeProviderGender"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -346,15 +338,7 @@
                             <label for="Can See Provider Age">Can See Provider Age :</label>
                         </div>
                         <div nz-col nzSpan="4">
-                            <label nz-checkbox formControlName="title"></label>
-                        </div>
-                    </div>
-                    <div nz-row nzJustify class="mrg-btm">
-                        <div nz-col nzSpan="14" class="text-right pad-r-5">
-                            <label for="Can See Provider Age">Can See Provider Age :</label>
-                        </div>
-                        <div nz-col nzSpan="4">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="CanSeeProviderAge"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -362,7 +346,7 @@
                             <label for="Can See Provider Reviews">Can See Provider Reviews :</label>
                         </div>
                         <div nz-col nzSpan="4">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="CanSeeProviderReviews"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -370,7 +354,7 @@
                             <label for="Can Edit Provider Reviews">Can Edit Provider Reviews :</label>
                         </div>
                         <div nz-col nzSpan="4">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="CanEditProviderReviews"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -378,7 +362,7 @@
                             <label for="Hide Provider Name">Hide Provider Name :</label>
                         </div>
                         <div nz-col nzSpan="4">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="HideProviderName"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -386,7 +370,7 @@
                             <label for="Can Manage Services"><b>Can Manage Services</b> :</label>
                         </div>
                         <div nz-col nzSpan="4">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="CanManageServices"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -394,7 +378,7 @@
                             <label for="Can Cancel Service">Can Cancel Service :</label>
                         </div>
                         <div nz-col nzSpan="4">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="CanCancelService"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -402,7 +386,7 @@
                             <label for="Can Query Service">Can Query Service :</label>
                         </div>
                         <div nz-col nzSpan="4">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="CanQueryService"></label>
                         </div>
                     </div>
                 </nz-card>
@@ -410,7 +394,7 @@
         </div>
     </div>
     <div *ngIf="tabFindIndex == 10">
-        <div nz-row [nzGutter]="8" *ngIf="inputForm" [formGroup]="inputForm">
+        <div nz-row [nzGutter]="8" *ngIf="mainMenuForm" [formGroup]="mainMenuForm">
             <div nz-col class="gutter-row" nzSpan="12" >
                 <nz-card [nzSize]="'small'" nzTitle="Main Menu Options">
                     <div nz-row nzJustify class="mrg-btm">
@@ -418,7 +402,7 @@
                             <label for="Access Public Print Rosters">Access Public Print Rosters :</label>
                         </div>
                         <div nz-col nzSpan="9">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="MMPublishPrintRosters"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -426,7 +410,7 @@
                             <label for="Access Timesheet Processing">Access Timesheet Processing :</label>
                         </div>
                         <div nz-col nzSpan="9">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="MMTimesheetProcessing"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -434,7 +418,7 @@
                             <label for="Access Billing Processing">Access Billing Processing :</label>
                         </div>
                         <div nz-col nzSpan="9">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="MMBilling"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -442,7 +426,7 @@
                             <label for="Access Price Updates">Access Price Updates :</label>
                         </div>
                         <div nz-col nzSpan="9">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="MMPriceUpdates"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -450,7 +434,7 @@
                             <label for="Access DEX Uploads">Access DEX Uploads :</label>
                         </div>
                         <div nz-col nzSpan="9">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="MMDexUploads"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -458,7 +442,7 @@
                             <label for="Access NDIA Menu">Access NDIA Menu :</label>
                         </div>
                         <div nz-col nzSpan="9">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="MMNDIA"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -466,7 +450,7 @@
                             <label for="Acess HACC Uploads">Acess HACC Uploads :</label>
                         </div>
                         <div nz-col nzSpan="9">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="MMHacc"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -474,7 +458,7 @@
                             <label for="Access Other Datasets">Access Other Datasets :</label>
                         </div>
                         <div nz-col nzSpan="9">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="MMOtherDS"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -482,7 +466,7 @@
                             <label for="Access Accounting Menu">Access Accounting Menu :</label>
                         </div>
                         <div nz-col nzSpan="9">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="MMAccounting"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -490,7 +474,7 @@
                             <label for="Access Analyse / Budget">Access Analyse / Budget :</label>
                         </div>
                         <div nz-col nzSpan="9">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="MMAnalyseBudget"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -498,7 +482,7 @@
                             <label for="Access At A Glance">Access At A Glance :</label>
                         </div>
                         <div nz-col nzSpan="9">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="MMAtAGlance"></label>
                         </div>
                     </div>
                 </nz-card>
@@ -515,7 +499,7 @@
                                 <label for="User Name">User Name :</label>
                             </div>
                             <div nz-col nzSpan="15">
-                                <input [nzSize]="'small'" nz-input placeholder="" formControlName="title" />
+                                <input [nzSize]="'small'" nz-input placeholder="" formControlName="name" />
                             </div>
                         </div>
                         <div nz-row nzJustify class="mrg-btm">
@@ -523,7 +507,7 @@
                                 <label for="Password">Password :</label>
                             </div>
                             <div nz-col nzSpan="15">
-                                <input [nzSize]="'small'" nz-input placeholder="" formControlName="title" />
+                                <input [nzSize]="'small'" nz-input placeholder="" formControlName="password" />
                             </div>
                         </div>
                         <div nz-row nzJustify class="mrg-btm">
@@ -531,7 +515,7 @@
                                 <label for="Login Group">Tracss Group :</label>
                             </div>
                             <div nz-col nzSpan="15">
-                                <nz-select [nzSize]="'small'" formControlName="title" [nzDropdownMatchSelectWidth]="false" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-select [nzSize]="'small'" formControlName="usertype" [nzDropdownMatchSelectWidth]="false" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
                                     
                                 </nz-select>
                             </div>
@@ -541,7 +525,7 @@
                                 <label for="Tracss Code">Tracss Code :</label>
                             </div>
                             <div nz-col nzSpan="15">
-                                <nz-select [nzSize]="'small'" formControlName="title" [nzDropdownMatchSelectWidth]="false" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-select [nzSize]="'small'" formControlName="staffCode" [nzDropdownMatchSelectWidth]="false" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
                                     
                                 </nz-select>
                             </div>
@@ -551,7 +535,7 @@
                                 <label for="Login Mode">Login Mode :</label>
                             </div>
                             <div nz-col nzSpan="15">
-                                <nz-select [nzSize]="'small'" formControlName="title" [nzDropdownMatchSelectWidth]="false" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-select [nzSize]="'small'" formControlName="loginMode" [nzDropdownMatchSelectWidth]="false" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
                                     
                                 </nz-select>
                             </div>
@@ -561,7 +545,7 @@
                                 <label for="Home Branch">Home Branch :</label>
                             </div>
                             <div nz-col nzSpan="15">
-                                <nz-select [nzSize]="'small'" formControlName="title" [nzDropdownMatchSelectWidth]="false" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-select [nzSize]="'small'" formControlName="homeBranch" [nzDropdownMatchSelectWidth]="false" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
                                     
                                 </nz-select>
                             </div>
@@ -573,7 +557,7 @@
                                 <label for="System Administration">System Administration :</label>
                             </div>
                             <div nz-col nzSpan="15">
-                                <label nz-checkbox formControlName="title" ></label>
+                                <label nz-checkbox formControlName="system" ></label>
                             </div>
                         </div>
                         <div nz-row nzJustify class="mrg-btm">
@@ -581,7 +565,7 @@
                                 <label for="Recipient Edit Access">Recipient Edit Access :</label>
                             </div>
                             <div nz-col nzSpan="15">
-                                <nz-select [nzSize]="'small'" formControlName="title" [nzDropdownMatchSelectWidth]="false" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-select [nzSize]="'small'" formControlName="recipients" [nzDropdownMatchSelectWidth]="false" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
                                     
                                 </nz-select>
                             </div>
@@ -591,7 +575,7 @@
                                 <label for="Staff Edit Access">Staff Edit Access :</label>
                             </div>
                             <div nz-col nzSpan="15">
-                                <nz-select [nzSize]="'small'" formControlName="title" [nzDropdownMatchSelectWidth]="false" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-select [nzSize]="'small'" formControlName="staff" [nzDropdownMatchSelectWidth]="false" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
                                     
                                 </nz-select>
                             </div>
@@ -601,7 +585,7 @@
                                 <label for="Rosters">Rosters :</label>
                             </div>
                             <div nz-col nzSpan="15">
-                                <nz-select [nzSize]="'small'" formControlName="title" [nzDropdownMatchSelectWidth]="false" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-select [nzSize]="'small'" formControlName="roster" [nzDropdownMatchSelectWidth]="false" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
                                     
                                 </nz-select>
                             </div>
@@ -611,7 +595,7 @@
                                 <label for="DayManager">Day Manager :</label>
                             </div>
                             <div nz-col nzSpan="15">
-                                <nz-select [nzSize]="'small'" formControlName="title" [nzDropdownMatchSelectWidth]="false" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-select [nzSize]="'small'" formControlName="dayManager" [nzDropdownMatchSelectWidth]="false" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
                                     
                                 </nz-select> 
                             </div>
@@ -626,15 +610,24 @@
                             <label for="Timesheets">TimeSheets :</label>
                         </div>
                         <div nz-col nzSpan="9">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="timesheet"></label>
                         </div>
                     </div>
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="15" class="text-right pad-r-5">
+                            <label for="Access Previously Paid :">Access Previously Paid : :</label>
+                        </div>
+                        <div nz-col nzSpan="9">
+                            <label nz-checkbox formControlName="timesheetPreviousPeriod"></label>
+                        </div>
+                    </div>
+                    
                     <div nz-row nzJustify class="mrg-btm">
                         <div nz-col nzSpan="15" class="text-right pad-r-5">
                             <label for="Report-Basic Listing">Reports - Basic Listing :</label>
                         </div>
                         <div nz-col nzSpan="9">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="statistics"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -642,7 +635,7 @@
                             <label for="Reports-Financial">Reports - Financial :</label>
                         </div>
                         <div nz-col nzSpan="9">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="financial"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -650,15 +643,7 @@
                             <label for="Report-Basic Listing">Reports - Basic Listing :</label>
                         </div>
                         <div nz-col nzSpan="9">
-                            <label nz-checkbox formControlName="title"></label>
-                        </div>
-                    </div>
-                    <div nz-row nzJustify class="mrg-btm">
-                        <div nz-col nzSpan="15" class="text-right pad-r-5">
-                            <label for="Reports-Financial">Reports - Financial :</label>
-                        </div>
-                        <div nz-col nzSpan="9">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="statistics"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -666,7 +651,7 @@
                             <label for="Allow Print Preview of Reports">Allow Print Preview of Reports :</label>
                         </div>
                         <div nz-col nzSpan="9">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="reportPreview"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -674,7 +659,7 @@
                             <label for="Email In User Defined Report">Email In User Defined Report :</label>
                         </div>
                         <div nz-col nzSpan="9">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="allowTypeAhead"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -682,7 +667,7 @@
                             <label for="Print Rosters and Runsheets">Print Rosters and Runsheets :</label>
                         </div>
                         <div nz-col nzSpan="9">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="suggestedTimesheets"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -690,7 +675,7 @@
                             <label for="Pay Integrity Check">Pay Integrity Check :</label>
                         </div>
                         <div nz-col nzSpan="9">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="payIntegrityCheck"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -698,7 +683,7 @@
                             <label for="Pay Billing & Claim Updates">Pay Billing & Claim Updates :</label>
                         </div>
                         <div nz-col nzSpan="9">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="timesheetUpdate"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -706,7 +691,7 @@
                             <label for="CDC Claim Prep and Update">CDC Claim Prep and Update :</label>
                         </div>
                         <div nz-col nzSpan="9">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="accessCDC"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -714,7 +699,7 @@
                             <label for="Invoice Inquiry">Invoice Inquiry :</label>
                         </div>
                         <div nz-col nzSpan="9">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="invoiceEnquiry"></label>
                         </div>
                     </div>
                 </nz-card>

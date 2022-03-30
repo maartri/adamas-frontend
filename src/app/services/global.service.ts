@@ -188,7 +188,7 @@ export const functionalStatus = {
   transport :['Without help (can drive your own car, or travel alone on buses or taxis)? (2)','With some help (need someone to help you or go with you when travelling)? (1)','Or are you completely unable to travel unless emergency arrangements are made for a specialised vehicle like an ambulance? (0)'],
   shopping :['Without help (taking care of all shopping needs yourself)? (2)','With some help (need someone to go with you on all shopping trips)? (1)','Or are you completely unable to do any shopping? (0)'],
   medication :['Without help (in the right doses at the right time)? (2)','With some help (able to take medication if someone prepares it for you and/or reminds you to take it)? (1)','Or are you completely unable to take your own medicines? (0)'],
-  Money :['Or are you completely unable to handle money? (0)','With some help (manage day-to-day buying but need help with managing your chequebook and paying your bills)? (1)','Without help (write cheques, pay bills etc)? (2)'],
+  money :['Or are you completely unable to handle money? (0)','With some help (manage day-to-day buying but need help with managing your chequebook and paying your bills)? (1)','Without help (write cheques, pay bills etc)? (2)'],
   walking :['Without help (except for a cane or similar)? (2)','With some help from a person (1)','Or are you completely unable to walk? (0)'],
   bathShower :['Without help? (2)','With some help (eg, need help getting into or out of the bath)? (1)','Or are you completely unable to bathe yourself? (0)'],
   confusion :['NO','YES'],

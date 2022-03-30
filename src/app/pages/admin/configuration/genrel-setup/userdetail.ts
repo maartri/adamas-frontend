@@ -78,6 +78,8 @@ export class UserDetail implements OnInit {
 
 
     checkBoxString: string = '010101001011001101010111';
+    documents: FormGroup;
+    mobileForm:FormGroup;
 
     constructor(
         private globalS: GlobalService,
@@ -616,6 +618,35 @@ export class UserDetail implements OnInit {
                         MMAccounting:false,
                         MMAnalyseBudget:false,
                         MMAtAGlance:false,
+                    })
+
+                    this.mobileForm     = this.formBuilder.group({
+                        AllowTravelEntry:false,
+                        AllowLeaveEntry:false,
+                        AllowIncidentEntry:false,
+                        AllowPicUpload:false,
+                        EnableRosterAvailability:false,
+                        AllowViewBookings:false,
+                        AcceptBookings:false,
+                        ViewClientDocuments:false,
+                        ViewClientCareplans:false,
+                        AllowViewGoalPlans:false,
+                        AllowTravelClaimWithoutNote:false,
+                        AllowMTASaveUserPass:false,
+
+                        AllowOPNote:false,
+                        AllowCaseNote:false,
+                        AllowClinicalNoteEntry:false,
+                        AllowRosterNoteEntry:false,
+                        SuppressEmailOnRosterNote:false,
+                        EnableEmailNotification:false,
+                        UseOPNoteAsShiftReport:false,
+                        UseServiceNoteAsShiftReport:false,
+                        EnableViewNoteCases:'00000',// need to discuss with tim  in notes management
+                        ShiftReportReminder:false,
+
+                        UserSessionLimit:'',
+
                     })
                 }
 

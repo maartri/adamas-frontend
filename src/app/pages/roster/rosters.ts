@@ -242,6 +242,7 @@ searchAvaibleModal:boolean=false;
   i:number=0;
   eventLog: string;
   token:any;
+  userSettings:any
   addBookingModel:boolean=false;
   type_to_add:number;
   select_StaffModal:boolean=false;
@@ -3700,6 +3701,11 @@ return rst;
     ngOnInit(): void {
 
         this.token = this.globalS.decode(); 
+        this.timeS.getusersettings(this.token.user).pipe(takeUntil(this.unsubscribe))
+        .subscribe(data => {
+            this.userSettings=data;
+            console.log(this.userSettings);
+        });
         console.log(this.token);
         if (this.token==null){
 
@@ -5443,7 +5449,11 @@ this.bookingForm.get('program').valueChanges.pipe(
        
         if (this.current==3 && this.viewType=='Recipient' && this.serviceType=='BOOKED')
             this.current += 1;
-      
+        
+        if(this.userSettings.useAwards=='True' && this.current>=1 && !this.ShowCentral_Location)
+            this.doneBooking();
+        if(this.userSettings.useAwards=='True' && this.current>2 )
+            this.doneBooking();
        
     }
     
@@ -5481,6 +5491,9 @@ this.bookingForm.get('program').valueChanges.pipe(
                 if (this.selectedActivity.service_Description == '' || this.selectedActivity.service_Description==null)
                     return false;
             }
+
+            if(this.userSettings.useAwards=='True' && this.current>=2)
+                return true;
 
             if ((this.current <3 && this.viewType=="Staff") && (this.IsGroupShift ))
                 return false;            

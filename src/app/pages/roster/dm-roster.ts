@@ -186,7 +186,7 @@ info = {StaffCode:'', ViewType:'',IsMaster:false, date:''};
 @Input() loadRoster :Subject<any> = new Subject() 
 @Output() RosterDone :EventEmitter<boolean>= new EventEmitter(); 
 @Output() reLoadGrid :EventEmitter<boolean>= new EventEmitter(); 
-
+reloadSearchList:Subject<any> = new Subject() ;
 
  
 selectedrow: string ="class.selected"   
@@ -3816,7 +3816,7 @@ loadRosterData(d:any){
     this.master=this.info.IsMaster
     this.date = this.info.date;
     this.CalendarDate= this.date;
-    
+    this.showDefault=false;
    // this.globalS.eToast("detail", this.defaultCode);
     
     let data ={data:this.defaultCode, option:this.viewType}   
@@ -3829,6 +3829,8 @@ loadRosterData(d:any){
     }
 
     this.selected = data;
+
+    this.reloadSearchList.next({defautValue:this.defaultCode, view:this.view});
     
     this.startRoster=this.date;
     this.endRoster = this.date;
@@ -3933,7 +3935,10 @@ loadRosterData(d:any){
 
 selected_person(event:any){
     this.showDefault=true;
-    this.picked(event);
+    this.rosters=[];
+    if (event.data!='' && event.data!=null)
+        this.picked(event);
+        
     setTimeout(() => {
         this.prepare_Sheet();
       }, 1000);
@@ -3944,6 +3949,7 @@ selected_person(event:any){
 }
 picked(data: any) {
         console.log(data);
+      
         this.userStream.next(data);
 
         if (!data.data) {

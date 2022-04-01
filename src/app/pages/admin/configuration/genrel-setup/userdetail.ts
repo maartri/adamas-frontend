@@ -24,9 +24,12 @@ export class UserDetail implements OnInit {
     current: number = 0;
     inputForm: FormGroup;
     rosterForm: FormGroup;
+    viewScopeForm: FormGroup;
     dayManagerForm:FormGroup;
     clientPortalForm:FormGroup;
     mainMenuForm:FormGroup;
+    documents: FormGroup;
+    mobileForm:FormGroup;
     postLoading: boolean = false;
     isUpdate: boolean = false;
     modalVariables: any;
@@ -76,10 +79,8 @@ export class UserDetail implements OnInit {
 
     staffjobcategories: any;
 
-
     checkBoxString: string = '010101001011001101010111';
-    documents: FormGroup;
-    mobileForm:FormGroup;
+    enableViewNoteCases:string = '00000';
 
     constructor(
         private globalS: GlobalService,
@@ -517,7 +518,14 @@ export class UserDetail implements OnInit {
                         end_date:'',
                         recordNumber:null,
                     });
-
+                    this.viewScopeForm    = this.formBuilder.group({
+                        ViewAllBranches  : false,
+                        ViewAllProgram   : false,
+                        ViewAllCategories: false,
+                        ViewAllCoOrdinators: false,
+                        ViewAllReminders:false,
+                        ViewAllStaffCategories:false,
+                    })
                     this.documents        = this.formBuilder.group({
                         CanMoveImportedDocuments:false,
                         KeepOriginalAsImport:false,
@@ -559,7 +567,6 @@ export class UserDetail implements OnInit {
                         Force_BillingExportFolder:false,
 
                     })
-
                     this.rosterForm       = this.formBuilder.group({
                         ChangeMasterRoster:false,
                         AllowRosterReallocate:false,
@@ -619,8 +626,9 @@ export class UserDetail implements OnInit {
                         MMAnalyseBudget:false,
                         MMAtAGlance:false,
                     })
-
                     this.mobileForm     = this.formBuilder.group({
+                        
+                        title:false,
                         AllowTravelEntry:false,
                         AllowLeaveEntry:false,
                         AllowIncidentEntry:false,
@@ -642,11 +650,24 @@ export class UserDetail implements OnInit {
                         EnableEmailNotification:false,
                         UseOPNoteAsShiftReport:false,
                         UseServiceNoteAsShiftReport:false,
-                        EnableViewNoteCases:'00000',// need to discuss with tim  in notes management
+                        EnableViewNoteCases:this.enableViewNoteCases,// its a string of 00000 contains 3 tickbox values
+
                         ShiftReportReminder:false,
-
                         UserSessionLimit:'',
-
+                        MobileFutureLimit:'',
+                        TMMode:'',
+                        MTAAutRefreshOnLogin:false,
+                        HideClientPhoneInApp:false,
+                        HideAddress:false,
+                        AllowSetTime:false,
+                        AllowAddAttendee:false,
+                        MultishiftAdminAndMultiple:false,
+                        RestrictTravelSameDay:false,
+                        PushPhonePrefix:false,
+                        PhonePrefix:'',
+                        Enable_Shift_End_Alarm:false,
+                        Enable_Shift_Start_Alarm:false,
+                        CheckAlertInterval:'',
                     })
                 }
 
@@ -693,7 +714,6 @@ export class UserDetail implements OnInit {
                         });
                     });
                     
-                    
                     this.loading = true;
                     this.tryDoctype = "";
                     this.pdfTitle = "";
@@ -706,6 +726,12 @@ export class UserDetail implements OnInit {
 
             this.checkBoxString = temp.join('')
             console.log(this.checkBoxString)
+        }
+        enableNoteCases(index:number,val:boolean){
+            let temp = Object.assign([], this.enableViewNoteCases);
+            temp.splice(index,1, val ? '1' : '0')
+            this.enableViewNoteCases = temp.join('')
+            console.log(this.enableViewNoteCases)
         }
                 
     }

@@ -81,6 +81,7 @@ export class UserDetail implements OnInit {
 
     checkBoxString: string = '010101001011001101010111';
     enableViewNoteCases:string = '00000';
+    recipientRecordView : '00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
 
     constructor(
         private globalS: GlobalService,

@@ -298,6 +298,7 @@ import { PayIntegrityComponent } from '@admin/billing/payIntegrity.component'; /
 import { CloseRosterComponent } from '@admin/billing/closeRoster.component'; //AHSAN 
 import { RollbackInvoiceComponent } from '@admin/billing/rollbackInvoice.component'; //AHSAN 
 import { RollbackPayrollComponent } from '@admin/billing/rollbackPayroll.component'; //AHSAN 
+import { RollbackRosterComponent } from '@admin/billing/rollbackRoster.component'; //AHSAN 
 import { MediaList } from '@admin/recipient-views/mediaList';
 import { UserDetail } from '@admin/configuration/genrel-setup/userdetail';
 import { Checklist } from '@admin/configuration/genrel-setup/checklist';
@@ -842,6 +843,10 @@ const routes: Routes = [
       {
         path: 'rollback-payroll-batch', //AHSAN
         component: RollbackPayrollComponent
+      },
+      {
+        path: 'rollback-roster-batch', //AHSAN
+        component: RollbackRosterComponent
       },
       {
         path: 'hcp',
@@ -1658,6 +1663,7 @@ export const PAGE_COMPONENTS = [
   CloseRosterComponent, //AHSAN 
   RollbackInvoiceComponent, //AHSAN
   RollbackPayrollComponent, //AHSAN
+  RollbackRosterComponent, //AHSAN
   BudgetgroupsComponent,
   BudgetsComponent,
   ContactgroupsComponent,

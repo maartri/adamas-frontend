@@ -226,4 +226,10 @@ export class BillingService {
     rollbackPayrollBatch(data: any): Observable<any> {
         return this.auth.put(`${billing}/rollbackPayrollBatch`, data);
     }
+    getRosterBatch(): Observable<any> {
+        return this.auth.get(`${billing}/getRosterBatch`)
+    }
+    rollbackRosterBatch(data: any): Observable<any> {
+        return this.auth.put(`${billing}/rollbackRosterBatch`, data);
+    }
 }

@@ -93,9 +93,9 @@ export class BillingAdmin implements OnInit, OnDestroy, AfterViewInit{
             if(index == 12){
                 this.router.navigate(['/admin/rollback-payroll-batch']);
             }
-            // if(index == 13){
-            //     this.router.navigate(['/admin/debtor-updates-exports']);
-            // }
+            if(index == 13){
+                this.router.navigate(['/admin/rollback-roster-batch']);
+            }
         }
         ngOnDestroy(): void {
         }

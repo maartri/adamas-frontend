@@ -144,6 +144,9 @@ nz-sider{
     float: left;
     margin-top: 12px;
 }
+.none{
+    display:none;
+}
     `],
     templateUrl: './homev2.html'
 })
@@ -152,7 +155,7 @@ nz-sider{
 export class HomeV2Admin implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild('recipient') elRef: ElementRef;
 
-    isCollapsed = false;
+    isCollapsed: boolean = false;
     breadcrumbs: Array<any> = [];
 
     ISTAFF_BYPASS: boolean = false;
@@ -174,7 +177,9 @@ export class HomeV2Admin implements OnInit, OnDestroy, AfterViewInit {
         
 
         this.token = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA) : this.globalS.decode();
-
+        if('bypass' in this.token && this.token['bypass'] == "true"){
+            this.isCollapsed = true;
+        }
     }
 
     ngOnDestroy(): void {
@@ -182,16 +187,8 @@ export class HomeV2Admin implements OnInit, OnDestroy, AfterViewInit {
     }
 
     ngAfterViewInit(): void {
-
-        setTimeout(() => {
-            if('bypass' in this.token){
-                this.isCollapsed = this.token.bypass;  
-                console.log(this.token.bypass)
-                this.cd.markForCheck();
-                this.cd.detectChanges();
-            }
-        }, 100);
-
+        this.cd.markForCheck();
+        this.cd.detectChanges();
     }
 
     toHome() {

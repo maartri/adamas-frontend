@@ -18,8 +18,8 @@ export class TimeSheetService {
         public globalS: GlobalService
     ) { }
 
-    getdocumentsrecipients(id: string): Observable<any> {
-        return this.auth.get(`${timesheet}/documents-recipients/${id}`)
+    getdocumentsrecipients(id: string, filters: any = null): Observable<any> {
+        return this.auth.post(`${timesheet}/documents-recipients/${id}`, filters);
     }
 
 

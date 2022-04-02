@@ -3,6 +3,7 @@
     <div>        
         <button class="botton success" (click)="showAddModal()">Add Document</button>
         <app-upload-shared *ngIf="showUpload" [(ngModel)]="user" (reload)="reload($event)"></app-upload-shared>
+        <app-filter [LIMIT_TABS]="FILTERS"  [(ngModel)]="filters" [tabs]="'rdocuments'" (ngModelChange)="filterChange($event)"></app-filter>
     </div>
 
     <div>

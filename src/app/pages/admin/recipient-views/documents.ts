@@ -18,6 +18,16 @@ interface NewDocument{
     path: string
 }
 
+const FILTERS: Array<string> = [
+    'CARE DOMAIN',
+    'CREATOR',
+    'DISCIPLINE',
+    'DOCUMENT CATEGORY',
+    'FILE CLASSIFICATION',
+    'PROGRAMS'
+ ]
+
+
 @Component({
     styles: [`
         nz-table{
@@ -69,6 +79,9 @@ export class RecipientDocumentsAdmin implements OnInit, OnDestroy, AfterViewInit
 
     fileObject: NewDocument;
     showUpload: boolean = false;
+
+    filters: any;
+    FILTERS = FILTERS;
 
     constructor(
         private timeS: TimeSheetService,
@@ -124,11 +137,11 @@ export class RecipientDocumentsAdmin implements OnInit, OnDestroy, AfterViewInit
         });
     }
 
-    search(user: any = this.user) {
+    search(user: any = this.user, filters: any = null) {
         this.cd.reattach();
 
         this.loading = true;
-        this.timeS.getdocumentsrecipients(user.id).subscribe(data => {
+        this.timeS.getdocumentsrecipients(user.id, filters).subscribe(data => {
             console.log(data)
             this.tableData = data;
             this.originalTableData = data;
@@ -406,5 +419,9 @@ export class RecipientDocumentsAdmin implements OnInit, OnDestroy, AfterViewInit
             return data.some(d => 'key' in d);
         }
         return true;        
+    }
+
+    filterChange(filters: any){
+        this.search(this.user, filters); 
     }
 }

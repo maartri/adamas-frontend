@@ -10,7 +10,7 @@
           
             <div nz-col nzSpan="8" style=" margin-left: 10px; margin-top: 10px; background-color: white;">
                 <div class="calendar-title">            
-                    <app-search-timesheet [defautValue]="defaultCode" [view]="view" (selected)="selected_person($event)"></app-search-timesheet>
+                    <app-search-timesheet [defautValue]="defaultCode" [reload]="reloadSearchList" [view]="view" (selected)="selected_person($event)"></app-search-timesheet>
                 </div>
             </div>
             <div nz-col nzSpan="14" *ngIf="!recurrenceView" >

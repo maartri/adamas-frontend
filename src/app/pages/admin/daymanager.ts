@@ -1020,6 +1020,7 @@ load_rosters(){
     this.reload.next(true);
     
 }
+
 reLoadGridRosterModel(){
 
     this.info.IsMaster=false;
@@ -1067,6 +1068,7 @@ async openModal() {
   }
 ngOnInit(): void {
     this.token = this.globalS.decode(); 
+    console.log(this.token);
     this.buildForm(); 
     this.getLocalStorage();
     this.selectedPersonType ='Staff Management';
@@ -1141,6 +1143,7 @@ ngAfterViewInit(){
             this.pastePosition=data;
             this.optionsModal = true;
             this.displayOption=false;
+            this.selectedOption=null;
             return
         }
         this.displayOption=true;
@@ -1247,15 +1250,30 @@ ngAfterViewInit(){
         return val;
       }
 
-      AddRoster(){
+      AddRoster(view:number){
         this.info.IsMaster=false;
         this.info.ViewType=this.viewType;
-        if (this.selectedOption!=null)        {
+        if (this.selectedOption!=null && view==1)        {
             this.info.StaffCode=this.selectedOption.staff;
             this.info.date=this.selectedOption.date;
-        }else  if (this.pastePosition!=null){
-            this.info.StaffCode=this.pastePosition.selected.carercode;
-            this.info.date= moment(this.pastePosition.selected.date).format('YYYY/MM/DD');
+            this.info.ViewType='Staff'
+        }else  if (this.selectedOption!=null && view==2) {        
+            this.info.StaffCode=this.selectedOption.recipient;
+            this.info.date=this.selectedOption.date;
+            this.info.ViewType='Recipient';
+        }else  if (view==3) {        
+            this.info.StaffCode=this.token.code
+            this.info.date=this.selectedOption!=null ? this.selectedOption.date : moment(this.pastePosition.selected.date).format('YYYY/MM/DD');
+            this.info.ViewType='Staff';
+        } else  if (this.pastePosition!=null){
+            if (view==2){
+                this.info.StaffCode='';
+                this.info.date=moment(this.pastePosition.selected.date).format('YYYY/MM/DD');
+                this.info.ViewType='Recipient';
+            }else{
+                this.info.StaffCode=this.pastePosition.selected.carercode;
+                this.info.date= moment(this.pastePosition.selected.date).format('YYYY/MM/DD');
+            }
         }else{
             return;
         }
@@ -1509,9 +1527,9 @@ SaveNudgeUpDown(){
             
             sql.TableName='Roster ';          
             if (this.NudgeStatus=="Up")
-                sql.SetClause=`set Duration=Duration-${this.NudgeValue}/5`;
+                sql.SetClause=`set [start time]=left(dateAdd(minute,-${this.NudgeValue}, convert(time,[start time],111)),5)`;
             else
-                sql.SetClause=`set Duration=Duration+${this.NudgeValue}/5`;
+                sql.SetClause=`set [start time]=left(dateAdd(minute,${this.NudgeValue}, convert(time,[start time],111)),5)`;
 
            sql.WhereClause=` where RecordNo=${this.selectedOption.recordno} `;
        

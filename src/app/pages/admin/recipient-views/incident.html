@@ -3,7 +3,7 @@
     <nz-divider nzType="vertical"></nz-divider>
     <button class="botton sea" id="incidentregister" (click)="Incidentlisting()">Incident listing</button> 
 
-    <app-filter [tabs]="'INCIDENTS'"></app-filter>
+    <app-filter [LIMIT_TABS]="FILTERS"  [(ngModel)]="filters" [tabs]="'rincidents'" (ngModelChange)="filterChange($event)"></app-filter>
 </div>
 <div nz-row>
     <div nz-col>

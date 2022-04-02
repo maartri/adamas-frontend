@@ -1,6 +1,6 @@
 <div nz-row>
     <button class="botton success" (click)="showAddModal()">Add Case Note</button>
-    <app-filter [tabs]="'CASENOTES'"  [(ngModel)]="filters" (ngModelChange)="filterChange($event)"></app-filter>
+    <app-filter [LIMIT_TABS]="FILTERS"  [(ngModel)]="filters" [tabs]="'rcasenote'" (ngModelChange)="filterChange($event)"></app-filter>
 </div>
 
 <div nz-row>

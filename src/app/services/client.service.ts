@@ -230,8 +230,8 @@ export class ClientService {
         return this.auth.delete(`${client}/clinicalnote/${id}`)
     }
 
-    getincidents(id: string): Observable<any> {
-        return this.auth.get(`${client}/incidents/${id}`)
+    getincidents(id: string, filters: any = null): Observable<any> {
+        return this.auth.post(`${client}/incidents/${id}`, filters)
     }
 
     getloans(id: string): Observable<any> {

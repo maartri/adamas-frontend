@@ -29,12 +29,16 @@ export class ByPassGuard implements CanActivate{
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean{  
 
         // http://localhost:4400/#/?redirectUrl=%2Fadmin%2Frecipient&token=U2FsdGVkX18rcBVah5iuKYDU2NFcIMwy3zBBe8sfJ0uc4L1cpgKKQXUZwaKnPdLE
+
+        // http://localhost:4400/#/?redirectUrl=admin/recipient&token=U2FsdGVkX18rcBVah5iuKYDU2NFcIMwy3zBBe8sfJ0uc4L1cpgKKQXUZwaKnPdLE&user=SYSMGR
         
+        //http://localhost:4400/#/?redirectUrl=admin/recipient&token=U2FsdGVkX18rcBVah5iuKYDU2NFcIMwy3zBBe8sfJ0uc4L1cpgKKQXUZwaKnPdLE?user=SYSMGR
         setTimeout(() => {
-            if(route.queryParams['redirectUrl'] && route.queryParams['token'])
+            if(route.queryParams['redirectUrl'] && route.queryParams['token'] && route.queryParams['user'] )
             {
                 var url = route.queryParams['redirectUrl'];
                 var token = route.queryParams['token'];
+                var userName = route.queryParams['user'];
 
                 var decryptedVal = this.decrypt(token);
                 var parsedObject = JSON.parse(decryptedVal);
@@ -43,12 +47,12 @@ export class ByPassGuard implements CanActivate{
                     // this.globalS.token = token;
 
                     let user = {
-                        Username: 'sysmgr',
+                        Username: userName,
                         Password: 'sysmgr',
                         Bypass: true
                     }
 
-                    this.loginS.login(user).subscribe(data => {
+                    this.loginS.login(user, true).subscribe(data => {
                         this.globalS.token = data.access_token;
                         this.router.navigate([url]);
                     }); 

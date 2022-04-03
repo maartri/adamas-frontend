@@ -35,6 +35,12 @@ export class AdminStaffRouteGuard implements CanActivate, CanActivateChild{
             return true;
         }
 
+        // console.log(this.globalS.GETPICKEDMEMBERROLEANDUSER());
+        // console.log(this.globalS.decode()
+
+        var ss =this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERROLEANDUSER() : this.globalS.decode();
+        console.log(ss)
+
         const { role, user } = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERROLEANDUSER() : this.globalS.decode();
 
         return this.settingS.getSettingsObservable(user).pipe(

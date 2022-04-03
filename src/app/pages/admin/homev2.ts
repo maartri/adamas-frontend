@@ -5,6 +5,9 @@ import { filter, tap, last } from 'rxjs/operators';
 import { GlobalService } from '@services/index';
 import { of } from 'rxjs';
 
+
+const CLOUD_ADMIN_PROPERTY: string = 'cloudAdmin';
+
 @Component({
     styles: [`
 .logo {
@@ -159,6 +162,8 @@ export class HomeV2Admin implements OnInit, OnDestroy, AfterViewInit {
     breadcrumbs: Array<any> = [];
 
     ISTAFF_BYPASS: boolean = false;
+    HIDE_SPECIAL_OPTIONS: boolean = false;
+
     token: any;
 
     showIfByPassOn:  boolean = true;
@@ -174,7 +179,12 @@ export class HomeV2Admin implements OnInit, OnDestroy, AfterViewInit {
 
     ngOnInit(): void {
         this.ISTAFF_BYPASS = this.globalS.ISTAFF_BYPASS == 'true' && this.globalS.ISTAFF_BYPASS != null ? true : false;
-        
+
+        let settings: any = this.globalS.settings;
+
+        if('cloudAdmin' in settings){
+            this.HIDE_SPECIAL_OPTIONS = this.globalS.settings[CLOUD_ADMIN_PROPERTY]
+        }
 
         this.token = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA) : this.globalS.decode();
         if('bypass' in this.token && this.token['bypass'] == "true"){

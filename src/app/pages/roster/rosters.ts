@@ -1624,8 +1624,8 @@ load_rosters(){
                  // sheet.clearSelection();
                   self.ActiveCellText="";
                   sheet.getRange(self.prev_cell.row, self.prev_cell.col, self.prev_cell.duration, 1, GC.Spread.Sheets.SheetArea.viewport).setBorder(new GC.Spread.Sheets.LineBorder("#C3C1C1", GC.Spread.Sheets.LineStyle.thin), {all:true});
-                 if (self.prev_cell.service==null)
-                  sheet.getCell(self.prev_cell.row, self.prev_cell.col).backColor("#ffffff");
+                 //if (self.prev_cell.service==null)
+                  //sheet.getCell(self.prev_cell.row, self.prev_cell.col).backColor("#ffffff");
                  
                   
                   if (sheet.getTag(row,col,GC.Spread.Sheets.SheetArea.viewport)!=null) {
@@ -2881,32 +2881,20 @@ load_rosters(){
           new_duration=1;
 
       for (let m=0; m<new_duration; m++){
-      if (m==0) {
-        if (this.master)           
-           // sheet.getCell(r+m,c).backColor("#FF8080");
-           sheet.getCell(r+m,c).backColor("white");
-        else
-            sheet.getCell(r+m,c).backColor("white");
+        if (m==0) { 
+          sheet.getCell(r,c).backgroundImage(null)
+          this.setIcon(r,c,21,0, "");
+         }  
         
-        sheet.getCell(r+m,c).backgroundImage(null)
-        this.setIcon(r,c,21,0, "");
-       }  
-       else {
-            if (this.master)           
-                //sheet.getCell(r+m,c).backColor("#FF8080");
-                sheet.getCell(r+m,c).backColor("white");
-            else
-            sheet.getCell(r+m,c).backColor("white");
-       }
-        //sheet.getCell(r+m,c).field=duration;
-        sheet.getCell(r+m,c, GC.Spread.Sheets.SheetArea.viewport).locked(true);
-        sheet.getRange(r+m, c, 1, 1).tag(null);
-        sheet.getRange(r+m, c, 1, 1).text("");
-  
-       
-       //this.addOpenDialog();    
-       
-      }
+          //sheet.getCell(r+m,c).field=duration;
+          sheet.getCell(r+m,c).backColor("white");
+          sheet.getCell(r+m,c, GC.Spread.Sheets.SheetArea.viewport).locked(true);
+          sheet.getRange(r+m, c, 1, 1).tag(null);
+          sheet.getRange(r+m, c, 1, 1).text("");
+          sheet.getCell(r+m,c, GC.Spread.Sheets.SheetArea.viewport).setBorder(new GC.Spread.Sheets.LineBorder("#C3C1C1", GC.Spread.Sheets.LineStyle.thin), {all:true});
+         //this.addOpenDialog();    
+         
+        }
     }
     numStr(n:number):string {
       let val="" + n;

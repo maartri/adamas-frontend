@@ -43,6 +43,169 @@
             <nz-tab nzTitle="Main Menu" (nzClick)="tabFindChange(10)"> </nz-tab>
         </nz-tabset>
     </div>
+    <div *ngIf="tabFindIndex == 2">
+        <div nz-row [nzGutter]="8" *ngIf="documents" [formGroup]="documents">
+            <div nz-col class="gutter-row" nzSpan="24" >
+                <nz-card [nzSize]="'small'" [nzBodyStyle]="{'padding-bottom':'0px'}">
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="12" class="">
+                            <label for="Default Storage Folders For TRACCS Outputs" style="line-height: 2.5">Default Storage Folders For TRACCS Outputs</label>
+                        </div>
+                        <div nz-col nzSpan="12">
+                            <div class="row">
+                                <label nz-checkbox formControlName="CanMoveImportedDocuments">Delete Orignal When Importing Document</label>
+                            </div>
+                            <div class="row">
+                                <label nz-checkbox formControlName="KeepOriginalAsImport">Do Not Move Orignal Document When Importing</label>
+                            </div>
+                        </div>
+                    </div>
+                </nz-card>
+                <nz-card [nzSize]="'small'" nzTitle="Recipient Related Files" [nzBodyStyle]="{'padding-bottom':'0px'}">
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="4" class="text-right pad-r-5">
+                            <label for="Documents">Documents : </label>
+                        </div>
+                        <div nz-col nzSpan="18">
+                            <input nz-input placeholder=""  formControlName="RecipientDocFolder" />
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label class="force-chk" nz-checkbox formControlName="Force_RecipDocFolder"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="4" class="text-right pad-r-5">
+                            <label for="Documents">Exported ONI's : </label>
+                        </div>
+                        <div nz-col nzSpan="18">
+                            <input nz-input placeholder=""  formControlName="ONIImportExportFolder" />
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label class="force-chk" nz-checkbox formControlName="Force_ONIImportFolder"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="4" class="text-right pad-r-5">
+                            <label for="Documents">ONI Archives : </label>
+                        </div>
+                        <div nz-col nzSpan="18">
+                            <input nz-input placeholder=""  formControlName="ONIArchiveFolder" />
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label class="force-chk" nz-checkbox formControlName="Force_ONIArchiveFolder"></label>
+                        </div>
+                    </div>
+                </nz-card>
+                <nz-card [nzSize]="'small'" nzTitle="Staff Related Files" [nzBodyStyle]="{'padding-bottom':'0px'}">
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="4" class="text-right pad-r-5">
+                            <label for="Documents">Documents : </label>
+                        </div>
+                        <div nz-col nzSpan="18">
+                            <input nz-input placeholder=""  formControlName="StaffDocFolder" />
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label class="force-chk" nz-checkbox formControlName="Force_StaffDocFolder"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="4" class="text-right pad-r-5">
+                            <label for="Staff Rosters">Staff Rosters : </label>
+                        </div>
+                        <div nz-col nzSpan="18">
+                            <input nz-input placeholder=""  formControlName="StaffRostersFolder" />
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label class="force-chk" nz-checkbox formControlName="Force_StaffRosterFolder"></label>
+                        </div>
+                    </div>
+                </nz-card>
+                <nz-card [nzSize]="'small'" nzTitle="Report Output Files" [nzBodyStyle]="{'padding-bottom':'0px'}">
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="4" class="text-right pad-r-5">
+                            <label for="Exports">Exports : </label>
+                        </div>
+                        <div nz-col nzSpan="18">
+                            <input nz-input placeholder=""  formControlName="ReportExportFolder" />
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label class="force-chk" nz-checkbox formControlName="Force_ReportExportFolder"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="4" class="text-right pad-r-5">
+                            <label for="Saved Reports">Staff Rosters : </label>
+                        </div>
+                        <div nz-col nzSpan="18">
+                            <input nz-input placeholder=""  formControlName="ReportSavesFolder" />
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label class="force-chk" nz-checkbox formControlName="Force_ReportSavesFolder"></label>
+                        </div>
+                    </div>
+                </nz-card>
+                <nz-card [nzSize]="'small'" nzTitle="MDS Output Files" [nzBodyStyle]="{'padding-bottom':'0px'}">
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="4" class="text-right pad-r-5">
+                            <label for="HACC MDS">HACC MDS : </label>
+                        </div>
+                        <div nz-col nzSpan="18">
+                            <input nz-input placeholder=""  formControlName="HACCMDSFolder" />
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label class="force-chk" nz-checkbox formControlName="Force_HACCMDSFolder"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="4" class="text-right pad-r-5">
+                            <label for="CSTDA MDS">CSTDA MDS: </label>
+                        </div>
+                        <div nz-col nzSpan="18">
+                            <input nz-input placeholder=""  formControlName="CSTDAMDSFolder" />
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label class="force-chk" nz-checkbox formControlName="Force_CSTDAMDSFolder"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="4" class="text-right pad-r-5">
+                            <label for="">NRCP MDS : </label>
+                        </div>
+                        <div nz-col nzSpan="18">
+                            <input nz-input placeholder=""  formControlName="NRCPMDSFolder" />
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label class="force-chk" nz-checkbox formControlName="Force_NRCPMDSFolder"></label>
+                        </div>
+                    </div>
+                </nz-card>
+                <nz-card [nzSize]="'small'" nzTitle="Interface Export Files" [nzBodyStyle]="{'padding-bottom':'0px'}">
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="4" class="text-right pad-r-5">
+                            <label for="Payrool">Payrool : </label>
+                        </div>
+                        <div nz-col nzSpan="18">
+                            <input nz-input placeholder=""  formControlName="ReportExportFolder" />
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label class="force-chk" nz-checkbox formControlName="Force_ReportExportFolder"></label>
+                        </div>
+                    </div>
+                    <div nz-row nzJustify class="mrg-btm">
+                        <div nz-col nzSpan="4" class="text-right pad-r-5">
+                            <label for="Billing">Billing : </label>
+                        </div>
+                        <div nz-col nzSpan="18">
+                            <input nz-input placeholder=""  formControlName="ReportSavesFolder" />
+                        </div>
+                        <div nz-col nzSpan="2">
+                            <label class="force-chk" nz-checkbox formControlName="Force_ReportSavesFolder"></label>
+                        </div>
+                    </div>
+                </nz-card>
+            </div>
+        </div>
+    </div>
     <div *ngIf="tabFindIndex == 7">
         <div nz-row [nzGutter]="8" *ngIf="rosterForm" [formGroup]="rosterForm">
             <div nz-col class="gutter-row" nzSpan="12" >
@@ -1313,31 +1476,10 @@
                         <div nz-col nzSpan="2">
                             <label nz-checkbox formControlName="title"></label>
                         </div>
-                        <div nz-col nzSpan="2">
-                            <label nz-checkbox formControlName="title"></label>
-                        </div>
-                        <div nz-col nzSpan="2">
-                            <label nz-checkbox formControlName="title"></label>
-                        </div>
-                        <div nz-col nzSpan="2">
-                            <label nz-checkbox formControlName="title"></label>
-                        </div>
-                        <div nz-col nzSpan="2">
-                            <label nz-checkbox formControlName="title"></label>
-                        </div>
-                        <div nz-col nzSpan="2">
-                            <label nz-checkbox formControlName="title"></label>
-                        </div>
                     </div>
                     <div nz-row nzJustify class="">
                         <div nz-col nzSpan="10" nzOffset="2" >
                             <label>Phone Detail</label>
-                        </div>
-                        <div nz-col nzSpan="2">
-                            <label nz-checkbox formControlName="title"></label>
-                        </div>
-                        <div nz-col nzSpan="2">
-                            <label nz-checkbox formControlName="title"></label>
                         </div>
                         <div nz-col nzSpan="2">
                             <label nz-checkbox formControlName="title"></label>
@@ -1368,22 +1510,10 @@
                         <div nz-col nzSpan="2">
                             <label nz-checkbox formControlName="title"></label>
                         </div>
-                        <div nz-col nzSpan="2">
-                            <label nz-checkbox formControlName="title"></label>
-                        </div>
-                        <div nz-col nzSpan="2">
-                            <label nz-checkbox formControlName="title"></label>
-                        </div>
                     </div>
                     <div nz-row nzJustify class="">
                         <div nz-col nzSpan="10" nzOffset="2" >
                             <label>Case Staff</label>
-                        </div>
-                        <div nz-col nzSpan="2">
-                            <label nz-checkbox formControlName="title"></label>
-                        </div>
-                        <div nz-col nzSpan="2">
-                            <label nz-checkbox formControlName="title"></label>
                         </div>
                         <div nz-col nzSpan="2">
                             <label nz-checkbox formControlName="title"></label>
@@ -1406,16 +1536,7 @@
                             <label nz-checkbox formControlName="title"></label>
                         </div>
                         <div nz-col nzSpan="2">
-                            <label nz-checkbox formControlName="title"></label>
-                        </div>
-                        <div nz-col nzSpan="2">
-                            <label nz-checkbox formControlName="title"></label>
-                        </div>
-                        <div nz-col nzSpan="2">
-                            <label nz-checkbox formControlName="title"></label>
-                        </div>
-                        <div nz-col nzSpan="2">
-                            <label nz-checkbox formControlName="title"></label>
+                            
                         </div>
                         <div nz-col nzSpan="2">
                             <label nz-checkbox formControlName="title"></label>
@@ -1429,16 +1550,6 @@
                             <label nz-checkbox formControlName="title"></label>
                         </div>
                         <div nz-col nzSpan="2">
-                            <label nz-checkbox formControlName="title"></label>
-                        </div>
-                        <div nz-col nzSpan="2">
-                            <label nz-checkbox formControlName="title"></label>
-                        </div>
-                        <div nz-col nzSpan="2">
-                            <label nz-checkbox formControlName="title"></label>
-                        </div>
-                        <div nz-col nzSpan="2">
-                            <label nz-checkbox formControlName="title"></label>
                         </div>
                         <div nz-col nzSpan="2">
                             <label nz-checkbox formControlName="title"></label>
@@ -1452,16 +1563,7 @@
                             <label nz-checkbox formControlName="title"></label>
                         </div>
                         <div nz-col nzSpan="2">
-                            <label nz-checkbox formControlName="title"></label>
-                        </div>
-                        <div nz-col nzSpan="2">
-                            <label nz-checkbox formControlName="title"></label>
-                        </div>
-                        <div nz-col nzSpan="2">
-                            <label nz-checkbox formControlName="title"></label>
-                        </div>
-                        <div nz-col nzSpan="2">
-                            <label nz-checkbox formControlName="title"></label>
+                            
                         </div>
                         <div nz-col nzSpan="2">
                             <label nz-checkbox formControlName="title"></label>
@@ -1471,31 +1573,18 @@
                         <div nz-col nzSpan="10" nzOffset="2" >
                             <label> Default Alerts/Issues Tab </label>
                         </div>
-                        <div nz-col nzSpan="2">
+                        <div nz-col nzSpan="1">
                             <label>:</label>
                         </div>
-                        <div nz-col nzSpan="6">
-                            
+                        <div nz-col nzSpan="10">
+                            <nz-select [nzSize]="'small'" formControlName="title" [nzDropdownMatchSelectWidth]="false" nzPlaceHolder="" nzShowSearch nzAllowClear style="width:100%;">
+                                <nz-option nzValue="CONTACT ISSUES" nzLabel="CONTACT ISSUES"></nz-option>
+                            </nz-select>
                         </div>
                     </div>
                     <div nz-row nzJustify class="">
                         <div nz-col nzSpan="12">
                             <label><b>Contacts</b></label>
-                        </div>
-                        <div nz-col nzSpan="2">
-                            <label nz-checkbox formControlName="title"></label>
-                        </div>
-                        <div nz-col nzSpan="2">
-                            <label nz-checkbox formControlName="title"></label>
-                        </div>
-                        <div nz-col nzSpan="2">
-                            <label nz-checkbox formControlName="title"></label>
-                        </div>
-                        <div nz-col nzSpan="2">
-                            <label nz-checkbox formControlName="title"></label>
-                        </div>
-                        <div nz-col nzSpan="2">
-                            <label nz-checkbox formControlName="title"></label>
                         </div>
                         <div nz-col nzSpan="2">
                             <label nz-checkbox formControlName="title"></label>
@@ -1517,22 +1606,10 @@
                         <div nz-col nzSpan="2">
                             <label nz-checkbox formControlName="title"></label>
                         </div>
-                        <div nz-col nzSpan="2">
-                            <label nz-checkbox formControlName="title"></label>
-                        </div>
-                        <div nz-col nzSpan="2">
-                            <label nz-checkbox formControlName="title"></label>
-                        </div>
                     </div>
                     <div nz-row nzJustify class="">
                         <div nz-col nzSpan="10" nzOffset="2" >
                             <label>Other Parties</label>
-                        </div>
-                        <div nz-col nzSpan="2">
-                            <label nz-checkbox formControlName="title"></label>
-                        </div>
-                        <div nz-col nzSpan="2">
-                            <label nz-checkbox formControlName="title"></label>
                         </div>
                         <div nz-col nzSpan="2">
                             <label nz-checkbox formControlName="title"></label>
@@ -1980,7 +2057,7 @@
                         <div nz-col nzSpan="2">
                             <label nz-checkbox formControlName="title"></label>
                         </div>
-
+                        
                     </div>
                     <div nz-row nzJustify class="">
                         <div nz-col nzSpan="12">
@@ -2059,7 +2136,7 @@
                             <label nz-checkbox formControlName="title"></label>
                         </div>
                         <div nz-col nzSpan="2">
-                           
+                            
                         </div>
                         <div nz-col nzSpan="2">
                             <label nz-checkbox formControlName="title"></label>
@@ -2274,13 +2351,13 @@
                 </nz-card>
             </div>
             <div nz-col class="gutter-row" nzSpan="6" >
-                <nz-card [nzSize]="'small'" nzTitle="" class="mrg-btm">
+                <nz-card [nzSize]="'small'" nzTitle="" class="mrg-btm" *ngIf="recipientOptions" [formGroup]="recipientOptions">
                     <div nz-row nzJustify class="mrg-btm">
                         <div nz-col nzSpan="22" class="text-right">
                             <label>Can Add Change Recipient Records :</label>
                         </div>
                         <div nz-col nzSpan="2" class="text-right">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="AddNewRecipient"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -2288,7 +2365,7 @@
                             <label>Can Change Recipient Code :</label>
                         </div>
                         <div nz-col nzSpan="2" class="text-right">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="CanChangeClientCode"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -2296,7 +2373,7 @@
                             <label>Edit NDIA ID :</label>
                         </div>
                         <div nz-col nzSpan="2" class="text-right">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="CanEditNDIA"></label>
                         </div>
                     </div>
                     <div nz-row nzJustify class="mrg-btm">
@@ -2304,11 +2381,11 @@
                             <label>Allow Transition Program: </label>
                         </div>
                         <div nz-col nzSpan="2" class="text-right">
-                            <label nz-checkbox formControlName="title"></label>
+                            <label nz-checkbox formControlName="AllowProgramTransition"></label>
                         </div>
                     </div>
                 </nz-card>
-                <nz-card [nzSize]="'small'" nzTitle="">
+                <nz-card [nzSize]="'small'" nzTitle="" *ngIf="recipientOptions" [formGroup]="recipientOptions">
                     <div nz-row nzJustify class="mrg-btm">
                         <div nz-row nzJustify class="">
                             <div nz-col nzSpan="12">
@@ -2320,7 +2397,7 @@
                                 <label>Rfer In</label>
                             </div>
                             <div nz-col nzSpan="2">
-                                <label nz-checkbox formControlName="title"></label>
+                                <label nz-checkbox formControlName="DisableBtnReferral"></label>
                             </div>
                         </div>
                         <div nz-row nzJustify class="">
@@ -2328,7 +2405,7 @@
                                 <label>Rfer On</label>
                             </div>
                             <div nz-col nzSpan="2">
-                                <label nz-checkbox formControlName="title"></label>
+                                <label nz-checkbox formControlName="DisableBtnReferOn"></label>
                             </div>
                         </div>
                         <div nz-row nzJustify class="">
@@ -2336,7 +2413,7 @@
                                 <label>Not Proceed</label>
                             </div>
                             <div nz-col nzSpan="2">
-                                <label nz-checkbox formControlName="title"></label>
+                                <label nz-checkbox formControlName="DisableBtnNotProceeding"></label>
                             </div>
                         </div>
                         <div nz-row nzJustify class="">
@@ -2344,7 +2421,7 @@
                                 <label>Assess</label>
                             </div>
                             <div nz-col nzSpan="2">
-                                <label nz-checkbox formControlName="title"></label>
+                                <label nz-checkbox formControlName="DisableBtnAssess"></label>
                             </div>
                         </div>
                         <div nz-row nzJustify class="">
@@ -2352,7 +2429,7 @@
                                 <label>Admit</label>
                             </div>
                             <div nz-col nzSpan="2">
-                                <label nz-checkbox formControlName="title"></label>
+                                <label nz-checkbox formControlName="DisableBtnAdmit"></label>
                             </div>
                         </div>
                         <div nz-row nzJustify class="">
@@ -2360,7 +2437,7 @@
                                 <label>Wait List</label>
                             </div>
                             <div nz-col nzSpan="2">
-                                <label nz-checkbox formControlName="title"></label>
+                                <label nz-checkbox formControlName="DisableBtnUnWait"></label>
                             </div>
                         </div>
                         <div nz-row nzJustify class="">
@@ -2368,7 +2445,7 @@
                                 <label>Dicharge</label>
                             </div>
                             <div nz-col nzSpan="2">
-                                <label nz-checkbox formControlName="title"></label>
+                                <label nz-checkbox formControlName="DisableBtnDischarge"></label>
                             </div>
                         </div>
                         <div nz-row nzJustify class="">
@@ -2376,7 +2453,7 @@
                                 <label>Suspend</label>
                             </div>
                             <div nz-col nzSpan="2">
-                                <label nz-checkbox formControlName="title"></label>
+                                <label nz-checkbox formControlName="DisableBtnSuspend"></label>
                             </div>
                         </div>
                         <div nz-row nzJustify class="">
@@ -2384,7 +2461,7 @@
                                 <label>Rinstate</label>
                             </div>
                             <div nz-col nzSpan="2">
-                                <label nz-checkbox formControlName="title"></label>
+                                <label nz-checkbox formControlName="DisableBtnReinstate"></label>
                             </div>
                         </div>
                         <div nz-row nzJustify class="">
@@ -2392,7 +2469,7 @@
                                 <label>Decease</label>
                             </div>
                             <div nz-col nzSpan="2">
-                                <label nz-checkbox formControlName="title"></label>
+                                <label nz-checkbox formControlName="DisableBtnDecease"></label>
                             </div>
                         </div>
                         <div nz-row nzJustify class="">
@@ -2400,7 +2477,7 @@
                                 <label>Admin</label>
                             </div>
                             <div nz-col nzSpan="2">
-                                <label nz-checkbox formControlName="title"></label>
+                                <label nz-checkbox formControlName="DisableBtnAdmin"></label>
                             </div>
                         </div>
                         <div nz-row nzJustify class="">
@@ -2408,15 +2485,15 @@
                                 <label>Item</label>
                             </div>
                             <div nz-col nzSpan="2">
-                                <label nz-checkbox formControlName="title"></label>
+                                <label nz-checkbox formControlName="DisableBtnItem"></label>
                             </div>
                         </div>
                         <div nz-row nzJustify class="">
                             <div nz-col nzSpan="20" nzOffset="2">
-                                <label>>Print</label>
+                                <label>Print</label>
                             </div>
                             <div nz-col nzSpan="2">
-                                <label nz-checkbox formControlName="title"></label>
+                                <label nz-checkbox formControlName="DisableBtnPrint"></label>
                             </div>
                         </div>
                         <div nz-row nzJustify class="">
@@ -2424,7 +2501,7 @@
                                 <label>Roster</label>
                             </div>
                             <div nz-col nzSpan="2">
-                                <label nz-checkbox formControlName="title"></label>
+                                <label nz-checkbox formControlName="DisableBtnRoster"></label>
                             </div>
                         </div>
                         <div nz-row nzJustify class="">
@@ -2432,7 +2509,7 @@
                                 <label>Master</label>
                             </div>
                             <div nz-col nzSpan="2">
-                                <label nz-checkbox formControlName="title"></label>
+                                <label nz-checkbox formControlName="DisableBtnMaster"></label>
                             </div>
                         </div>
                         <div nz-row nzJustify class="">
@@ -2440,7 +2517,7 @@
                                 <label>OnHold</label>
                             </div>
                             <div nz-col nzSpan="2">
-                                <label nz-checkbox formControlName="title"></label>
+                                <label nz-checkbox formControlName="DisableBtnOnHold"></label>
                             </div>
                         </div>
                     </div>
@@ -2452,215 +2529,215 @@
         <div nz-row [nzGutter]="8" *ngIf="mobileForm" [formGroup]="mobileForm">
             <nz-card [nzSize]="'small'" nzTitle="Time & Attendence Options" >
                 <div nz-col class="gutter-row" nzSpan="12">
-                        <nz-card [nzSize]="'small'" nzType="inner" class="mrg-btm" nzTitle="Allowed Functionality">
-                            <div nz-row [nzGutter]="8">
-                                <div nz-col class="gutter-row" nzSpan="12">
-                                    <div nz-row nzJustify>
-                                        <div nz-col nzSpan="22" class="text-right pad-r-5">
-                                            <label for="Can Add KM Claims">Can Add KM Claims :</label>
-                                        </div>
-                                        <div nz-col nzSpan="2" class="text-right">
-                                            <label nz-checkbox formControlName="AllowTravelEntry" ></label>
-                                        </div>
+                    <nz-card [nzSize]="'small'" nzType="inner" class="mrg-btm" nzTitle="Allowed Functionality">
+                        <div nz-row [nzGutter]="8">
+                            <div nz-col class="gutter-row" nzSpan="12">
+                                <div nz-row nzJustify>
+                                    <div nz-col nzSpan="22" class="text-right pad-r-5">
+                                        <label for="Can Add KM Claims">Can Add KM Claims :</label>
                                     </div>
-                                    <div nz-row nzJustify>
-                                        <div nz-col nzSpan="22" class="text-right pad-r-5">
-                                            <label for="Can Submit Leave Application">Can Submit Leave Application :</label>
-                                        </div>
-                                        <div nz-col nzSpan="2" class="text-right">
-                                            <label nz-checkbox formControlName="AllowLeaveEntry" ></label>
-                                        </div>
-                                    </div>
-                                    <div nz-row nzJustify>
-                                        <div nz-col nzSpan="22" class="text-right pad-r-5">
-                                            <label for="Can Add/Client Staff Incidents">Can Add/Client Staff Incidents :</label>
-                                        </div>
-                                        <div nz-col nzSpan="2" class="text-right">
-                                            <label nz-checkbox formControlName="AllowIncidentEntry" ></label>
-                                        </div>
-                                    </div>
-                                    <div nz-row nzJustify>
-                                        <div nz-col nzSpan="22" class="text-right pad-r-5">
-                                            <label for="Can Upload Pictures">Can Upload Pictures :</label>
-                                        </div>
-                                        <div nz-col nzSpan="2" class="text-right">
-                                            <label nz-checkbox formControlName="AllowPicUpload" ></label>
-                                        </div>
-                                    </div>
-                                    <div nz-row nzJustify>
-                                        <div nz-col nzSpan="22" class="text-right pad-r-5">
-                                            <label for="Can Add Availibity">Can Add Availibity :</label>
-                                        </div>
-                                        <div nz-col nzSpan="2" class="text-right">
-                                            <label nz-checkbox formControlName="EnableRosterAvailability" ></label>
-                                        </div>
-                                    </div>
-                                    <div nz-row nzJustify>
-                                        <div nz-col nzSpan="22" class="text-right pad-r-5">
-                                            <label for="Can View Published Booking Requests">Can View Published Booking Requests :</label>
-                                        </div>
-                                        <div nz-col nzSpan="2" class="text-right">
-                                            <label nz-checkbox formControlName="AllowViewBookings" ></label>
-                                        </div>
-                                    </div>
-                                    <div nz-row nzJustify>
-                                        <div nz-col nzSpan="22" class="text-right pad-r-5">
-                                            <label for="Can Accept Published Booking Requests">Can Accept Published Booking Requests :</label>
-                                        </div>
-                                        <div nz-col nzSpan="2" class="text-right">
-                                            <label nz-checkbox formControlName="AcceptBookings" ></label>
-                                        </div>
-                                    </div>
-                                    <div nz-row nzJustify>
-                                        <div nz-col nzSpan="22" class="text-right pad-r-5">
-                                            <label for="Can View Published Client Documents">Can View Published Client Documents :</label>
-                                        </div>
-                                        <div nz-col nzSpan="2" class="text-right">
-                                            <label nz-checkbox formControlName="ViewClientDocuments" ></label>
-                                        </div>
-                                    </div>
-                                    <div nz-row nzJustify>
-                                        <div nz-col nzSpan="22" class="text-right pad-r-5">
-                                            <label for="Can View Published Client Plans">Can View Published Client Plans :</label>
-                                        </div>
-                                        <div nz-col nzSpan="2" class="text-right">
-                                            <label nz-checkbox formControlName="ViewClientCareplans" ></label>
-                                        </div>
-                                    </div>
-                                    <div nz-row nzJustify>
-                                        <div nz-col nzSpan="22" class="text-right pad-r-5">
-                                            <label for="Allow View Goal Plans">Allow View Goal Plans :</label>
-                                        </div>
-                                        <div nz-col nzSpan="2" class="text-right">
-                                            <label nz-checkbox formControlName="AllowViewGoalPlans" ></label>
-                                        </div>
+                                    <div nz-col nzSpan="2" class="text-right">
+                                        <label nz-checkbox formControlName="AllowTravelEntry" ></label>
                                     </div>
                                 </div>
-                                <div nz-col class="gutter-row" nzSpan="12">
-                                    <div nz-row nzJustify>
-                                        <div nz-col nzSpan="22" class="text-right pad-r-5">
-                                            <label for="Allow Travel Claim Without Note">Allow Travel Claim Without Note :</label>
-                                        </div>
-                                        <div nz-col nzSpan="2" class="text-right">
-                                            <label nz-checkbox formControlName="AllowTravelClaimWithoutNote" ></label>
-                                        </div>
+                                <div nz-row nzJustify>
+                                    <div nz-col nzSpan="22" class="text-right pad-r-5">
+                                        <label for="Can Submit Leave Application">Can Submit Leave Application :</label>
                                     </div>
-                                    <div nz-row nzJustify>
-                                        <div nz-col nzSpan="22" class="text-right pad-r-5">
-                                            <label for="Allow Remember User/Password">Allow Remember User/Password :</label>
-                                        </div>
-                                        <div nz-col nzSpan="2" class="text-right">
-                                            <label nz-checkbox formControlName="AllowMTASaveUserPass" ></label>
-                                        </div>
-                                    </div>
-                                </div>    
-                            </div>
-                        </nz-card>
-                        <nz-card [nzSize]="'small'" nzType="inner" nzTitle="Notes Management">
-                            <div nz-row [nzGutter]="8">
-                                <div nz-col class="gutter-row" nzSpan="12">
-                                    <div nz-row nzJustify>
-                                        <div nz-col nzSpan="22" class="text-right pad-r-5">
-                                            <label for="Can Add CLient OP Note">Can Add CLient OP Note :</label>
-                                        </div>
-                                        <div nz-col nzSpan="2" class="text-right">
-                                            <label nz-checkbox formControlName="AllowOPNote" ></label>
-                                        </div>
-                                    </div>
-                                    <div nz-row nzJustify>
-                                        <div nz-col nzSpan="22" class="text-right pad-r-5">
-                                            <label for="Can Add Client Case Note">Can Add Client Case Note :</label>
-                                        </div>
-                                        <div nz-col nzSpan="2" class="text-right">
-                                            <label nz-checkbox formControlName="AllowCaseNote" ></label>
-                                        </div>
-                                    </div>
-                                    <div nz-row nzJustify>
-                                        <div nz-col nzSpan="22" class="text-right pad-r-5">
-                                            <label for="Can Add Client Clinical Note">Can Add Client Clinical Note :</label>
-                                        </div>
-                                        <div nz-col nzSpan="2" class="text-right">
-                                            <label nz-checkbox formControlName="AllowClinicalNoteEntry" ></label>
-                                        </div>
-                                    </div>
-                                    <div nz-row nzJustify>
-                                        <div nz-col nzSpan="22" class="text-right pad-r-5">
-                                            <label for="Can Add Shift Report">Can Add Shift Report :</label>
-                                        </div>
-                                        <div nz-col nzSpan="2" class="text-right">
-                                            <label nz-checkbox formControlName="AllowRosterNoteEntry" ></label>
-                                        </div>
-                                    </div>
-                                    <div nz-row nzJustify>
-                                        <div nz-col nzSpan="22" class="text-right pad-r-5">
-                                            <label for="Suppress Shift Report Email">Suppress Shift Report Email :</label>
-                                        </div>
-                                        <div nz-col nzSpan="2" class="text-right">
-                                            <label nz-checkbox formControlName="SuppressEmailOnRosterNote" ></label>
-                                        </div>
-                                    </div>
-                                    <div nz-row nzJustify>
-                                        <div nz-col nzSpan="22" class="text-right pad-r-5">
-                                            <label for="Email Notification Of Notes/Incidents">Email Notification Of Notes/Incidents :</label>
-                                        </div>
-                                        <div nz-col nzSpan="2" class="text-right">
-                                            <label nz-checkbox formControlName="EnableEmailNotification" ></label>
-                                        </div>
-                                    </div>
-                                    <div nz-row nzJustify>
-                                        <div nz-col nzSpan="22" class="text-right pad-r-5">
-                                            <label for="Use Shift Report Format For OP Note">Use Shift Report Format For OP Note :</label>
-                                        </div>
-                                        <div nz-col nzSpan="2" class="text-right">
-                                            <label nz-checkbox formControlName="UseOPNoteAsShiftReport" ></label>
-                                        </div>
-                                    </div>
-                                    <div nz-row nzJustify>
-                                        <div nz-col nzSpan="22" class="text-right pad-r-5">
-                                            <label for="Use Shift Report Format For Service Note">Use Shift Report Format For Service Note :</label>
-                                        </div>
-                                        <div nz-col nzSpan="2" class="text-right">
-                                            <label nz-checkbox formControlName="UseServiceNoteAsShiftReport" ></label>
-                                        </div>
+                                    <div nz-col nzSpan="2" class="text-right">
+                                        <label nz-checkbox formControlName="AllowLeaveEntry" ></label>
                                     </div>
                                 </div>
-                                <div nz-col class="gutter-row" nzSpan="12">
-                                    <div nz-row nzJustify>
-                                        <div nz-col nzSpan="22" class="text-right pad-r-5">
-                                            <label for="View Published Client OP Notes">View Published Client OP Notes :</label>
-                                        </div>
-                                        <div nz-col nzSpan="2" class="text-right">
-                                            <label nz-checkbox [ngModel]="enableViewNoteCases[0]  == '1' " (change)="enableNoteCases(0, $event.target.checked)" [ngModelOptions]="{standalone: true}"></label>
-                                        </div>
+                                <div nz-row nzJustify>
+                                    <div nz-col nzSpan="22" class="text-right pad-r-5">
+                                        <label for="Can Add/Client Staff Incidents">Can Add/Client Staff Incidents :</label>
                                     </div>
-                                    <div nz-row nzJustify>
-                                        <div nz-col nzSpan="22" class="text-right pad-r-5">
-                                            <label for="View Published Client Case Notes">View Published Client Case Notes :</label>
-                                        </div>
-                                        <div nz-col nzSpan="2" class="text-right">
-                                            <label nz-checkbox [ngModel]="enableViewNoteCases[1]  == '1' " (change)="enableNoteCases(1, $event.target.checked)" [ngModelOptions]="{standalone: true}"></label>
-                                        </div>
+                                    <div nz-col nzSpan="2" class="text-right">
+                                        <label nz-checkbox formControlName="AllowIncidentEntry" ></label>
                                     </div>
-                                    <div nz-row nzJustify>
-                                        <div nz-col nzSpan="22" class="text-right pad-r-5">
-                                            <label for="View Published Client Clinical Notes">View Published Clinical Notes :</label>
-                                        </div>
-                                        <div nz-col nzSpan="2" class="text-right">
-                                            <label nz-checkbox [ngModel]="enableViewNoteCases[4]  == '1' " (change)="enableNoteCases(4, $event.target.checked)" [ngModelOptions]="{standalone: true}"></label>
-                                        </div>
+                                </div>
+                                <div nz-row nzJustify>
+                                    <div nz-col nzSpan="22" class="text-right pad-r-5">
+                                        <label for="Can Upload Pictures">Can Upload Pictures :</label>
                                     </div>
-                                    <br>
-                                    <div nz-row nzJustify>
-                                        <div nz-col nzSpan="22" class="text-right pad-r-5">
-                                            <label for="Generate Shift Report Reminder">Generate Shift Report Reminder :</label>
-                                        </div>
-                                        <div nz-col nzSpan="2" class="text-right">
-                                            <label nz-checkbox formControlName="ShiftReportReminder" ></label>
-                                        </div>
+                                    <div nz-col nzSpan="2" class="text-right">
+                                        <label nz-checkbox formControlName="AllowPicUpload" ></label>
                                     </div>
-                                </div>    
+                                </div>
+                                <div nz-row nzJustify>
+                                    <div nz-col nzSpan="22" class="text-right pad-r-5">
+                                        <label for="Can Add Availibity">Can Add Availibity :</label>
+                                    </div>
+                                    <div nz-col nzSpan="2" class="text-right">
+                                        <label nz-checkbox formControlName="EnableRosterAvailability" ></label>
+                                    </div>
+                                </div>
+                                <div nz-row nzJustify>
+                                    <div nz-col nzSpan="22" class="text-right pad-r-5">
+                                        <label for="Can View Published Booking Requests">Can View Published Booking Requests :</label>
+                                    </div>
+                                    <div nz-col nzSpan="2" class="text-right">
+                                        <label nz-checkbox formControlName="AllowViewBookings" ></label>
+                                    </div>
+                                </div>
+                                <div nz-row nzJustify>
+                                    <div nz-col nzSpan="22" class="text-right pad-r-5">
+                                        <label for="Can Accept Published Booking Requests">Can Accept Published Booking Requests :</label>
+                                    </div>
+                                    <div nz-col nzSpan="2" class="text-right">
+                                        <label nz-checkbox formControlName="AcceptBookings" ></label>
+                                    </div>
+                                </div>
+                                <div nz-row nzJustify>
+                                    <div nz-col nzSpan="22" class="text-right pad-r-5">
+                                        <label for="Can View Published Client Documents">Can View Published Client Documents :</label>
+                                    </div>
+                                    <div nz-col nzSpan="2" class="text-right">
+                                        <label nz-checkbox formControlName="ViewClientDocuments" ></label>
+                                    </div>
+                                </div>
+                                <div nz-row nzJustify>
+                                    <div nz-col nzSpan="22" class="text-right pad-r-5">
+                                        <label for="Can View Published Client Plans">Can View Published Client Plans :</label>
+                                    </div>
+                                    <div nz-col nzSpan="2" class="text-right">
+                                        <label nz-checkbox formControlName="ViewClientCareplans" ></label>
+                                    </div>
+                                </div>
+                                <div nz-row nzJustify>
+                                    <div nz-col nzSpan="22" class="text-right pad-r-5">
+                                        <label for="Allow View Goal Plans">Allow View Goal Plans :</label>
+                                    </div>
+                                    <div nz-col nzSpan="2" class="text-right">
+                                        <label nz-checkbox formControlName="AllowViewGoalPlans" ></label>
+                                    </div>
+                                </div>
                             </div>
-                        </nz-card>
+                            <div nz-col class="gutter-row" nzSpan="12">
+                                <div nz-row nzJustify>
+                                    <div nz-col nzSpan="22" class="text-right pad-r-5">
+                                        <label for="Allow Travel Claim Without Note">Allow Travel Claim Without Note :</label>
+                                    </div>
+                                    <div nz-col nzSpan="2" class="text-right">
+                                        <label nz-checkbox formControlName="AllowTravelClaimWithoutNote" ></label>
+                                    </div>
+                                </div>
+                                <div nz-row nzJustify>
+                                    <div nz-col nzSpan="22" class="text-right pad-r-5">
+                                        <label for="Allow Remember User/Password">Allow Remember User/Password :</label>
+                                    </div>
+                                    <div nz-col nzSpan="2" class="text-right">
+                                        <label nz-checkbox formControlName="AllowMTASaveUserPass" ></label>
+                                    </div>
+                                </div>
+                            </div>    
+                        </div>
+                    </nz-card>
+                    <nz-card [nzSize]="'small'" nzType="inner" nzTitle="Notes Management">
+                        <div nz-row [nzGutter]="8">
+                            <div nz-col class="gutter-row" nzSpan="12">
+                                <div nz-row nzJustify>
+                                    <div nz-col nzSpan="22" class="text-right pad-r-5">
+                                        <label for="Can Add CLient OP Note">Can Add CLient OP Note :</label>
+                                    </div>
+                                    <div nz-col nzSpan="2" class="text-right">
+                                        <label nz-checkbox formControlName="AllowOPNote" ></label>
+                                    </div>
+                                </div>
+                                <div nz-row nzJustify>
+                                    <div nz-col nzSpan="22" class="text-right pad-r-5">
+                                        <label for="Can Add Client Case Note">Can Add Client Case Note :</label>
+                                    </div>
+                                    <div nz-col nzSpan="2" class="text-right">
+                                        <label nz-checkbox formControlName="AllowCaseNote" ></label>
+                                    </div>
+                                </div>
+                                <div nz-row nzJustify>
+                                    <div nz-col nzSpan="22" class="text-right pad-r-5">
+                                        <label for="Can Add Client Clinical Note">Can Add Client Clinical Note :</label>
+                                    </div>
+                                    <div nz-col nzSpan="2" class="text-right">
+                                        <label nz-checkbox formControlName="AllowClinicalNoteEntry" ></label>
+                                    </div>
+                                </div>
+                                <div nz-row nzJustify>
+                                    <div nz-col nzSpan="22" class="text-right pad-r-5">
+                                        <label for="Can Add Shift Report">Can Add Shift Report :</label>
+                                    </div>
+                                    <div nz-col nzSpan="2" class="text-right">
+                                        <label nz-checkbox formControlName="AllowRosterNoteEntry" ></label>
+                                    </div>
+                                </div>
+                                <div nz-row nzJustify>
+                                    <div nz-col nzSpan="22" class="text-right pad-r-5">
+                                        <label for="Suppress Shift Report Email">Suppress Shift Report Email :</label>
+                                    </div>
+                                    <div nz-col nzSpan="2" class="text-right">
+                                        <label nz-checkbox formControlName="SuppressEmailOnRosterNote" ></label>
+                                    </div>
+                                </div>
+                                <div nz-row nzJustify>
+                                    <div nz-col nzSpan="22" class="text-right pad-r-5">
+                                        <label for="Email Notification Of Notes/Incidents">Email Notification Of Notes/Incidents :</label>
+                                    </div>
+                                    <div nz-col nzSpan="2" class="text-right">
+                                        <label nz-checkbox formControlName="EnableEmailNotification" ></label>
+                                    </div>
+                                </div>
+                                <div nz-row nzJustify>
+                                    <div nz-col nzSpan="22" class="text-right pad-r-5">
+                                        <label for="Use Shift Report Format For OP Note">Use Shift Report Format For OP Note :</label>
+                                    </div>
+                                    <div nz-col nzSpan="2" class="text-right">
+                                        <label nz-checkbox formControlName="UseOPNoteAsShiftReport" ></label>
+                                    </div>
+                                </div>
+                                <div nz-row nzJustify>
+                                    <div nz-col nzSpan="22" class="text-right pad-r-5">
+                                        <label for="Use Shift Report Format For Service Note">Use Shift Report Format For Service Note :</label>
+                                    </div>
+                                    <div nz-col nzSpan="2" class="text-right">
+                                        <label nz-checkbox formControlName="UseServiceNoteAsShiftReport" ></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div nz-col class="gutter-row" nzSpan="12">
+                                <div nz-row nzJustify>
+                                    <div nz-col nzSpan="22" class="text-right pad-r-5">
+                                        <label for="View Published Client OP Notes">View Published Client OP Notes :</label>
+                                    </div>
+                                    <div nz-col nzSpan="2" class="text-right">
+                                        <label nz-checkbox [ngModel]="enableViewNoteCases[0]  == '1' " (change)="enableNoteCases(0, $event.target.checked)" [ngModelOptions]="{standalone: true}"></label>
+                                    </div>
+                                </div>
+                                <div nz-row nzJustify>
+                                    <div nz-col nzSpan="22" class="text-right pad-r-5">
+                                        <label for="View Published Client Case Notes">View Published Client Case Notes :</label>
+                                    </div>
+                                    <div nz-col nzSpan="2" class="text-right">
+                                        <label nz-checkbox [ngModel]="enableViewNoteCases[1]  == '1' " (change)="enableNoteCases(1, $event.target.checked)" [ngModelOptions]="{standalone: true}"></label>
+                                    </div>
+                                </div>
+                                <div nz-row nzJustify>
+                                    <div nz-col nzSpan="22" class="text-right pad-r-5">
+                                        <label for="View Published Client Clinical Notes">View Published Clinical Notes :</label>
+                                    </div>
+                                    <div nz-col nzSpan="2" class="text-right">
+                                        <label nz-checkbox [ngModel]="enableViewNoteCases[4]  == '1' " (change)="enableNoteCases(4, $event.target.checked)" [ngModelOptions]="{standalone: true}"></label>
+                                    </div>
+                                </div>
+                                <br>
+                                <div nz-row nzJustify>
+                                    <div nz-col nzSpan="22" class="text-right pad-r-5">
+                                        <label for="Generate Shift Report Reminder">Generate Shift Report Reminder :</label>
+                                    </div>
+                                    <div nz-col nzSpan="2" class="text-right">
+                                        <label nz-checkbox formControlName="ShiftReportReminder" ></label>
+                                    </div>
+                                </div>
+                            </div>    
+                        </div>
+                    </nz-card>
                 </div>
                 <div nz-col class="gutter-row" nzSpan="12">
                     <nz-card [nzSize]="'small'" nzType="inner" nzTitle="Dairy Management">
@@ -2780,13 +2857,13 @@
                                 <input [nzSize]="'small'" nz-input placeholder="" formControlName="CheckAlertInterval" />
                             </div>
                         </div>
-
+                        
                     </nz-card>
                 </div>
             </nz-card>
         </div>
     </div>
-
+    
 </nz-modal>
 <nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
     <div class="col-md-12 spinner" *ngIf="loading">

@@ -14,7 +14,11 @@ import { TimeSheetService } from '@services/timesheet.service';
 
 @Component({
     templateUrl: './userdetail.html',
-    styles: []
+    styles: [`
+        .force-chk{
+            margin:7px 5px 0px 15px;
+        }
+    `],
 })
 export class UserDetail implements OnInit {
     
@@ -30,6 +34,7 @@ export class UserDetail implements OnInit {
     mainMenuForm:FormGroup;
     documents: FormGroup;
     mobileForm:FormGroup;
+    recipientOptions:FormGroup;
     postLoading: boolean = false;
     isUpdate: boolean = false;
     modalVariables: any;
@@ -389,7 +394,7 @@ export class UserDetail implements OnInit {
             this.isUpdate = true;
             this.current = 0;
             this.modalOpen = true;
-            
+
             const { 
                 name,
                 end_date,
@@ -400,8 +405,8 @@ export class UserDetail implements OnInit {
                 end_date:end_date,
                 recordNumber:recordNumber
             });
+            
             this.temp_title = name;
-
         }
         
         tabFindIndex: number = 0;
@@ -519,6 +524,28 @@ export class UserDetail implements OnInit {
                         end_date:'',
                         recordNumber:null,
                     });
+                    this.recipientOptions    = this.formBuilder.group({
+                        DisableBtnReferral  : false,
+                        DisableBtnReferOn   : false,
+                        DisableBtnNotProceeding : false,
+                        DisableBtnAssess    : false,
+                        DisableBtnAdmit     : false,
+                        DisableBtnUnWait    : false,
+                        DisableBtnDischarge :false,
+                        DisableBtnSuspend   :false,
+                        DisableBtnReinstate :false,
+                        DisableBtnDecease   :false,
+                        DisableBtnAdmin     :false,
+                        DisableBtnItem      :false,
+                        DisableBtnPrint     :false,
+                        DisableBtnRoster    :false,
+                        DisableBtnMaster    :false,
+                        DisableBtnOnHold    :false,
+                        AddNewRecipient     :true,    
+                        CanChangeClientCode :true,
+                        CanEditNDIA         :true,
+                        AllowProgramTransition:false,
+                    })
                     this.viewScopeForm    = this.formBuilder.group({
                         ViewAllBranches  : false,
                         ViewAllProgram   : false,
@@ -528,6 +555,7 @@ export class UserDetail implements OnInit {
                         ViewAllStaffCategories:false,
                     })
                     this.documents        = this.formBuilder.group({
+
                         CanMoveImportedDocuments:false,
                         KeepOriginalAsImport:false,
 

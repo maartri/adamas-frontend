@@ -183,7 +183,7 @@ export class HomeV2Admin implements OnInit, OnDestroy, AfterViewInit {
         let settings: any = this.globalS.settings;
 
         if('cloudAdmin' in settings){
-            this.HIDE_SPECIAL_OPTIONS = this.globalS.settings[CLOUD_ADMIN_PROPERTY]
+            this.HIDE_SPECIAL_OPTIONS = !this.globalS.settings[CLOUD_ADMIN_PROPERTY]
         }
 
         this.token = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA) : this.globalS.decode();

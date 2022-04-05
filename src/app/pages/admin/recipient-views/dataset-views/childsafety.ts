@@ -31,7 +31,7 @@ export class ChildSafety implements OnInit, OnDestroy {
 
     tableData: Array<any> = [];
     branches: Array<any> = [];
-
+    referralServices: Array<any> = [];
     private default: any = {
         recordNumber: '',
         personID: '',
@@ -100,19 +100,16 @@ export class ChildSafety implements OnInit, OnDestroy {
     search(user: any = this.user) {
         this.cd.reattach();
         this.loading = true;
-        this.timeS.getbranches(user.id).subscribe(branches => {
-            this.loading = false;
-            this.tableData = branches;
-            this.cd.detectChanges();
-        });
-
         this.listDropDown();
     }
 
     listDropDown(user: any = this.user) {
-        this.branches = [];
-        this.listS.getintakebranches(user.id)
-            .subscribe(data => this.branches = data)
+
+        this.listS.getReferalServices().subscribe(services => {
+            this.loading = false;
+            this.referralServices = services;
+            this.cd.detectChanges();
+        });
     }
 
     save() {

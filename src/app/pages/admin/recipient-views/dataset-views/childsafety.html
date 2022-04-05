@@ -7,8 +7,8 @@
                     <label for="Placement Type">Placement Type :</label>
                 </div>
                 <div nz-col nzSpan="12">
-                    <nz-select nzAllowClear formControlName="placementtype" [nzDropdownMatchSelectWidth]="false">
-                        <nz-option *ngFor="let list of branches" [nzValue]="list" [nzLabel]="list"></nz-option>                           
+                    <nz-select nzAllowClear nzShowSearch formControlName="placementtype" [nzDropdownMatchSelectWidth]="false">
+                        <nz-option *ngFor="let list of referralServices" [nzValue]="list" [nzLabel]="list"></nz-option>                           
                     </nz-select>
                 </div>
             </div>

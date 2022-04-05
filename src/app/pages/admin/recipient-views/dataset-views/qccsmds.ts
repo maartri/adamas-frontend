@@ -105,7 +105,7 @@ export class DatasetQccsmda implements OnInit, OnDestroy {
         ngOnInit(): void {
             this.user = this.sharedS.getPicked();
             this.search(this.user);
-            this.getGeneralDataLists();
+            this.getGeneralDataLists(this.user);
             this.buildForm();
         }   
         tabFindIndexScope: number = 0;
@@ -132,15 +132,7 @@ export class DatasetQccsmda implements OnInit, OnDestroy {
         }
         
         search(user: any = this.user) {
-            this.cd.reattach();
-            this.loading = true;
-            this.timeS.getbranches(user.id).subscribe(branches => {
-                this.loading = false;
-                this.tableData = branches;
-                this.cd.detectChanges();
-            });
-            
-            this.listDropDown();
+        
         }
         
         listDropDown(user: any = this.user) {
@@ -148,11 +140,21 @@ export class DatasetQccsmda implements OnInit, OnDestroy {
             this.listS.getintakebranches(user.id)
             .subscribe(data => this.branches = data)
         }
-        getGeneralDataLists(){
+        getGeneralDataLists(user: any = this.user){
+            this.cd.reattach();
+            this.loading = true;
             
+            // this.listS.GetHaccSex()
+            // .subscribe(data => {
+            //     this.genderlist = data;
+            // })
+            
+            // this.listS.GetLanguages()
+            // .subscribe(data => {
+            //     this.languages = data;
+            // })
             return forkJoin([
                 this.listS.GetHaccSex(),
-                this.listS.GetCountries(),
                 this.listS.GetLanguages(),
                 this.listS.GetIndigniousStatus(),
                 this.listS.GetLivingArrangments(),
@@ -160,19 +162,21 @@ export class DatasetQccsmda implements OnInit, OnDestroy {
                 this.listS.getpensionall(),
                 this.listS.GetHACCVaCardStatus(),
                 this.listS.GetHACCReferralSource(),
+                this.listS.GetCountries(),
 
             ]).subscribe(x => {
                 this.genderlist             = x[0];
-                this.countries              = x[1];
-                this.languages              = x[2];
-                this.indigniousStatus       = x[3];
-                this.livingArrangemnts      = x[4];
-                this.accomodationSetting    = x[5];
-                this.pensionAll             = x[6];
-                this.dvaCardStatus          = x[7];
-                this.referalSource          = x[8];
+                this.languages              = x[1];
+                this.indigniousStatus       = x[2];
+                this.livingArrangemnts      = x[3];
+                this.accomodationSetting    = x[4];
+                this.pensionAll             = x[5];
+                this.dvaCardStatus          = x[6];
+                this.referalSource          = x[7];
+                this.countries              = x[8];
+                this.loading = false;
+                this.cd.detectChanges();
             });
-
         }
         getCarerDataLists(){
             return forkJoin([

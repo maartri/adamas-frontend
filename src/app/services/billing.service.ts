@@ -26,7 +26,7 @@ export class BillingService {
     getlistProgramPackagesFilter(is_where: boolean):Observable<any>{
         return this.auth.get(`${billing}/programPackagesFilter/${is_where}`)
     }
-    updateCloseRosterPeriod(data: any): Observable<any> {
+    closeRosterPeriod(data: any): Observable<any> {
         return this.auth.put(`${billing}/closeRosterPeriod`, data);
     }
 
@@ -202,9 +202,6 @@ export class BillingService {
     getBatchRecord(is_where: boolean):Observable<any>{
         return this.auth.get(`${billing}/getBatchRecord/${is_where}`)
     }
-    insertPayBillBatch(data: any): Observable<any> {
-        return this.auth.post(`${billing}/payBillBatch`, data);
-    }
     getDebtorRecordsTest(is_where: boolean):Observable<any>{
         return this.auth.get(`${billing}/getDebtorRecordsTest/${is_where}`)
     }
@@ -216,5 +213,23 @@ export class BillingService {
     }
     getBillingCycle(is_where: boolean):Observable<any>{
         return this.auth.get(`${billing}/getBillingCycle/${is_where}`)
+    }
+    getInvoiceBatch(): Observable<any> {
+        return this.auth.get(`${billing}/getInvoiceBatch`)
+    }
+    rollbackInvoiceBatch(data: any): Observable<any> {
+        return this.auth.put(`${billing}/rollbackInvoiceBatch`, data);
+    }
+    getPayrollBatch(): Observable<any> {
+        return this.auth.get(`${billing}/getPayrollBatch`)
+    }
+    rollbackPayrollBatch(data: any): Observable<any> {
+        return this.auth.put(`${billing}/rollbackPayrollBatch`, data);
+    }
+    getRosterBatch(): Observable<any> {
+        return this.auth.get(`${billing}/getRosterBatch`)
+    }
+    rollbackRosterBatch(data: any): Observable<any> {
+        return this.auth.put(`${billing}/rollbackRosterBatch`, data);
     }
 }

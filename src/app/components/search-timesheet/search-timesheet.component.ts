@@ -32,6 +32,7 @@ export class SearchTimesheetComponent implements OnInit {
   @Input() view: number;
   @Input() defautValue :string;
   @Output() selected = new EventEmitter<any>();
+  @Input() reload:Subject<any> = new Subject();
 
   searchModel: any;
   lists: Array<any> = [];
@@ -51,6 +52,28 @@ export class SearchTimesheetComponent implements OnInit {
     this.search();
     if (this.defautValue!=null)
       this.searchModel=this.defautValue;
+
+    this.reload.subscribe(d=>{
+      this.updateView(d);
+    })
+  }
+
+  updateView(data:any): void {
+    this.view=data.view    
+    this.searchModel=data.defautValue;
+
+    
+   
+    const sel = {
+      option: this.view,
+      data: this.searchModel
+    };
+
+    this.selected.emit(sel);   
+    this.search();
+    if (this.searchModel==''){
+      this.searchModel=null
+    }
   }
 
   search() {

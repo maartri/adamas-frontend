@@ -162,7 +162,7 @@
                                 <input placeholder="Search Staff" type="text" nz-input [(ngModel)]="selectedCarer" [disabled]="true"/>
                               </nz-input-group>                -->
                         </div>
-                        <staff-search [findModalOpen]="openSearchStaffModal" [bookingData]="bookingData"  (searchDone)="onStaffSearch($event)"></staff-search>
+                        <carer-search [findModalOpen]="openSearchStaffModal" [bookingData]="bookingData"  (searchDone)="onStaffSearch($event)"></carer-search>
                     </div>
                 </div>
                 

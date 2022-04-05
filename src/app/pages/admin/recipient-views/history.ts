@@ -9,7 +9,7 @@ import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, Con
 import * as groupArray from 'group-array';
 import {CdkDragDrop, moveItemInArray, transferArrayItem, copyArrayItem } from '@angular/cdk/drag-drop';
 
- export const FILTERS: Array<string> = [
+ const FILTERS: Array<string> = [
     'CARE DOMAIN',
     'CREATOR',
     'DISCIPLINE',
@@ -37,6 +37,8 @@ export class RecipientHistoryAdmin implements OnInit, OnDestroy {
 
     FILTERS = FILTERS;
 
+    filterParameters: any;
+
     constructor(
         private timeS: TimeSheetService,
         private sharedS: ShareService,
@@ -63,7 +65,7 @@ export class RecipientHistoryAdmin implements OnInit, OnDestroy {
 
     ngOnInit(): void {        
         this.user = this.sharedS.getPicked();
-        this.search(this.user);
+        // this.search(this.user);
     }
 
     ngOnDestroy(): void {
@@ -71,10 +73,10 @@ export class RecipientHistoryAdmin implements OnInit, OnDestroy {
         this.unsubscribe.complete();
     }
 
-    search(user: any) {
+    search(user: any, filters: any = null) {
         this.loading = true;
 
-        this.clientS.gethistory(user.code).subscribe(data => {
+        this.clientS.gethistory(user.code, filters).subscribe(data => {
             this.tableData = data.list;
             this.originalTableData = data.list;
 
@@ -170,6 +172,11 @@ export class RecipientHistoryAdmin implements OnInit, OnDestroy {
             return data.some(d => 'key' in d);
         }
         return true;        
+    }
+
+    filterChange(data: any){
+        console.log(data);
+        this.search(this.user, data);
     }
 
 }

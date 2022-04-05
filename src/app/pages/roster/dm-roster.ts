@@ -2,7 +2,9 @@ import { Component, Input,Output,EventEmitter, ViewChild, ChangeDetectorRef,Elem
     AfterViewInit,   
     OnDestroy,
     OnInit, 
-    HostListener} from '@angular/core'
+    HostListener,
+    ViewContainerRef,
+    ComponentFactoryResolver} from '@angular/core'
 import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { getLocaleDateFormat, getLocaleFirstDayOfWeek, Time,DatePipe } from '@angular/common';
 
@@ -46,6 +48,7 @@ import { SetLeftFeature } from 'ag-grid-community';
 import { style } from '@angular/animations';
 import { stringify } from '@angular/compiler/src/util';
 import { environment } from 'src/environments/environment';
+import { validateVerticalPosition } from '@angular/cdk/overlay';
 
  
 interface AddTimesheetModalInterface {
@@ -182,6 +185,9 @@ info = {StaffCode:'', ViewType:'',IsMaster:false, date:''};
 
 @Input() loadRoster :Subject<any> = new Subject() 
 @Output() RosterDone :EventEmitter<boolean>= new EventEmitter(); 
+@Output() reLoadGrid :EventEmitter<boolean>= new EventEmitter(); 
+reloadSearchList:Subject<any> = new Subject() ;
+
  
 selectedrow: string ="class.selected"   
 timesheets: Array<any> = [];
@@ -247,6 +253,7 @@ searchAvaibleModal:boolean=false;
   i:number=0;
   eventLog: string;
   token:any;
+  userSettings:any;
   showDefault:boolean
   addBookingModel:boolean=false;
   type_to_add:number;
@@ -837,6 +844,7 @@ AddRoster_Entry(){
 
                 this.show_alert=true;
             }
+                this.addBookingModel=false;
                 this.RosterDone.emit(true);
            });
            tsheet.date=this.addDays(tsheet.date,1);
@@ -924,11 +932,11 @@ setUnavailablity(){
                 program:"!INTERNAL",
                 analysisCode:"!INTERNAL",
                 serviceType:13,
-                payType:"UNAVAILABLE",
+                payType:"NOPAY",
                 staffCode:this.data.data,
                 serviceActivity: {
                     activity:"UNAVAILABLE",
-                    service_Description:"UNAVAILABLE"
+                    service_Description:"NOPAY"
                     
                 }
             });
@@ -1458,7 +1466,7 @@ load_rosters(){
       let sheet = spread.getActiveSheet();  
       
       sheet.setRowCount(this.time_slot, GC.Spread.Sheets.SheetArea.viewport);
-      sheet.setColumnCount(31,GC.Spread.Sheets.SheetArea.viewport);
+      sheet.setColumnCount(1,GC.Spread.Sheets.SheetArea.viewport);
      
 
         spread.suspendPaint();
@@ -1468,15 +1476,22 @@ load_rosters(){
       
       spread.options.columnResizeMode = GC.Spread.Sheets.ResizeMode.split;
       spread.options.rowResizeMode = GC.Spread.Sheets.ResizeMode.split;
-      spread.options.scrollbarAppearance = GC.Spread.Sheets.ScrollbarAppearance.mobile;
-     // spread.options.scrollByPixel = true;
-     // spread.options.scrollPixel = 5;
+      spread.options.scrollbarAppearance = GC.Spread.Sheets.ScrollbarAppearance.skin;
+      spread.options.scrollByPixel = true;
+      spread.options.scrollPixel = 5;
       sheet.options.selectionBorderColor = 'blue';
+      
+      spread.options.showVerticalScrollbar = true;
+    // disable the horizontal scrollbar
+        spread.options.showHorizontalScrollbar = false;
+
+      
      // sheet.options.selectionBackColor = '#BDCED1';
      //sheet.options.selectionBackColor = 'transparent';
      
       spread.options.newTabVisible = false;
      
+      
       spread.commandManager().register('myCopy',
       function AddRow() {                   
           //Click on a cell and press the Enter key.      
@@ -1545,7 +1560,12 @@ load_rosters(){
                     spread.resumePaint();
                 });
 
-                
+    spread.getHost().addEventListener("contextmenu", function (e) {
+        // your code;
+        console.log("right-clicked");
+        e.preventDefault();
+        return false;
+        });          
     sheet.bind(GC.Spread.Sheets.Events.EnterCell, function (event, infos) {
        
          //infos.sheet.getCell(0, infos.col, GC.Spread.Sheets.SheetArea.colHeader).backColor("#002060");
@@ -1612,7 +1632,7 @@ load_rosters(){
                   self.ActiveCellText="";
                   sheet.getRange(self.prev_cell.row, self.prev_cell.col, self.prev_cell.duration, 1, GC.Spread.Sheets.SheetArea.viewport).setBorder(new GC.Spread.Sheets.LineBorder("#C3C1C1", GC.Spread.Sheets.LineStyle.thin), {all:true});
                  if (self.prev_cell.service==null)
-                  sheet.getCell(self.prev_cell.row, self.prev_cell.col).backColor("#ffffff");
+                  //sheet.getCell(self.prev_cell.row, self.prev_cell.col).backColor("#ffffff");
                  
                   
                   if (sheet.getTag(row,col,GC.Spread.Sheets.SheetArea.viewport)!=null) {
@@ -2439,27 +2459,18 @@ load_rosters(){
    this.spreadsheet.suspendPaint();
   
      // Set the default size.
-     this.spreadsheet.getHost().style.width = (this.screenWidth - 100) + 'px';
-     this.spreadsheet.getHost().style.height = (this.screenHeight - 100) + 'px';
-   
+    // this.spreadsheet.getHost().style.width = (this.screenWidth - 100) + 'px';
+    // this.spreadsheet.getHost().style.height = (this.screenHeight - 100) + 'px';
+     this.spreadsheet.getHost().style.width =  '400px';
+     this.spreadsheet.getHost().style.height =  '580px';
 
     sheet.clearSelection();
 
     var style = new GC.Spread.Sheets.Style();
-    //style.backColor = "red";
-    // style.borderLeft = new GC.Spread.Sheets.LineBorder("blue",GC.Spread.Sheets.LineStyle.medium);
-    // style.borderTop = new GC.Spread.Sheets.LineBorder("blue",GC.Spread.Sheets.LineStyle.medium);
-    // style.borderRight = new GC.Spread.Sheets.LineBorder("blue",GC.Spread.Sheets.LineStyle.medium);
-    // style.borderBottom = new GC.Spread.Sheets.LineBorder("blue",GC.Spread.Sheets.LineStyle.medium);
-    style.font = "10pt Segoe UI";     
+     style.font = "10pt Segoe UI";     
     style.themeFont = "Segoe UI";
 
-    // sheet.setStyle(1,1,style,GC.Spread.Sheets.SheetArea.viewport);
-    // //row
-    // sheet.setStyle(1,-1,style,GC.Spread.Sheets.SheetArea.viewport);
-    // //column
-    // sheet.setStyle(-1,2,style,GC.Spread.Sheets.SheetArea.viewport);
-
+ 
     sheet.setDefaultStyle(style, GC.Spread.Sheets.SheetArea.viewport);
 
      let date:Date = new Date(this.date);
@@ -2869,29 +2880,17 @@ load_rosters(){
           new_duration=1;
 
       for (let m=0; m<new_duration; m++){
-      if (m==0) {
-        if (this.master)           
-           // sheet.getCell(r+m,c).backColor("#FF8080");
-           sheet.getCell(r+m,c).backColor("white");
-        else
-            sheet.getCell(r+m,c).backColor("white");
-        
-        sheet.getCell(r+m,c).backgroundImage(null)
+      if (m==0) { 
+        sheet.getCell(r,c).backgroundImage(null)
         this.setIcon(r,c,21,0, "");
        }  
-       else {
-            if (this.master)           
-                //sheet.getCell(r+m,c).backColor("#FF8080");
-                sheet.getCell(r+m,c).backColor("white");
-            else
-            sheet.getCell(r+m,c).backColor("white");
-       }
+      
         //sheet.getCell(r+m,c).field=duration;
+        sheet.getCell(r+m,c).backColor("white");
         sheet.getCell(r+m,c, GC.Spread.Sheets.SheetArea.viewport).locked(true);
         sheet.getRange(r+m, c, 1, 1).tag(null);
         sheet.getRange(r+m, c, 1, 1).text("");
-  
-       
+        sheet.getCell(r+m,c, GC.Spread.Sheets.SheetArea.viewport).setBorder(new GC.Spread.Sheets.LineBorder("#C3C1C1", GC.Spread.Sheets.LineStyle.thin), {all:true});
        //this.addOpenDialog();    
        
       }
@@ -3463,7 +3462,8 @@ return rst;
         public datepipe: DatePipe,
         private sharedS: ShareService,
         private route: ActivatedRoute,
-        
+        private host: ElementRef<HTMLElement>,
+        private vcrf: ViewContainerRef, private cfr: ComponentFactoryResolver, private elementRef: ElementRef
       
     ) {
         this.router.routeReuseStrategy.shouldReuseRoute = function () {        
@@ -3664,7 +3664,7 @@ return rst;
     ngOnInit(): void {
 
         this.token = this.globalS.decode(); 
-        console.log(this.token);
+      
         if (this.token==null){
 
             this.globalS.eToast("Authentication","Invalid  User, please login again");
@@ -3756,11 +3756,51 @@ ngOnDestroy(){
     console.log("ngDestroy");
    // window.location.reload();  
 }
+async openModal(info:any) {
+    const { DMRoster } = await import(
+      /* webpackPrefetch: true */ 
+      '../roster/dm-roster'
+    );
+   
+    const modalRef = this.modalService.create({
+        nzTitle :'Day Manager',
+        nzContent: DMRoster,
+        nzWidth:470,
+        nzStyle : {top: '15px' },
+        nzFooter: [
+            {
+              label: "Cancel",
+              type: "danger",
+              nzOnOk: () => modalRef.close(),
+              nzOnCancel: () => modalRef.close()
+            }
+          ]
+    });
+    this.loadRosterData(info);    
+  }
+  reloadComponent() {
+    let currentUrl = this.router.url;
+        this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+        this.router.onSameUrlNavigation = 'reload';
+        this.router.navigate([currentUrl]);
+    }
+    
+    async reloadPage(url: string): Promise<boolean> {
+        await this.router.navigateByUrl('.', { skipLocationChange: true });
+        return this.router.navigateByUrl(url);
+      }
 
 refreshPage() {
     //this._document.defaultView.location.reload();
     //window.location.reload();
-    this.ngOnInit();
+  //  this.ngOnInit();
+   //  this.reloadPage('./roster/dm-roster');
+    // this.host.nativeElement.remove();
+    this.reLoadGrid.emit(true);
+    this.openModal(this.info);
+
+   // this.reloadComponent();
+
   }
 reloadVal: boolean = false;
 reload(reload: boolean){
@@ -3776,7 +3816,7 @@ loadRosterData(d:any){
     this.master=this.info.IsMaster
     this.date = this.info.date;
     this.CalendarDate= this.date;
-    
+    this.showDefault=false;
    // this.globalS.eToast("detail", this.defaultCode);
     
     let data ={data:this.defaultCode, option:this.viewType}   
@@ -3789,14 +3829,23 @@ loadRosterData(d:any){
     }
 
     this.selected = data;
+
+    this.reloadSearchList.next({defautValue:this.defaultCode, view:this.view});
     
     this.startRoster=this.date;
     this.endRoster = this.date;
     this.prepare_Sheet();
     this.picked(this.selected);
     this.upORdown.next(true);
+
+    this.timeS.getusersettings(this.token.user).pipe(takeUntil(this.unsubscribe))
+    .subscribe(data => {
+        this.userSettings=data;
+        console.log(this.userSettings);
+    });
   }
 
+  
     public clickStream;
     private clicks = 0;
 
@@ -3886,7 +3935,10 @@ loadRosterData(d:any){
 
 selected_person(event:any){
     this.showDefault=true;
-    this.picked(event);
+    this.rosters=[];
+    if (event.data!='' && event.data!=null)
+        this.picked(event);
+        
     setTimeout(() => {
         this.prepare_Sheet();
       }, 1000);
@@ -3897,6 +3949,7 @@ selected_person(event:any){
 }
 picked(data: any) {
         console.log(data);
+      
         this.userStream.next(data);
 
         if (!data.data) {
@@ -4415,6 +4468,7 @@ getPublicHolidyas(s_StaffCode:string){
     let s_PubHolRegion:string;
     let s_PubHolFilter:string;
     let s_FilterMask:string
+    if (s_StaffCode==null) return;
 
        let sql=`SELECT st.PublicHolidayRegion, sta.Postcode FROM Staff st INNER JOIN NamesAndAddresses sta ON st.Uniqueid = sta.personid WHERE (ISNULL(sta.primaryAddress, 0) = 1 or sta.Type = '<USUAL>') AND st.AccountNo = '${s_StaffCode}'`
 
@@ -5407,6 +5461,10 @@ this.bookingForm.get('program').valueChanges.pipe(
         if (this.current==3 && this.viewType=='Recipient' && this.serviceType=='BOOKED')
             this.current += 1;
       
+        if(this.userSettings.useAwards=='True' && this.current>=1 && !this.ShowCentral_Location)
+                this.doneBooking();
+        if(this.userSettings.useAwards=='True' && this.current>2 )
+                this.doneBooking();
        
     }
     
@@ -5444,10 +5502,12 @@ this.bookingForm.get('program').valueChanges.pipe(
                 if (this.selectedActivity.service_Description == '' || this.selectedActivity.service_Description==null)
                     return false;
             }
+            if(this.userSettings.useAwards=='True' && this.current>=2)
+                return true;
 
             if ((this.current <3 && this.viewType=="Staff") && (this.IsGroupShift ))
                 return false;            
-            else if ((this.current >=1 && this.viewType=="Staff") && (this.activity_value!=12 || !this.ShowCentral_Location ))
+            else if ((this.current >=1 && this.viewType=="Staff") && (this.activity_value!=12 || !this.ShowCentral_Location ) && this.userSettings.useAwards=='True')
                 return true;
             else if  (this.current >=1 && (this.booking_case==1 || this.booking_case==5 ))
                 return true;  
@@ -5592,6 +5652,8 @@ shiftChanged(value:any){
         this.show_alert=true;
     }
     this.searchRoster(value.date)
+
+    this.RosterDone.emit(true);
 }
 
 

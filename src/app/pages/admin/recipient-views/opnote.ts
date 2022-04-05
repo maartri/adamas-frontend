@@ -12,6 +12,18 @@ import { AngularEditorConfig } from '@kolkov/angular-editor';
 
 import {CdkDragDrop, moveItemInArray, transferArrayItem, copyArrayItem } from '@angular/cdk/drag-drop';
 import * as groupArray from 'group-array';
+// import * as rtf2text from '@bacali/rtf-parser';
+
+// import * as iconvLite from 'iconv-lite';
+// import { deEncapsulateSync } from 'rtf-stream-parser';
+
+const FILTERS: Array<string> = [
+    'CARE DOMAIN',
+    'CATEGORY',
+    'CREATOR',
+    'DISCIPLINE',
+    'PROGRAMS'
+ ]
 
 @Component({
     styles: [`
@@ -67,6 +79,8 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
         archiveDocs: true,
         display: 20
     };
+
+    FILTERS = FILTERS;
 
 
     alist: Array<any> = [];
@@ -129,6 +143,7 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
         this.user = this.sharedS.getPicked();
         // this.search(this.user);
         this.buildForm();
+        // console.log(rtf2text)
     }
 
     print(){
@@ -145,20 +160,21 @@ export class RecipientOpnoteAdmin implements OnInit, OnDestroy {
         this.getSelect();
     }
 
-    filterChange(data: any){
-        this.search(this.user);
+    filterChange(filters: any){
+        this.getNotes(this.user, filters);
+        this.getSelect();
     }
 
-    getNotes(user:any) {
+    getNotes(user:any, filters: any = null) {
         this.loading = true;
 
-        this.clientS.getopnoteswithfilters(user.id, this.filters).subscribe(data => {
+        this.clientS.getopnoteswithfilters(user.id, filters).subscribe(data => {
             let list: Array<any> = data.list || [];
             
             if (list.length > 0) {
                 list.forEach(x => {
                     if (!this.globalS.IsRTF2TextRequired(x.detailOriginal)) {
-                        x.detail = x.detailOriginal
+                        x.detail = x.detailOriginal;                        
                     }
                 });
                 this.tableData = list;

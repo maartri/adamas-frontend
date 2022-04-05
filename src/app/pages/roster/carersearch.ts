@@ -1,4 +1,4 @@
-import { Component,AfterViewInit,Input,Output,EventEmitter,ChangeDetectorRef,ViewChild } from '@angular/core';
+import { Component,AfterViewInit,Input,Output,EventEmitter,ChangeDetectorRef } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { GlobalService,staffnodes,StaffService,sbFieldsSkill, ShareService,timeSteps,conflictpointList,checkOptionsOne,sampleList,genderList,statusList, ListService, TimeSheetService,   } from '@services/index';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
@@ -10,33 +10,11 @@ import { stringify } from '@angular/compiler/src/util';
 import { forEach } from 'lodash';
 import { Subscription, Subject } from 'rxjs';
 import { XmlParser } from '@angular/compiler';
-//import { RostersAdmin } from './rosters';
-import * as moment from 'moment';
-
-
-class Address {
-  postcode: string;
-  address: string;
-  suburb: string;
-  state: string;
-
-  constructor(postcode: string, address: string, suburb: string, state: string) {
-      this.suburb = suburb.trim();
-      this.address = address;
-      this.postcode = postcode;
-      this.state = state;
-  }
-
-  getAddress() {
-      var _address = `${this.address} ${this.suburb} ${this.postcode}`;
-      return (_address.split(' ').join('+')).split('/').join('%2F');
-  }
-}
 
 
 @Component({
-    selector: 'staff-search',
-    templateUrl: './staffsearch.html',
+    selector: 'carer-search',
+    templateUrl: './carersearch.html',
     styles: [`
     .disabled{
       pointer-events:none;
@@ -112,20 +90,13 @@ class Address {
     
     `]
   })
-  export class StaffSearch implements AfterViewInit{
+  export class CarerSearch implements AfterViewInit{
       @Input() findModalOpen:boolean=false;      
       @Input() bookingData = new Subject<any>();
       @Output() searchDone:EventEmitter<any>= new EventEmitter();
-      //@ViewChild('RostersAdmin') rosterForm: RostersAdmin;
 
-      reloadRoster = new Subject<any>();
-      
-      info = {StaffCode:'', ViewType:'Staff',IsMaster:false, date:''}; 
-
-      menuItems= new Subject<number>();
-      booking :any;
-      selectAll:boolean;
-      showMenu:boolean;
+    
+      booking :any;          
       selectedStaff:any;
       extendedSearch: any;
       allBranches:boolean = true;
@@ -170,7 +141,7 @@ class Address {
     indeterminate: boolean = false;
     tabFindIndex:number=0;
     address:any;
-  
+    clickedData:any;
 
     sampleList: Array<any> = sampleList;
     cariteriaList:Array<any> = [];
@@ -217,36 +188,7 @@ class Address {
           this.loadModel(data);
         })
 
-        this.menuItems.subscribe(index => {
-          // console.log(data);
-          this.showMenu=false;
-          switch(index){  
-            case 0:
-              this.toMap();
-            break;
-          case 1:
-            this.toLastKnownMap();
-            break;
-          case 2:
-            this.openRoster=true;
-            this.info.StaffCode=this.selectedStaff.accountno;
-            let dt:Date= new Date();
-            this.info.date= moment(dt).format('YYYY/MM/DD');
-            this.reloadRoster.next(this.info);   
-            //this.rosterForm.getScreenSize();
-            break;
-          case 3:
-            this.openRoster=true;
-            this.info.StaffCode=this.selectedStaff.accountno;          
-            this.info.date= '';
-            this.reloadRoster.next(this.info);
-            break;
-           case 4:
-             this.selectAll=true;
-            break;  
-              
-          }
-        });
+       
     }
     ngAfterViewInit(){
 
@@ -453,15 +395,13 @@ class Address {
         }
          
          //console.log(this.serviceActivityList[0].description.includes(value));
-         if (this.originalList.length>0)
-          this.filteredResult=this.originalList.filter(element=>element.name.includes(value));
+         this.filteredResult=this.originalList.filter(element=>element.name.includes(value));
      }
 
      onItemSelected(sel:any ) : void {
       if (sel==null) return;
-      this.selectAll=false;
-      this.selectedStaff=sel; 
-      console.log(this.selectedStaff)    
+    
+      this.selectedStaff=sel;     
   
   }
   onItemDbClick(sel:any ) : void {
@@ -633,59 +573,5 @@ class Address {
         })
       }
 
-      rightClickMenu(event:any,data:any){
-        event.preventDefault();
-        this.showMenu=true;    
-        this.selectedStaff=data;
-      }
-
-      
-      toMap(){
-        this.address=this.selectedStaff.address;
-        if(this.address.length > 0){         
-          window.open(`https://www.google.com/maps/dir///@${this.address}`,'_blank');
-
-            // var adds = this.address.reduce((acc,data) => {
-            //     var { postCode, address1, suburb, state } = data;
-            //     var address = new Address(postCode, address1, suburb, state);
-            //     return acc.concat('/',address.getAddress());                
-            // }, []);
-  //          console.log(adds)
-    //        console.log(adds.join(''))
-                
-            //window.open('https://www.google.com/maps/search/?api=1&query=' + encoded,'_blank');
-           // window.open(`https://www.google.com/maps/dir${adds.join('')}`,'_blank');
-            return false;
-        }
-        this.globalS.eToast('No address found','Error');
-    }
-    toLastKnownMap(){
-      if (this.selectedStaff.lastKnownLocation=='' || this.selectedStaff.lastKnownLocation==null)
-        this.address=this.selectedStaff.address;
-      else{
-       
-        let addr = this.selectedStaff.lastKnownLocation;
-         addr=addr.replace("<Lattitude>","").replace("<Lattitude/>","")
-         this.address=addr.replace("<Longditude>","").replace("<Longditude/>","")
-      }
-     
-      if(this.address.length > 0){         
-     
-        window.open(`https://www.google.com/maps/dir///@${this.address}`,'_blank');
-
-          // window.open(`https://www.google.com/maps/@${this.address}`);
-        // var adds = this.address.reduce((acc,data) => {
-        //       var { postCode, address1, suburb, state } = data;
-        //       var address = new Address(postCode, address1, suburb, state);
-        //       return acc.concat('/',address.getAddress());                
-        //   }, []);
-        //  console.log(adds)
-      //    console.log(adds.join(''))
-              
-          //window.open('https://www.google.com/maps/search/?api=1&query=' + encoded,'_blank');
-//          window.open(`https://www.google.com/maps/dir${adds.join('')}`,'_blank');
-          return false;
-      }
-      this.globalS.eToast('No address found','Error');
-  }
+   
   }

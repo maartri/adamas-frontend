@@ -97,7 +97,7 @@
                                 >
 
                                 <div class="icon" [class.icon2]="dayView===7" [class.icon3]="dayView === 10" [class.icon4]="dayView === 14"  >
-                                        <img id="icon-1" class="icon" [class.icon2]="dayView===7" [class.icon3]="dayView === 10" [class.icon4]="dayView === 14"   *ngIf="value.type==1" style=" background-color: #D5D6DE;"  src="/media/r1.png"/>
+                                        <img id="icon-1" class="icon" [class.icon2]="dayView===7" [class.icon3]="dayView === 10" [class.icon4]="dayView === 14 "   *ngIf="value.type==1" style=" background-color: #D5D6DE;"  src="/media/r1.png"/>
                                         <img id="icon-2" class="icon" [class.icon2]="dayView===7" [class.icon3]="dayView === 10" [class.icon4]="dayView === 14"  *ngIf="value.type==2" style=" background-color: #D5D6DE;"  src="/media/r2.png"/>
                                         <img id="icon-3" class="icon" [class.icon2]="dayView===7" [class.icon3]="dayView === 10" [class.icon4]="dayView === 14"  *ngIf="value.type==3" style=" background-color: #D5D6DE;"  src="/media/r3.png"/>
                                         <img id="icon-4" class="icon" [class.icon2]="dayView===7" [class.icon3]="dayView === 10" [class.icon4]="dayView === 14"  *ngIf="value.type==4" style=" background-color: #D5D6DE;"  src="/media/r4.png"/>
@@ -123,6 +123,8 @@
                                 </div>
                                 
                                 <div [class.time]="dayView ==5"  [class.time2]="dayView ==7" [class.time3]="dayView == 10" [class.time4]="dayView == 14" >
+                                    
+                                    <strong *ngIf="dmType=='1'"> [{{ value.shiftname}}]  </strong>
                                     <strong  title="{{ value.startTime}}-{{ value.endTime }}">{{ value.startTime}}-{{ value.endTime }}</strong>
                                     <strong *ngIf="optionsList[1].checked && dayView <=5"  > ({{ BlockToTime(value.duration)}})</strong>                                  
                                 </div > 
@@ -130,13 +132,15 @@
                                      <strong style="margin-left: 12px;" > ({{ BlockToTime(value.duration)}})</strong>
                                  </div>  
                                   
-                                 <div class="details" title="{{ value.recipient}} * {{ value.activity}} * {{value.notes.toUpperCase()}}"   [class.detail-more]="selectedRecordNo==value.recordno" ngbTooltip=""
+                                 <div class="details" title="{{ value.recipient}} * {{ value.activity}} * {{value.snotes.toUpperCase()}}"   [class.detail-more]="selectedRecordNo==value.recordno" ngbTooltip=""
                                         (click)="viewText(value)"  [class.detail2]="dayView == 7" [class.detail3]="dayView == 10" [class.detail4]="dayView == 14" >
                                         <i nz-icon *ngIf="value.status==2" [nzType]="'check-circle'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#52c41a'" class="icon"></i>
                                         <!-- <i nz-icon *ngIf="value.status==2" style="color: #52c41a; font-family:  Tahoma, Geneva, Verdana, sans-serif; font-size: 12px; font-weight: bold;"  nzType="check" nzTheme="outline"></i> -->
-                                        {{ value.recipient}} * {{ value.activity}} 
+                                       
+                                            {{ value.recipient}} * {{ value.activity}} 
+                                        
                                         <span *ngIf="optionsList[3].checked">
-                                            {{value.notes.toUpperCase()}} 
+                                            {{value.snotes.toUpperCase()}} 
                                         </span>
                                  </div>
                                 

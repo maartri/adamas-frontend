@@ -1,6 +1,6 @@
 .inline{
     display:inline-block;
-    margin-right: 1rem;
+    margin-right: 8px;
     margin-bottom:8px;
 }
 span{
@@ -28,4 +28,8 @@ button{
 }
 .container{
     min-width: 50rem;
+}
+
+.ng-dropdown-panel {
+    min-width: 100%;
 }

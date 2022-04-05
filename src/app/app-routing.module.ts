@@ -184,7 +184,7 @@ import {
 
 
 import {  
-  RostersAdmin,ShiftDetail,AddRoster,RecipientExternal,StaffExternal,GNotes,StaffSearch,RecipientSearch,DMRoster
+  RostersAdmin,ShiftDetail,AddRoster,RecipientExternal,StaffExternal,GNotes,CarerSearch,StaffSearch,RecipientSearch,DMRoster
   ,ServiceTasks, RosterExtraInfo
 } from './pages/roster/index';
 
@@ -295,7 +295,10 @@ import { DebtorComponent } from '@admin/billing/debtor.component'; //AHSAN
 import { TravelComponent } from '@admin/billing/travel.component'; //AHSAN 
 import { PayComponent } from '@admin/timesheet-processing-views/pay.Component'; //AHSAN 
 import { PayIntegrityComponent } from '@admin/billing/payIntegrity.component'; //AHSAN
-import { CloseRosterComponent } from '@admin/billing/closeRoster.component'; //AHSAN
+import { CloseRosterComponent } from '@admin/billing/closeRoster.component'; //AHSAN 
+import { RollbackInvoiceComponent } from '@admin/billing/rollbackInvoice.component'; //AHSAN 
+import { RollbackPayrollComponent } from '@admin/billing/rollbackPayroll.component'; //AHSAN 
+import { RollbackRosterComponent } from '@admin/billing/rollbackRoster.component'; //AHSAN 
 import { MediaList } from '@admin/recipient-views/mediaList';
 import { UserDetail } from '@admin/configuration/genrel-setup/userdetail';
 import { Checklist } from '@admin/configuration/genrel-setup/checklist';
@@ -834,6 +837,18 @@ const routes: Routes = [
         component: CloseRosterComponent
       },
       {
+        path: 'rollback-invoice-batch', //AHSAN
+        component: RollbackInvoiceComponent
+      },
+      {
+        path: 'rollback-payroll-batch', //AHSAN
+        component: RollbackPayrollComponent
+      },
+      {
+        path: 'rollback-roster-batch', //AHSAN
+        component: RollbackRosterComponent
+      },
+      {
         path: 'hcp',
         component: HCPComponent
       },
@@ -1244,9 +1259,14 @@ const routes: Routes = [
         component:GNotes
       },
       {
+        path: 'carer-search',
+        component:CarerSearch
+      },
+      {
         path: 'staff-search',
         component:StaffSearch
       },
+      
       {
         path: 'recipient-search',
         component:RecipientSearch
@@ -1621,6 +1641,7 @@ export const PAGE_COMPONENTS = [
   RecipientExternal,
   StaffExternal,
   GNotes,
+  CarerSearch,
   StaffSearch,
   RecipientSearch,
   DMRoster,
@@ -1640,6 +1661,9 @@ export const PAGE_COMPONENTS = [
   PayComponent, //AHSAN 
   PayIntegrityComponent, //AHSAN 
   CloseRosterComponent, //AHSAN 
+  RollbackInvoiceComponent, //AHSAN
+  RollbackPayrollComponent, //AHSAN
+  RollbackRosterComponent, //AHSAN
   BudgetgroupsComponent,
   BudgetsComponent,
   ContactgroupsComponent,

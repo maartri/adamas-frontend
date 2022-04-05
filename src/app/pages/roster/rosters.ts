@@ -1,7 +1,7 @@
 import { Component, Input, ViewChild, ChangeDetectorRef,ElementRef,ViewEncapsulation,    
     AfterViewInit,   
     OnDestroy,
-    OnInit, 
+    OnInit, Renderer2,
     HostListener} from '@angular/core'
 import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { getLocaleDateFormat, getLocaleFirstDayOfWeek, Time,DatePipe } from '@angular/common';
@@ -163,7 +163,7 @@ OnDestroy  {
     sheetName = "Staff Rosters";  
 
     hostStyle = {
-        width: 'calc(100% - 50px)',
+        width: '1100px',
         height: '500px',
         overflow: 'hidden',
         float: 'left'
@@ -171,12 +171,18 @@ OnDestroy  {
 
 
     hostStyle2 = {  
-      width: '100%',    
-      overflow: 'auto',
+        width: 'calc(100% - 50px)',
+        height: '500px',
+      overflow: 'hidden',
       float: 'left'
     };  
-@Input() info = {StaffCode:'', ViewType:'',IsMaster:false}; 
+@Input() info = {StaffCode:'', ViewType:'',IsMaster:false, date:''}; 
+@Input() reloadRoster = new Subject<any>();
+@Input() fixSize:boolean;
+reloadSearchList = new Subject<any>();
 @ViewChild(ShiftDetail) detail:ShiftDetail;
+unlistener: () => void;
+
 selectedrow: string ="class.selected"   
 timesheets: Array<any> = [];
 timesheetsGroup: Array<any> = [];   
@@ -186,6 +192,7 @@ selectedActivity: any = null;
 defaultCategory: any = null;
 Timesheet_label:any="Add Timesheet";
 personList:Array<any>=[];
+
 payTotal:any;
 HighlightRow!: number;
 HighlightRow2!: number;
@@ -241,6 +248,7 @@ searchAvaibleModal:boolean=false;
   i:number=0;
   eventLog: string;
   token:any;
+  userSettings:any
   addBookingModel:boolean=false;
   type_to_add:number;
   select_StaffModal:boolean=false;
@@ -2444,29 +2452,27 @@ load_rosters(){
    this.spreadsheet.suspendPaint();
   
      // Set the default size.
-     this.spreadsheet.getHost().style.width = (this.screenWidth - 260) + 'px';
-     this.spreadsheet.getHost().style.height = (this.screenHeight - 170) + 'px';
-   
-
-    sheet.clearSelection();
-
+    if (this.screenWidth<300)
+        this.screenWidth=1000;
+        if (!this.fixSize)
+         this.spreadsheet.getHost().style.width = (this.screenWidth - 260) + 'px';
+         this.spreadsheet.getHost().style.height = (this.screenHeight - 170) + 'px';
+        // if (this.fixSize){
+        //    this.spreadsheet.getHost().style.width =  '1100px';
+        //    this.spreadsheet.getHost().style.height =  '500px';
+           
+        // }
+    
+    sheet.clearSelection(); 
+    
+    
     var style = new GC.Spread.Sheets.Style();
-    //style.backColor = "red";
-    // style.borderLeft = new GC.Spread.Sheets.LineBorder("blue",GC.Spread.Sheets.LineStyle.medium);
-    // style.borderTop = new GC.Spread.Sheets.LineBorder("blue",GC.Spread.Sheets.LineStyle.medium);
-    // style.borderRight = new GC.Spread.Sheets.LineBorder("blue",GC.Spread.Sheets.LineStyle.medium);
-    // style.borderBottom = new GC.Spread.Sheets.LineBorder("blue",GC.Spread.Sheets.LineStyle.medium);
     style.font = "10pt Segoe UI";     
     style.themeFont = "Segoe UI";
 
-    // sheet.setStyle(1,1,style,GC.Spread.Sheets.SheetArea.viewport);
-    // //row
-    // sheet.setStyle(1,-1,style,GC.Spread.Sheets.SheetArea.viewport);
-    // //column
-    // sheet.setStyle(-1,2,style,GC.Spread.Sheets.SheetArea.viewport);
-
     sheet.setDefaultStyle(style, GC.Spread.Sheets.SheetArea.viewport);
 
+   
      let date:Date = new Date(this.date);
 
     if (this.startRoster==null){
@@ -2523,6 +2529,7 @@ load_rosters(){
      //setting column height
      sheet.setRowHeight(0, 40.0,GC.Spread.Sheets.SheetArea.colHeader);
     //setting column width
+    
      sheet.setColumnWidth(i, new_width +"*",GC.Spread.Sheets.SheetArea.viewport);
      sheet.setColumnResizable(i,true, GC.Spread.Sheets.SheetArea.colHeader);
 
@@ -3279,14 +3286,9 @@ onStaffSearch(data:any){
 
     find_roster(RecordNo:number):any{
         let rst:any;
-    //     for(var r of this.rosters)
-    //    {
-    //             if (r.recordNo == RecordNo){
-    //                 rst= r;
-    //                 break;
-    //             }
-            
-    //     } 
+      if(this.rosters==null){
+          return null;
+      }
 
     let r = this.rosters.filter(x=>x.recordNo==RecordNo)[0];
         
@@ -3479,7 +3481,7 @@ return rst;
     private unsubscribe = new Subject();
   //  private rosters: Array<any>;
     //private current_roster: any;
-    private upORdown = new Subject<boolean>();
+     upORdown = new Subject<boolean>();
 
     constructor(
         private router: Router,
@@ -3494,6 +3496,7 @@ return rst;
         public datepipe: DatePipe,
         private sharedS: ShareService,
         private route: ActivatedRoute,
+        private renderer2: Renderer2
         
       
     ) {
@@ -3511,7 +3514,7 @@ return rst;
         };
         if (state!=null){
        
-        this.info = {StaffCode:state.StaffCode, ViewType:state.ViewType, IsMaster:state.IsMaster} ;
+        this.info = {StaffCode:state.StaffCode, ViewType:state.ViewType, IsMaster:state.IsMaster,date:''} ;
 
 
     }
@@ -3604,85 +3607,6 @@ return rst;
            this.detail.ngAfterViewInit();
           // this.detail.details(index);
            return;
-        this.whatProcess = PROCESS.UPDATE;
-        console.log(index);
-        const {
-            activity, 
-            serviceType, 
-            analysisCode, 
-            approved, 
-            bill,  
-            pay,          
-            billto,
-            date, 
-            debtor,
-            durationNumber,
-            serviceTypePortal,
-            recipientCode,            
-            startTime,
-            program,
-            paytype,
-            shiftbookNo,
-            recordNo,
-            staffCode,
-            endTime           
-        
-        } = index;
-
-            
-        // this.rosterForm.patchValue({
-        //     serviceType: this.DETERMINE_SERVICE_TYPE(index),
-        //     date: date,serviceActivityList
-        //     program: program,
-        //     serviceActivity: activity,
-        //     payType: payType,
-        //     analysisCode: analysisCode,
-        //     recordNo: shiftbookNo,            
-            
-        //     recipientCode: recipientCode,
-        //     debtor: debtor
-        // });
-        this.defaultStartTime = parseISO(new Date(date + " " + startTime).toISOString());
-        this.defaultEndTime = parseISO(new Date(date + " " + endTime).toISOString());
-        let time:any={startTime:this.defaultStartTime, endTime:this.defaultEndTime}
-        //this.defaultStartTime = parseISO( "2020-11-20T" + startTime + ":01.516Z");
-        //this.defaultEndTime = parseISO( "2020-11-20T" + endTime + ":01.516Z");;
-        this.current = 0;
-
-       //console.log(this.defaultEndTime)
-
-         
-         this.durationObject = this.globalS.computeTimeDATE_FNS(this.defaultStartTime, this.defaultEndTime);
-      //  this.durationObject = this.globalS.computeTimeDATE_FNS(startTime, endTime);
-
-        setTimeout(() => {
-            this.addTimesheetVisible = true;
-
-            
-            this.defaultProgram = program;
-            this.defaultActivity = activity;
-            this.defaultCategory = analysisCode;
-            this.serviceType =  this.DETERMINE_SERVICE_TYPE(serviceType);
-            this.recipientCode=recipientCode;
-            this.Timesheet_label="Edit Timesheet (RecordNo : " + recordNo +")"
-            this.rosterForm.patchValue({
-                serviceType: this.serviceType,
-                date: date,
-                time:time,
-                program: program,
-                serviceActivity: activity,
-                payType: paytype,
-                analysisCode: analysisCode,
-                recordNo: shiftbookNo,            
-                pay:pay,
-                bill:bill,                
-                debtor: debtor,
-                type: serviceType,
-                recipientCode: recipientCode,
-                staffCode:staffCode                
-                
-            });
-        }, 100);
     }
 
     
@@ -3690,7 +3614,7 @@ return rst;
     getScreenSize(event?) {
           this.screenHeight = window.innerHeight;
           this.screenWidth = window.innerWidth;
-          console.log(this.screenHeight, this.screenWidth);
+          console.log('onReszie = ' + this.screenHeight, this.screenWidth);
           this.prepare_Sheet();
     }
 
@@ -3698,20 +3622,30 @@ return rst;
     ngOnInit(): void {
 
         this.token = this.globalS.decode(); 
-        console.log(this.token);
+        this.timeS.getusersettings(this.token.user).pipe(takeUntil(this.unsubscribe))
+        .subscribe(data => {
+            this.userSettings=data;
+            console.log(this.userSettings);
+        });
+      
+
+        //console.log(this.token);
         if (this.token==null){
 
             this.globalS.eToast("Authentication","Invalid  User, please login again");
             
             this.router.navigate(['/']);
             return;
+
+            
         }
      
         GC.Spread.Sheets.LicenseKey = license;
 
         this.screenHeight = window.innerHeight;
         this.screenWidth = window.innerWidth;
-
+      //  console.log('Screen Size =' + this.screenHeight + ', '+ this.screenWidth)
+      if (!this.fixSize){
         this.hostStyle = {
             width: '100%',
             height: `${this.screenHeight- 170}px`,
@@ -3723,10 +3657,8 @@ return rst;
             this.spreadsheet.getHost().style.width = "100%";
             this.spreadsheet.getHost().style.height = window.innerHeight;
               
-          }else{
-           // this.reloadComponent();
-           // return;
           }
+     }
        
       
         this.date = moment();
@@ -3737,7 +3669,48 @@ return rst;
          this.tval=96;
          this.dval=14;
      
-      
+         this.reloadRoster.subscribe(d=>{
+            
+             this.info=d;
+             this.defaultCode=this.info.StaffCode;
+             this.viewType=this.info.ViewType;
+             let data ={data:this.defaultCode, option:this.viewType}  
+
+            if (this.viewType=='Recipient'){
+                data.option="1"
+                this.view=1;
+            }else{
+                data.option="0"
+                this.view=0;
+            }
+               
+            if (this.info.date!=''){             
+                let dt=new Date(this.info.date);
+                this.date=dt;
+                let dat = this.date;// moment(this.date).add('day', 1);
+                this.startRoster = moment(dat).format('YYYY/MM/DD');
+                this.endRoster = moment(dat).format('YYYY/MM/DD');
+                this.reloadSearchList.next({defautValue:this.defaultCode, view:this.view});
+                
+                this.staffS.getroster({
+                    RosterType: data.option == '1' ? 'PORTAL CLIENT' : 'SERVICE PROVIDER',            
+                    AccountNo: this.defaultCode,
+                    StartDate: this.startRoster,
+                    EndDate: this.endRoster
+                }).pipe(takeUntil(this.unsubscribe)).subscribe(roster => {
+        
+                    this.rosters = roster;
+                });    
+            }else{
+                let dt:Date= new Date();
+                this.date= moment(dt).format('YYYY/MM/DD');
+                this.startRoster=null;
+                this.reloadSearchList.next({defautValue:this.defaultCode, view:this.view});
+                this.ngAfterViewInit();
+          }  //this.onChange(dt);
+
+        
+        })
       
 }
 
@@ -3788,8 +3761,8 @@ ngOnDestroy(){
 
 refreshPage() {
     //this._document.defaultView.location.reload();
-    //window.location.reload();
-    this.ngOnInit();
+    window.location.reload();
+    //this.ngOnInit();
    
   }
 reloadVal: boolean = false;
@@ -3897,6 +3870,9 @@ selected_person(event:any){
 
 }
 picked(data: any) {
+
+    if (data==null)
+        return;
         console.log(data);
         this.userStream.next(data);
 
@@ -5426,7 +5402,11 @@ this.bookingForm.get('program').valueChanges.pipe(
        
         if (this.current==3 && this.viewType=='Recipient' && this.serviceType=='BOOKED')
             this.current += 1;
-      
+        
+        if(this.userSettings.useAwards=='True' && this.current>=1 && !this.ShowCentral_Location)
+            this.doneBooking();
+        if(this.userSettings.useAwards=='True' && this.current>2 )
+            this.doneBooking();
        
     }
     
@@ -5464,6 +5444,9 @@ this.bookingForm.get('program').valueChanges.pipe(
                 if (this.selectedActivity.service_Description == '' || this.selectedActivity.service_Description==null)
                     return false;
             }
+
+            if(this.userSettings.useAwards=='True' && this.current>=2)
+                return true;
 
             if ((this.current <3 && this.viewType=="Staff") && (this.IsGroupShift ))
                 return false;            

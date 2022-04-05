@@ -4,7 +4,7 @@ import { Component, OnInit, OnDestroy, Output, Input ,ViewChild, AfterViewInit
 import { GlobalService, ClientService, TimeSheetService,ShareService, ListService } from '@services/index';
 import { forkJoin,  Subject ,  Observable } from 'rxjs';
 import {ShiftDetail} from '../roster/shiftdetail'
-//import {DMRoster} from '../roster/dm-roster'
+import {DMRoster} from '../roster/dm-roster'
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { ThrowStmt } from '@angular/compiler';
 import { BrowserModule } from '@angular/platform-browser';
@@ -15,7 +15,7 @@ import { format, formatDistance, formatRelative, nextDay, subDays } from 'date-f
 import { forEach } from 'lodash';
 import * as moment from 'moment';
 import { stringify } from '@angular/compiler/src/util';
-
+import {NzModalComponent} from 'ng-zorro-antd/modal';;
 
 class Address {
     postcode: string;
@@ -143,7 +143,7 @@ class Address {
 
 export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
     date: any = new Date();
-    
+    refreshCalander:boolean;
     serviceType:string;
     dateFormat:string="dd/MM/YYYY"
     dayView: number = 7;
@@ -166,7 +166,7 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
     nzFilterPlaceHolder:string="Input to Search";
     showSimpleFilterInput:boolean;
     @ViewChild(ShiftDetail) detail!:ShiftDetail;
-   // @ViewChild(DMRoster) dmroster:DMRoster;
+    @ViewChild(DMRoster) dmroster!:DMRoster;
     optionsModal: boolean = false;
     displayOption:boolean=true;
     pastePosition:any;
@@ -309,6 +309,7 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
         private sharedS:ShareService,
         private formBuilder: FormBuilder,
         private listS:ListService
+       
     ) {
 
 
@@ -388,7 +389,7 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
         
             this.serviceType  =this.selectedOption.activity;                    
             this.defaultStartTime  =this.selectedOption.startTime;
-            this.notes=this.selectedOption.notes;
+            this.notes=this.selectedOption.snotes;
             if (data!=null)
             this.ViewAdditionalModal=true;  
         
@@ -404,9 +405,11 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
         this.optionsModal=false;
         if (data==1){ 
             //Un-Allocate staff
+            this.operation='Un-Allocate'
             this.UnAllocate();
         }else  if (data==2){ 
             //Re-Allocate staff
+            this.operation='Re-Allocate'
             this.AllocateStaffModal=true;
         
         }else  if (data==3){ 
@@ -433,14 +436,14 @@ export class DayManagerAdmin implements OnInit, OnDestroy, AfterViewInit {
         if (data==1){  
             //Copy Operation                        
            
-            this.toBePasted.push(this.selectedOption)
+           // this.toBePasted.push(this.selectedOption)
             this.operation="Copy"
             
         }else if (data==2){ 
             //Cut Operation                         
           
             this.operation="cut"
-            this.toBePasted.push(this.selectedOption)
+          //  this.toBePasted.push(this.selectedOption)
             
          }else if (data==3){                          
             //Paste Operation
@@ -561,6 +564,8 @@ data(event:any){
 pasted(event:any){
 }
 ApplyQuickFilter(){
+    this.loading=true;
+    this.CustomFilters=[];
     if (!this.AllBranches){
         this.LimitTo="BRANCH LIST"
         this.startWith = JSON.stringify(this.selectedBranches.map(x=>x.title));
@@ -586,7 +591,7 @@ ApplyQuickFilter(){
      this.viewQuickFilter=false;
 }
 ApplyCustomFilter(){
-   
+    this.loading=true;
     this.applyFilter.next(this.CustomFilters);
     
 }
@@ -757,7 +762,8 @@ pasteSelectedRecords(event:any){
 
     if (this._highlighted.length<=0)
         this._highlighted=this.toBePasted;
-
+    
+   
     // this._highlighted.forEach(function (value) {
     //     //console.log(value);
     //     value.date=moment(event.selected).format('YYYY/MM/DD');
@@ -769,20 +775,21 @@ pasteSelectedRecords(event:any){
     let dmType=event.selected.dmType;
     
     for ( let v of this._highlighted){  
+        this.selectedOption=v;
         v.date=moment(event.selected.date).format('YYYY/MM/DD');
         if (dmType=="1" || dmType=="2" || dmType=="11"){
          
-            v.carercode = event.selected.carercode;
+          //  v.carercode = event.selected.carercode;
         }else if (dmType=="10" || dmType=="12" ){
           
-            v.recipient = event.selected.carercode;       
+          //  v.recipient = event.selected.carercode;       
          
         }
         setTimeout(() => {
             this.pasting_records(v)                 
         }, 100);   
     }
-
+   
 }
 onTextChangeEvent(event:any){
    // console.log(this.txtSearch);
@@ -812,7 +819,9 @@ openStaffModal(OpenSearch:boolean=false){
 }
 onStaffSearch(data:any){
     this.openSearchStaffModal=false;
+   
     this.selectedStaff=data.accountno;
+    this.selectedCarer=this.selectedStaff
     if (this.OpenSearchOfStaff){
         this.LimitTo='STAFF';
         this.startWith=data.accountno;
@@ -1008,11 +1017,59 @@ return rst;
 }   
 load_rosters(){
     
+    this.loading=true;
     this.reload.next(true);
     
 }
+
+reLoadGridRosterModel(){
+
+    this.info.IsMaster=false;
+    this.info.ViewType=this.viewType;
+    if (this.selectedOption!=null)        {
+        this.info.StaffCode=this.selectedOption.staff;
+        this.info.date=this.selectedOption.date;
+    }else  if (this.pastePosition!=null){
+        this.info.StaffCode=this.pastePosition.selected.carercode;
+        this.info.date= moment(this.pastePosition.selected.date).format('YYYY/MM/DD');
+    }else{
+        return;
+    }
+   
+      this.AddRosterModel=false;      
+     // this.openModal();
+    // this.dmroster.ngOnInit();
+    // this.dmroster.loadRosterData(this.info)
+    // this.AddRosterModel=true;
+   
+  
+}
+async openModal() {
+
+    const { DMRoster } = await import(
+      /* webpackPrefetch: true */ 
+      '../roster/dm-roster'
+    );
+    
+    const modalRef = this.modalService.create({
+        nzTitle :'Day Manager',
+        nzContent: DMRoster,
+        nzWidth:470,
+        nzStyle : {top: '15px' },
+        nzFooter: [
+            {
+              label: "Cancel",
+              type: "danger",
+              nzOnOk: () => modalRef.close(),
+              nzOnCancel: () => modalRef.close()
+            }
+          ]
+    });
+   
+  }
 ngOnInit(): void {
     this.token = this.globalS.decode(); 
+    console.log(this.token);
     this.buildForm(); 
     this.getLocalStorage();
     this.selectedPersonType ='Staff Management';
@@ -1087,6 +1144,7 @@ ngAfterViewInit(){
             this.pastePosition=data;
             this.optionsModal = true;
             this.displayOption=false;
+            this.selectedOption=null;
             return
         }
         this.displayOption=true;
@@ -1149,7 +1207,7 @@ ngAfterViewInit(){
             this.load_rosters();
         }
      }
-     
+    
      showAlertForm(operationDone:string){
 
 
@@ -1163,7 +1221,7 @@ ngAfterViewInit(){
             }
         }else if (operationDone=='Add'){
             if (this.viewType=='Staff'){
-                //this.current_roster = this.find_roster(parseInt(recordNo));
+                //let rst = this._highlighted.filter(x=>x.recordno==recordNo));
                 let clientCode =this.selectedOption.recipient;
                 let date= this.selectedOption.date
                 
@@ -1193,15 +1251,30 @@ ngAfterViewInit(){
         return val;
       }
 
-      AddRoster(){
+      AddRoster(view:number){
         this.info.IsMaster=false;
         this.info.ViewType=this.viewType;
-        if (this.selectedOption!=null)        {
+        if (this.selectedOption!=null && view==1)        {
             this.info.StaffCode=this.selectedOption.staff;
             this.info.date=this.selectedOption.date;
-        }else  if (this.pastePosition!=null){
-            this.info.StaffCode=this.pastePosition.selected.carercode;
-            this.info.date= moment(this.pastePosition.selected.date).format('YYYY/MM/DD');
+            this.info.ViewType='Staff'
+        }else  if (this.selectedOption!=null && view==2) {        
+            this.info.StaffCode=this.selectedOption.recipient;
+            this.info.date=this.selectedOption.date;
+            this.info.ViewType='Recipient';
+        }else  if (view==3) {        
+            this.info.StaffCode=this.token.code
+            this.info.date=this.selectedOption!=null ? this.selectedOption.date : moment(this.pastePosition.selected.date).format('YYYY/MM/DD');
+            this.info.ViewType='Staff';
+        } else  if (this.pastePosition!=null){
+            if (view==2){
+                this.info.StaffCode='';
+                this.info.date=moment(this.pastePosition.selected.date).format('YYYY/MM/DD');
+                this.info.ViewType='Recipient';
+            }else{
+                this.info.StaffCode=this.pastePosition.selected.carercode;
+                this.info.date= moment(this.pastePosition.selected.date).format('YYYY/MM/DD');
+            }
         }else{
             return;
         }
@@ -1209,7 +1282,7 @@ ngAfterViewInit(){
 
           this.optionsModal=false;
           this.AddRosterModel=true;
-          
+          //this.openModal();
           this.loadingRoster.next(this.info);
          //this.dmroster.info = this.info;
          //this.dmroster.ngAfterViewInit();
@@ -1244,19 +1317,25 @@ ngAfterViewInit(){
             let res=data;       
             if (res.errorValue>0){
                 this.globalS.eToast('Error', res.errorValue +", "+ res.msg);
-                //if( Option=='Copy' ||Option=='Cut')
-                    //this.load_rosters();
+                
+                 if((Option=='Copy' || Option=='Cut') && (this._highlighted[this._highlighted.length-1].recordno==record.recordno))
+                     this.load_rosters();
                 return; 
             }
             
             if( Option=='Copy' ||Option=='Cut'){
                 this.showAlertForm('Add')
-                if (this._highlighted[this._highlighted.length-1].recordno==record.recordno)
+                if (this._highlighted[this._highlighted.length-1].recordno==record.recordno){
                     this.load_rosters();
+               
+                }
             }else if (Option=='Delete'){
                 this.showAlertForm('Delete')
-                if (this._highlighted[this._highlighted.length-1].recordno==record.recordno)
+                if (this._highlighted[this._highlighted.length-1].recordno==record.recordno){
                     this.load_rosters();
+                   
+                  
+                }
                 
             }else{
                 this.load_rosters();
@@ -1330,6 +1409,7 @@ ProcessChangeResources(type :number){
         this.serviceActivityList=data;
         this.originalList=data;
         this.ViewAllocateResourceModal=true;;
+        this.loading=false;
     });
 
 }
@@ -1449,9 +1529,9 @@ SaveNudgeUpDown(){
             
             sql.TableName='Roster ';          
             if (this.NudgeStatus=="Up")
-                sql.SetClause=`set Duration=Duration-${this.NudgeValue}/5`;
+                sql.SetClause=`set [start time]=left(dateAdd(minute,-${this.NudgeValue}, convert(time,[start time],111)),5)`;
             else
-                sql.SetClause=`set Duration=Duration+${this.NudgeValue}/5`;
+                sql.SetClause=`set [start time]=left(dateAdd(minute,${this.NudgeValue}, convert(time,[start time],111)),5)`;
 
            sql.WhereClause=` where RecordNo=${this.selectedOption.recordno} `;
        
@@ -1565,7 +1645,7 @@ SaveDayTime(){
           
 
     this.listS.updatelist(sql).subscribe(data=>{
-        this.globalS.sToast("Day Manager","Record Updated Successfully");
+       // this.globalS.sToast("Day Manager","Record Updated Successfully");
         this.ViewChangeDayTimeModal=false;
         this.load_rosters();
     });
@@ -1650,12 +1730,12 @@ Check_BreachedRosterRules_Paste(action:string, record:any):any{
     }
 
     deleteRoster(){
-        for ( let v of this._highlighted){        
+        for ( let v of this._highlighted){  
+            this.selectedOption=v;      
             setTimeout(() => {
                 this.ProcessRoster("Delete",v);                
             }, 100);   
         }
-        
     }
 
     handleCancel(): void{
@@ -1729,7 +1809,7 @@ UnAllocate(){
  
 reAllocate(){
     if (this.selectedOption==null || this.selectedOption.recordNo==0) return;
-
+   
     this.ProcessRoster("Re-Allocate", this.selectedOption);
   
     var text=   this.selectedCarer + " (" + this.selectedOption.activity + ")";            
@@ -1775,7 +1855,7 @@ listChange(event: any) {
 }
 
 onItemChecked(data: any, checked: boolean, type:string): void {
-    if (type=='Branches'){
+    if (type=='Branch'){
         if (checked)
             this.selectedBranches.push(data)
         else           

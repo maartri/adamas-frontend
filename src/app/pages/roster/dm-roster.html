@@ -10,11 +10,11 @@
                       
      <div nz-row *ngIf="formloading" style="margin-left: 2px; background-color: transparent;">
         
-            <div nz-col nzSpan="12" >
+            <div nz-col nzSpan="24" >
                 <div class="calendar-title" >  
                           
                     <label *ngIf="!showDefault && defaultCode" >{{defaultCode}}</label>   
-                    <app-search-timesheet [defautValue]="defaultCode"  [view]="view" (selected)="selected_person($event)"></app-search-timesheet>
+                    <app-search-timesheet [defautValue]="defaultCode" [reload]="reloadSearchList" [view]="view" (selected)="selected_person($event)"></app-search-timesheet>
                 </div>
             </div>
     </div>
@@ -48,8 +48,8 @@
             
     </div>
         
-    <div  nz-row  *ngIf="formloading && !recurrenceView" style="margin-top: 5px;  margin-left: 2px; margin-bottom: 10px; border-color: transparent; ">
-            <div nz-col nzSpan="12" class="nz-button"  >
+    <div  nz-row  *ngIf="formloading && !recurrenceView" style="margin-top: 5px;  margin-left: 2px;  border-color: transparent; ">
+            <div nz-col nzSpan="24" class="nz-button"  >
                 <nz-button-group >
                     <!-- <button nz-button nzType="default" style="padding: 4px;" [disabled]="!enable_buttons"  (click)="add_Shift()" nz-tooltip nzTooltipTitle="Add new booking"><i nz-icon nzType="plus" nzTheme="outline"></i></button> -->
                     <button nz-button nzType="default" style=" padding: 4px" [disabled]="!enable_buttons" (click)="start_adding_Booking(1)"  *ngIf="viewType=='Recipient'"  nz-tooltip nzTooltipTitle="Record booking with no specific staff allocated"><i nz-icon nzType="question-circle" nzTheme="outline"></i></button>
@@ -68,31 +68,30 @@
                 </nz-button-group>    
                
             </div>
-            <div class="nz-alert"  nz-col nzSpan="14">
+            <div class="nz-alert"  nz-col nzSpan="24" style="height: 50px; margin-top: 2px;">
                 <span>{{ActiveCellText}}</span>
             </div> 
           
      </div>     
         
-    </div>         
+    </div >         
     <!-- <div nz-row nzSpan="8" *ngIf="formloading" style=" border: solid; background-color:thistle;">
           <div  nzSpan="7" style=" border: solid; background-color: wheat;" > -->
-    <!-- <div *ngIf="formloading" style=" border: solid; background-color:white; width: 420px;"> -->
-            <button *ngIf="spreadsheet==null"  nz-button nzType="primary" (click)="refreshPage()"  >Reload Grid</button> 
+     <div *ngIf="formloading" style="height: 580px; width: 450px; ">
+            
+        <button *ngIf="spreadsheet==null"  nz-button nzType="primary" (click)="refreshPage()"  >Reload Grid</button> 
+        <!-- <button   nz-button nzType="primary" (click)="refreshPage()"  >Reload Grid</button>  -->
                    
         <gc-spread-sheets  id="#ss"        
-        [backColor]="spreadBackColor"  
-       
+        [backColor]="spreadBackColor"         
         [hostStyle]="hostStyle"  
         (workbookInitialized)="workbookInit($event)"  
         >   
-            <gc-worksheet [name]="sheetName" 
-          
-            ></gc-worksheet>
+            <gc-worksheet [name]="sheetName"></gc-worksheet>
             
         </gc-spread-sheets>
             
-    <!-- </div> -->
+    </div>
 
     <!-- Search staff model -->
     

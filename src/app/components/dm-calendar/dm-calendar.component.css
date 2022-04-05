@@ -127,7 +127,7 @@
     width: 12px;
     height: 13px;    
     background-color: transparent;
-  
+    display: inline-block;
  }
 
 .time{

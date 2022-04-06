@@ -3018,16 +3018,13 @@ showConfirm(): void {
                     program:sel
                 });
                 
-                // this.GETSERVICEACTIVITY(sel).subscribe(d=>{
-                //     this.serviceActivityList=d;
-                //     if(d && d.length == 1){
-                //         this.bookingForm.patchValue({
-                //             serviceActivity: d[0]               
-                           
-                //         });                       
-                        
-                //     }
-                // })
+               
+            // if (sel != "" ){          
+            //         GST = sel.GST
+            //         GSTRate = sel.GSTRate            
+            // }
+        
+
             }else if (type=="service"){
                 this.HighlightRow2=i;
                 this.defaultActivity=sel;//this.serviceActivityList[i];
@@ -3610,7 +3607,7 @@ return rst;
     ngOnInit(): void {
 
         this.token = this.globalS.decode(); 
-        this.timeS.getusersettings(this.token.user).pipe(takeUntil(this.unsubscribe))
+        this.timeS.getuserpermissionsettings(this.token.user).pipe(takeUntil(this.unsubscribe))
         .subscribe(data => {
             this.userSettings=data;
             console.log(this.userSettings);
@@ -4247,6 +4244,8 @@ picked(data: any) {
 }
 
     GETPROGRAMS(type: string): Observable<any> {
+
+        
         let sql;
         if (!type) return EMPTY;
         //const { isMultipleRecipient } = this.bookingForm.value;
@@ -4278,8 +4277,115 @@ picked(data: any) {
             //     WHERE ACCOUNTNO = '${type}'`
         }
         if (!sql) return EMPTY;
-        return this.listS.getlist(sql);
+        //return this.listS.getlist(sql);
+        return this.SelectFundingProgram(type,false,true);
     }
+
+  SelectFundingProgram(RosterRecipient:string, b_FORCEAll:boolean=false, b_LimitScope:boolean=false)
+ {   
+    
+    let SQLStmt='';
+    let s_ProgramFilter : string = this.userSettings.viewFilter;
+    let s_Garbage : string
+    let s_LimitScopeSQL :string
+    let s_OpenScopeSQL : string
+    let s_CloseDateSQL : string
+    let s_EarliestDate : string='';
+    
+    let GST : boolean = false
+    let GSTRate :number = 0;
+    if (s_EarliestDate !='' && s_EarliestDate > "1999/12/21" )
+        s_CloseDateSQL = ` (ISNULL(pr.CloseDate, '2000/01/01') < '${s_EarliestDate}') AND `;
+    else
+        s_CloseDateSQL = "";
+    
+    
+     s_OpenScopeSQL = `SELECT DISTINCT [Name] AS ProgName FROM HumanResourceTypes pr 
+                        WHERE [group] = 'PROGRAMS' AND 
+                      ${s_CloseDateSQL}
+                     (EndDate Is Null OR EndDate >= convert(varchar,getDate(),111)) 
+                      ORDER BY [ProgName]`
+    
+    s_LimitScopeSQL = `SELECT DISTINCT [Program] AS ProgName FROM RecipientPrograms 
+                      INNER JOIN Recipients ON RecipientPrograms.PersonID = Recipients.UniqueID 
+                      INNER JOIN HumanResourceTypes pr ON RecipientPrograms.Program = pr.name 
+                      WHERE Recipients.AccountNo = '${RosterRecipient}' AND 
+                      ${s_CloseDateSQL}
+                      RecipientPrograms.ProgramStatus IN ('ACTIVE', 'WAITING LIST') 
+                      ORDER BY [ProgName]`
+
+    let s_LimitProgramSQL = ""
+
+        if (s_ProgramFilter!="" )
+        {
+            s_ProgramFilter = s_ProgramFilter.substring (s_ProgramFilter.length - 4 - s_ProgramFilter.indexOf("WHERE"));
+            s_ProgramFilter = s_ProgramFilter.replace("RecipientPrograms.Program", "[Name]");
+            s_LimitProgramSQL = `SELECT DISTINCT [Name] AS ProgName FROM HumanResourceTypes pr 
+                                WHERE [GROUP] = 'PROGRAMS' AND 
+                                ${s_ProgramFilter} AND 
+                                ${s_CloseDateSQL}
+                                (EndDate Is Null OR EndDate >= convert(varchar,getDate(),111)) 
+                                ORDER BY [ProgName]`;
+    
+        }
+    
+    if (b_FORCEAll)        
+        SQLStmt = s_OpenScopeSQL
+    else{
+        if (this.viewType=='Recipient') {
+            if (this.LimitLookupScope("PROGRAM"))
+                SQLStmt = s_LimitScopeSQL 
+            else 
+                SQLStmt = s_OpenScopeSQL
+        }else  if (this.viewType=='Staff') {
+            if (b_LimitScope ){
+                if (this.LimitLookupScope("PROGRAM"))
+                    SQLStmt = s_LimitScopeSQL
+                else
+                    if (s_LimitProgramSQL != "" ) SQLStmt = s_LimitProgramSQL 
+                     else SQLStmt = s_OpenScopeSQL
+                
+            }else
+                if (s_LimitProgramSQL != "") SQLStmt = s_LimitProgramSQL; else SQLStmt = s_OpenScopeSQL;
+           
+        }
+    }
+    
+    if (!SQLStmt) return EMPTY;
+    return this.listS.getlist(SQLStmt);
+
+
+}
+
+LimitLookupScope(s_Lookup :string) 
+{
+ let status :boolean = false
+ let s_Extent:string;
+    
+        switch (s_Lookup.toUpperCase())
+        {
+            case "PROGRAM" :
+                status =this.userSettings.limitProgramLookups;
+                break;
+            case "ACTIVITY":                
+                status =this.userSettings.limitServiceLookups;
+                break;
+            case  "SERVICE":
+                status =this.userSettings.limitServiceLookups;
+                //status =this.userSettings.LimitStaffLookups;
+                if (this.userSettings.LimitStaffLookups)  s_Extent = "LINKED_ONLY"
+                break;
+            case  "PAYTYPE" :
+                status=this.userSettings.LimitPayTypeLookups;
+                break;
+            case "STAFF":
+                status=this.userSettings.LimitStaffLookups
+            break;
+        }
+        return status;
+    }
+
+   
 
     GETRECIPIENT(view: number): string {
         const { recipientCode, debtor, serviceType } = this.bookingForm.value;

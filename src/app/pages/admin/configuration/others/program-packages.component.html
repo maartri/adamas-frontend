@@ -1,7 +1,7 @@
 <div style="padding:8px;">
     <div nz-row>
         <div nz-col nzSpan="24">
-            <button class="botton success" (click)="showAddModal()">Program/Packages</button>
+            <button class="headers-botton recordHeaderMainButtons" (click)="showAddModal()">Program/Packages</button>
             <label *ngIf="userRole == 'ADMIN USER'" nz-checkbox id="IncludeDeleted"  [(ngModel)]="check" (change)="fetchAll($event)" style="padding-left: 30%;"> Include Deleted </label>
             <button nz-button nzType="primary" (click)="handleOkTop()" style="float: right;"> <i nz-icon nzType="file-pdf"></i> Print </button>
         </div>
@@ -285,7 +285,7 @@
                             </div>
                             <nz-divider nzOrientation="left" style="color:#1890FF;margin:0px !important;"></nz-divider>  
                             <div class="mrg-btm" *ngIf="aged">
-                                <button class="botton success" (click)="showPackageLeaveModal()">Package Leave Type</button>
+                                <button class="headers-botton recordHeaderMainButtons" (click)="showPackageLeaveModal()">Package Leave Type</button>
                                 <div class="staff-wrapper" style="height: 10rem; width: 100%; overflow: auto;border: 1px solid #e9e9e9; border-radius: 3px;">
                                     <nz-table #basicTablein [nzData]="tableData" [nzShowPagination]="false" style="margin-top:0px im !important;" [nzFrontPagination]="false" [nzLoading]="loading" [nzResponsive]="true">
                                         <thead>
@@ -321,7 +321,7 @@
                                 <nz-divider nzText="package Type Profile" nzOrientation="left" style="color:#1890FF;margin-top:0px !important;"></nz-divider>
                                 <div nz-row nzGutter=24>
                                     <div nz-col nzSpan="24">
-                                        <button class="botton success" (click)="showServicesModal()">Package Type Profile</button>
+                                        <button class="headers-botton recordHeaderMainButtons" (click)="showServicesModal()">Package Type Profile</button>
                                         <nz-table #headerTable   [nzScroll]="{ y: '240px' }" [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="listApprovedServicesByPersonId">
                                             <thead>
                                                 <tr>
@@ -352,7 +352,7 @@
                                 <nz-divider nzText="Approved /Exclude Staff" nzOrientation="left" style="color:#1890FF;margin-top:0px !important;"></nz-divider>
                                 <div nz-row nzGutter=24>
                                     <div nz-col nzSpan="12">
-                                        <button class="botton success" (click)="showstaffApprovedModal()">Approved STAFF</button>
+                                        <button class="headers-botton recordHeaderMainButtons" (click)="showstaffApprovedModal()">Approved STAFF</button>
                                         <nz-table #headerTable   [nzScroll]="{ y: '240px' }" [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="listApprovedStaffByPersonId">
                                             <thead>
                                                 <tr> 
@@ -374,7 +374,7 @@
                                         </nz-table>
                                     </div>
                                     <div nz-col nzSpan="12">
-                                        <button class="botton success" (click)="showstaffUnApprovedModal()">Excluded STAFF</button>
+                                        <button class="headers-botton recordHeaderMainButtons" (click)="showstaffUnApprovedModal()">Excluded STAFF</button>
                                         <nz-table #headerTable   [nzScroll]="{ y: '240px' }" [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="listExcludedStaffByPersonId">
                                             <thead>
                                                 <tr>
@@ -405,7 +405,7 @@
                                 <nz-divider nzText="Mandatory Or Optional Competencies" nzOrientation="left" style="color:#1890FF;margin-top:0px !important;"></nz-divider>
                                 <div nz-row nzGutter=24>
                                     <div nz-col nzSpan="24">
-                                        <button class="botton success" (click)="showCompetencyModal()">Competencies</button>
+                                        <button class="headers-botton recordHeaderMainButtons" (click)="showCompetencyModal()">Competencies</button>
                                         <!-- <div class="staff-wrapper" style="height: 20rem; width: 100%; overflow: auto;border: 1px solid #e9e9e9; border-radius: 3px;"> -->
                                             <nz-table #headerTable   [nzScroll]="{ y: '240px' }" [nzShowPagination]="false" [nzFrontPagination]="false" [nzSize]="'small'"  [nzLoading]="loading" [nzData]="listCompetencyByPersonId">
                                                 <thead>

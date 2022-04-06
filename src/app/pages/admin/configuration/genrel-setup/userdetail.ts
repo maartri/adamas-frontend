@@ -14,7 +14,11 @@ import { TimeSheetService } from '@services/timesheet.service';
 
 @Component({
     templateUrl: './userdetail.html',
-    styles: []
+    styles: [`
+        .force-chk{
+            margin:7px 5px 0px 15px;
+        }
+    `],
 })
 export class UserDetail implements OnInit {
     
@@ -23,6 +27,14 @@ export class UserDetail implements OnInit {
     modalOpen: boolean = false;
     current: number = 0;
     inputForm: FormGroup;
+    rosterForm: FormGroup;
+    viewScopeForm: FormGroup;
+    dayManagerForm:FormGroup;
+    clientPortalForm:FormGroup;
+    mainMenuForm:FormGroup;
+    documents: FormGroup;
+    mobileForm:FormGroup;
+    recipientOptions:FormGroup;
     postLoading: boolean = false;
     isUpdate: boolean = false;
     modalVariables: any;
@@ -72,8 +84,9 @@ export class UserDetail implements OnInit {
 
     staffjobcategories: any;
 
-
     checkBoxString: string = '010101001011001101010111';
+    enableViewNoteCases:string = '00000';
+    recipientRecordView : '00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
 
     constructor(
         private globalS: GlobalService,
@@ -381,7 +394,7 @@ export class UserDetail implements OnInit {
             this.isUpdate = true;
             this.current = 0;
             this.modalOpen = true;
-            
+
             const { 
                 name,
                 end_date,
@@ -392,8 +405,8 @@ export class UserDetail implements OnInit {
                 end_date:end_date,
                 recordNumber:recordNumber
             });
+            
             this.temp_title = name;
-
         }
         
         tabFindIndex: number = 0;
@@ -486,11 +499,207 @@ export class UserDetail implements OnInit {
                 buildForm() {
                     this.inputForm = this.formBuilder.group({
                         name: '',
+                        password:'',
+                        usertype:'',
+                        staffCode:'',
+                        loginMode:'',
+                        homeBranch:'',
+                        system:false,
+                        recipient:'',
+                        staff:'',
+                        roster:'',
+                        dayManager:'',
+                        timesheet:false,
+                        timesheetPreviousPeriod:false,
+                        statistics:false,
+                        financial:false,
+                        reportPreview:false,
+                        invoiceEnquiry:false,
+                        allowTypeAhead:true,
+                        suggestedTimesheets:false,
+                        payIntegrityCheck:false,
+                        timesheetUpdate:false,
+                        accessCDC:false,
                         title:'',
                         end_date:'',
                         recordNumber:null,
                     });
+                    this.recipientOptions    = this.formBuilder.group({
+                        DisableBtnReferral  : false,
+                        DisableBtnReferOn   : false,
+                        DisableBtnNotProceeding : false,
+                        DisableBtnAssess    : false,
+                        DisableBtnAdmit     : false,
+                        DisableBtnUnWait    : false,
+                        DisableBtnDischarge :false,
+                        DisableBtnSuspend   :false,
+                        DisableBtnReinstate :false,
+                        DisableBtnDecease   :false,
+                        DisableBtnAdmin     :false,
+                        DisableBtnItem      :false,
+                        DisableBtnPrint     :false,
+                        DisableBtnRoster    :false,
+                        DisableBtnMaster    :false,
+                        DisableBtnOnHold    :false,
+                        AddNewRecipient     :true,    
+                        CanChangeClientCode :true,
+                        CanEditNDIA         :true,
+                        AllowProgramTransition:false,
+                    })
+                    this.viewScopeForm    = this.formBuilder.group({
+                        ViewAllBranches  : false,
+                        ViewAllProgram   : false,
+                        ViewAllCategories: false,
+                        ViewAllCoOrdinators: false,
+                        ViewAllReminders:false,
+                        ViewAllStaffCategories:false,
+                    })
+                    this.documents        = this.formBuilder.group({
+
+                        CanMoveImportedDocuments:false,
+                        KeepOriginalAsImport:false,
+
+                        RecipientDocFolder:'',
+                        Force_RecipDocFolder:false,
+                        
+                        ONIImportExportFolder:'',
+                        Force_ONIImportFolder:false,
+
+                        ONIArchiveFolder:'',
+                        Force_ONIArchiveFolder:false,
+
+                        StaffDocFolder:'',
+                        Force_StaffDocFolder:false,
+
+                        StaffRostersFolder:'',
+                        Force_StaffRosterFolder:false,
+
+                        ReportExportFolder:'',
+                        Force_ReportExportFolder:false,
+
+                        ReportSavesFolder:'',
+                        Force_ReportSavesFolder:false,
+
+                        HACCMDSFolder:'',
+                        Force_HACCMDSFolder:false,
+
+                        CSTDAMDSFolder:'',
+                        Force_CSTDAMDSFolder:false,
+
+                        NRCPMDSFolder:'',
+                        Force_NRCPMDSFolder:false,
+
+                        PayExportFolder:'',
+                        Force_PayExportFolder:false,
+
+                        BillingExportFolder:'',
+                        Force_BillingExportFolder:false,
+
+                    })
+                    this.rosterForm       = this.formBuilder.group({
+                        ChangeMasterRoster:false,
+                        AllowRosterReallocate:false,
+                        AllowMasterSaveAs:false,
+                        ManualRosterCopy:false,
+                        AutoCopyRoster:false,
+                        CanRosterOvertime:false,
+                        CanRosterBreakless:false,
+                        CanRosterConflicts:false,
+                        EditRosterRecord:false,
+                        OwnRosterOnly:false,
+                    })
+                    this.dayManagerForm   = this.formBuilder.group({
+                        UseDMv2:false,
+                        APPROVEDAYMANAGER:false,
+                        RECIPMGTVIEW:false,
+                        AllowStaffSwap:false,
+                        AdminChangeOutputType:false,
+                        AdminChangeProgram:false,
+                        AdminChangeActivityCode:false,
+                        AdminChangePaytype:false,
+                        AdminChangeDebtor:false,
+                        AdminChangeBillAmount:false,
+                        AttendeesChangeBillAmount:false,
+                        AdminChangePayQty:false,
+                        LowChangeActivityCode:false,
+                    })
+                    this.clientPortalForm = this.formBuilder.group({
+                        AllowsMarketing:false,
+                        ViewPackageStatement:false,
+                        CanManagePreferences:false,
+                        AllowBooking:false,
+                        CanCreateBooking:false,
+                        BookingLeadTime:'',
+                        CanChooseProvider:false,
+                        ShowProviderPhoto:false,
+                        CanSeeProviderPhoto:false,
+                        CanSeeProviderGender:false,
+                        CanSeeProviderAge:false,
+                        CanSeeProviderReviews:false,
+                        CanEditProviderReviews:false,
+                        HideProviderName:false,
+                        CanManageServices:false,
+                        CanCancelService:false,
+                        CanQueryService:false,
+                    })
+                    this.mainMenuForm     = this.formBuilder.group({
+                        MMPublishPrintRosters:false,
+                        MMTimesheetProcessing:false,
+                        MMBilling:false,
+                        MMPriceUpdates:false,
+                        MMDexUploads:false,
+                        MMNDIA:false,
+                        MMHacc:false,
+                        MMOtherDS:false,
+                        MMAccounting:false,
+                        MMAnalyseBudget:false,
+                        MMAtAGlance:false,
+                    })
+                    this.mobileForm     = this.formBuilder.group({
+                        
+                        title:false,
+                        AllowTravelEntry:false,
+                        AllowLeaveEntry:false,
+                        AllowIncidentEntry:false,
+                        AllowPicUpload:false,
+                        EnableRosterAvailability:false,
+                        AllowViewBookings:false,
+                        AcceptBookings:false,
+                        ViewClientDocuments:false,
+                        ViewClientCareplans:false,
+                        AllowViewGoalPlans:false,
+                        AllowTravelClaimWithoutNote:false,
+                        AllowMTASaveUserPass:false,
+
+                        AllowOPNote:false,
+                        AllowCaseNote:false,
+                        AllowClinicalNoteEntry:false,
+                        AllowRosterNoteEntry:false,
+                        SuppressEmailOnRosterNote:false,
+                        EnableEmailNotification:false,
+                        UseOPNoteAsShiftReport:false,
+                        UseServiceNoteAsShiftReport:false,
+                        EnableViewNoteCases:this.enableViewNoteCases,// its a string of 00000 contains 3 tickbox values
+
+                        ShiftReportReminder:false,
+                        UserSessionLimit:'',
+                        MobileFutureLimit:'',
+                        TMMode:'',
+                        MTAAutRefreshOnLogin:false,
+                        HideClientPhoneInApp:false,
+                        HideAddress:false,
+                        AllowSetTime:false,
+                        AllowAddAttendee:false,
+                        MultishiftAdminAndMultiple:false,
+                        RestrictTravelSameDay:false,
+                        PushPhonePrefix:false,
+                        PhonePrefix:'',
+                        Enable_Shift_End_Alarm:false,
+                        Enable_Shift_Start_Alarm:false,
+                        CheckAlertInterval:'',
+                    })
                 }
+
                 handleOkTop() {
                     this.generatePdf();
                     this.tryDoctype = ""
@@ -534,7 +743,6 @@ export class UserDetail implements OnInit {
                         });
                     });
                     
-                    
                     this.loading = true;
                     this.tryDoctype = "";
                     this.pdfTitle = "";
@@ -547,6 +755,12 @@ export class UserDetail implements OnInit {
 
             this.checkBoxString = temp.join('')
             console.log(this.checkBoxString)
+        }
+        enableNoteCases(index:number,val:boolean){
+            let temp = Object.assign([], this.enableViewNoteCases);
+            temp.splice(index,1, val ? '1' : '0')
+            this.enableViewNoteCases = temp.join('')
+            console.log(this.enableViewNoteCases)
         }
                 
     }

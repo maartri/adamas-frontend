@@ -1002,11 +1002,14 @@ export class ListService {
     GetHACCReferralSource():Observable<any>{
         return this.auth.get(`${list}/hacc-referral_source`)
     }
+    getReferalServices():Observable<any>{
+        return this.auth.get(`${list}/referral_services`)
+    }
     GetLanguages():Observable<any>{
         return this.auth.get(`${list}/languages`)
     }
     GetCountries():Observable<any>{
-        return this.auth.get(`${list}/GetCountries`)
+        return this.auth.get(`${list}/countries`)
     }
     GetHaccSex():Observable<any>{
         return this.auth.get(`${list}/haccSex`)

@@ -1,7 +1,7 @@
 <div style="padding:8px;">
     <div nz-row>
         <div nz-col nzSpan="24">
-            <button class="botton success" (click)="showAddModal()"> <i nz-icon nzType="plus" nzTheme="outline"></i> Center/Facility/Location </button>
+            <button class="headers-botton recordHeaderMainButtons" (click)="showAddModal()"> <i nz-icon nzType="plus" nzTheme="outline"></i> Center/Facility/Location </button>
             <label *ngIf="userRole == 'ADMIN USER'" nz-checkbox id="IncludeDeleted"  [(ngModel)]="check" (change)="fetchAll($event)" style="padding-left: 30%;"> Include Deleted </label>
             <button nz-button nzType="primary" (click)="handleOkTop()" style="float: right;"> <i nz-icon nzType="file-pdf"></i> Print </button>
         </div>
@@ -341,7 +341,7 @@
                 <div *ngIf="current == 2">
                     <div nz-row nzGutter=24>
                         <div nz-col nzSpan="12">
-                            <button class="botton success" (click)="showstaffModal(1)">Approved Staff</button>
+                            <button class="headers-botton recordHeaderMainButtons" (click)="showstaffModal(1)">Approved Staff</button>
                             <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="includedStaff">
                                 <thead>
                                     <tr>
@@ -366,7 +366,7 @@
                             </nz-table>
                         </div>
                         <div nz-col nzSpan="12">
-                            <button class="botton success" (click)="showstaffModal(2)">Excluded Staff</button>
+                            <button class="headers-botton recordHeaderMainButtons" (click)="showstaffModal(2)">Excluded Staff</button>
                             <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="excludedStaff">
                                 <thead>
                                     <tr>
@@ -395,7 +395,7 @@
                 <div *ngIf="current == 3">
                     <div nz-row nzGutter=24>
                         <div nz-col nzSpan="24">
-                            <button class="botton success" (click)="showCompetencyModal()">Required Competencies</button>
+                            <button class="headers-botton recordHeaderMainButtons" (click)="showCompetencyModal()">Required Competencies</button>
                             <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="competencies">
                                 <thead>
                                     <tr>

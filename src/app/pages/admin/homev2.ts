@@ -85,10 +85,10 @@ nz-avatar{
     text-align:right;
 }
 
-nz-layout{
-    background: #85B9D5;
-    height:100vh;
-}
+// nz-layout{
+//     // background: #85B9D5;
+//     // height:100vh;
+// }
 
 .main-list > li >>> div{
     font-size:12px;

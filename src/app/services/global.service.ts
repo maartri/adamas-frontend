@@ -183,6 +183,23 @@ export const fundingDropDowns = {
   cycle: ['CYCLE 1', 'CYCLE 2', 'CYCLE 3', 'CYCLE 4', 'CYCLE 5', 'CYCLE 6', 'CYCLE 7', 'CYCLE 8', 'CYCLE 9', 'CYCLE 10']
 }
 
+export const functionalStatus = {
+  housework :['Or are you completely unable to do housework? (0)','With some help (can do light housework but need help with heavy housework)? (1)','Without help (can clean floors etc)? (2)'],
+  transport :['Without help (can drive your own car, or travel alone on buses or taxis)? (2)','With some help (need someone to help you or go with you when travelling)? (1)','Or are you completely unable to travel unless emergency arrangements are made for a specialised vehicle like an ambulance? (0)'],
+  shopping :['Without help (taking care of all shopping needs yourself)? (2)','With some help (need someone to go with you on all shopping trips)? (1)','Or are you completely unable to do any shopping? (0)'],
+  medication :['Without help (in the right doses at the right time)? (2)','With some help (able to take medication if someone prepares it for you and/or reminds you to take it)? (1)','Or are you completely unable to take your own medicines? (0)'],
+  money :['Or are you completely unable to handle money? (0)','With some help (manage day-to-day buying but need help with managing your chequebook and paying your bills)? (1)','Without help (write cheques, pay bills etc)? (2)'],
+  walking :['Without help (except for a cane or similar)? (2)','With some help from a person (1)','Or are you completely unable to walk? (0)'],
+  bathShower :['Without help? (2)','With some help (eg, need help getting into or out of the bath)? (1)','Or are you completely unable to bathe yourself? (0)'],
+  confusion :['NO','YES'],
+  behaviouralProblems :['NO','YES'],
+  communication:['No (3)','Yes , sometimes (2)','Yes , Always (1)','Not stated/inadequately described (9)'],
+  dressing:['Without Help (3)','With some help (2)','Or are you completely unable to dress yourself (1)','Not stated/inadequately described (9)'],
+  eating:['Without Help (3)','With some help (2)','Or are you completely unable to eat without help (1)','Not stated/inadequately described (9)'],
+  toileting:['Without Help (3)','With some help (2)','Or are you completely unable to eat without help (1)','Not stated/inadequately described (9)'],
+  gettingUp:['No (3)','Yes , sometimes (2)','Yes , Always (1)','Not stated/inadequately described (9)'],
+}
+
 export const dataSetDropDowns = {
   CACP:['CACP SERVICES'],
   CTP: ['ALLIED HEALTH CARE', 'ASSESSMENT-CARER', 'ASSESSMENT-CLIENT', 'CARE COORDINATION-CARER', 'CARE COORDINATION-CLIENT','CARER TRANSPORT','CASE MANAGEMENT','CENTRE-BASED DAY CARE','COUNSELLING/SUPPORT INFO & ADVOCACY-CARER','COUNSELLING/SUPPORT INFO & ADVOCACY-CLIENT','DATA COLLECTION','DOMESTIC ASSISTANCE','FORMAL LINEN SERVICE','HOME MAINTENANCE','HOME MODIFICATION','MEALS','NURSING CARE','OTHER FOOD SERVICES','PERSONAL CARE','PROVISION OF GOODS & EQUIPMENT','RESPITE CARE','SOCIAL SUPPORT','TRANSPORT'],

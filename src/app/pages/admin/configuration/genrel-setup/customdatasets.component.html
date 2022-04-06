@@ -1,7 +1,7 @@
 <div style="padding:8px;">
     <div nz-row>
         <div nz-col>
-            <button class="botton success" (click)="showAddModal()" > <i nz-icon nzType="plus"></i> Add Custom Dataset </button>
+            <button class="headers-botton recordHeaderMainButtons" (click)="showAddModal()" > <i nz-icon nzType="plus"></i> Add Custom Dataset </button>
             <label *ngIf="userRole == 'ADMIN USER'" nz-checkbox id="IncludeDeleted"  [(ngModel)]="check" (change)="fetchAll($event)" style="padding-left: 30%;"> Include Deleted/Expired </label>
             <button nz-button nzType="primary" (click)="handleOkTop()" style="float: right;"> <i nz-icon nzType="file-pdf"></i> Print </button>
             <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading" [nzData]="tableData">

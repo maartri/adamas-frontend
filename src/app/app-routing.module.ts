@@ -293,7 +293,7 @@ import { CompaniesComponent } from '@admin/configuration/genrel-setup/companies.
 import { DocumentTemplateComponent } from '@admin/configuration/documents/document-template.component';
 import { DebtorComponent } from '@admin/billing/debtor.component'; //AHSAN 
 import { TravelComponent } from '@admin/billing/travel.component'; //AHSAN 
-import { PayComponent } from '@admin/timesheet-processing-views/pay.Component'; //AHSAN 
+import { PayComponent } from '@admin/timesheet-processing-views/pay.component'; //AHSAN 
 import { PayIntegrityComponent } from '@admin/billing/payIntegrity.component'; //AHSAN
 import { CloseRosterComponent } from '@admin/billing/closeRoster.component'; //AHSAN 
 import { RollbackInvoiceComponent } from '@admin/billing/rollbackInvoice.component'; //AHSAN 

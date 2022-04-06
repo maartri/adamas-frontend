@@ -1039,6 +1039,7 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
     var s_Accounts = this.inputForm.value.AccountsArr;
     var s_Package = this.inputForm.value.PackagesArr;
     var s_Batch = this.inputForm.value.BatchNoArr;
+    var s_BatchNo = this.inputForm.value.single_input_number;
     var s_StaffTeam = this.inputForm.value.staffteamArr;
     var s_StfGroup = this.inputForm.value.staffgroupsArr;
     var s_Groups = this.inputForm.value.MealGroups;
@@ -1060,8 +1061,8 @@ export class ConfigurationAdmin implements OnInit, OnDestroy, AfterViewInit{
         this.NDIAUnClaimedItems(strdate, endate,s_Branches,s_Managers,s_Recipient)
         
         break;
-        case "ndia-batch-register":
-        this.NDIABatchRegister(s_Batch)
+        case "ndia-batch-register":          
+        this.NDIABatchRegister(s_BatchNo)
         
         
         break;
@@ -1165,11 +1166,13 @@ showConfirm(): void {
     });
 }
 NDIAPackageStatement(batch,branch,packages) {
-    console.log(batch); 
+    
+    var temptest = batch.substring(7,11)
+    console.log(temptest); 
     //GetBatchClients
     let temp = forkJoin([           
-        this.listS.GetBatchClients(295)
-    ]) 
+        this.listS.GetBatchClients(temptest)
+    ]); 
     temp.subscribe(data => {       
         this.batchclientsArr = data;   
         console.log(data);         
@@ -1362,12 +1365,12 @@ NDIAUnClaimedItems(startdate, enddate,branch,manager,recipient) {
 }
 NDIABatchRegister(batch) {
     
-    
-    var fQuery = "SELECT NDIABatch, Roster.RecordNo AS [Claim Ref ID], Roster.[Client Code], Recipients.[NDISNumber], Roster.[Date], Roster.[Start Time], Roster.[Service Type], CASE WHEN Roster.Type = 4 THEN AltItem.NDIA_ID ELSE ItemTypes.NDIA_ID END AS [NDIA_ID], Roster.[BillQty] , [Unit Bill Rate] , ISNULL(Roster.[Unit Bill Rate], 0) * Roster.[BillQty] AS LineTotal FROM Roster INNER JOIN Recipients ON roster.[client code] = recipients.accountno INNER JOIN ItemTypes ON ItemTypes.Title = Roster.[Service Type] LEFT JOIN ItemTypes AltItem ON AltItem.Title = Roster.[ShiftName] WHERE  "
+    console.log(batch)
+    var fQuery = "SELECT NDIABatch, Roster.RecordNo AS [Claim Ref ID], Roster.[Client Code], Recipients.[NDISNumber], Roster.[Date], Roster.[Start Time], Roster.[Service Type], CASE WHEN Roster.Type = 4 THEN AltItem.NDIA_ID ELSE ItemTypes.NDIA_ID END AS [NDIA_ID], Roster.[BillQty] , [Unit Bill Rate] , ISNULL(Roster.[Unit Bill Rate], 0) * Roster.[BillQty] AS LineTotal FROM Roster INNER JOIN Recipients ON roster.[client code] = recipients.accountno INNER JOIN ItemTypes ON ItemTypes.Title = Roster.[Service Type] LEFT JOIN ItemTypes AltItem ON AltItem.Title = Roster.[ShiftName] Where  "
     var lblcriteria;
     
     if (batch != "") {
-        this.s_BatchSQL = " ( NDIABatch = '" + batch + "' )";
+        this.s_BatchSQL = " ( NDIABatch = '" + batch + "' ) ";
         if (this.s_BatchSQL != "") { fQuery = fQuery + "  " + this.s_BatchSQL };
     }
     
@@ -1375,9 +1378,7 @@ NDIABatchRegister(batch) {
         lblcriteria = lblcriteria + " Batch Number: " + batch + "; "
     }
     fQuery = fQuery + "ORDER BY Roster.[Client Code], Recipients.NDISNumber, Roster.[Date], Roster.[Start Time] "
-    
-    
-    //console.log(fQuery)
+            
     
     this.drawerVisible = true;
     

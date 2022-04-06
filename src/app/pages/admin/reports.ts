@@ -12833,10 +12833,6 @@ stafftypeArr: Array<any> = constants.types;
             setting = " All "
         }
 
-
-
-
-
         fQuery = fQuery + " ORDER BY [Program], [Client Code], Date, [Start Time]";
 
 //        console.log(fQuery)
@@ -21802,7 +21798,7 @@ CustomReportSetting(){
 } 
 
 FetchRuntimeReport(strtitle){
-//    console.log("TITLE:  " +strtitle)
+    console.log("TITLE:  " +strtitle)
 this.EnableCSVExport = true;
 //this.RptFormat = ;
     this.CSV_String = strtitle;
@@ -21814,7 +21810,7 @@ this.EnableCSVExport = true;
     }
    
     var strFilter  = strtitle.toString().substring(0,1)
- //   console.log(strFilter)
+   console.log(strFilter)
     var title = strtitle.toString().substring(1,strtitle.length)
     
     switch (strFilter.toString()) {

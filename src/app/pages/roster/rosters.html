@@ -124,13 +124,11 @@
             <button *ngIf="spreadsheet==null"  nz-button nzType="primary" (click)="refreshPage()"  >Reload Grid</button> 
                    
         <gc-spread-sheets  id="#ss"        
-        [backColor]="spreadBackColor"  
-       
+        [backColor]="spreadBackColor"         
         [hostStyle]="hostStyle"  
-        (workbookInitialized)="workbookInit($event)"  
+        (workbookInitialized)="workbookInit($event)" 
         >   
             <gc-worksheet [name]="sheetName" 
-          
             ></gc-worksheet>
             
         </gc-spread-sheets>

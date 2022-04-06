@@ -119,7 +119,11 @@ export class TimeSheetService {
     getusersettings(name: string): Observable<any> {
         return this.auth.get(`${timesheet}/user/settings/${name}`);
     }
+    getuserpermissionsettings(name: string): Observable<any> {
+        return this.auth.get(`${timesheet}/usersettings/${name}`);
+    }
 
+  
     getquotelist(data: any): Observable<any> {
         return this.auth.get(`${timesheet}/quote/list`, data);
     }

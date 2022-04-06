@@ -57,28 +57,16 @@ export class DebtorComponent implements OnInit {
   invoiceType: any;
   current: number = 0;
   inputForm: FormGroup;
-  modalVariables: any;
   dateFormat: string = 'dd/MM/yyyy';
-  inputVariables: any;
   postLoading: boolean = false;
-  isUpdate: boolean = false;
   title: string = "Debtor Updates and Exports";
-  rpthttp = 'https://www.mark3nidad.com:5488/api/report'
   token: any;
   tocken: any;
-  whereString: string = "Where ISNULL(DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
-  pdfTitle: string;
-  tryDoctype: any;
-  drawerVisible: boolean = false;
   check: boolean = false;
-  temp_title: any;
-  settingForm: FormGroup;
   userRole: string = "userrole";
   dtpEndDate: any;
   dtpStartDate: any;
   id: string;
-  btnid: any;
-  btnid1: any;
   private unsubscribe: Subject<void> = new Subject();
   selectedBranches: any;
   selectedPrograms: any;
@@ -91,13 +79,6 @@ export class DebtorComponent implements OnInit {
   filteredResult: any;
   allChecked = false;
   indeterminate = true;
-
-  // checkOptionsOne = [
-  //   { label: 'Apple', value: 'Apple', checked: true },
-  //   { label: 'Pear', value: 'Pear', checked: false },
-  //   { label: 'Orange', value: 'Orange', checked: false }
-  // ];
-
   allWeeksChecked: boolean;
   checkedWeekly: boolean;
   checkedFornightly: boolean;

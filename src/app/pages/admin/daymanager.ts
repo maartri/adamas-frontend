@@ -775,6 +775,7 @@ pasteSelectedRecords(event:any){
     let dmType=event.selected.dmType;
     
     for ( let v of this._highlighted){  
+        this.selectedOption=v;
         v.date=moment(event.selected.date).format('YYYY/MM/DD');
         if (dmType=="1" || dmType=="2" || dmType=="11"){
          
@@ -1220,7 +1221,7 @@ ngAfterViewInit(){
             }
         }else if (operationDone=='Add'){
             if (this.viewType=='Staff'){
-                //this.current_roster = this.find_roster(parseInt(recordNo));
+                //let rst = this._highlighted.filter(x=>x.recordno==recordNo));
                 let clientCode =this.selectedOption.recipient;
                 let date= this.selectedOption.date
                 
@@ -1316,8 +1317,9 @@ ngAfterViewInit(){
             let res=data;       
             if (res.errorValue>0){
                 this.globalS.eToast('Error', res.errorValue +", "+ res.msg);
-                //if( Option=='Copy' ||Option=='Cut')
-                    //this.load_rosters();
+                
+                 if((Option=='Copy' || Option=='Cut') && (this._highlighted[this._highlighted.length-1].recordno==record.recordno))
+                     this.load_rosters();
                 return; 
             }
             
@@ -1728,12 +1730,12 @@ Check_BreachedRosterRules_Paste(action:string, record:any):any{
     }
 
     deleteRoster(){
-        for ( let v of this._highlighted){        
+        for ( let v of this._highlighted){  
+            this.selectedOption=v;      
             setTimeout(() => {
                 this.ProcessRoster("Delete",v);                
             }, 100);   
         }
-        
     }
 
     handleCancel(): void{

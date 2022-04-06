@@ -10,7 +10,8 @@ import { stringify } from '@angular/compiler/src/util';
 import { forEach } from 'lodash';
 import { Subscription, Subject } from 'rxjs';
 import { XmlParser } from '@angular/compiler';
-import { RostersAdmin } from './rosters';
+//import { RostersAdmin } from './rosters';
+import * as moment from 'moment';
 
 
 class Address {
@@ -115,9 +116,11 @@ class Address {
       @Input() findModalOpen:boolean=false;      
       @Input() bookingData = new Subject<any>();
       @Output() searchDone:EventEmitter<any>= new EventEmitter();
+      //@ViewChild('RostersAdmin') rosterForm: RostersAdmin;
+
       reloadRoster = new Subject<any>();
       
-      info = {StaffCode:'', ViewType:'Staff',IsMaster:false}; 
+      info = {StaffCode:'', ViewType:'Staff',IsMaster:false, date:''}; 
 
       menuItems= new Subject<number>();
       booking :any;
@@ -227,11 +230,16 @@ class Address {
           case 2:
             this.openRoster=true;
             this.info.StaffCode=this.selectedStaff.accountno;
-            this.reloadRoster.next(this.info);
-         
-           
+            let dt:Date= new Date();
+            this.info.date= moment(dt).format('YYYY/MM/DD');
+            this.reloadRoster.next(this.info);   
+            //this.rosterForm.getScreenSize();
             break;
           case 3:
+            this.openRoster=true;
+            this.info.StaffCode=this.selectedStaff.accountno;          
+            this.info.date= '';
+            this.reloadRoster.next(this.info);
             break;
            case 4:
              this.selectAll=true;

@@ -17,7 +17,7 @@ import { switchMap } from 'rxjs/operators';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, AfterViewInit {
 
   loginForm: FormGroup;
   loading: boolean = false;
@@ -57,6 +57,9 @@ export class LoginComponent implements OnInit {
       let objectURL = 'data:image/jpeg;base64,' + blob;
       this.logoPath = this.sanitizer.bypassSecurityTrustUrl(objectURL);
     })
+  }
+
+  ngAfterViewInit(): void {
   }
 
   login() {

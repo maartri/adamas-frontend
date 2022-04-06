@@ -298,7 +298,7 @@
             <li *ngIf="displayOption" class="listitem" (click)="ViewNudge.next(2)">Nudge Down</li>
             <li *ngIf="displayOption" class="listitem" (click)="OperationView.next(1)">Copy</li>
             <li *ngIf="displayOption" class="listitem" (click)="OperationView.next(2)">Cut</li>
-            <li *ngIf="selectedOption" class="listitem" (click)="OperationView.next(3)">Paste</li>
+            <li *ngIf="_highlighted.length>0" class="listitem" (click)="OperationView.next(3)">Paste</li>
             <li *ngIf="displayOption" class="listitem" (click)="OperationView.next(4)">Delete Shift/Service</li>
             <li *ngIf="displayOption" class="listitem" (click)="OperationView.next(5)">Delete Additional Information(Xtra Info) </li>
             <hr>

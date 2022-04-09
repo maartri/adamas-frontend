@@ -48,7 +48,7 @@
     "jspdf-autotable": "^3.5.13",
     "lodash": "^4.17.15",
     "material-design-icons": "^3.0.1",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "ng-zorro-antd": "^8.5.2",
     "ngx-contextmenu": "^5.4.0",
     "ngx-infinite-scroll": "^8.0.2",

@@ -5,7 +5,7 @@
     <app-filter [tabs]="'OPNOTES'"  [(ngModel)]="filters" (ngModelChange)="filterChange($event)"></app-filter>
 </div>
 <div nz-row>
-    <div nz-col>
+    <div nz-col >
         <nz-table #basicTable [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false"
             [nzData]="tableData">
             <thead>
@@ -26,10 +26,10 @@
                     <td>{{ data.detailDate | date: 'dd/MM/y' }}</td>
                     <td>{{ data.creator || '-' | uppercase  }}</td>
                     <td>
-                        <a (click)="showEditModal(i)">Update</a>
+                        <a (click)="showEditModal(i)"><i nz-icon nzType="edit" nzTheme="outline"></i></a>
                         <nz-divider nzType="vertical"></nz-divider>
                         <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this group?" nzPopconfirmPlacement="bottom"
-                            (nzOnConfirm)="delete(i)">Delete</a>
+                            (nzOnConfirm)="delete(i)"><i nz-icon nzType="delete" nzTheme="outline"></i></a>
                     </td>
                 </tr>
             </tbody>
@@ -38,7 +38,7 @@
 </div>
 
 <!--<nz-modal [(nzVisible)]="modalOpen" [nzTitle]="addOrEdit == 1 ? 'Add OP Note' : 'Edit Case Note'" (nzOnCancel)="handleCancel()" nzWidth="800"-->
-<nz-modal [(nzVisible)]="modalOpen" [nzTitle]="addOrEdit == 1 ? 'Add Note' : 'Edit Note'" (nzOnCancel)="handleCancel()" nzWidth="800"
+<nz-modal [(nzVisible)]="modalOpen" [nzTitle]="addOrEdit == 1 ? 'Add Note' : 'Edit Note'" (nzOnCancel)="handleCancel()" nzWidth="1000"
     [nzStyle]="{ top: '20px' }">
     <div nz-row [formGroup]="caseFormGroup" nzGutter="16">
         <div nz-col nzSpan="7" [formGroup]="caseFormGroup">
@@ -85,7 +85,7 @@
                 </nz-form-item>
             </div>
         </div>
-        <div nz-col nzSpan="14">
+        <div nz-col nzSpan="17">
             <div nz-row nzGutter="32" [formGroup]="caseFormGroup">
                 <div nz-col nzSpan="12" class="form-group">
                     <label for="">Reminder Date</label>
@@ -113,13 +113,21 @@
                 </nz-checkbox-wrapper>
             </div>
             <div nz-row [formGroup]="caseFormGroup">
+                <div nz-col nzSpan="24" >
+                    <label for="">Notes</label>
+                    <angular-editor  formControlName="notes" [config]="editorConfig"></angular-editor>
+                    <!-- <textarea rows="4" nz-input formControlName="notes"></textarea> -->
+                </div>
+            </div>
+
+            <!-- <div nz-row [formGroup]="caseFormGroup">
                 <nz-form-item>
                     <nz-form-label>Notes</nz-form-label>
                     <nz-form-control nzErrorTip="Required Field">
                         <textarea rows="4" nz-input formControlName="notes"></textarea>
                     </nz-form-control>
                 </nz-form-item>
-            </div>
+            </div> -->
         </div>
     </div>
     <div *nzModalFooter>
@@ -127,3 +135,11 @@
         <button nz-button nzType="primary" (click)="save()" [nzLoading]="loading">Save</button>
     </div>
 </nz-modal>
+<nz-drawer [nzWidth]="1000" [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="pdfTitle" (nzOnClose)="handleCancelTop()">
+    <div class="col-md-12 spinner" *ngIf="loading">
+        <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
+    </div>
+    <div nz-row>
+        <iframe *ngIf="tryDoctype" [src]="tryDoctype" width="950" height="600"></iframe> 
+    </div>
+</nz-drawer>

@@ -1,0 +1,98 @@
+    <div class="flexy" style="min-width:21rem">
+        <form [formGroup]="TransportForm" class="form-group">
+        <div nz-row  class="form-group" >
+           
+             <div nz-col nzSpan="17">               
+                <nz-label style="padding: 2px;" >Pickup From </nz-label>                
+                <nz-select formControlName="pickupFrom" [nzDropdownMatchSelectWidth]="false">
+                    <nz-option *ngFor="let list of addressList" [nzValue]="list" [nzLabel]="list">
+                    </nz-option>
+                </nz-select>
+            </div> 
+            <div style="padding-left: 5px;" nz-col nzSpan="7">
+                <nz-label style="padding: 2px;" >Pickup Zone </nz-label >
+                    <input id="txtZipCode" nz-input formControlName="zipCodeFrom"/>  
+             </div> 
+           
+        </div>
+        <div nz-row class="form-group">
+            <div  nz-col nzSpan="17">
+                
+                <nz-label style="padding: 2px;" >Take To </nz-label >              
+                <nz-select  formControlName="pickupTo" [nzDropdownMatchSelectWidth]="false">
+                    <nz-option *ngFor="let list of addressList" [nzValue]="list" [nzLabel]="list">
+                    </nz-option>
+                </nz-select>
+            </div>
+            <div style="padding-left: 5px;" nz-col nzSpan="7">
+                <nz-label style="padding: 2px;" >Drop off Zone </nz-label >                                 
+                     <input id="txtZipCodeTo" nz-input formControlName="zipCodeTo"/>                       
+            </div>  
+                
+            
+        </div>
+        <div nz-row class="form-group">
+            <div  nz-col nzSpan="7">
+                <nz-label style="padding: 2px;" >Apptmt Time </nz-label>                
+                <nz-select formControlName="appmtTime" [nzDropdownMatchSelectWidth]="false">
+                    <nz-option *ngFor="let list of timeList" [nzValue]="list" [nzLabel]="list">
+                    </nz-option>
+                </nz-select>
+            </div>
+            <div style="padding-left: 5px;" nz-col nzSpan="7">
+                <nz-label style="padding: 2px;" >Mobility </nz-label>                
+                <nz-select formControlName="mobility" [nzDropdownMatchSelectWidth]="false">
+                    <nz-option *ngFor="let list of mobilityList" [nzValue]="list" [nzLabel]="list">
+                    </nz-option>
+                </nz-select>
+            </div>
+            <div style="padding-left: 5px;" nz-col nzSpan="10">
+                <nz-label style="padding: 2px;" >Return Vehicle </nz-label>                
+                <nz-select formControlName="returnVehicle" [nzDropdownMatchSelectWidth]="false">
+                    <nz-option *ngFor="let list of ServiceGroups_list" [nzValue]="list" [nzLabel]="list">
+                    </nz-option>
+                </nz-select>
+            </div>
+        </div>
+        <div nz-row class="form-group">
+            <div  nz-col nzSpan="6">
+                <nz-label style="padding: 2px;" >Start ODO </nz-label>                
+                <!-- <nz-input formControlName="startOdo" ></nz-input> -->
+                <nz-input-number formControlName="startOdo"  [nzMin]="1" [nzMax]="5000" [nzStep]="1"></nz-input-number> 
+
+            </div>
+            <div style="padding-left: 5px;" nz-col nzSpan="6">
+                <nz-label style="padding: 2px;" >END ODO </nz-label>                
+                <!-- <nz-input formControlName="endOddo" ></nz-input> -->
+                <nz-input-number formControlName="endOddo" [nzMin]="1" [nzMax]="5000" [nzStep]="1"></nz-input-number> 
+            </div>
+            <div style="padding-left: 5px;" nz-col nzSpan="6">
+                <nz-label style="padding: 2px;" >Live KM </nz-label>                
+                <!-- <nz-input formControlName="liveKM" ></nz-input> -->
+                <nz-input-number formControlName="liveKM" [nzMin]="1" [nzMax]="5000" [nzStep]="1"></nz-input-number> 
+            </div>
+            <div style="padding-left: 5px;" nz-col nzSpan="6">
+                <nz-label style="padding: 2px;" >Dead KM </nz-label>                
+                <!-- <nz-input formControlName="deadKM" ></nz-input> -->
+                <nz-input-number formControlName="deadKM" [nzMin]="1" [nzMax]="5000" [nzStep]="1"></nz-input-number> 
+            </div>
+        </div>
+        <div nz-row class="form-group">
+            <div  nz-col nzSpan="16">
+                <nz-label style="padding: 2px;" >Trip Purpose </nz-label>                
+                <nz-select formControlName="tripPurpose" [nzDropdownMatchSelectWidth]="true">
+                    <nz-option *ngFor="let list of transportPurposeList" [nzValue]="list" [nzLabel]="list">
+                    </nz-option>
+                    
+                  </nz-select> 
+            </div>
+        </div>
+        <div nz-row  > 
+               
+            <textarea id="txtNote" nz-input formControlName="transportNote"> </textarea>
+             
+           
+        </div>
+    </form>
+   
+    </div>

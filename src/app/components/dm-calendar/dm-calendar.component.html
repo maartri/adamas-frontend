@@ -1,62 +1,159 @@
 <div class="daymanager-wrapper">
+     <div >
+    
+        <nz-select [disabled]="!checked" [(ngModel)]="personValue" (ngModelChange)="applyStaffFilters(personValue)" style=" padding-left: 5px; padding-right: 5px; width:200px" >
+                <nz-option *ngFor="let p of personsList" [nzValue]="p" [nzLabel]="p"></nz-option>
+            </nz-select>
+            <label nz-checkbox [(ngModel)]="checked" (ngModelChange)="resetDayManager($event)"></label>  
+           
+    </div> 
+   
     <div class="header-wrapper" [class.fixed]="fixedHeader">
-        <h3 class="date-month-name noselect">
-            <i class="material-icons left" (click)="previousDate()"> keyboard_arrow_left
-            </i>{{ startDate | date: 'MMMM yyyy' }}
+        <h3 class="date-month-name noselect header-wrapper">
+            <i class="material-icons left" (click)="previousDate()"> keyboard_arrow_left </i>
+          
+           <div *ngIf="!master">
+                {{ startDate | date: 'MMMM yyyy' }}
+           </div> 
+           <div *ngIf="master">
+                Master Rosters
+            </div> 
             <i class="material-icons right" (click)="futureDate()"> keyboard_arrow_right </i>
         </h3>
-        <div class="date-wrapper">
-            <div *ngFor="let day of days" class="cell" [class.five]="dayView == 5" [class.seven]="dayView == 7"
-                [class.ten]="dayView == 10" [class.fourteen]="dayView == 14">
-                <div *ngIf="day == null" class="x-cancel">
-                    <span *ngIf="akonani?.length > 0">{{ akonani?.length }} selected</span>
-                </div>
-                <div *ngIf="day" class="calendar-dates">
-                    <div>
-                        <h5>{{ day | date: 'MMM dd' }}</h5>
+       
+        <div class="date-wrapper"  >
+            <div *ngFor="let day of days; let col=index" class="cell" [class.five]="dayView == 5" [class.seven]="dayView == 7"
+                [class.ten]="dayView == 10" [class.fourteen]="dayView == 14" [class.col-highlght]="HighlightColum_index==col">
+               
+                <div  [class.date-wrapper]="HighlightColum_index<0" (click)="HighlightColum(col)"    [class.dateweekend]="((day| date: 'EEE') == 'Sat' || (day| date: 'EEE') == 'Sun') && HighlightColum_index!=col" 
+                 [class.col-highlght]="HighlightColum_index==col">
+                    <div *ngIf="day == null" class="x-cancel"  >
+                        <span *ngIf="akonani?.length > 0">{{ akonani?.length }} selected</span>
+                      
                     </div>
-                    <div><span style="font-size:12px">{{ day | date: 'EEE' }}</span></div>
+                    <div *ngIf="day" class="calendar-dates"  >
+                        <!-- ng-style ="{ ' background-color' : (Weekday(day)=='sat')? '#73c7af' : '#ffffff' }" -->
+                        <div *ngIf="!master">
+                            <div  style="font-size:13px; padding: 5px;"> 
+                                <span >{{ day | date: 'MMM dd' }}</span>
+                            </div>
+                            <div style="font-size:13px; "><span >{{ day | date: 'EEE' }}</span></div>
+                        </div>
+                        <div *ngIf="master">
+                            <div style="font-size:15px; "><span >{{ day | date: 'EEEE' }}</span></div>
+                            <div  style="font-size:13px; padding: 5px;"> 
+                                <span > Day {{ day | date: 'dd' }}</span>
+                            </div>
+                            
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     <ng-container *ngIf="!loading">
-        <div class="body-wrapper noselect" *ngFor="let data of daymanager">
-            <ng-container *ngFor="let day of days; let i = index">
+        <div class="body-wrapper noselect"  *ngFor="let data of daymanager">
+            <ng-container *ngFor="let day of days; let i = index" >
                 <div class="cell" [attr.date]="day" [class.roster-container]="i > 0" [class.five]="dayView == 5"
                     [class.seven]="dayView == 7" [class.ten]="dayView == 10" [class.fourteen]="dayView == 14"
                     (mousedown)="deselect(null,$event)" (drop)="drop($event);$event.stopPropagation()"
-                    (dragover)="dragOver($event)">
+                    (dragover)="dragOver($event)"  (contextmenu)="rightClickMenuOut($event,day, data.key)">
                     <div *ngIf="i == 0">
-                        <div>
+                        <div style="font-size:14px; font-weight: bold; text-align: left;">
                             <span *ngIf="data?.key.indexOf('BOOKED') > -1">UNASSIGNED BOOKINGS</span>
-                            <span *ngIf="!(data?.key.indexOf('BOOKED') > -1)">{{ data?.key }}</span>
+                            <span *ngIf="!(data?.key.indexOf('BOOKED') > -1) ">{{ data?.key }}</span> 
                         </div>
-                        <div style="font-size:10px;color:#16c516">{{ data?.value[0].staffCategory}}</div>
+                        <div style="font-size:12px; text-align: left " *ngIf="!(data?.key.indexOf('BOOKED') > -1)" >
+                            <div *ngIf="!(currentFilter==3 || currentFilter==4  || currentFilter==7 ||  currentFilter==12)">
+                                <div>{{ data?.value[0].staffCategory}}</div>
+                                <div>{{ data?.value[0].staffPhone}}</div>
+                            </div>
+                            <div *ngIf="currentFilter==3 || currentFilter==4  || currentFilter==7 ||  currentFilter==12">
+                                <div  >{{ data?.value[0].category}}</div>
+                        
+                            </div>
+                            <div *ngIf="!optionsList[0].checked">
+                                <div  >W1-WKD : {{ getWorkHours(data?.key ,'W1') }}</div>
+                                <div >W2-WKD : {{ getWorkHours(data?.key ,'W2') }}</div>
+                                <div >FN-WKD : {{ getWorkHours(data?.key ,'F') }}</div>
+                                <!-- <div >TO-WKD : {{ getWorkHours(data?.key ,'T') }}</div> -->
+                                <div >PP-WKD : {{ getWorkHours(data?.key ,'P') }}</div>
+                            </div>
+                        </div>
                     </div>
-                    <ng-container *ngIf="i > 0">
-                        <ng-container *ngFor="let value of data.value | dmz: day ">
+                    <ng-container *ngIf="i > 0" >
+                        <ng-container *ngFor="let value of data.value | dmz: day;  " >
+                           
                             <div class="data" *ngIf="!value.isLast && !value.isNone"
                                 (dragstart)="dragStart($event,value)" (dragend)="dragEnd($event)"
-                                (dblclick)="showDetail.emit(value)" (mouseenter)="mouseenter($event, value)"
-                                (mousedown)="mousedown($event,value)" (mousemove)="mousemove($event,value)"
-                                [class.selected]="value.isSelected">
+                                (dblclick)="mousedblclick($event,value)"                              
+                                (mouseenter)="mouseenter($event, value)"
+                                (mousedown)="mousedown($event,value)" 
+                                [class.selected]="value.isSelected"
+                                (contextmenu)="rightClickMenu($event,value)"
+                                [class.highlight]="HighlightColum_index==i"                               
+                                (mousemove)="mousemove($event,value)"
+                                (click)="RosterClick($event,value)"
+                                >
 
-                                <div class="approve-logo"><i class="material-icons" *ngIf="value.status == '2'"> done
-                                    </i></div>
-                                <div class="service-logo" [style.background-position]="getPositionImg(value)"></div>
-
-                                <strong>{{ value.startTime}}-{{ value.endTime }}</strong>
-
-                                <i class="material-icons option showOption" option-click
-                                    (mousedownEmit)="mouseEmitter(value)" (click)="optionEmitter(value)"> more_horiz
-                                </i>
-
-                                <div class="details">{{ value.recipient}} * {{ value.activity}}</div>
+                                <div class="icon" [class.icon2]="dayView===7" [class.icon3]="dayView === 10" [class.icon4]="dayView === 14"  >
+                                        <img id="icon-1" class="icon" [class.icon2]="dayView===7" [class.icon3]="dayView === 10" [class.icon4]="dayView === 14 "   *ngIf="value.type==1" style=" background-color: #D5D6DE;"  src="/media/r1.png"/>
+                                        <img id="icon-2" class="icon" [class.icon2]="dayView===7" [class.icon3]="dayView === 10" [class.icon4]="dayView === 14"  *ngIf="value.type==2" style=" background-color: #D5D6DE;"  src="/media/r2.png"/>
+                                        <img id="icon-3" class="icon" [class.icon2]="dayView===7" [class.icon3]="dayView === 10" [class.icon4]="dayView === 14"  *ngIf="value.type==3" style=" background-color: #D5D6DE;"  src="/media/r3.png"/>
+                                        <img id="icon-4" class="icon" [class.icon2]="dayView===7" [class.icon3]="dayView === 10" [class.icon4]="dayView === 14"  *ngIf="value.type==4" style=" background-color: #D5D6DE;"  src="/media/r4.png"/>
+                                        <img id="icon-5" class="icon" [class.icon2]="dayView===7" [class.icon3]="dayView === 10" [class.icon4]="dayView === 14"  *ngIf="value.type==5" style=" background-color: #D5D6DE;"  src="/media/r5.png"/>
+                                        <img id="icon-6" class="icon" [class.icon2]="dayView===7" [class.icon3]="dayView === 10" [class.icon4]="dayView === 14"  *ngIf="value.type==6" style=" background-color: #D5D6DE;"  src="/media/r6.png"/>   
+                                        <img id="icon-7" class="icon" [class.icon2]="dayView===7" [class.icon3]="dayView === 10" [class.icon4]="dayView === 14"  *ngIf="value.type==7" style=" background-color: #D5D6DE;"  src="/media/r7.png"/>
+                                        <img id="icon-8" class="icon" [class.icon2]="dayView===7" [class.icon3]="dayView === 10" [class.icon4]="dayView === 14"  *ngIf="value.type==8" style=" background-color: #D5D6DE;"  src="/media/r8.png"/>
+                                        <img id="icon-9" class="icon" [class.icon2]="dayView===7" [class.icon3]="dayView === 10" [class.icon4]="dayView === 14"  *ngIf="value.type==9" style=" background-color: #D5D6DE;"  src="/media/r9.png"/>
+                                        <img id="icon-10" class="icon" [class.icon2]="dayView===7" [class.icon3]="dayView === 10" [class.icon4]="dayView === 14"  *ngIf="value.type==10" style=" background-color: #D5D6DE;" src="/media/r10.png"/>
+                                        <img id="icon-11" class="icon" [class.icon2]="dayView===7" [class.icon3]="dayView === 10" [class.icon4]="dayView === 14"  *ngIf="value.type==11" style=" background-color: #D5D6DE;" src="/media/r11.png"/>
+                                        <img id="icon-12" class="icon" [class.icon2]="dayView===7" [class.icon3]="dayView === 10" [class.icon4]="dayView === 14"  *ngIf="value.type==12" style=" background-color: #D5D6DE;" src="/media/r12.png"/>
+                                        <img id="icon-13" class="icon" [class.icon2]="dayView===7" [class.icon3]="dayView === 10" [class.icon4]="dayView === 14"  *ngIf="value.type==13" style=" background-color: #D5D6DE;" src="/media/r13.png"/>
+                                        <img id="icon-14" class="icon" [class.icon2]="dayView===7" [class.icon3]="dayView === 10" [class.icon4]="dayView === 14"  *ngIf="value.type==14" style=" background-color: #D5D6DE;" src="/media/r14.png"/>
+                                        <img id="icon-15" class="icon" [class.icon2]="dayView===7" [class.icon3]="dayView === 10" [class.icon4]="dayView === 14"  *ngIf="value.type==15" style=" background-color: #D5D6DE;" src="/media/r15.png"/>
+                                        <img id="icon-20" class="icon" [class.icon2]="dayView===7" [class.icon3]="dayView === 10" [class.icon4]="dayView === 14"  *ngIf="value.type==20" style=" background-color: #D5D6DE;" src="/media/r20.png"/>
+                                        <img id="icon-21" class="icon" [class.icon2]="dayView===7" [class.icon3]="dayView === 10" [class.icon4]="dayView === 14"  *ngIf="value.type==21" style=" background-color: #D5D6DE;" src="/media/r21.jpg"/>
+                                        <img id="icon-22" class="icon" [class.icon2]="dayView===7" [class.icon3]="dayView === 10" [class.icon4]="dayView === 14"  *ngIf="value.type==22" style=" background-color: #D5D6DE;" src="/media/r22.jpg"/>
+                                        
+                                      
+                                    <!-- <i class="material-icons option showOption icon" option-click 
+                                        (mousedownEmit)="mouseEmitter(value)" (click)="optionEmitter(value)"> more_horiz
+                                    </i> -->
+                                </div>
+                                
+                                <div [class.time]="dayView ==5"  [class.time2]="dayView ==7" [class.time3]="dayView == 10" [class.time4]="dayView == 14" >
+                                    
+                                    <strong *ngIf="dmType=='1'"> [{{ value.shiftname}}]  </strong>
+                                    <strong  title="{{ value.startTime}}-{{ value.endTime }}">{{ value.startTime}}-{{ value.endTime }}</strong>
+                                    <strong *ngIf="optionsList[1].checked && dayView <=5"  > ({{ BlockToTime(value.duration)}})</strong>                                  
+                                </div > 
+                                 <div *ngIf="optionsList[1].checked && dayView >5" [class.time]="dayView ==5"  [class.time2]="dayView ==7" [class.time3]="dayView == 10" [class.time4]="dayView == 14">    
+                                     <strong style="margin-left: 12px;" > ({{ BlockToTime(value.duration)}})</strong>
+                                 </div>  
+                                  
+                                 <div class="details" title="{{ value.recipient}} * {{ value.activity}} * {{value.snotes.toUpperCase()}}"   [class.detail-more]="selectedRecordNo==value.recordno" ngbTooltip=""
+                                        (click)="viewText(value)"  [class.detail2]="dayView == 7" [class.detail3]="dayView == 10" [class.detail4]="dayView == 14" >
+                                        <i nz-icon *ngIf="value.status==2" [nzType]="'check-circle'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#52c41a'" class="icon"></i>
+                                        <!-- <i nz-icon *ngIf="value.status==2" style="color: #52c41a; font-family:  Tahoma, Geneva, Verdana, sans-serif; font-size: 12px; font-weight: bold;"  nzType="check" nzTheme="outline"></i> -->
+                                       
+                                            {{ value.recipient}} * {{ value.activity}} 
+                                        
+                                        <span *ngIf="optionsList[3].checked">
+                                            {{value.snotes.toUpperCase()}} 
+                                        </span>
+                                 </div>
+                                
                             </div>
-                            <div class="data total" *ngIf="value.isLast && !value.isNone">
-                                <span>Total Hours: {{ value.total | number: '1.2-2'}} </span>
+                                 
+                               
+                            <div class="data total" *ngIf="value.isLast && !value.isNone " >                                
+                                <span *ngIf="dayView!=14" [class.time]="dayView == 5" [class.time2]="dayView == 7" [class.time3]="dayView == 10" [class.time4]="dayView == 14">Total Hours: {{ workingHours(data.value,day) }} </span>
+                                    <!-- <span>Total Hours: {{ value.total | number: '1.2-2'}} </span> -->
+                                <span *ngIf="dayView>=14" [class.time]="dayView == 5" [class.time2]="dayView == 7" [class.time3]="dayView == 10" [class.time4]="dayView == 14">Tot. Hrs: {{ workingHours(data.value,day) }} </span>                                 
+                               
                             </div>
+                           
                         </ng-container>
                     </ng-container>
                 </div>
@@ -77,5 +174,42 @@
             </div>
         </clr-alert>
     </div>
+
+    <nz-modal  [nzStyle]="{ top: '100px' }" hasBackdrop [nzWidth]="400" [(nzVisible)]="AutoPreviewNotes" nzTitle="Service Summary"   (nzOnCancel)="AutoPreviewNotes = false" >
+        <div  class="flexy" style="min-height:15rem; margin-top: 2px;" >
+            <div nz-row >
+                <div nz-row >
+                    <div nz-col *ngIf="clickedRoster" nzSpan="24">
+                           <div class="rectangle">
+                                Shift#   :   <span>{{clickedRoster.recordno}}</span>
+                            </div> 
+                            <div class="rectangle">
+                                Client   :   <span>{{clickedRoster.recipient}}</span>
+                            </div>
+                            <div class="rectangle">
+                                Staff    :   <span>{{clickedRoster.carercode}}</span>
+                            </div> 
+                            <div class="rectangle">
+                                Location :   <span>{{clickedRoster.servicesetting}}</span>
+                            </div>
+                            <div class="rectangle">
+                                Activity :   <span>{{clickedRoster.activity}}</span>
+                            </div>
+                            <div >
+                                Extr Info :   
+                            </div>
+                            <div>
+                                 <span>{{clickedRoster.notes.toUpperCase()}}</span>
+                                
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *nzModalFooter>
+            <button  nz-button nzType="default" (click)="AutoPreviewNotes=false">OK</button>
+            <button  nz-button nzType="default" (click)="AutoPreviewNotes=false">Cancel</button>
+        </div>
+    </nz-modal>                 
 
 </div>

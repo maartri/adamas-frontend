@@ -261,7 +261,6 @@ export class DebtorComponent implements OnInit {
     this.loading = true;
     this.billingS.getDebtorRecords(null).subscribe(data => {
         this.debtorRecordList = data;
-        console.log(this.debtorRecordList);
         this.loading = false;
       });
   }  

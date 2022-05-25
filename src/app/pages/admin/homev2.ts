@@ -1,8 +1,12 @@
-import { Component, OnInit, OnDestroy, Input, AfterViewInit, ViewChild, ElementRef } from '@angular/core'
+import { Component, OnInit, OnDestroy, Input, AfterViewInit, ViewChild, ElementRef, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 
 import { filter, tap, last } from 'rxjs/operators';
 import { GlobalService } from '@services/index';
+import { of } from 'rxjs';
+
+
+const CLOUD_ADMIN_PROPERTY: string = 'cloudAdmin';
 
 @Component({
     styles: [`
@@ -81,10 +85,10 @@ nz-avatar{
     text-align:right;
 }
 
-nz-layout{
-    background: #85B9D5;
-    height:100vh;
-}
+// nz-layout{
+//     // background: #85B9D5;
+//     // height:100vh;
+// }
 
 .main-list > li >>> div{
     font-size:12px;
@@ -143,6 +147,9 @@ nz-sider{
     float: left;
     margin-top: 12px;
 }
+.none{
+    display:none;
+}
     `],
     templateUrl: './homev2.html'
 })
@@ -151,28 +158,38 @@ nz-sider{
 export class HomeV2Admin implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild('recipient') elRef: ElementRef;
 
-    isCollapsed = false;
+    isCollapsed: boolean = false;
     breadcrumbs: Array<any> = [];
 
     ISTAFF_BYPASS: boolean = false;
+    HIDE_SPECIAL_OPTIONS: boolean = false;
+
+    token: any;
+
+    showIfByPassOn:  boolean = true;
 
     constructor(
         private router: Router,
         private activatedRoute: ActivatedRoute,
-        private globalS: GlobalService
+        private globalS: GlobalService,
+        private cd: ChangeDetectorRef
     ) {
 
     }
 
     ngOnInit(): void {
         this.ISTAFF_BYPASS = this.globalS.ISTAFF_BYPASS == 'true' && this.globalS.ISTAFF_BYPASS != null ? true : false;
-        
-        // this.router.events.pipe(
-        //     filter(event => event instanceof NavigationEnd)
-        // ).subscribe(event => {
-        //     this.createBreadCrumb(this.activatedRoute.root);
-        // });
-        // this.createBreadCrumb(this.activatedRoute.root);
+
+        let settings: any = this.globalS.settings;
+
+        if('cloudAdmin' in settings){
+            this.HIDE_SPECIAL_OPTIONS = !this.globalS.settings[CLOUD_ADMIN_PROPERTY]
+        }
+
+        this.token = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA) : this.globalS.decode();
+        if('bypass' in this.token && this.token['bypass'] == "true"){
+            this.isCollapsed = true;
+        }
     }
 
     ngOnDestroy(): void {
@@ -180,7 +197,8 @@ export class HomeV2Admin implements OnInit, OnDestroy, AfterViewInit {
     }
 
     ngAfterViewInit(): void {
-
+        this.cd.markForCheck();
+        this.cd.detectChanges();
     }
 
     toHome() {

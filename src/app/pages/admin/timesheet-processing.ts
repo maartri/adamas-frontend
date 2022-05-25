@@ -77,10 +77,10 @@ export class TimesheetProcessingAdmin implements OnInit, OnDestroy, AfterViewIni
             
         }
         onChange(result: Date): void {
-            console.log('onChange: ', result);
+            // console.log('onChange: ', result);
         }  
         view(index: number) {
-            console.log(index);
+            // console.log(index);
             if(index == 1){
                 this.router.navigate(['/admin/pay-export-integrity']);
             }

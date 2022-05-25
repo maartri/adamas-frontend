@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
-import { GlobalService, ListService,dataSetDropDowns,MenuService , PrintService, timeSteps } from '@services/index';
+import { GlobalService, ListService,dataSetDropDowns,datasetTypeDropDowns,MenuService , PrintService, timeSteps } from '@services/index';
 import { SwitchService } from '@services/switch.service';
 import { NzModalService } from 'ng-zorro-antd';
 import { Subject } from 'rxjs';
@@ -13,11 +13,32 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './services.component.html',
   styles: [`
   .mrg-btm{
-    margin-bottom:0.5rem;
-  },
+    margin-bottom:0.3rem;
+  }
   textarea{
     resize:none;
-  },
+  }
+  nz-tabset{
+    margin-top:1rem;
+  }
+  .ant-divider-horizontal.ant-divider-with-text-center, .ant-divider-horizontal.ant-divider-with-text-left, .ant-divider-horizontal.ant-divider-with-text-right {
+    margin:1px 0
+  }
+  nz-tabset >>> div > div.ant-tabs-nav-container{
+    height: 25px !important;
+    font-size: 13px !important;
+  }
+  
+  nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-nav-scroll div.ant-tabs-nav div div.ant-tabs-tab{
+    line-height: 24px;
+    height: 25px;
+    border-radius:15px 4px 0 0;
+    margin:0 -10px 0 0;
+  }
+  nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-nav-scroll div.ant-tabs-nav div div.ant-tabs-tab.ant-tabs-tab-active{
+    background: #85B9D5;
+    color: #fff;
+  }
   .staff-wrapper{
     height: 20rem;
     width: 100%;
@@ -25,6 +46,47 @@ import { takeUntil } from 'rxjs/operators';
     padding: .5rem 1rem;
     border: 1px solid #e9e9e9;
     border-radius: 3px;
+  }
+  nz-select{
+    min-width:100%;
+  }
+  .ant-modal-content .ant-modal-header .ant-modal-title .ng-star-inserted"{
+    width: 40% !important;
+    margin: auto !important;
+    background: #85b9d5 !important;
+    text-align: center !important;
+    color: white !important;
+    border-radius: 5px !important;
+    padding: 5px !important;
+  }
+  .ant-modal-header {
+    padding: 4px 24px !important;
+  }
+  legend + * {
+    -webkit-margin-top-collapse: separate;
+    margin-top: 10px;
+  }
+  .ant-tabs-bar{
+    margin:0px
+  } 
+  #main-wrapper{
+    border:1px solid #85B9D5;padding:10px 0px;min-height:28rem;
+  }
+  #mta-btn-group{
+  margin-left: 12px !important;margin-right: 12px;padding:10px;
+  }
+  #mta-btn-group .ant-tabs-bar {
+    margin: 0px;
+    border: 0px;
+  }
+  #mta-btn-group nz-tabset[_ngcontent-gwp-c604] {
+    margin-top: 0px;
+  }
+  .redColor{
+    color:red
+  }
+  .whiteColor{
+    color:rgba(0, 0, 0, 0);
   }
   `]
 })
@@ -58,6 +120,7 @@ export class ServicesComponent implements OnInit {
   competencymodal: boolean = false;
   
   current: number = 0;
+  current_mta:number=0;
   checkedflag:boolean = true;
   dateFormat: string = 'dd/MM/yyyy';
   inputForm: FormGroup;
@@ -91,8 +154,18 @@ export class ServicesComponent implements OnInit {
   parent_person_id: any;
   addOrEdit: number = 0;
   isNewRecord: any;
+  insertOne: number = 0;
   dataSetDropDowns: { CACP: string[]; CTP: string[]; DEX: string[]; DFC: string[]; DVA: any[]; HACC: string[]; HAS: string[]; QCSS: string[]; ICTD: string[]; NDIS: any[]; NRCP: string[]; NRCPSAR: string[]; OTHER: string[]; };
+  datasetTypeDropDowns: { CACP: string[]; CTP: string[]; DEX: string[]; DFC: string[]; DVA: any[]; HACC: string[]; HAS: string[]; QCSS: string[]; ICTD: string[]; NDIS: any[]; NRCP: string[]; NRCPSAR: string[]; OTHER: string[]; };
   dataset_group: any[];
+  dataset_type:any;
+  ndiaItemss: any;
+  travelandAlernatelist: any;
+  checkList: any;
+  chkList: any;
+  selectedChklst: any[];
+  chkListForm: any;
+  chklstmodal: boolean;
   constructor(
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
@@ -113,6 +186,7 @@ export class ServicesComponent implements OnInit {
       this.userRole = this.tocken.role;
       this.checkedList = new Array<string>();
       this.dataSetDropDowns = dataSetDropDowns;
+      this.datasetTypeDropDowns = datasetTypeDropDowns;
       this.loadData();
       this.buildForm();
       this.populateDropdowns();
@@ -146,6 +220,9 @@ export class ServicesComponent implements OnInit {
     log(event: any) {
       this.selectedPrograms = event;
     }
+    chklog(event: any) {
+      this.selectedChklst = event;
+    }
     loadTitle()
     {
       return this.title;
@@ -161,10 +238,30 @@ export class ServicesComponent implements OnInit {
       this.isUpdate = true;
       this.current = 0;
       this.modalOpen = true;
-      this.inputForm.patchValue(this.tableData[index-1]);
+      this.inputForm.patchValue(this.tableData[index-1]); 
+      this.parent_person_id = this.tableData[index-1].recordNumber; //set person id for programs and competencies and checklist
+      console.log(this.parent_person_id + "person" + this.tableData[index-1] +"-----"+ this.tableData[index-1].recordNumber);
     }
     onIndexChange(index: number): void {
       this.current = index;
+      if(index == 7){
+        this.loadCompetency();
+      }
+      if(index == 8){
+        this.loadChecklist();
+      }
+    }
+    view(index: number){
+      if(index == 7){
+        this.loadCompetency();
+      }
+      if(index == 8){
+        this.loadChecklist();
+      }
+      this.current = index;
+    }
+    viewMTA(index: number){
+      this.current_mta = index;
     }
     handleCancel() {
       this.modalOpen = false;
@@ -179,6 +276,11 @@ export class ServicesComponent implements OnInit {
       this.staffUnApproved = false;
     }
     showCompetencyModal(){
+          if(this.globalS.isEmpty(this.inputForm.get('title').value))
+          {
+            this.globalS.iToast('Info','can not create this record beacuse there are blank entries');  
+            return;
+          }
       this.addOrEdit = 0;
       this.competencymodal = true;
       this.clearCompetency();
@@ -210,13 +312,24 @@ export class ServicesComponent implements OnInit {
       this.current += 1;
     }
     save() {
+      this.loading = true;
       if(!this.isUpdate){
         this.menuS.postServices(this.inputForm.value)
         .subscribe(data => {
           this.globalS.sToast('Success', 'Added Succesfully');
+          this.loading = false;
+          this.handleCancel();
+          this.loadData()
         });
       }else{
-        
+        this.menuS.updateServices(this.inputForm.value)
+        .subscribe(data => {
+          this.globalS.sToast('success','Updated Successfuly');
+          this.loading = false;
+          this.handleCancel();
+          this.loadData();
+          
+        });
       }
     }
     saveCompetency(){
@@ -307,6 +420,96 @@ export class ServicesComponent implements OnInit {
             this.cd.detectChanges();
           });
         }
+        loadChecklist(){
+          this.menuS.getconfigurationserviceschecklist(this.parent_person_id).subscribe(data => {
+            this.checkList = data;
+            this.loading = false;
+            this.cd.detectChanges();
+          });
+        }
+        showChkLstModal(){
+          if(this.globalS.isEmpty(this.inputForm.get('title').value))
+          {
+            this.globalS.iToast('Info','can not create this record beacuse there are blank entries');  
+            return;
+          }
+          this.addOrEdit = 0;
+          this.chklstmodal = true;
+          this.clearChkList();
+        }
+        saveCheckList(){
+          this.postLoading = true;
+          const group = this.chkListForm.value;
+          this.insertOne = 0;
+          if(this.addOrEdit == 0){
+            if(!this.isUpdate){
+              if(!this.isNewRecord){
+                this.save();
+              }
+            }
+            var checklists = this.selectedChklst;
+            checklists.forEach( (element) => {
+              this.menuS.postconfigurationserviceschecklist({
+                competencyValue:element,
+                personID:this.parent_person_id,
+              }).pipe(
+                takeUntil(this.unsubscribe)).subscribe(data => {
+                  this.insertOne = 1;
+                })
+              });
+              
+              this.globalS.sToast('Success', 'CheckList Added');
+              this.postLoading = false;
+              this.loadChecklist();
+              this.handleChkLstCancel();
+              return false;
+            }
+            else
+            {
+              this.menuS.updateconfigurationserviceschecklist({
+                competencyValue:group.chkListValue,
+                recordNumber:group.recordNumber,
+              }).pipe(
+                takeUntil(this.unsubscribe)).subscribe(data => {
+                  if(data){
+                    this.globalS.sToast('Success','CheckList Updated')
+                    this.postLoading = false;
+                    this.loadChecklist();
+                    this.handleChkLstCancel();
+                    return false;
+                  }
+                });
+              }
+        }
+        handleChkLstCancel(){
+          this.addOrEdit = 0;
+          this.chklstmodal = false;
+        }
+        clearChkList(){
+          this.chkList.forEach(x => {
+            x.checked = false
+          });
+          this.selectedChklst = [];
+        }
+        editChecklistModal(data:any){
+          this.addOrEdit = 1;
+          this.chkListForm.patchValue({
+            chkListValue : data.checklist,
+            recordNumber:data.recordNumber,
+          })
+          this.chklstmodal = true;
+        }
+        deleteChecklist(data:any){
+          this.loading = true;
+          this.menuS.deleteconfigurationserviceschecklist(data.recordNumber)
+          .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            if (data) {
+              this.globalS.sToast('Success', 'Data Deleted!');
+              this.loadChecklist();
+              return;
+            }
+          });
+        }
         fetchAll(e){
           if(e.target.checked){
             this.whereString = "WHERE ProcessClassification <> 'INPUT' ";
@@ -321,6 +524,12 @@ export class ServicesComponent implements OnInit {
             x.checked = false
           });
           this.selectedPrograms = [];
+        }
+        selectProgram(){
+          this.programz.forEach(x => {
+            x.checked = true;
+            this.selectedPrograms = x.name;
+          });
         }
         populateDropdowns(): void {
           
@@ -343,6 +552,13 @@ export class ServicesComponent implements OnInit {
           
           let todayDate       = this.globalS.curreentDate();
           
+          this.listS.GettravelandAlternateCode().subscribe(data => {
+            this.travelandAlernatelist = data;
+          })
+          this.listS.getndiaitemss().subscribe(data=>{
+            this.ndiaItemss = data;
+          })
+
           let sql ="SELECT distinct Description from DataDomains Where  Domain = 'LIFECYCLEEVENTS'";
           this.loading = true;
           this.listS.getlist(sql).subscribe(data => {
@@ -376,7 +592,11 @@ export class ServicesComponent implements OnInit {
             this.competencyList = data;
             this.loading = false;
           });  
-          
+          let chk = "SELECT distinct Description as name from DataDomains Where  Domain = 'CHECKLIST' AND ((EndDate IS NULL) OR (EndDate > Getdate())) ORDER BY Description";
+          this.listS.getlist(chk).subscribe(data => {
+            this.chkList = data;
+            this.loading = false;
+          });
           let prog = "select distinct Name from HumanResourceTypes WHERE [GROUP]= 'PROGRAMS' AND ((EndDate IS NULL) OR (EndDate > Getdate()))";
           this.listS.getlist(prog).subscribe(data => {
             this.programz = data;
@@ -406,6 +626,9 @@ export class ServicesComponent implements OnInit {
         
         buildForm() {
           this.inputForm = this.formBuilder.group({
+            ALT_NDIANonLabTravelKmActivity:'',
+            ALT_AppKmWithinActivity:'',
+            ExcludeFromAppLogging:false,
             dataSet:'',
             datasetGroup:'',
             haccType:'',
@@ -415,7 +638,7 @@ export class ServicesComponent implements OnInit {
             rosterGroup:'',
             minorGroup:'',
             status:'',
-            amount:'',
+            amount:0.0,
             minChargeRate:'',
             lifecycle:'',
             unit:'',
@@ -434,11 +657,11 @@ export class ServicesComponent implements OnInit {
             glCost:'',
             unitCostUOM:'',
             unitCost:'',
-            price2:'',
-            price3:'',
-            price4:'',
-            price5:'',
-            price6:'',
+            price2:0.0,
+            price3:0.0,
+            price4:0.0,
+            price5:0.0,
+            price6:0.0,
             excludeFromPayExport:false,
             excludeFromUsageStatements:false,
             endDate:'',
@@ -510,9 +733,15 @@ export class ServicesComponent implements OnInit {
             ndiaTravel:false,
             DeletedRecord:false,
             excludeFromRecipSummarySheet:false,
+            ExcludeFromMinHoursCalculation:false,
+            OnSpecial:false,
+            Discountable:false,
             ndiA_LEVEL2:'',
             ndiA_LEVEL3:'',
             ndiA_LEVEL4:'',
+            ALT_PHActivityCode:'',
+            PHAction:'',
+            recnum:0,
           });
           this.competencyForm = this.formBuilder.group({
             competencyValue: '',
@@ -521,9 +750,17 @@ export class ServicesComponent implements OnInit {
             personID: this.parent_person_id,
             recordNumber: 0
           });
+          this.chkListForm = this.formBuilder.group({
+            chkListValue: '',
+            mandatory: false,
+            notes: '',
+            personID: this.parent_person_id,
+            recordNumber: 0
+          })
           this.inputForm.get('iT_Dataset').valueChanges.subscribe(x => {
             this.dataset_group = [];  
             this.dataset_group = this.dataSetDropDowns[x];
+            this.dataset_type  = this.datasetTypeDropDowns[x];
           });
         }
         handleOkTop() {

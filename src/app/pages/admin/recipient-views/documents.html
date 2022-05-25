@@ -1,72 +1,113 @@
 <div nz-row>
-    <div nz-col>
 
+    <div>        
         <button class="botton success" (click)="showAddModal()">Add Document</button>
-
         <app-upload-shared *ngIf="showUpload" [(ngModel)]="user" (reload)="reload($event)"></app-upload-shared>
+        <app-filter [LIMIT_TABS]="FILTERS"  [(ngModel)]="filters" [tabs]="'rdocuments'" (ngModelChange)="filterChange($event)"></app-filter>
+    </div>
 
+    <div>
+        <div class="example-container" style="margin-top:1rem">
+            <ul
+                cdkDropList
+                cdkDropListOrientation="horizontal"
+                #todoList="cdkDropList"
+                [cdkDropListData]="dragOrigin"
+                [cdkDropListConnectedTo]="[doneList]"
+                class="drag-list"
+                (cdkDropListDropped)="drop($event)">
+                
+                <li class="drag-box" *ngFor="let item of dragOrigin" [cdkDragDisabled]="true" cdkDrag>
+                    <div>
+                        {{item}} <span (click)="removeTodo(item)"><i nz-icon nzType="close" nzTheme="outline"></i></span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
 
-        <!-- <nz-table #basicTable [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false"
-            [nzData]="tableData">
+    <div nz-col>        
+
+        <nz-table #columnTable [nzData]="tableData" [nzScroll]="{ x: '1500px' }" [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false">
             <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Status</th>
-                    <th>Classification</th>
-                    <th>Category</th>
-                    <th>Created</th>
-                    <th>Author</th>
-                    <th>Modified</th>
-                    <th>Filename</th>
-                    <th>Type</th>
-                    <th>Original Location</th>
-                    <th>Action</th>
+              <tr cdkDropList #doneList="cdkDropList" [cdkDropListData]="dragDestination" [cdkDropListConnectedTo]="[todoList]">
+                    <th cdkDrag [cdkDragData]="'title'" nzWidth="170px" nzLeft="0px">Title</th>
+                    <th cdkDrag [cdkDragData]="'status'">Status</th>
+                    <th cdkDrag [cdkDragData]="'classification'">Classification</th>
+                    <th cdkDrag [cdkDragData]="'category'">Category</th>
+                    <th cdkDrag [cdkDragData]="'created'">Created</th>
+                    <th cdkDrag [cdkDragData]="'author'">Author</th>
+                    <th cdkDrag [cdkDragData]="'modified'">Modified</th>
+                    <th cdkDrag [cdkDragData]="'filename'">Filename</th>
+                    <th cdkDrag [cdkDragData]="'type'">Type</th>
+                    <th cdkDrag [cdkDragData]="'originalLocation'">Original Location</th>
+                    <th nzWidth="180px" nzRight="0px">Action</th>
                 </tr>
+
             </thead>
             <tbody>
-                <tr *ngFor="let data of basicTable.data;let i = index;trackBy: trackByFn">
-                    <td nzBreakWord>{{ data.title  }}</td>
-                    <td nzBreakWord>{{ data.status }}</td>
-                    <td nzBreakWord>{{ data.classification }}</td>
-                    <td nzBreakWord>{{ data.category }}</td>
-                    <td nzBreakWord>{{ data.created   }}</td>
-                    <td nzBreakWord>{{ data.author }}</td>
-                    <td nzBreakWord>{{ data.modified  }}</td>
-                    <td nzBreakWord>{{ data.filename }}</td>
-                    <td nzBreakWord>{{ data.type }}</td>
-                    <td nzBreakWord>                        
-                            {{ data.originalLocation }}                     
-                    </td>
-                    <td >
-                        <a (click)="downloadFile(i)">Download</a>
-                        <nz-divider nzType="vertical"></nz-divider>
-                        <a (click)="viewFile(i)">View</a>
-                        <nz-divider nzType="vertical"></nz-divider>
-                        <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this group?"
-                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>
-                    </td>
-                </tr>
-            </tbody>
-        </nz-table> -->
 
-        <nz-table #columnTable *ngIf="tableData?.length > 0" [nzData]="tableData" [nzScroll]="{ x: '1500px' }" [nzShowPagination]="false" [nzLoading]="loading" [nzSize]="'small'" [nzFrontPagination]="false">
-            <thead>
-              <tr>
-                <th nzWidth="170px" nzLeft="0px">Title</th>
-                <th>Status</th>
-                <th>Classification</th>
-                <th>Category</th>
-                <th>Created</th>
-                <th>Author</th>
-                <th>Modified</th>
-                <th>Filename</th>
-                <th>Type</th>
-                <th>Original Location</th>
-                <th nzWidth="180px" nzRight="0px">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let data of columnTable.data;let i = index;trackBy: trackByFn">
+                <ng-container *ngIf="isSome(tableData)">
+                    <ng-container *ngFor="let titleData of tableData;">
+                        <tr  *ngIf="!isArray(titleData)">
+                            <td colspan="11">
+                                <p [ngStyle]="{'margin': '0 0 0 '+titleData.counter + 'rem'}">{{ titleData.key }}</p>
+                            </td>
+                        </tr>
+                        
+                        <ng-container *ngIf="isArray(titleData)">
+                            <tr style="background: #d9efff;" *ngFor="let data of titleData;let i = index">
+                                <td nzLeft="0px" nzBreakWord>{{ data.title  }}</td>
+                                <td nzBreakWord>{{ data.status }}</td>
+                                <td nzBreakWord>{{ data.classification }}</td>
+                                <td nzBreakWord>{{ data.category }}</td>
+                                <td nzBreakWord>{{ data.created   }}</td>
+                                <td nzBreakWord>{{ data.author }}</td>
+                                <td nzBreakWord>{{ data.modified  }}</td>
+                                <td nzBreakWord>{{ data.filename }}</td>
+                                <td nzBreakWord>{{ data.type }}</td>
+                                <td nzBreakWord>                        
+                                        {{ data.originalLocation }}                     
+                                </td>
+                                <td nzRight="0px">
+                                    <a (click)="downloadFile(i)">Download</a>
+                                    <nz-divider nzType="vertical"></nz-divider>
+                                    <a (click)="viewFile(i)">View</a>
+                                    <nz-divider nzType="vertical"></nz-divider>
+                                    <a nz-popconfirm nzPopconfirmTitle="Delete Document?"
+                                        nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>
+                                </td>
+                            </tr>
+                        </ng-container>
+                    </ng-container>
+                </ng-container>
+    
+                <ng-container *ngIf="!isSome(tableData)">
+                    <tr *ngFor="let data of tableData;let i = index;trackBy: trackByFn">
+                        <td nzLeft="0px" nzBreakWord>{{ data.title  }}</td>
+                        <td nzBreakWord>{{ data.status }}</td>
+                        <td nzBreakWord>{{ data.classification }}</td>
+                        <td nzBreakWord>{{ data.category }}</td>
+                        <td nzBreakWord>{{ data.created   }}</td>
+                        <td nzBreakWord>{{ data.author }}</td>
+                        <td nzBreakWord>{{ data.modified  }}</td>
+                        <td nzBreakWord>{{ data.filename }}</td>
+                        <td nzBreakWord>{{ data.type }}</td>
+                        <td nzBreakWord>                        
+                                {{ data.originalLocation }}                     
+                        </td>
+                        <td nzRight="0px">
+                            <a (click)="downloadFile(i)">Download</a>
+                            <nz-divider nzType="vertical"></nz-divider>
+                            <a (click)="viewFile(i)">View</a>
+                            <nz-divider nzType="vertical"></nz-divider>
+                            <a nz-popconfirm nzPopconfirmTitle="Delete Document?"
+                                nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>
+                        </td>
+                    </tr>
+                </ng-container>
+
+              <!-- <tr *ngFor="let data of columnTable.data;let i = index;trackBy: trackByFn">
 
                 <td nzLeft="0px" nzBreakWord>{{ data.title  }}</td>
                 <td nzBreakWord>{{ data.status }}</td>
@@ -85,11 +126,12 @@
                     <nz-divider nzType="vertical"></nz-divider>
                     <a (click)="viewFile(i)">View</a>
                     <nz-divider nzType="vertical"></nz-divider>
-                    <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this group?"
+                    <a nz-popconfirm nzPopconfirmTitle="Delete Document?"
                         nzPopconfirmPlacement="bottom" (nzOnConfirm)="delete(data)">Delete</a>
                 </td>
 
-              </tr>
+              </tr> -->
+
             </tbody>
           </nz-table>
 

@@ -12,6 +12,9 @@ import { switchMap, startWith } from 'rxjs/operators';
 import startOfMonth from 'date-fns/startOfMonth'
 import endOfMonth from 'date-fns/endOfMonth'
 import format from 'date-fns/format'
+
+import {  ListService } from '@services/index';
+
 @Component({
   selector: 'app-filter',
   templateUrl: './filter.component.html',
@@ -30,7 +33,10 @@ export class FilterComponent implements OnInit, ControlValueAccessor {
   private onTouchedCallback: () => void = noop;
   private onChangeCallback: (_: any) => void = noop;  
 
-  @Input() tabs: TABS; 
+  @Input() tabs: string;
+  @Input() LIMIT_TABS: Array<string> = []
+
+  limitTo: string;
 
 
   filterFormGroup: FormGroup;
@@ -43,9 +49,14 @@ export class FilterComponent implements OnInit, ControlValueAccessor {
   viewFilter: boolean = false;
 
   sss: any;
+  startingWithList: Array<string> = [];
+
   constructor(
     private fb: FormBuilder,
-  ) { }
+    private listS: ListService
+  ) { 
+    
+  }
 
   ngOnInit(): void {
     this.buildForm();
@@ -57,6 +68,21 @@ export class FilterComponent implements OnInit, ControlValueAccessor {
       startDate: firstDate,
       endDate: endDate
     });
+
+
+    this.filterFormGroup.get('limitTo')
+        .valueChanges
+        .pipe(
+          switchMap(x => {
+            this.filterFormGroup.patchValue({
+              startingWith: null
+            });
+            return this.listS.getstartswithvalue(this.tabs,x)
+          })
+        )
+        .subscribe(data => {
+          this.startingWithList = data;
+        })
 
     // combineLatest([
     //   this.filterFormGroup.get('archiveDocs').valueChanges.pipe(startWith(false)),
@@ -89,6 +115,7 @@ export class FilterComponent implements OnInit, ControlValueAccessor {
       })
     ).subscribe(([data, data1] : any) => {
       setTimeout(() => {
+        console.log(this.filterFormGroup.value)
         this.onChangeCallback(this.filterFormGroup.value);
       }, 0);
     });
@@ -104,7 +131,9 @@ export class FilterComponent implements OnInit, ControlValueAccessor {
       startDate: null,
       endDate: null,
       includeClosedIncidents: false,
-      includeArchivedNotes: false
+      includeArchivedNotes: false,
+      limitTo: null,
+      startingWith: null
     };
 
     this.filterFormGroup = this.fb.group(filter);
@@ -122,6 +151,15 @@ export class FilterComponent implements OnInit, ControlValueAccessor {
 
   registerOnTouched(fn): void {
     this.onTouchedCallback = fn;
+  }
+
+
+  limitChange(data: string){
+    console.log(data);
+  }
+
+  apply(){
+    this.onChangeCallback(this.filterFormGroup.value);
   }
 
 }

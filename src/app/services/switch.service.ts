@@ -17,6 +17,7 @@ export class SwitchService {
     modalVariables: ModalVariables;
     sqlCommand: string;
     listS: any;
+    audithistory:any;
     
     constructor(
         private injector: Injector
@@ -785,9 +786,10 @@ export class SwitchService {
         // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         
         
-        addData(modalVariables: ModalVariables, inputVariables: any) {
+        addData(modalVariables: ModalVariables, inputVariables: any,audithistory={}) {
             console.log(inputVariables);
             this.anyVariable = {}
+            this.audithistory = {};
             switch (modalVariables.title) {
                 case 'Medical Contacts':
                 //var colValues = `'${(this.selected.name).toUpperCase()}','` + this.category.categoryName  + "','" + this.contact.type + "','" + this.contact.address1 + "','" + this.contact.address2 + "','" + this.contact.suburb + "','" +  this.contact.phone1 + "','" + this.contact.phone2 + "','" + this.contact.fax + "','" + this.contact.mobile + "','" + this.contact.email + "'"
@@ -803,6 +805,14 @@ export class SwitchService {
                         user1: '',
                         user2: '',
                         endDate: inputVariables.end_date
+                    },
+                    audithistory:{
+                        Operator:'',
+                        actionDate:'',
+                        auditDescription:'',
+                        actionOn:'',
+                        whoWhatCode:'',
+                        tracsUser:'',
                     },
                     table: 'DataDomains'
                 }
@@ -965,6 +975,20 @@ export class SwitchService {
                     variables: {
                         description: (inputVariables.display).toUpperCase(),
                         domain: 'CUSTOM DATASETS',
+                        dataset: 'USER',
+                        embedded: 0,
+                        user1: '',
+                        user2: '',
+                        endDate: inputVariables.end_date,
+                    },
+                    table: 'DataDomains'
+                }
+                break;
+                case'CHECKLIST':
+                this.anyVariable = {
+                    variables: {
+                        description: (inputVariables.display).toUpperCase(),
+                        domain: 'CHECKLIST',
                         dataset: 'USER',
                         embedded: 0,
                         user1: '',
@@ -1714,7 +1738,8 @@ export class SwitchService {
                 case'Occupations':
                 case'Religion':
                 case'Financial Classification':
-                case 'CUSTOM DATASETS':
+                case'CUSTOM DATASETS':
+                case'CHECKLIST':
                 case'Filing Classification':
                 case'Document Categories':
                 case'Initial Actions':

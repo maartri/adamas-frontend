@@ -73,9 +73,15 @@
                                                     <td>
                                                         <nz-checkbox-wrapper style="width: 100%;"
                                                             (nzOnChange)="log($event,1)">
-                                                            <div nz-row *ngFor="let list of fundingList; let i = index">
+                                                            <!-- <div nz-row *ngFor="let list of fundingList; let i = index">
                                                                 <label nz-checkbox [nzValue]="list.description"
                                                                     [(ngModel)]="list.checked" (change)="fetchAll($event)"
+                                                                    [ngModelOptions]="{standalone: true}">{{
+                                                                    list.description }}</label>
+                                                            </div> -->
+                                                            <div nz-row *ngFor="let list of fundingList; let i = index">
+                                                                <label nz-checkbox [nzValue]="list.description"
+                                                                    [(ngModel)]="list.checked"
                                                                     [ngModelOptions]="{standalone: true}">{{
                                                                     list.description }}</label>
                                                             </div>
@@ -141,7 +147,7 @@
                             <p style="margin: 0px;"></p>
                         </div>
                         <div nz-col nzSpan="2">
-                            <button nz-button nzType="primary" (click)="closeRosterPeriod()"
+                            <button nz-button nzType="primary" (click)="checkValidation()"
                                 style="font-size: 14pt; margin-top: 10px; height: 2.4pc; width: 8pc; float: right;"> Save </button>
                         </div>
                     </div>

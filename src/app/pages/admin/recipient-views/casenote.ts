@@ -15,6 +15,19 @@ import getMonth from 'date-fns/getMonth';
 import { DomSanitizer } from '@angular/platform-browser';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
+
+import {CdkDragDrop, moveItemInArray, transferArrayItem, copyArrayItem } from '@angular/cdk/drag-drop';
+import * as groupArray from 'group-array';
+
+
+const FILTERS: Array<string> = [
+    'CARE DOMAIN',
+    'CATEGORY',
+    'CREATOR',
+    'DISCIPLINE',
+    'PROGRAMS'
+ ]
+
 @Component({
     styles: [`
     nz-table{
@@ -34,9 +47,6 @@ import { AngularEditorConfig } from '@kolkov/angular-editor';
     }
     ul{
         list-style:none;
-    }
-    li{
-        margin:5px 0;
     }
     .chkboxes{
         padding:4px;
@@ -66,6 +76,8 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
     clist: Array<any> = [];
     dlist: Array<any> = [];
     mlist: Array<any> = [];
+
+    FILTERS = FILTERS;
     
     public editorConfig:AngularEditorConfig = {
         editable: true,
@@ -146,14 +158,14 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
             // this.getSelect();
         }
         
-        filterChange(data: any){
-            this.getNotes(this.user);
+        filterChange(filters: any){
+            this.getNotes(this.user, filters);
         }
         
-        getNotes(user: any) {
+        getNotes(user: any, filters: any = null) {
             this.loading = true;
             
-            this.clientS.getcasenoteswithfilters(user.code, this.filters).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+            this.clientS.getcasenoteswithfilters(user.code, filters).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
                 let list: Array<any> = data.list || [];
                 
                 if (list.length > 0) {
@@ -166,7 +178,8 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
                 } else {
                     this.tableData = list;
                 }
-                
+                this.originalTableData = this.tableData;
+
                 this.loading = false;
                 this.cd.markForCheck();
                 this.cd.detectChanges();
@@ -410,4 +423,109 @@ export class RecipientCasenoteAdmin implements OnInit, OnDestroy {
         checkChange(event: any, index: number) {
             console.log(index);
         }
+
+
+
+
+    originalTableData: Array<any>;
+    dragOrigin: Array<string> = [];
+
+    columnDictionary = [{
+        key: 'Details',
+        value: 'detail'
+    },{
+        key: 'Detail Date',
+        value: 'detailDate'
+    },{
+        key: 'Creator',
+        value: 'creator'
+    }];
+    
+    
+    
+
+    dragDestination = [       
+        'Details',
+        'Detail Date',
+        'Creator'
+    ];
+
+
+    flattenObj = (obj, parent = null, res = {}) => {
+        for (const key of Object.keys(obj)) {
+            const propName = parent ? parent + '.' + key : key;
+            if (typeof obj[key] === 'object') {
+                this.flattenObj(obj[key], propName, res);
+            } else {
+                res[propName] = obj[key];
+            }
+        }
+        return res;
     }
+
+    searchColumnDictionary(data: Array<any>, tobeSearched: string){
+        let index = data.findIndex(x => x.key == tobeSearched);        
+        return data[index].value;
+    }
+
+    drop(event: CdkDragDrop<string[]>) {
+        if (event.previousContainer === event.container) {
+            moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);            
+        } else {
+            if(!event.container.data.includes(event.item.data)){
+                copyArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.container.data.length)
+            }
+        }
+        this.generate();
+    }
+
+    generate(){
+        const dragColumns = this.dragOrigin.map(x => this.searchColumnDictionary(this.columnDictionary, x));
+        console.log(dragColumns)
+
+        var convertedObj = groupArray(this.originalTableData, dragColumns);
+
+        console.log(convertedObj)
+        var flatten = this.flatten(convertedObj, [], 0);
+
+        if(dragColumns.length == 0){
+            this.tableData = this.originalTableData;
+        } else {
+            this.tableData = flatten;
+        }
+    }
+
+    flatten(obj: any, res: Array<any> = [], counter = null){
+        for (const key of Object.keys(obj)) {
+            const propName = key;
+            if(typeof propName == 'string'){                   
+                res.push({key: propName, counter: counter});
+                counter++;
+            }
+            if (!Array.isArray(obj[key])) {
+                this.flatten(obj[key], res, counter);
+                counter--;
+            } else {
+                res.push(obj[key]);
+                counter--;
+            }
+        }
+        return res;
+    }
+
+    removeTodo(data: any){
+        this.dragOrigin.splice(this.dragOrigin.indexOf(data),1);
+        this.generate();
+    }
+
+    isArray(data: any){
+        return Array.isArray(data);
+    }
+ 
+    isSome(data: any){
+        if(data){
+            return data.some(d => 'key' in d);
+        }
+        return true;        
+    }
+}

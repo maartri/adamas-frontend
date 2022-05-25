@@ -3,7 +3,7 @@ import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { filter, switchMap } from 'rxjs/operators';
 import format from 'date-fns/format';
 
-import { GlobalService,nodes,StaffService,sbFieldsSkill, ShareService,timeSteps,conflictpointList,checkOptionsOne,sampleList,genderList,statusList,leaveTypes, ListService,PrintService, TimeSheetService, SettingsService, LoginService } from '@services/index';
+import { GlobalService,staffnodes,StaffService,sbFieldsSkill, ShareService,timeSteps,conflictpointList,checkOptionsOne,sampleList,genderList,statusList,leaveTypes, ListService,PrintService, TimeSheetService, SettingsService, LoginService } from '@services/index';
 import { NzFormatEmitEvent } from 'ng-zorro-antd/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 import { EMPTY, forkJoin } from 'rxjs';
@@ -43,21 +43,22 @@ interface UserView{
     color: #fff;
   }
   nz-tabset >>> div div.ant-tabs-nav-container div.ant-tabs-nav-wrap div.ant-tabs-nav-scroll div.ant-tabs-nav div div.ant-tabs-tab{
-    border-radius: 4px 4px 0 0;
+    border-radius: 15px 4px 0 0;
+    margin:0 -10px 0 0;
   }
-  ul{
+  ul.old-list-wrapper{
     list-style:none;
     float:right;
     margin:0;
   }
-  li{
+  ul.old-list-wrapper li{
     display: inline-block;
     margin-right: 10px;
     font-size: 12px;
     padding: 5px;
     cursor:pointer;
   }
-  li div{
+  ul.old-list-wrapper li div{
     text-align: center;
     font-size: 17px;
   }
@@ -82,6 +83,9 @@ interface UserView{
     color: #fff;
     
     margin-right: 10px;
+  }
+  .hide{
+    display:none;
   }
   .status.active{            
     background: #42ca46;
@@ -124,6 +128,51 @@ interface UserView{
   .ant-table-thead>tr>th{
     background:green;
   }
+
+  div.special-btn{
+    padding: 4px 2rem !important;
+    position:relative;
+    display:inline-block;
+  }
+  div.special-btn > div{
+    position: absolute;
+    border: 1px solid #dfdfdf;
+    background: #fff;
+    z-index: 10;
+    top: 34px;
+    left: 0;
+    width: 10rem;
+    border-radius:4px;
+  }
+  .special-btn{
+    flex: 10%;
+    font-size: 1.1rem;
+    padding: 8px;
+    margin-left: 10px;
+    border: 1px solid #dadada;
+    border-radius: 7px;
+    cursor: pointer;
+    color: #afafaf;
+  }
+
+  ul.sub-menu{
+    list-style:none;
+    padding:0;
+    margin:0;
+  }
+  ul.sub-menu li{
+    font-size:12px;
+    padding:5px 15px;
+  }
+  ul.sub-menu li:hover:not(.disabled){
+    color:black;
+    background:#edf9ff;
+  }
+
+  .disabled{
+    cursor: not-allowed;
+  }
+
   `],
   templateUrl: './staff.html',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -222,6 +271,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
   conflictpointList:any = conflictpointList;
   timeSteps:Array<string>;
   sbFieldsSkill:any;
+
   nzEvent(event: NzFormatEmitEvent): void {
     if (event.eventName === 'click') {
       var title = event.node.origin.title;
@@ -231,9 +281,11 @@ export class StaffAdmin implements OnInit, OnDestroy {
       });
       var keys       = event.keys;
       
-    }
-    
+    }    
   }
+
+  showSubMenuStaff: boolean = false;
+
   columns: Array<any> = [
     {
       name: 'ID',
@@ -364,7 +416,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
     ngOnInit(): void {
       this.tocken = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERDATA(this.globalS.GETPICKEDMEMBERDATA):this.globalS.decode();
       this.sbFieldsSkill = sbFieldsSkill;
-      this.nodelist = nodes;
+      this.nodelist = staffnodes;
       this.buildForm();
       this.buildForms();
       this.timeSteps = timeSteps;
@@ -646,7 +698,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
           this.router.navigate(['/admin/staff/document'])
         }
         if (index == 11) {
-          this.router.navigate(['/admin/staff/time-attendance'])
+          this.router.navigate(['/admin/staff/staff-time-attendance'])
         }
         if (index == 12) {
           this.router.navigate(['/admin/staff/position'])
@@ -1065,21 +1117,7 @@ export class StaffAdmin implements OnInit, OnDestroy {
       
       allSkills:(this.selectedSkills.length) ? false : true,
       selectedSkills: (this.selectedSkills.length) ? this.selectedSkills : '',
-      
-      // onleaveStaff:this.quicksearch.value.onleaveStaff,
-      // previousWork:this.quicksearch.value.previousWork,
-      
-      // allcat:this.allcat,
-      // selectedCategories:(this.allcat == false) ? this.selectedCategories : '',
-      // activeprogramsonly:this.filters.value.activeprogramsonly,
-      // surname:this.quicksearch.value.surname,
-      // firstname:this.quicksearch.value.firstname,
-      // phoneno:this.quicksearch.value.phoneno,
-      // suburb:this.quicksearch.value.suburb,
-      // dob:(!this.globalS.isEmpty(this.quicksearch.value.dob)) ? this.globalS.convertDbDate(this.quicksearch.value.dob,'yyyy-MM-dd') : '',
-      // fileno:this.quicksearch.value.fileno,
-      // searchText:this.quicksearch.value.searchText,
-      // criterias:this.cariteriaList
+      criterias:this.cariteriaList
       // list of rules
     }
     
@@ -1270,5 +1308,13 @@ export class StaffAdmin implements OnInit, OnDestroy {
         }
         // console.log(JSON.stringify(this.user) + "user");
         this.putonLeaveModal = !this.putonLeaveModal;
+      }
+
+    
+    clickOutsideMenu(data: any){  
+      console.log(data);      
+      if(data.value){
+        this.showSubMenuStaff = false;
+      }
     }
 }

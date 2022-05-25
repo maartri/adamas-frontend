@@ -17,7 +17,7 @@ import { switchMap } from 'rxjs/operators';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, AfterViewInit {
 
   loginForm: FormGroup;
   loading: boolean = false;
@@ -59,6 +59,9 @@ export class LoginComponent implements OnInit {
     })
   }
 
+  ngAfterViewInit(): void {
+  }
+
   login() {
     if (!this.loginForm.valid) return;
     this.loading = true;
@@ -80,7 +83,7 @@ export class LoginComponent implements OnInit {
         return this.loginS.login(user);
       }) 
     ).subscribe(data => {
-        this.globalS.token = data.access_token;        
+        this.globalS.token = data.access_token;
         
         if (this.globalS.redirectURL) {
           this.globalS.ISTAFF_BYPASS = 'true';

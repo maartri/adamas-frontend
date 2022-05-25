@@ -72,11 +72,14 @@ export class HeaderNavComponent implements OnInit {
 
   logout() {
     const token = this.globalS.decode();
-
-    this.loginS.logout(token.uniqueID)
-      .subscribe(data => data)
+    if(token){
+      this.loginS.logout(token.uniqueID)
+        .subscribe(data => {
+          this.globalS.logout();
+        })
+      
+    }
     
-    this.globalS.logout();
   }
 
   onClickOutside(event: Object) {

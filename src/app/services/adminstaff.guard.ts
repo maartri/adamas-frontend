@@ -35,10 +35,17 @@ export class AdminStaffRouteGuard implements CanActivate, CanActivateChild{
             return true;
         }
 
+        // console.log(this.globalS.GETPICKEDMEMBERROLEANDUSER());
+        // console.log(this.globalS.decode()
+
+        var ss =this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERROLEANDUSER() : this.globalS.decode();
+        console.log(ss)
+
         const { role, user } = this.globalS.pickedMember ? this.globalS.GETPICKEDMEMBERROLEANDUSER() : this.globalS.decode();
 
         return this.settingS.getSettingsObservable(user).pipe(
             switchMap((data: any) => {
+                console.log(data);
                 this.globalS.settings = data;
                 if(this.globalS.isExpired){
                     return of(false);
@@ -52,7 +59,6 @@ export class AdminStaffRouteGuard implements CanActivate, CanActivateChild{
                 return of(true);
             })
         );
-        return false;
     }
 
     createBreadCrumb(route: ActivatedRouteSnapshot, url: string = '', breadcrumbs: Array<any> = []): Array<any> {

@@ -19,12 +19,29 @@ export class ReportService {
     GetReportNames(format: string): Observable<any>{
         return this.auth.get(`${report}/getreportlist/${format}`);
     }
-    GetReportSql(title: string): Observable<any>{
-        return this.auth.get(`${report}/report-sql/${title}`);
+    GetReportSql(title: string,Format : string): Observable<any>{
+        return this.auth.get(`${report}/report-sql/${title}/${Format}`);
     }   
     GetReportFormat(name: string): Observable<any>{
         return this.auth.get(`${report}/report-format/${name}`);
     }
+//
+    GetBranchFilters(user: string): Observable<any>{
+        return this.auth.get(`${report}/branchviewfilter/${user}`);
+    }
+    GetProgramFilters(user: string): Observable<any>{
+        return this.auth.get(`${report}/Programviewfilter/${user}`);
+    }
+    GetCoordinaterFilters(user: string): Observable<any>{
+        return this.auth.get(`${report}/coordinaterviewfilter/${user}`);
+    }    
+    GetStaffCategoryFilters(user: string): Observable<any>{
+        return this.auth.get(`${report}/staffgroupviewfilter/${user}`);
+    }
+    GetCategoryFilters(user: string): Observable<any>{
+        return this.auth.get(`${report}/categoryviewfilter/${user}`);
+    }
+    
 
 
 

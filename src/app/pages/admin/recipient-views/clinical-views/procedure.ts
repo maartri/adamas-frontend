@@ -18,6 +18,9 @@ import format from 'date-fns/format';
     h4{
         margin-top:10px;
     }
+    ng-select >>> ng-dropdown-panel{
+        width: 50rem;
+    }
     `],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -26,17 +29,12 @@ export class ClinicalProcedure implements OnInit, OnDestroy {
     private unsubscribe: Subject<void> = new Subject();
     user: any;
     loading: boolean = false;
-
     consentOpen: boolean = false;
-    consentGroup: FormGroup;
+    inputForm: FormGroup;
     procedureList: Array<any> = [];
-
     addOREdit: number;
-
     lists: Array<any>;
-
     dateFormat: string = dateFormat;
-    
     constructor(
         private timeS: TimeSheetService,
         private sharedS: ShareService,
@@ -58,7 +56,6 @@ export class ClinicalProcedure implements OnInit, OnDestroy {
 
         this.sharedS.changeEmitted$.pipe(takeUntil(this.unsubscribe)).subscribe(data => {
             if (this.globalS.isCurrentRoute(this.router, 'procedure')) {
-                console.log('sasd')
                 this.user = data;
                 this.search(data);
             }
@@ -69,22 +66,16 @@ export class ClinicalProcedure implements OnInit, OnDestroy {
         this.user = this.sharedS.getPicked();        
         this.buildForm();
         this.search(this.user);
-
-        // this.listDropDowns()
     }
 
     buildForm(){
-        this.consentGroup = this.formBuilder.group({
-            recordNumber: null,
-            personID: null,
-            consent: '',
-            notes: '',
-            expiryDate: null
-         })
-
-        setTimeout(() => {
-            this.consentGroup.controls['consent'].enable();
-        }, 0);
+            this.inputForm = this.formBuilder.group({
+              recordNumber: '',
+              personID: '',
+              list: '',
+              usercode:'',
+              icdcode:'',
+            })
     }
 
     trackByFn(index, item) {
@@ -96,92 +87,78 @@ export class ClinicalProcedure implements OnInit, OnDestroy {
     }
 
     consentProcess(){
-        const group = this.consentGroup.value;
-        // console.log(format(group.expiryDate, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"));
-        // this.competencyGroup.controls['mandatory'].setValue((this.competencyGroup.value.mandatory == null) ? false : this.competencyGroup.value.mandatory)
-        let _consentGroup: Consents = {
-            recordNumber: group.recordNumber,
-            personID: this.user.id,
-            notes: group.notes,
-            date1: group.expiryDate ? group.expiryDate : null,
-            name: group.consent
-        }
-
-        console.log(_consentGroup);
-        // return;
-
-        if(this.addOREdit == 0){            
-            this.timeS.postconsents(_consentGroup).subscribe(data => {
+        const group = this.inputForm.value;
+        const { list,usercode,icdcode,recordNumber } = this.inputForm.value;
+        if(this.addOREdit == 0){           
+            this.timeS.postclinicalprocedure({
+                PersonID: this.user.id,
+                Description: list,
+              }).subscribe(data => {
                 if(data){
                     this.resetAll();
-                    this.globalS.sToast('Success','Consent Inserted');
+                    this.globalS.sToast('Success','Procedure Inserted');
                     this.handleCancel();
                 }
             })
         }
-
         if(this.addOREdit == 1){
-            this.timeS.updateconsents(_consentGroup).subscribe(data => {
+
+            this.timeS.updateclinicalprocedure({
+                description: list,
+                PersonID:this.user.id,
+                icdcode:icdcode,
+                code:usercode,
+                recordNumber:recordNumber
+              },recordNumber).subscribe(data => {
                 if(data){
                     this.resetAll();
-                    this.globalS.sToast('Success','Consent Updated');
+                    this.globalS.sToast('Success','Procedure Updated');
                     this.handleCancel();
                 }
             })
         }
     }
-
     showAddModal() {
         this.addOREdit = 0;
         this.buildForm();
         this.consentOpen = true;
-        this.listDropDowns();
+        // this.listDropDowns();
 
     
     }
-
     listDropDowns(){
-        this.listS.getconsents(this.user.id).subscribe(data => this.lists = data)
+        this.listS.getmedicalprocedure(this.user.id).subscribe(data => this.lists = data)
     }
-
-
-    updateconsentmodal(data: any){
-
+    updateprocedure(data: any){
         this.consentOpen = true;
         this.addOREdit = 1;
-        
-        this.lists = [data.consent];
-
-        this.consentGroup.patchValue({
-            recordNumber: data.recordNumber,
-            personID: data.personID,
-            consent: data.consent,
-            notes: data.notes,
-            expiryDate: data.expiryDate
+        this.inputForm.patchValue({
+            list: data.description,
+            icdcode: data.icdcode,
+            recordNumber: data.recordNumber
         });
-
-        // this.consentGroup.controls['consent'].disable();
+        console.log(data);
     }
 
     deleteconsent(data: any){
-        this.timeS.deleteconsents(data.recordNumber)
-                    .subscribe(data => {
-                        if(data){
-                            this.resetAll();
-                            this.globalS.sToast('Success','Consent Deleted')
-                        }
-                    })
+        this.timeS.deleteclinicalprocedure(data.recordNumber)
+            .subscribe(data => {
+                if(data){
+                    this.resetAll();
+                            this.globalS.sToast('Success','Procedure Deleted')
+                }
+        })
     }
 
     search(user: any = this.user){
         this.cd.reattach();
         this.loading = true;
-
-        this.listS.getclinicalprocedure(user.id).subscribe(consents => {
+        this.listS.getclinicalprocedure(user.id).subscribe(procedure => {
             this.loading = false;
-            this.procedureList = consents;
+            this.procedureList = procedure;
             this.cd.markForCheck();
-        })        
+        })
+        this.listDropDowns();   
     }
 
     ngOnDestroy(): void {

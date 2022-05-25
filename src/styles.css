@@ -75,7 +75,9 @@ td, th{
 .mrg-btm{
     margin-bottom:1rem;
 }
-
+.mrg-btm1point5{
+    margin-bottom:1.5rem;
+}
 .mrg-btm-2{
     margin-bottom:2rem;
 }
@@ -350,3 +352,199 @@ th.action{
     cursor:not-allowed;
 }
       
+.pos-left{
+    float:left;
+}
+.pos-right{
+    float:right;
+}
+
+
+
+/* Defining a custom border on all
+            sides except the top side */
+            /* .custom-field {
+                border: 1px solid #85b9d5;
+                border-top: none;
+                margin: 10px 2px;
+                padding: 8px;
+            } */
+      
+            /* Defining the style of the 
+            heading/legend for custom fieldset */
+            /* .custom-field h1 {
+                font: 16px normal;
+                margin: -16px -8px 0;
+            } */
+      
+            /* Using float:left allows us to mimic
+               the legend like fieldset. The 
+               float:right property can also be 
+               used to show the legend on right side */
+      
+            /* .custom-field h1 span {
+                float: left;
+            } */
+      
+            /* Creating the custom top border to make
+                it look like fieldset defining small 
+                border before the legend. The width 
+                can be modified to change position 
+                of the legend */
+            /* .custom-field h1:before {
+                border-top: 1px solid #85b9d5;
+                content: ' ';
+                float: left;
+                margin: 8px 2px 0 -1px;
+                width: 12px;
+            } */
+      
+            /* Defining a long border after the 
+            legend, using overflow hidden to 
+            actually hide the line behind the 
+            legend text. It can be removed
+            for a different effect */
+            /* .custom-field h1:after {
+                border-top: 1px solid #85b9d5;
+                content: ' ';
+                display: block;
+                height: 24px;
+                left: 2px;
+                margin: 0 1px 0 0;
+                overflow: hidden;
+                position: relative;
+                top: 8px;
+            } */
+
+
+
+
+
+
+
+
+
+
+
+
+/* Style the form - display items horizontally */
+.form-inline {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+  }
+  
+  /* Add some margins for each label */
+  .form-inline label {
+    margin: 5px 10px 5px 0;
+    width: 10rem;
+  }
+  
+  /* Style the input fields */
+  .form-inline input {
+    vertical-align: middle;
+    margin: 5px 10px 5px 0;
+    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+  }
+  
+  /* Style the submit button */
+  .form-inline button {
+    padding: 10px 20px;
+    background-color: dodgerblue;
+    border: 1px solid #ddd;
+    color: white;
+  }
+  
+  .form-inline button:hover {
+    background-color: royalblue;
+  }
+  
+  /* Add responsiveness - display the form controls vertically instead of horizontally on screens that are less than 800px wide */
+  @media (max-width: 800px) {
+    .form-inline input {
+      margin: 10px 0;
+    }
+  
+    .form-inline {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+
+/* DRAG-DROP FILTER */
+
+.drag-list {   
+    min-height: 60px;
+    background: #f9f9f9;
+    border: 1px solid #ededed;
+    padding: 10px;
+    border-radius: 4px;
+    overflow: hidden;
+    max-width: 50%;
+    margin: 10px 0;
+  }
+  
+  .drag-box {
+    padding: 0px 5px;
+    border: solid 1px #ccc;
+    color: rgba(0, 0, 0, 0.87);
+    display: block;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    font-size: 14px;
+    border: none;
+  }
+
+  .drag-box::before{
+    float: left;
+    content:" \25B6";
+    max-height: 100%;
+    width: 20px;
+    border: 1px solid transparent;
+    margin-top: 0;
+  }
+
+  
+
+
+  .drag-box > div{
+      display: inline-block;
+      background: #fff;
+  }
+
+  .drag-box > div > span{
+    float: right;
+    padding: 0 5px;
+  }
+  
+  .cdk-drag-preview {
+    box-sizing: border-box;
+    border-radius: 4px;
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+                0 8px 10px 1px rgba(0, 0, 0, 0.14),
+                0 3px 14px 2px rgba(0, 0, 0, 0.12);
+  }
+  
+  .cdk-drag-placeholder {
+    opacity: 0;
+  }
+  
+  .cdk-drag-animating {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+  
+  .drag-box:last-child {
+    border: none;
+  }
+  
+  .drag-list.cdk-drop-list-dragging .drag-box:not(.cdk-drag-placeholder) {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+  /* DRAG-DROP FILTER */

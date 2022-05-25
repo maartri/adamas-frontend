@@ -12,6 +12,8 @@ import { ProfileComponent } from './profile/profile.component'
 
 import { NgSelectModule } from '@ng-select/ng-select';
 
+import {DragDropModule} from '@angular/cdk/drag-drop';
+
 import {
   SuburbComponent
 } from '@components/index';
@@ -53,6 +55,15 @@ import { FilterComponent } from './filter/filter.component';
 import { IntervalQuoteComponent } from './interval-quote/interval-quote.component';
 import { PrintPdfComponent } from './print-pdf/print-pdf.component';
 import { AddQuoteComponent } from './add-quote/add-quote.component';
+import { DexUploadComponent } from './dex-upload/dex-upload.component';
+import { CdcClaimPreparationComponent } from './cdc-claim-preparation/cdc-claim-preparation.component';
+import { CdcClaimUpdateComponent } from './cdc-claim-update/cdc-claim-update.component';
+import { CdcProdaClaimUpdateComponent } from './cdc-proda-claim-update/cdc-proda-claim-update.component';
+import { NdiaClaimUpdateComponent } from './ndia-claim-update/ndia-claim-update.component';
+import { GlobalAlertsComponent } from './global-alerts/global-alerts.component';
+import { WorkflowsComponent } from './workflows/workflows.component';
+
+
 
 
 @NgModule({
@@ -93,7 +104,14 @@ import { AddQuoteComponent } from './add-quote/add-quote.component';
     FilterComponent,
     IntervalQuoteComponent,
     PrintPdfComponent,
-    AddQuoteComponent
+    AddQuoteComponent,
+    DexUploadComponent,
+    CdcClaimPreparationComponent,
+    CdcClaimUpdateComponent,
+    CdcProdaClaimUpdateComponent,
+    NdiaClaimUpdateComponent,
+    GlobalAlertsComponent,
+    WorkflowsComponent
   ],
   imports: [
     CommonModule,
@@ -103,7 +121,8 @@ import { AddQuoteComponent } from './add-quote/add-quote.component';
     ReactiveFormsModule,
     NgZorroAntdModule,
     NzUploadModule,
-    CalendarModule.forRoot({ provide: DateAdapter, useFactory: adapterFactory })
+    CalendarModule.forRoot({ provide: DateAdapter, useFactory: adapterFactory }),
+    DragDropModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA
@@ -140,7 +159,15 @@ import { AddQuoteComponent } from './add-quote/add-quote.component';
     NgSelectModule,
     FilterComponent,
     IntervalQuoteComponent,
-    AddQuoteComponent
+    AddQuoteComponent,
+    DexUploadComponent,
+    CdcClaimPreparationComponent,
+    CdcClaimUpdateComponent,
+    CdcProdaClaimUpdateComponent,
+    NdiaClaimUpdateComponent,
+    ClickOutsideDirective,
+    GlobalAlertsComponent,
+    WorkflowsComponent
   ],
   providers: [
     

@@ -48,7 +48,8 @@ export interface ApplicationUser {
     Username: string,
     Password: string,
     NewPassword?: string,
-    PasswordHandler?: string
+    PasswordHandler?: string,
+    Bypass?: boolean
 }
 
 export interface Jwt {
@@ -400,7 +401,8 @@ export interface GetRecipient {
 
 export interface DayManager {
     StartDate: string,
-    EndDate: string
+    EndDate: string,
+    dmType:string
 }
 
 export interface RosterInput {
@@ -576,7 +578,9 @@ export interface Consents {
     personID?: string,
     name?: string,
     date1?: string,
-    notes?: string
+    notes?: string,
+    Creator?:string,
+    selectedConsent?:Array<any>,
 }
 
 export interface IntakeCompetency {
@@ -795,7 +799,9 @@ export interface Filters{
     display?: number,
     startDate?: Date,
     endDate?: Date,
-    type?:string
+    type?:string,
+    limitTo?: string,
+    startingWith?: string
 }
 
 export interface CallProcedure {

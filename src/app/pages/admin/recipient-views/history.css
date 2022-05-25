@@ -1,0 +1,11 @@
+ul{
+    list-style:none;
+}
+
+div.divider-subs div{
+    margin-top:2rem;
+}
+
+th:hover{
+    cursor:pointer;
+}

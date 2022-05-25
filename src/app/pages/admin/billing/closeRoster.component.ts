@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import format from 'date-fns/format';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { BillingService, TimeSheetService, GlobalService, ListService, MenuService } from '@services/index';
 import { takeUntil, timeout } from 'rxjs/operators';
 import { setDate } from 'date-fns';
@@ -86,6 +86,7 @@ export class CloseRosterComponent implements OnInit {
   selectedFunding: any;
   date: moment.MomentInput;
   checkedIDs: any[];
+  updatedRecords: any;
 
   constructor(
     private cd: ChangeDetectorRef,
@@ -145,19 +146,6 @@ export class CloseRosterComponent implements OnInit {
       this.selectedFunding = event;
     if (index == 2)
       this.selectedPrograms = event;
-      
-    if (index == 11 && event.target.checked) {
-      console.log("11")
-    }
-    if (index == 12 && event.target.checked) {
-      console.log("12")
-    }
-    if (index == 13 && event.target.checked) {
-      console.log("13")
-    }
-    if (index == 14 && event.target.checked) {
-      console.log("14")
-    }
   }
 
   checkAll(index: number): void {
@@ -215,56 +203,6 @@ export class CloseRosterComponent implements OnInit {
     });
   }
 
-  fetchID(index: number): void {
-    if (index == 1) {
-      this.BlockFunded = true;
-      console.log("1", this.BlockFunded)
-    }
-    if (index == 2) {
-      console.log("2")
-    }
-    if (index == 3) {
-      console.log("3")
-    }
-    if (index == 4) {
-      console.log("4")
-    }
-  }
-
-
-  // fetchID(e) {
-  //   debugger;
-  //   e = e || window.event;
-  //   e = e.target || e.srcElement;
-  //   this.chkId = e.id
-
-  //   switch (this.chkId) {
-  //     case 'chkBlockFunded':
-  //       this.whereString = "WHERE [GROUP] = 'PROGRAMS' AND ISNULL(UserYesNo2, 0) = 0 ";
-  //       break;
-  //     case 'chkIndividualPackages' && 'chkCDCPackages':
-  //       this.whereString = "WHERE [GROUP] = 'PROGRAMS' AND ISNULL(UserYesNo2, 0) = 1 AND ISNULL(UserYesNo1, 0) = 1 ";
-  //       break;
-  //     case 'chkIndividualPackages' && 'chkNonCDCPackages':
-  //       this.whereString = "WHERE [GROUP] = 'PROGRAMS' AND ISNULL(UserYesNo2, 0) = 1 AND ISNULL(UserYesNo1, 0) = 0 ";
-  //       break;
-  //     case 'chkIndividualPackages' && 'chkCDCPackages' && 'chkNonCDCPackages':
-  //       this.whereString = "WHERE [GROUP] = 'PROGRAMS' AND ISNULL(UserYesNo2, 0) = 1 ";
-  //       break;
-  //     case 'chkBlockFunded' && 'chkIndividualPackages' && 'chkNonCDCPackages':
-  //       this.whereString = "WHERE [GROUP] = 'PROGRAMS' AND (ISNULL(UserYesNo2, 0) = 0) OR (ISNULL(UserYesNo2, 0) = 1 AND ISNULL(UserYesNo1, 0) = 0) ";
-  //       break;
-  //     case 'chkBlockFunded' && 'chkIndividualPackages' && 'chkCDCPackages':
-  //       this.whereString = "WHERE [GROUP] = 'PROGRAMS' AND (ISNULL(UserYesNo2, 0) = 0) OR (ISNULL(UserYesNo2, 0) = 1 AND ISNULL(UserYesNo1, 0) = 1) ";
-  //       break;
-  //     case 'chkBlockFunded' && 'chkIndividualPackages' && 'chkCDCPackages' && 'chkNonCDCPackages':
-  //       this.whereString = "WHERE [GROUP] = 'PROGRAMS' AND (ISNULL(UserYesNo2, 0) = 0) OR (ISNULL(UserYesNo2, 0) = 1) ";
-  //       break;
-
-  //   }
-
-  // }
-
   fetchAll(e) {
     if (e.target.checked) {
       this.whereString = "WHERE";
@@ -275,75 +213,44 @@ export class CloseRosterComponent implements OnInit {
     }
   }
 
-  loadProgramsNew(index: any) {
-    this.loading = true;
-    this.billingS.getlistProgramPackagesFilter(this.check).subscribe(data => {
-      this.programList = data;
-      this.tableData = data;
-      this.loading = false;
-      this.allProgramsChecked = true;
-      this.checkAll(2);
-    });
-  }
-
-  searchData(): void {
-    this.loading = true;
+  checkValidation() {
+    this.selectedFunding = this.fundingList
+      .filter(opt => opt.checked)
+      .map(opt => opt.description).join(",")
 
     this.selectedPrograms = this.programList
       .filter(opt => opt.checked)
-      .map(opt => opt.name).join("','")
+      .map(opt => opt.title).join(",")
 
-    this.selectedFunding = this.fundingList
-      .filter(opt => opt.checked)
-      .map(opt => opt.uniqueID).join("','")
+    this.dtpEndDate = this.inputForm.get('dtpEndDate').value;
+    this.dtpEndDate = formatDate(this.dtpEndDate, 'yyyy-MM-dd hh:mm', 'en_US');
 
-    var postdata = {
-      blockFunded: this.inputForm.value.chkBlockFunded,
-      individualPackages: this.inputForm.value.chkIndividualPackages,
-      nonCDCPackages: this.inputForm.value.chkNonCDCPackages,
-      cdcPackages: this.inputForm.value.chkCDCPackages,
-      allFunding: this.allFundingChecked,
-      selectedFunding: (this.allFundingChecked == false) ? this.selectedFunding : '',
-      allProgarms: this.allProgramsChecked,
-      selectedPrograms: (this.allProgramsChecked == false) ? this.selectedPrograms : ''
+    if (this.selectedFunding != '' && this.selectedPrograms != '' && this.dtpEndDate != '') {
+      this.closeRosterPeriod();
+    } else if (this.selectedFunding == '') {
+      this.globalS.eToast('Error', 'Please select atleast one Funding to proceed')
+    } else if (this.selectedPrograms == '') {
+      this.globalS.eToast('Error', 'Please select atleast one Program to proceed')
+    } else if (this.dtpEndDate == '') {
+      this.globalS.eToast('Error', 'Please select valid Date to proceed')
     }
   }
 
   closeRosterPeriod() {
-
-    this.postLoading = true;   
-
-      this.selectedFunding = this.fundingList
-      .filter(opt => opt.checked)
-      .map(opt => opt.description).join(",")
-
-      this.selectedPrograms = this.programList
-      .filter(opt => opt.checked)
-      .map(opt => opt.title).join(",")
-
-      this.dtpEndDate = this.inputForm.get('dtpEndDate').value;
-      // this.dtpEndDate = formatDate(this.dtpEndDate, 'MM-dd-yyyy','en_US');
-
-      //this code is to close roster using direct query
-      // let sql = "UPDATE HumanResourceTypes set CloseDate = '"+this.dtpEndDate+"' WHERE [NAME] IN ('"+this.selectedPrograms+"') AND [TYPE] IN ('"+this.selectedFunding+"') AND CloseDate <= '"+this.dtpEndDate+"'"; 
-      // // console.log(sql);
-      // this.menuS.updatUDomain(sql).pipe(takeUntil(this.unsubscribe)).subscribe(data=>{        
-      //   if (data) 
-      //   this.globalS.sToast('Success', 'Saved successful');     
-      //   else
-      //   this.globalS.sToast('Success', 'Saved successful');
-      //   this.ngOnInit();
-      //   this.postLoading = false;          
-      // });
-
-    this.billingS.updateCloseRosterPeriod({
+    this.postLoading = true;
+    this.billingS.closeRosterPeriod({
       Closedate: this.dtpEndDate,
       Programs: this.selectedPrograms,
       Fundings: this.selectedFunding,
     }).pipe(
       takeUntil(this.unsubscribe)).subscribe(data => {
         if (data) {
-          this.globalS.sToast('Success', 'Date Updated')
+          this.updatedRecords = data[0].updatedRecords
+          if (this.updatedRecords == 0) {
+            this.globalS.iToast('Information', 'No Roster Entries are existing to Close Date.')
+          } else {
+            this.globalS.sToast('Success', 'Close Roster Date has been updated successfully on ' + this.updatedRecords + ' Records.')
+          }
           this.postLoading = false;
           this.ngOnInit();
           return false;

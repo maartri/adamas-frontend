@@ -9,6 +9,15 @@ import { FormControl, FormGroup, Validators, FormBuilder, NG_VALUE_ACCESSOR, Con
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { ReportsAdmin } from '@admin/reports';
 
+
+const FILTERS: Array<string> = [
+    'CARE DOMAIN',
+    'CREATOR',
+    'DISCIPLINE',
+    'INCIDENT TYPE',
+    'PROGRAMS'
+ ]
+
 @Component({
     styles: [`
         nz-table{
@@ -40,6 +49,10 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
     operation: any; 
     btnid: string
     id: string
+
+    filters: any;
+
+    FILTERS: Array<string> = FILTERS;
     
 
     constructor(
@@ -263,5 +276,10 @@ export class RecipientIncidentAdmin implements OnInit, OnDestroy {
 
         }); */
   
-    }  
+    }
+
+
+    filterChange(filters: any){
+
+    }
 }

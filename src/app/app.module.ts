@@ -14,7 +14,7 @@ import { NgZorroAntdModule, NZ_I18N, en_US } from 'ng-zorro-antd';
 import { AppRoutingModule, PAGE_COMPONENTS } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { registerLocaleData, CommonModule, CurrencyPipe, DatePipe, TitleCasePipe ,DecimalPipe, HashLocationStrategy, LocationStrategy} from '@angular/common';
-import {ReplaceNullWithTextPipe} from '@pipes/pipes';
+import {ReplaceNullWithTextPipe, TablarizePipe} from '@pipes/pipes';
 import en from '@angular/common/locales/en';
 
 import { LoginComponent } from './pages/login/login.component';
@@ -53,7 +53,8 @@ import {
   VersionCheckService,
   MenuService,
   JsreportService,
-  PrintService  
+  PrintService,
+  ByPassGuard
 } from './services/index';
 
 import { IconsProviderModule } from './icons-provider.module';
@@ -77,6 +78,10 @@ import {DocusignComponent} from './pages/docusign/docusign'
 import { ContextMenuModule } from 'ngx-contextmenu';
 
 import { NgSelectModule } from '@ng-select/ng-select';
+import { RecipientComponent } from './pages/standalone-app/recipient/recipient.component';
+
+
+import {DragDropModule} from '@angular/cdk/drag-drop';
 
 registerLocaleData(en);
 
@@ -99,12 +104,13 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     BranchesComponent,
     FundingRegionsComponent,
     DocusignComponent,
-    ReplaceNullWithTextPipe
-    
+    ReplaceNullWithTextPipe,
+    TablarizePipe,
+    RecipientComponent    
   ],
   imports: [
     BrowserModule,
-    NgSelectModule,
+    // NgSelectModule,
     FormsModule,
     CommonModule,
     ReactiveFormsModule,
@@ -137,7 +143,9 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     AgGridModule.withComponents([]),
     InfiniteScrollModule,
     FullCalendarModule,
+    DragDropModule,
     SpreadSheetsModule,
+    BrowserModule,
     ContextMenuModule.forRoot()
   ],
   providers: [
@@ -173,7 +181,8 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     CurrencyPipe, DatePipe, DecimalPipe, TitleCasePipe,
     MenuService,
     JsreportService,
-    PrintService
+    PrintService,
+    ByPassGuard
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]

@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
-import { GlobalService, ListService, MenuService, PrintService } from '@services/index';
+import { GlobalService, ListService, MenuService, PrintService, TimeSheetService } from '@services/index';
 import { SwitchService } from '@services/switch.service';
 import { NzModalService } from 'ng-zorro-antd';
 import { Subject } from 'rxjs';
@@ -14,39 +14,37 @@ import { takeUntil } from 'rxjs/operators';
   styles: []
 })
 export class ClinicalNotesGroupsComponent implements OnInit {
-
+  
   tableData: Array<any>;
-    loading: boolean = false;
-    modalOpen: boolean = false;
-    current: number = 0;
-    inputForm: FormGroup;
-    postLoading: boolean = false;
-    isUpdate: boolean = false;
-    modalVariables:any;
-    inputVariables:any;
-    title:string = "Add Clinical Notes Groups"
-    tocken: any;
-    pdfTitle: string;
-    tryDoctype: any;
-    drawerVisible: boolean =  false;   
-    dateFormat: string ='dd/MM/yyyy';
-    check : boolean = false;
-    userRole:string="userrole";
-    whereString :string="WHERE ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
-    private unsubscribe: Subject<void> = new Subject();
-    rpthttp = 'https://www.mark3nidad.com:5488/api/report';
+  loading: boolean = false;
+  modalOpen: boolean = false;
+  current: number = 0;
+  inputForm: FormGroup;
+  postLoading: boolean = false;
+  isUpdate: boolean = false;
+  modalVariables:any;
+  inputVariables:any;
+  title:string = "Add Clinical Notes Groups"
+  tocken: any;
+  pdfTitle: string;
+  tryDoctype: any;
+  drawerVisible: boolean =  false;   
+  dateFormat: string ='dd/MM/yyyy';
+  check : boolean = false;
+  userRole:string="userrole";
+  whereString :string="WHERE ISNULL(DataDomains.DeletedRecord,0) = 0 AND (EndDate Is Null OR EndDate >= GETDATE()) AND ";
+  private unsubscribe: Subject<void> = new Subject();
+  rpthttp = 'https://www.mark3nidad.com:5488/api/report';
   temp_title: any;
   
-    constructor(
+  constructor(
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
     private switchS:SwitchService,
-    private listS:ListService,
+    private timeS:TimeSheetService,
     private printS:PrintService,
     private menuS:MenuService,
     private formBuilder: FormBuilder,
-    private http: HttpClient,
-    private fb: FormBuilder,
     private sanitizer: DomSanitizer,
     private ModalS: NzModalService,
     ){}
@@ -81,17 +79,17 @@ export class ClinicalNotesGroupsComponent implements OnInit {
       this.isUpdate = true;
       this.current = 0;
       this.modalOpen = true;
-        const { 
-            name,
-            end_date,
-            recordNumber,
-         } = this.tableData[index];
-        this.inputForm.patchValue({
-          name: name,
-          end_date:end_date,
-          recordNumber:recordNumber,
-        });
-        this.temp_title = name;
+      const { 
+        name,
+        end_date,
+        recordNumber,
+      } = this.tableData[index];
+      this.inputForm.patchValue({
+        name: name,
+        end_date:end_date,
+        recordNumber:recordNumber,
+      });
+      this.temp_title = name;
     }
     
     handleCancel() {
@@ -162,7 +160,7 @@ export class ClinicalNotesGroupsComponent implements OnInit {
             this.postLoading = false;          
             this.handleCancel();
             this.resetModal();
-           });
+          });
         }else{
           this.postLoading = true;     
           const group = this.inputForm;
@@ -187,16 +185,29 @@ export class ClinicalNotesGroupsComponent implements OnInit {
             }
             
             ).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-              if (data) 
-              this.globalS.sToast('Success', 'Updated successful');     
-              else
-              this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
+              if (data)
+              {
+                this.timeS.postaudithistory({
+                  Operator:this.tocken.user,
+                  actionDate:this.globalS.getCurrentDateTime(),
+                  auditDescription:'Clinical Notes Groups Changed',
+                  actionOn:'CLINNOTEGROUPS',
+                  whoWhatCode:group.get('recordNumber').value, //inserted
+                  TraccsUser:this.tocken.user,
+                }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+                  this.globalS.sToast('Success', 'Update successful');
+                }
+                );
+              }else
+              {
+                this.globalS.sToast('Unsuccess', 'Data Not Update' + data);
+              }
               this.loadData();
               this.postLoading = false;          
               this.isUpdate = false;
               this.handleCancel();
               this.resetModal();
-             });
+            });
           }
           
         }
@@ -204,65 +215,76 @@ export class ClinicalNotesGroupsComponent implements OnInit {
           this.postLoading = true;     
           const group = this.inputForm;
           this.menuS.deleteDomain(data.recordNumber)
-          .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
-            if (data) {
-              this.globalS.sToast('Success', 'Data Deleted!');
+          .pipe(takeUntil(this.unsubscribe)).subscribe(datas => {
+            if (datas) {
+              this.timeS.postaudithistory({
+                Operator:this.tocken.user,
+                actionDate:this.globalS.getCurrentDateTime(),
+                auditDescription:'Clinical Note Categories Deleted',
+                actionOn:'CLINNOTEGROUPS',
+                whoWhatCode:data.recordNumber, //inserted
+                TraccsUser:this.tocken.user,
+              }).pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+                this.globalS.sToast('Success', 'Deleted successful');
+              }
+              );
               this.loadData();
               return;
             }
           });
         }
-    buildForm() {
-      this.inputForm = this.formBuilder.group({
-        name: '',
-        end_date:'',
-        recordNumber:null,
-      });
-    }
-    handleOkTop() {
-      this.generatePdf();
-      this.tryDoctype = ""
-      this.pdfTitle = ""
-    }
-    handleCancelTop(): void {
-      this.drawerVisible = false;
-      this.pdfTitle = ""
-    }
-    generatePdf(){
-      this.drawerVisible = true;
-      
-      this.loading = true;
-      
-      var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2 ,CONVERT(varchar, [enddate],105) as Field3 from DataDomains "+this.whereString+" Domain='CLINNOTEGROUPS'";
-      const data = {
-        "template": { "_id": "0RYYxAkMCftBE9jc" },
-        "options": {
-          "reports": { "save": false },
-          "txtTitle": "Recipient Clinical Notes Groups List",
-          "sql": fQuery,
-          "userid":this.tocken.user,
-          "head1" : "Sr#",
-          "head2" : "Name",
-          "head3" : "End Date",
+        buildForm() {
+          this.inputForm = this.formBuilder.group({
+            name: '',
+            end_date:'',
+            recordNumber:null,
+          });
+        }
+        handleOkTop() {
+          this.generatePdf();
+          this.tryDoctype = ""
+          this.pdfTitle = ""
+        }
+        handleCancelTop(): void {
+          this.drawerVisible = false;
+          this.pdfTitle = ""
+        }
+        generatePdf(){
+          this.drawerVisible = true;
+          
+          this.loading = true;
+          
+          var fQuery = "SELECT ROW_NUMBER() OVER(ORDER BY Description) AS Field1,Description as Field2 ,CONVERT(varchar, [enddate],105) as Field3 from DataDomains "+this.whereString+" Domain='CLINNOTEGROUPS'";
+          const data = {
+            "template": { "_id": "0RYYxAkMCftBE9jc" },
+            "options": {
+              "reports": { "save": false },
+              "txtTitle": "Recipient Clinical Notes Groups List",
+              "sql": fQuery,
+              "userid":this.tocken.user,
+              "head1" : "Sr#",
+              "head2" : "Name",
+              "head3" : "End Date",
+            }
+          }
+          this.printS.printControl(data).subscribe((blob: any) => { 
+            let _blob: Blob = blob;
+            let fileURL = URL.createObjectURL(_blob);
+            this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+            this.loading = false;
+          }, err => {
+            this.loading = false;
+            this.ModalS.error({
+              nzTitle: 'TRACCS',
+              nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
+              nzOnOk: () => {
+                this.drawerVisible = false;
+              },
+            });
+          });
+          this.loading = true;
+          this.tryDoctype = "";
+          this.pdfTitle = "";
         }
       }
-      this.printS.printControl(data).subscribe((blob: any) => { 
-        let _blob: Blob = blob;
-        let fileURL = URL.createObjectURL(_blob);
-        this.tryDoctype = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
-        this.loading = false;
-        }, err => {
-        this.loading = false;
-        this.ModalS.error({
-          nzTitle: 'TRACCS',
-          nzContent: 'The report has encountered the error and needs to close (' + err.code + ')',
-          nzOnOk: () => {
-            this.drawerVisible = false;
-          },
-        });
-      });
-      this.loading = true;
-      this.tryDoctype = "";
-      this.pdfTitle = "";
-    }
-}
+      

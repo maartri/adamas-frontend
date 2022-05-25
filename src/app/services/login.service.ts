@@ -23,7 +23,7 @@ export class LoginService {
         return this.http.get(`${login}/test-service`)
     }
 
-    login(data: any) {
+    login(data: any, bypass: boolean = false) {
         return this.auth.post(`${login}`, data);
     }
 

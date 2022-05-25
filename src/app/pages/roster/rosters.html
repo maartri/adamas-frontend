@@ -4,36 +4,46 @@
     </div>
                       
      <div >
-             <shiftdetail (timesheetDone)="shiftChanged($event)" ></shiftdetail>
+             <shiftdetail (timesheetDone)="shiftChanged($event)" [dayMask]="s_DayMask" ></shiftdetail>
      </div>
        <div nz-row nz-col nzSpan="24" *ngIf="formloading" style="padding:2px; background-color: white;">
           
             <div nz-col nzSpan="8" style=" margin-left: 10px; margin-top: 10px; background-color: white;">
                 <div class="calendar-title">            
-                    <app-search-timesheet [defautValue]="defaultCode" [view]="view" (selected)="picked($event)"></app-search-timesheet>
+                    <app-search-timesheet [defautValue]="defaultCode" [view]="view" (selected)="selected_person($event)"></app-search-timesheet>
                 </div>
             </div>
             <div nz-col nzSpan="14" *ngIf="!recurrenceView" >
-                <div nz-col nzSpan="4" style="border:thin solid #b3b3b6;  border-radius: 3px; margin-top: 10px; height: 32px; text-align: center; color: gray; padding-top: 4px; vertical-align: middle">
-                        <div class="date-title" *ngIf="!master">
-                            {{ date | date: 'MMMM yyyy'}}
-                        </div>
-                        <div class="date-title" *ngIf="master">
+                <div nz-col nzSpan="4" style=" margin-top: 10px; height: 32px; text-align: center; color: gray; padding-top: 0px; vertical-align: middle">
+                   
+                    <div class="date-title" *ngIf="master" style="border:thin solid #b3b3b6;  border-radius: 3px;  height: 32px; text-align: center; color: gray; padding-top: 4px; vertical-align: middle">
                         {{masterCycle}}
                         </div>
+
+                    <nz-date-picker  nzMode="month" [nzFormat]="monthFormat" [nzSize]="'defult'"  *ngIf="!master" 
+                    [(ngModel)]="CalendarDate"   [disabled]="!enable_buttons"
+                    (ngModelChange)="onChange($event)"
+                    ></nz-date-picker>   
+                  
+                    
+                    <!-- <div class="date-title" *ngIf="!master && !showDate" (click)="showDate=!showDate">
+                            {{ date | date: 'MMMM yyyy'}}
+                        </div> -->
+                        
+                       
+
                 </div>
                 <div  nz-col nzSpan="6" nzvisible="!master" style="margin-top: 10px; background-color: white;">
                     <nz-button-group >
                         <button  nz-button class="color-powder-blue" [disabled]="!enable_buttons" (click)="prev_date()" ><i nz-icon nzType="left"></i></button>
                         <button  nz-button class="color-powder-blue" [disabled]="!enable_buttons" (click)="next_date()" ><i nz-icon nzType="right"></i></button>
-                        <button  nz-button class="color-powder-blue" (click)="show_views=true"  style="font-size:small; text-align:center; vertical-align: top; width:70px" >Views</button> 
-                         <!-- <label nz-box style=" padding:2px; height:32px; background-color: #1E91E8; color:white ">Views</label>         -->
+                        <!-- <label nz-box style=" padding:2px; height:32px; background-color: #1E91E8; color:white ">Views</label>         -->
                         
                     </nz-button-group> 
                     
                 </div>
                 <div  nz-col nzSpan="6"  style="margin-top: 10px;">        
-                    
+                    <button  nz-button class="color-powder-blue" (click)="show_views=true"  style="font-size:small; text-align:center; vertical-align: top; width:70px" >Views</button>                         
                     <button nz-button class="color-powder-blue"  (click)="show_MoreOptions()">More ...</button >
                     
                         <nz-checkbox-wrapper *ngIf="show_More">
@@ -42,7 +52,7 @@
                         </nz-checkbox-wrapper>    
                 </div>
                     
-                <div id="divMaster" nz-col nzSpan="6" [ngStyle]="{'background-color':master === true ? '#D94436' : '#85B9D5' }" style=" background-color: #1E91E8; vertical-align: middle; height: 32px; width:200px;  border-radius: 3px; margin-top: 10px;  color: grey; padding-left: 2px; text-align: center;">
+                <div id="divMaster" nz-col nzSpan="6" [ngStyle]="{'background-color':master === true ? '#F18805' : '#85B9D5' }" style=" background-color:  #1E91E8; vertical-align: middle; height: 32px; width:200px;  border-radius: 3px; margin-top: 10px;  color: grey; padding-left: 2px; text-align: center;">
     
                     <nz-label style="padding:4px; background-color: transparent; color: white; vertical-align: middle"> {{ Master_Roster_label }}  </nz-label>
                         <nz-switch  [class.master-class]="master" [(ngModel)]="master" style="padding:4px;  vertical-align: middle" (ngModelChange)="setMasterRoster($event)"></nz-switch>
@@ -51,7 +61,7 @@
             </div>
             
         </div>
-        <div nz-row nz-col nzSpan="24" *ngIf="recurrenceView" calss="form-group" style="  border-radius: 5px; padding:4px; margin-left: 10px; margin-top: 10px; margin-bottom: 10px; color:white; background-color: #002060;">
+        <div nz-row nz-col nzSpan="24"  *ngIf="recurrenceView" calss="form-group" style="  border-radius: 5px; padding:4px; margin-left: 10px; margin-top: 10px; margin-bottom: 10px; color:white; background-color: #002060;">
                  
             <div nz-col nzSpan="6" >
                 
@@ -166,7 +176,7 @@
     </div>
     </nz-modal>
     
-    <nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="deleteRosterModal" nzTitle="Delete Roster" (nzOnCancel)="deleteRosterModal = false" >
+    <nz-modal [nzStyle]="{ top: '15px' }" hasBackdrop [(nzVisible)]="deleteRosterModal" nzTitle="Delete Roster" (nzOnCancel)="deleteRosterModal = false" >
         <div class="flexy" style="min-height:3rem">
             <div nz-row>
                
@@ -183,13 +193,21 @@
     </nz-modal>
 
     <!-- Search staff model -->
-    
+   
+    <staff-search [findModalOpen]="openSearchStaffModal" [bookingData]="bookingData"  (searchDone)="onStaffSearch($event)"></staff-search>
+
     <nz-modal [nzStyle]="{ top: '15px' }" [(nzVisible)]="searchStaffModal" nzTitle="Select Staff from below Staff List" (nzOnCancel)="searchStaffModal = false" >
         <div class="flexy" style="min-height:10rem">
             <div nz-row>
                 <div nz-col nzSpan="6" style="margin-top: 10px; margin-bottom: 20px; width:400px">
-                    <app-search-list [reload]="reloadVal" [view]="1" [(ngModel)]="sample" (ngModelChange)="listChange($event)"></app-search-list>
+                    <!-- <app-search-list [reload]="reloadVal" [view]="1" [(ngModel)]="sample" (ngModelChange)="listChange($event)"></app-search-list> -->
+                    <div>
+                        <nz-input-group nzAddOnAfterIcon="search" (click)="openStaffModal()" >
+                            <input placeholder="Search Staff" type="text" nz-input [(ngModel)]="selectedCarer" [disabled]="true"/>
+                          </nz-input-group>               
+                    </div>
                 </div>
+                
                 <div>
                     <label *ngIf="selectedCarer" >Re-Allocate Staff : </label>
                     <label  id="lblStaff" >
@@ -364,7 +382,12 @@
         <div class="flexy" style="min-height:10rem">
             <div nz-row>
                 <div nz-col nzSpan="6"  style="margin-top: 10px; margin-bottom: 20px; width:400px">
-                    <app-search-list [reload]="reloadVal" [view]="1" [(ngModel)]="sample"  (ngDbClick)="listChange($event)" (ngModelChange)="listChange($event)"></app-search-list>
+                    <!-- <app-search-list [reload]="reloadVal" [view]="1" [(ngModel)]="sample"  (ngDbClick)="listChange($event)" (ngModelChange)="listChange($event)"></app-search-list> -->
+                    <div>
+                        <nz-input-group nzAddOnAfterIcon="search" (click)="openStaffModal()" >
+                            <input placeholder="Search Staff" type="text" nz-input [(ngModel)]="selectedCarer" [disabled]="true"/>
+                          </nz-input-group>               
+                    </div>
                 </div>
                 
             </div>
@@ -1011,8 +1034,8 @@
         <img id="icon-20" style="display: none; background-color: #D5D6DE;" src="../../../assets/media/r20.png"/>
         <img id="icon-21" style="display: none; background-color: #D5D6DE;" src="../../../assets/media/r21.jpg"/>
         <img id="icon-22" style="display: none; background-color: #D5D6DE;" src="../../../assets/media/r22.jpg"/>
-    </div>   
- -->
+    </div>    -->
+
 <!-- 
  <nz-modal
  [(nzVisible)]="testComp"

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, forwardRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, forwardRef, OnDestroy,Input } from '@angular/core';
 import { ListService, GlobalService, ClientService } from '@services/index';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
@@ -26,7 +26,7 @@ export class StaffPopupComponent implements OnInit {
   private onTouchedCallback: () => void = noop;
   private onChangeCallback: (_: any) => void = noop;
   private destroy$ = new Subject();
-  
+  @Input() disabled:boolean;
   private searchText = new Subject<string>();
 
   value: any = '';

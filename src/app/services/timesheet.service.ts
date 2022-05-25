@@ -177,6 +177,10 @@ export class TimeSheetService {
     updatetimesheet(data: any): Observable<any> {
         return this.auth.put(`${timesheet}/timesheet`, data);
     }
+    
+    getDayManagerResources(data: any): Observable<any> {
+        return this.auth.get(`${timesheet}/dm-resources`, data);
+    }
     ProcessRoster(data: any): Observable<any> {
         return this.auth.get(`${timesheet}/rosterOps`, data);
     }
@@ -186,9 +190,11 @@ export class TimeSheetService {
     pastingRosters(data: string): Observable<any> {
         return this.auth.get(`${timesheet}/pastingRosters`, { Json: data});
     }
-    
     getActivities(data: any): Observable<any> {
         return this.auth.get(`${timesheet}/getActivities`, data);
+    }
+    determinePayType(data: any): Observable<any> {
+        return this.auth.get(`${timesheet}/determinePayType`, data);
     }
     
     postsamplereport(data: any) {
@@ -251,6 +257,10 @@ export class TimeSheetService {
 
     deleteunapprovedall(data: any): Observable<any> {
         return this.auth.post(`${timesheet}/delete-unapproved/all`, data);
+    }
+
+    processStartJob(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/processStartJob`, data);
     }
 
     getjobstatus(recordArr: Array<number>): Observable<any> {
@@ -1014,6 +1024,9 @@ export class TimeSheetService {
         return this.auth.get(`${timesheet}/phone-search-staff/${phoneno}`);
     }
     
+    getQualifiedStaff(data: any): Observable<any> {
+        return this.auth.post(`${timesheet}/getqualified-staff`, data)
+    }
     postrecipientquicksearch(data: any): Observable<any> {
         return this.auth.post(`${timesheet}/search-recipient`, data)
     }
@@ -1034,7 +1047,10 @@ export class TimeSheetService {
     getdaymanager(dto: DayManager): Observable<any> {
         return this.auth.get(`${timesheet}/dmanager`, dto)
     }
-
+    getStaffWorkingHours(dto: DayManager): Observable<any> {
+        return this.auth.get(`${timesheet}/staffworkhrs`, dto)
+    }
+    
     getlistcategories(): Observable<any> {
         return this.auth.get(`${timesheet}/categories`)
     }

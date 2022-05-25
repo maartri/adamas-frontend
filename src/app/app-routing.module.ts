@@ -93,6 +93,7 @@ import {
   HCPComponent,
   PrintComponent,
   BudgetAdmin, //AHSAN
+  GlanceAdmin, //AHSAN
   BillingAdmin,   //AHSAN
   TimesheetProcessingAdmin,   //AHSAN
 } from '@admin/index'
@@ -169,7 +170,8 @@ import {
 
 
 import {  
-  RostersAdmin,ShiftDetail,AddRoster,RecipientExternal,StaffExternal,GNotes
+  RostersAdmin,ShiftDetail,AddRoster,RecipientExternal,StaffExternal,GNotes,StaffSearch,RecipientSearch,DMRoster
+  ,ServiceTasks, RosterExtraInfo
 } from './pages/roster/index';
 
 import { ExtraComponent } from './pages/extra/extra';
@@ -277,6 +279,7 @@ import { PayIntegrityComponent } from '@admin/billing/payIntegrity.component'; /
 import { CloseRosterComponent } from '@admin/billing/closeRoster.component'; //AHSAN
 import { MediaList } from '@admin/recipient-views/mediaList';
 import { UserDetail } from '@admin/configuration/genrel-setup/userdetail';
+import { Checklist } from '@admin/configuration/genrel-setup/checklist';
 
 const routes: Routes = [
   {
@@ -566,6 +569,10 @@ const routes: Routes = [
         component: BudgetAdmin
       },
       {
+        path: 'glance', //AHSAN
+        component: GlanceAdmin
+      },
+      {
         path: 'billing', //AHSAN
         component: BillingAdmin
       },
@@ -664,6 +671,10 @@ const routes: Routes = [
       {
         path:"customdataset",
         component:CustomDatasets,
+      },
+      {
+        path:"checklist",
+        component:Checklist,
       },
       {
         path:"postcodes",
@@ -999,6 +1010,29 @@ const routes: Routes = [
         path: 'gnotes',
         component:GNotes
       },
+      {
+        path: 'staff-search',
+        component:StaffSearch
+      },
+      {
+        path: 'recipient-search',
+        component:RecipientSearch
+      },
+      
+      {
+        path: 'dm-roster',
+        component:DMRoster
+      },
+      {
+        path: 'service-tasks',
+        component:ServiceTasks
+        
+      },
+      {
+        path: 'roster-extrainfo',
+        component:RosterExtraInfo
+        
+      },
       
       {
         path: 'staff',
@@ -1304,6 +1338,7 @@ export const PAGE_COMPONENTS = [
   HCPComponent,
   PrintComponent,
   BudgetAdmin, //AHSAN
+  GlanceAdmin, //AHSAN
   BillingAdmin, //AHSAN
   TimesheetProcessingAdmin, //AHSAN
   
@@ -1316,6 +1351,11 @@ export const PAGE_COMPONENTS = [
   RecipientExternal,
   StaffExternal,
   GNotes,
+  StaffSearch,
+  RecipientSearch,
+  DMRoster,
+  ServiceTasks,
+  RosterExtraInfo,
   //Configuration
   CompaniesComponent,
   BranchesComponent,
@@ -1339,7 +1379,8 @@ export const PAGE_COMPONENTS = [
   OccupationComponent,
   PhoneemailtypesComponent,
   FinancialclassComponent,
-  CustomDatasets, 
+  CustomDatasets,
+  Checklist, 
   PostcodesComponent,
   HolidaysComponent,
   MedicalcontactComponent,

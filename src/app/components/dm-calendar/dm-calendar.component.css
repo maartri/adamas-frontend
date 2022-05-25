@@ -1,3 +1,15 @@
+.div-resizable {
+    border: 2px solid;
+    border-color: #fff;
+    padding-inline-start: 5px;
+    resize: horizontal;
+    overflow: auto;
+    display: flex; 
+    flex-direction: row; 
+    justify-content: space-around;
+    line-height: 20px;
+    background-color: transparent;
+  }
 .daymanager-wrapper{
     box-shadow:-1px 6px 6px 0px rgba(138,138,138,1);
     display: flex;
@@ -6,19 +18,23 @@
     width: 98%; 
     margin: 0 auto;
     background: #fff;
+    
 }
 .calendar-dates{
     line-height: 10px;
     margin: 6px 0;
 }
+ .slant-position{
+    transform: rotate(45deg);
+ }
 .service-logo{
-    background: url(../../../assets/traccs-icons-1.png);
+    background: #fff;
     background-repeat: no-repeat;
     background-size: 150px;
     width: 20px;
     height: 20px;
     float: left;
-    margin-right: 5px;
+    margin-right: px;
 }
 .approve-logo{   
     background-repeat: no-repeat;
@@ -51,11 +67,118 @@
     cursor:pointer;
 }
 .details{
-    color: #324f67;
+    color: #000;
+    font-weight: 500;
+    line-height:16px;
+    font-size:11px;
+    position: relative;
+    padding-left: 4px;
+    width: auto;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis
+}
+
+.detail-more{
+    color: #000;
     font-weight: 500;
     line-height:16px;
     font-size:10px;
+    position: relative;   
+    width: auto; 
+    height: auto;
+   
+    white-space: break-spaces;
+    overflow: unset;
+    /* text-overflow: initial;
+    overflow-wrap: break-word;
+    word-break: break-all;
+    word-break:auto; */
 }
+
+
+.icon{
+    width: 18px;
+    height: 18px;  
+    font-size:12px;  
+    position: relative;   
+    display: inline-block;
+    background-color: transparent;
+}
+.icon2{
+   
+    width: 18px;
+    height: 18px;  
+    font-size:12px;  
+    position: relative;   
+    display: inline-block;
+    background-color: transparent;
+}
+.icon3{
+    font-size:8px;    
+    width: 16px;
+    height: 16px;    
+    background-color: transparent;
+    position: relative;   
+    display: inline-block;
+ }
+ .icon4{
+    font-size:7px;    
+    width: 12px;
+    height: 13px;    
+    background-color: transparent;
+  
+ }
+
+.time{
+    margin-left: 4px;
+    padding-left: 2px;
+   font-size:12px;  
+   position: relative;   
+   display: inline-block;
+   
+}
+
+.time2{
+    margin-left: 4px;
+    padding-left: 2px;
+    font-size:12px;
+    position: relative;   
+    display: inline-block;    
+    overflow-wrap: break-word;
+}
+
+.time3{
+    padding-left: 2px;
+    font-size:11px;
+    position: relative;   
+    display: inline-block;    
+    overflow-wrap: break-word;
+}
+
+.time4{   
+   
+    font-size:9px;
+    position: relative;   
+    display: inline-block;
+    inline-size: 50px;
+    overflow-wrap: break-word;
+}
+
+.detail2{   
+    font-size:11px; 
+    padding-left: 3px;
+}
+
+.detail3{   
+    font-size:10px;
+    padding-left: 2px;
+}
+.detail4{   
+    font-size:9px;
+    padding-left: 2px;
+}
+
 .header-wrapper{
     position: sticky;
     border-top-right-radius: 5px;
@@ -63,65 +186,91 @@
     top: -5px;
     border-top: 1px solid #fff;
     color:#fff;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
     width: 100%;
-    text-align: center;
-    background: #203f5d!important;
+    text-align: center;    
+    background:#85B9D5;
     z-index:2;
 }
 .body-wrapper{
     display: flex;
     width: 100%;
     border-bottom: 1px solid #fff;
+    
 }
 .body-wrapper:nth-child(even){
-    background:#ebeff2;
+    /* background:#e4edee; */
+    background:#d6edf0; 
 }
 .body-wrapper:last-child{
     border:none;
 }
 .body-wrapper .cell{
     padding:18px 3px;
+    
 }
 .cell:nth-child(1){    
     display: flex;
-    justify-content: center;
+    justify-content: left;
 }
 .cell{
     text-align: center;
-    border-right:1px solid #fff;
+    border-right:1px solid rgb(217, 243, 247);
     flex:1;
+    
 }
 
+
+.container {
+    width: 100%;
+    margin: 0 auto;
+    padding: 5px;
+    text-align: left;
+    background: #f0e68c;
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: middle;
+}
 .seven{
     width:12.5%;
+   
 }
 .five{
     width:16.66%;
+   
 }
 .ten{
     width:9.09%;
+   
 }
 .fourteen{
     width:6.66%;
+  
 }
 .data{
     position:relative;
-    padding: 0 2px;
-    margin: 2px;
+    padding: 0 1px;
+    margin: 0px;
     font-size: 12px;
     overflow: hidden;
     text-align: initial;
-    border: 1px solid #7bb9f3;
+    border: 1px solid #85B9D5;
     background: #fff;
+    color:#fff(158, 17, 17)
+}
+.highlight{
+    background:#dae8f0;
+    color:#000;
 }
 .total{
-    background:#4fae51;
+    background:#002060;
     color:#fff;
 }
 i.option{
     position:absolute;
     top:0;
     right:0;
+    
 }
 .showOption{
     cursor:pointer;
@@ -131,6 +280,13 @@ i.option{
 .showOption:hover{
     transform:scale(1.2);
     background:#c8d2e4;
+}
+.listitem{
+    border: 1px solid #bdd5e2;
+    background-color: #d9e8f0;
+}
+.listitem-invisible{
+   visibility: hidden;
 }
 .selected {
     background:#8cc9ff  !important;
@@ -155,12 +311,34 @@ i.option{
     z-index: 10;
     top: 6rem;
 }
+.col-highlght{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    line-height: 20px;
+    color:#000;
+    font-size: 13px;
+    background-color: #dae8f0;
+   
+    
+}
 .date-wrapper{
     display: flex;
     flex-direction: row;
     justify-content: space-around;
     line-height: 20px;
+    color:#fff;
+    background-color: #002060;
+   }
+.dateweekend{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    line-height: 20px;
+    background-color: #F18805;
+   
 }
+
 .date-month-name{
     text-align: center;
     font-weight: 500;
@@ -196,4 +374,16 @@ h5{
 .spinner{
     margin:1rem auto;
     width:1px;
+}
+
+
+.rectangle{
+    margin-top: 5px;
+    padding: 5px;     
+    border-style: unset; 
+    border-bottom: solid;
+    border-width: 1px; 
+    border-radius: 0px;  
+    width: auto;
+    border-color: rgb(207, 202, 202);
 }

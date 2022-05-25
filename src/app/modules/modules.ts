@@ -400,7 +400,8 @@ export interface GetRecipient {
 
 export interface DayManager {
     StartDate: string,
-    EndDate: string
+    EndDate: string,
+    dmType:string
 }
 
 export interface RosterInput {

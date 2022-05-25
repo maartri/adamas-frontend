@@ -91,6 +91,12 @@ export class MenuMealsComponent implements OnInit {
   isNewRecord: any;
   dataSetDropDowns: { CACP: string[]; CTP: string[]; DEX: string[]; DFC: string[]; DVA: any[]; HACC: string[]; HAS: string[]; QCSS: string[]; ICTD: string[]; NDIS: any[]; NRCP: string[]; NRCPSAR: string[]; OTHER: string[]; };
   dataset_group: any[];
+  checkList: any;
+  chkListForm: any;
+  insertOne: number;
+  selectedChklst: any;
+  chklstmodal: boolean;
+  chkList: any;
   constructor(
     private globalS: GlobalService,
     private cd: ChangeDetectorRef,
@@ -142,6 +148,9 @@ export class MenuMealsComponent implements OnInit {
     logs(value: string[]): void {
       // console.log(value);
     }
+    chklog(event: any) {
+      this.selectedChklst = event;
+    }
     log(event: any) {
       this.selectedPrograms = event;
     }
@@ -167,6 +176,7 @@ export class MenuMealsComponent implements OnInit {
       this.current = 0;
       this.modalOpen = true;
       this.inputForm.patchValue(this.tableData[index-1]);
+      this.parent_person_id = this.tableData[index-1].recordNumber; //set person id for programs and competencies and checklist
     }
     
     handleCancel() {
@@ -213,14 +223,115 @@ export class MenuMealsComponent implements OnInit {
       this.current += 1;
     }
     save() {
+      this.loading = true;
       if(!this.isUpdate){
         this.menuS.postMenuMeals(this.inputForm.value)
         .subscribe(data => {
           this.globalS.sToast('Success', 'Added Succesfully');
+          this.loading = false;
+          this.handleCancel();
+          this.loadData()
         });
       }else{
-        
+        this.menuS.updateMenuMeals(this.inputForm.value)
+        .subscribe(data => {
+          this.globalS.sToast('success','Updated Successfuly');
+          this.loading = false;
+          this.handleCancel();
+          this.loadData();
+          
+        });
       }
+    }
+    loadChecklist(){
+      this.menuS.getconfigurationserviceschecklist(this.parent_person_id).subscribe(data => {
+        this.checkList = data;
+        this.loading = false;
+        this.cd.detectChanges();
+      });
+    }
+    showChkLstModal(){
+      if(this.globalS.isEmpty(this.inputForm.get('title').value))
+      {
+        this.globalS.iToast('Info','can not create this record beacuse there are blank entries');  
+        return;
+      }
+      this.addOrEdit = 0;
+      this.chklstmodal = true;
+      this.clearChkList();
+    }
+    saveCheckList(){
+      this.postLoading = true;
+      const group = this.chkListForm.value;
+      this.insertOne = 0;
+      if(this.addOrEdit == 0){
+        if(!this.isUpdate){
+          if(!this.isNewRecord){
+            this.save();
+          }
+        }
+        var checklists = this.selectedChklst;
+        checklists.forEach( (element) => {
+          this.menuS.postconfigurationserviceschecklist({
+            competencyValue:element,
+            personID:this.parent_person_id,
+          }).pipe(
+            takeUntil(this.unsubscribe)).subscribe(data => {
+              this.insertOne = 1;
+            })
+          });
+          
+          this.globalS.sToast('Success', 'CheckList Added');
+          this.postLoading = false;
+          this.loadChecklist();
+          this.handleChkLstCancel();
+          return false;
+        }
+        else
+        {
+          this.menuS.updateconfigurationserviceschecklist({
+            competencyValue:group.chkListValue,
+            recordNumber:group.recordNumber,
+          }).pipe(
+            takeUntil(this.unsubscribe)).subscribe(data => {
+              if(data){
+                this.globalS.sToast('Success','CheckList Updated')
+                this.postLoading = false;
+                this.loadChecklist();
+                this.handleChkLstCancel();
+                return false;
+              }
+            });
+          }
+    }
+    handleChkLstCancel(){
+      this.addOrEdit = 0;
+      this.chklstmodal = false;
+    }
+    clearChkList(){
+      this.chkList.forEach(x => {
+        x.checked = false
+      });
+      this.selectedChklst = [];
+    }
+    editChecklistModal(data:any){
+      this.addOrEdit = 1;
+      this.chkListForm.patchValue({
+        chkListValue : data.checklist,
+        recordNumber:data.recordNumber,
+      })
+      this.chklstmodal = true;
+    }
+    deleteChecklist(data:any){
+      this.loading = true;
+      this.menuS.deleteconfigurationserviceschecklist(data.recordNumber)
+      .pipe(takeUntil(this.unsubscribe)).subscribe(data => {
+        if (data) {
+          this.globalS.sToast('Success', 'Data Deleted!');
+          this.loadChecklist();
+          return;
+        }
+      });
     }
     saveCompetency(){
       this.postLoading = true;
@@ -378,7 +489,11 @@ export class MenuMealsComponent implements OnInit {
             this.competencyList = data;
             this.loading = false;
           });  
-          
+          let chk = "SELECT distinct Description as name from DataDomains Where  Domain = 'CHECKLIST' AND ((EndDate IS NULL) OR (EndDate > Getdate())) ORDER BY Description";
+          this.listS.getlist(chk).subscribe(data => {
+            this.chkList = data;
+            this.loading = false;
+          });
           let prog = "select distinct Name from HumanResourceTypes WHERE [GROUP]= 'PROGRAMS' AND ((EndDate IS NULL) OR (EndDate > Getdate()))";
           this.listS.getlist(prog).subscribe(data => {
             this.programz = data;
@@ -434,11 +549,11 @@ export class MenuMealsComponent implements OnInit {
             glCost:'',
             unitCostUOM:'',
             unitCost:'',
-            price2:'',
-            price3:'',
-            price4:'',
-            price5:'',
-            price6:'',
+            price2:0.0,
+            price3:0.0,
+            price4:0.0,
+            price5:0.0,
+            price6:0.0,
             excludeFromPayExport:false,
             excludeFromUsageStatements:false,
             endDate:'',
@@ -521,6 +636,13 @@ export class MenuMealsComponent implements OnInit {
             personID: this.parent_person_id,
             recordNumber: 0
           });
+          this.chkListForm = this.formBuilder.group({
+            chkListValue: '',
+            mandatory: false,
+            notes: '',
+            personID: this.parent_person_id,
+            recordNumber: 0
+          })
           this.inputForm.get('iT_Dataset').valueChanges.subscribe(x => {
             this.dataset_group = [];  
             this.dataset_group = this.dataSetDropDowns[x];
@@ -528,6 +650,12 @@ export class MenuMealsComponent implements OnInit {
         }
         onIndexChange(index: number): void {
           this.current = index;
+          if(index == 7){
+            this.loadCompetency();
+          }
+          if(index == 8){
+            this.loadChecklist();
+          }
         }
         handleOkTop() {
           this.generatePdf();

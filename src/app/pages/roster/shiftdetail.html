@@ -11,29 +11,61 @@
 
     <ng-template #modalContent >
         <div class="flexy" style="min-height:21rem" >
-            <nz-steps [nzCurrent]="current" nzProgressDot nzDirection="vertical">
+       
+            <nz-steps [nzCurrent]="current"   nzProgressDot nzDirection="vertical">
                 <nz-step nzTitle="Service Type & Date"></nz-step>
                 <nz-step nzTitle="Recipient Details"></nz-step>
                 <nz-step nzTitle="Pay Details"></nz-step>
                 <!-- <nz-step *ngIf="ifRosterGroupHasTimePayBills(rosterGroup)" nzTitle="Time"></nz-step> -->
                 <nz-step *ngIf="ifRosterGroupHasTimePayBills(rosterGroup)" nzTitle="Pay"></nz-step>
                 <nz-step *ngIf="ifRosterGroupHasTimePayBills(rosterGroup) && rosterGroup != 'ADMINISTRATION' "nzTitle="Bills"></nz-step>
+                <nz-step *ngIf="current==-1 && showMore>0"nzTitle="More"></nz-step>
             </nz-steps>
     
             <nz-divider class="full-height" nzType="vertical"></nz-divider>
  
             <div class="steps-content" >
                 <div *ngIf="current == 0" [formGroup]="rosterForm">
-                    
-                    <div nz-row>
-                        <div class="form-group">
-                            <label for="">Date</label>
-                            <nz-date-picker [nzDisabled]="!editRecord" [nzFormat]="dateFormat" formControlName="date"></nz-date-picker>
+                    <div nz-row >
+                        <!-- <div nz-col nzSpan="22" style=" text-align: right; margin-top: 17px; vertical-align: middle; ">
+                            <label for="">More</label>
+                        </div> -->
+                        <div nz-col nzSpan="23" style=" text-align: right; vertical-align: middle; ">
+                            <a nz-dropdown [nzDropdownMenu]="menu">
+                                More 
+                                <i nz-icon nzType="right" nzTheme="outline"></i>                               
+                                <i nz-icon nzType="menu"></i>
+                              </a>
+                                                            
+                            <nz-dropdown-menu #menu="nzDropdownMenu">
+                                <ul nz-menu>         
+                                    <li nz-menu-item nzTitle="" (click)="ShowMoreOptions(0)"> Shift Information </li>
+                                    <hr/>
+                                    <li nz-menu-item nzTitle="" (click)="ShowMoreOptions(1)"> Service Tasks List </li>
+                                    <hr/>
+                                    <li nz-menu-item nzTitle="" (click)="ShowMoreOptions(2)"> Extra Information  </li>
+                                    <hr/>
+                                    <li nz-menu-item nzTitle="" (click)="ShowMoreOptions(3)"> Extra Charges  </li>
+                                    <hr/>
+                                    <li nz-menu-item nzTitle="" (click)="ShowMoreOptions(4)" >Service Notes   </li>
+                                    <hr/>
+                                    <li nz-menu-item nzTitle="" (click)="ShowMoreOptions(5)"> Dataset  </li>
+                                    <hr/>
+                                    <li nz-menu-item nzTitle="" (click)="ShowMoreOptions(6)"> Audit History  </li>
+                                </ul>
+                            
+                            </nz-dropdown-menu>
                         </div>
                     </div>
                     <div nz-row>
                         <div class="form-group">
-                            <label for="">Activity Type</label>
+                            <label for="">Date</label>
+                            <nz-date-picker [nzDisabled]="!editRecord || date<'2000/01/01'" [nzFormat]="dateFormat" formControlName="date"></nz-date-picker>
+                        </div>
+                    </div>
+                    <div nz-row>
+                        <div class="form-group">
+                            <label for="">Service Type</label>
                             <nz-select formControlName="serviceType" [nzDisabled]="!editRecord" [nzDropdownMatchSelectWidth]="false" style="width:15rem">
                                 <nz-option *ngFor="let list of modalTimesheetValues" [nzValue]="list.name" [nzLabel]="list.name"></nz-option>
                             </nz-select>
@@ -59,7 +91,7 @@
                         <div nz-col nzSpan="6">
                             <div class="form-group">
                                 <label for="">Start Time</label>
-                                <nz-time-picker [nzDisabled]="!editRecord" [(ngModel)]="defaultStartTime" [ngModelOptions]="{standalone: true}" (ngModelChange)="ngModelChangeStart($event)"  nzFormat="HH:mm"></nz-time-picker>
+                                <nz-time-picker [nzDisabled]="!editRecord" [(ngModel)]="defaultStartTime" [ngModelOptions]="{standalone: true}" (ngModelChange)="ngModelChangeEnd($event)" nzFormat="HH:mm"></nz-time-picker>
                             </div>
                         </div>
                         <div nz-col nzSpan="6">
@@ -117,9 +149,19 @@
                             <span style="font-size: 11px; color: #45be26; font-weight: 500;">{{ rosterGroup}}</span>
                         </div>
                     </div>
-                    <div class="form-group" *ngIf="viewType === 'Recipient'">
-                        <label for="">Staff/Contractor</label>
-                        <app-staff-popup [nzDisabled]="!editRecord" formControlName="staffCode"></app-staff-popup>
+                    <div class="form-group"  [class.disabled]="viewType === 'Staff' || !editRecord">
+                        <label for="">Staff/Contractor</label>                      
+                        <app-staff-popup [disabled]="1==1" formControlName="staffCode"></app-staff-popup>                        
+                        <button nz-button nzType="default" (click)="openStaffModal()" [nzSize]="'small'" nzShape="circle" nz-tooltip nzTooltipTitle="Find Staff or Carer"><i nz-icon nzType="search" nzTheme="outline"></i></button>
+                    
+                        <div>
+                           
+                            
+                            <!-- <nz-input-group nzAddOnAfterIcon="search" (click)="openStaffModal()" >
+                                <input placeholder="Search Staff" type="text" nz-input [(ngModel)]="selectedCarer" [disabled]="true"/>
+                              </nz-input-group>                -->
+                        </div>
+                        <staff-search [findModalOpen]="openSearchStaffModal" [bookingData]="bookingData"  (searchDone)="onStaffSearch($event)"></staff-search>
                     </div>
                 </div>
                 
@@ -140,6 +182,8 @@
                             <nz-option *ngFor="let list of analysisCodeList" [nzValue]="list" [nzLabel]="list"></nz-option>
                             <nz-option [nzLabel]="defaultCategory" [nzValue]="defaultCategory" nzHide></nz-option>
                         </nz-select>
+
+                       
                     </div>
                 </div>
 
@@ -203,7 +247,7 @@
                                 <div class="form-group">
                                     <label for="">Unit</label>
                                     <nz-select formControlName="pay_Unit" [nzDisabled]="!editRecord" [nzDropdownMatchSelectWidth]="false">
-                                        <nz-option *ngFor="let list of unitsArr" [nzValue]="list" [nzLabel]="list">
+                                         <nz-option *ngFor="let list of unitsArr" [nzValue]="list" [nzLabel]="list">
                                         </nz-option>
                                     </nz-select>
                                 </div>
@@ -231,8 +275,41 @@
                                 </div>
                             </div>
                        </div>
+                       
+
                     </ng-container>
-            </div>
+                </div>
+                  
+               <!-- <div nz-row nzSpan="24" nzGutter="8" *ngIf="current == -1 && showMore > 0" [formGroup]="rosterForm" style="width: 30rem;">
+                    <div *ngIf="showMore==1">
+                            <div >
+                                Task List
+                            </div>
+                        
+                     </div>
+                     <div *ngIf="showMore==2">
+                        <div >
+                            Extra Information 
+                        </div>
+                    </div>
+                     <div *ngIf="showMore==3">
+                        <div >
+                            Extra Charges
+                        </div>
+                    </div>
+                   
+                    <div *ngIf="showMore==4" > 
+                        
+                      </div>
+                     
+                     <div *ngIf="showMore==6">
+                        <div >
+                            Audit History
+                        </div>
+                    </div>
+                    
+                 </div> -->
+                
         </div>
     </div>
     </ng-template>
@@ -267,5 +344,141 @@
     <div *nzModalFooter>
         <button nz-button nzType="default"  (click)="ProceedBreachRoster()">Yes</button>
         <button nz-button nzType="default"  (click)="Cancel_ProceedBreachRoster()">No</button>
+    </div>
+</nz-modal>
+
+<nz-modal [nzStyle]="{ top: '15px' }" [nzWidth]="900" [(nzVisible)]="ViewServiceNoteModal" nzTitle="Service / Shift Notes "   (nzOnCancel)="ViewServiceNoteModal = false" >
+    <div class="flexy" style="min-height:25rem;">
+        <gnotes #gn [user]="Person" [loadNote]="loadingNote" ></gnotes>
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default" (click)="gn.search(Person)">Refresh</button>
+        <button nz-button nzType="default" (click)="ViewServiceNoteModal=false">Cancel</button>
+    </div>
+</nz-modal>
+<nz-modal [nzStyle]="{ top: '15px' }" [nzWidth]="400" [(nzVisible)]="ViewServiceTaskModal" nzTitle="Service Tasks "   (nzOnCancel)="ViewServiceTaskModal = false" >
+    <div class="flexy" style="min-height:20rem;">
+        <service-tasks [loadTasks]="loadingTasks" ></service-tasks>
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default" >Refresh</button>
+        <button nz-button nzType="default" (click)="ViewServiceTaskModal=false">Cancel</button>
+    </div>
+</nz-modal>
+<nz-modal [nzStyle]="{ top: '15px' }" [nzWidth]="600" [(nzVisible)]="ViewExtraInfoModal" nzTitle="Extra Info "   (nzOnCancel)="ViewExtraInfoModal = false" >
+    <div class="flexy" style="min-height:20rem;">
+        <roster-extrainfo #ext [loadExtraInfo]="loadingExtraInfo" ></roster-extrainfo>
+        
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default" (click)="ext.Save_Transport()" >Save</button>
+        <button nz-button nzType="default" nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this from Task from List?"
+        nzPopconfirmPlacement="bottom" (nzOnConfirm)="ext.delete()">Delete</button>
+        <!-- <button nz-button nzType="default" (click)="gn.delete()">Delete</button> -->
+        <button nz-button nzType="default" (click)="ViewExtraInfoModal=false">Cancel</button>
+    </div>
+</nz-modal>
+<nz-modal [nzStyle]="{ top: '15px' }" [nzWidth]="900" [(nzVisible)]="ViewAuditHistoryModal" nzTitle="Audit History "   (nzOnCancel)="ViewAuditHistoryModal = false" >
+    <div class="flexy" style="min-height:25rem;">
+        
+        <nz-table #basicTable [nzShowPagination]="false" [nzSize]="'small'" [nzFrontPagination]="false" [nzLoading]="loading"
+        [nzData]="listAuditHistory"  *ngIf="listAuditHistory.length>0" [nzScroll]="listAuditHistory.length>6 ? {y: '400px'} : 'none'">
+        <thead>
+            <tr>
+                <th class="left">Window User</th>
+                <th class="left">Traccs User</th>
+                <th class="left">Date</th>
+                <th class="left">Detail</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let data of listAuditHistory;let i = index;"  (click)="onAuditItemSelected(data,i)" 
+             [ngStyle]="{'backgroundColor': i == HighlightRow ? '#bbd7fa'  : 'white' }">
+                <td class="left">                                     
+                     {{data.windowsUser}}     
+                </td>
+                <td class="left">                                     
+                    {{data.traccsUser}}     
+                </td>
+                <td class="left">                                     
+                    {{data.date}}     
+                </td>
+                 <td class="left">                                     
+                    {{data.detail}}     
+                 </td>
+            </tr>
+        </tbody>
+        </nz-table>         
+        
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default" (click)="ViewAuditHistoryModal=false" >OK</button>     
+        <button nz-button nzType="default" (click)="ViewAuditHistoryModal=false">Cancel</button>
+    </div>
+</nz-modal>
+
+<nz-modal [nzStyle]="{ top: '15px' }" [nzWidth]="600" [(nzVisible)]="ViewExtraChargeModal" nzTitle="Extra Charges "   (nzOnCancel)="ViewExtraChargeModal = false" >
+    <div class="flexy" style="min-height:20rem;">
+        Extra Charges
+        <textarea id="txtNote" nz-input > </textarea>
+            
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default" >Save</button>      
+        <button nz-button nzType="default" (click)="ViewExtraChargeModal=false">Cancel</button>
+    </div>
+</nz-modal>
+
+<nz-modal [nzStyle]="{ top: '15px' }" [nzWidth]="900" [(nzVisible)]="ViewDatasetModal" nzTitle="Dataset Information "   (nzOnCancel)="ViewDatasetModal = false" >
+    <div class="flexy" style="min-height:25rem;" *ngIf="dataset" >
+        <div nz-row nzGutter="8" style=" width:900px; padding-top: 5px;">
+           
+            <div nz-row nzGutter="8">
+                    <div nz-col nzSpan="8" style=" text-align: right;">Program :</div>
+                    <div nz-col nzSpan="16" style="font-weight: bold; text-align: left;">{{dataset.program}}</div>
+                </div>
+                <div nz-row nz-row nzGutter="8" style="padding-top: 10px;">
+                    <div nz-col nzSpan="8" style="text-align: right;">Funding Source :</div>
+                    <div nz-col nzSpan="8" style=" font-weight: bold; text-align: left;">{{dataset.fundingSource}}
+                    </div>
+                    <div nz-col nzSpan="8" >
+                        <span style=" padding-left: 5px; text-align: left;">Service OutletID (For CSTDA) :</span>
+                        <span style="font-weight: bold; padding-left: 5px;">{{dataset.outletID}}</span>
+                    </div>
+                </div>
+                
+                <div nz-row nz-row nzGutter="8" style="padding-top: 10px;">
+                    <div nz-col nzSpan="8" style="text-align: right;">Traccs Activity Code :</div>
+                    <div nz-col nzSpan="16" style="font-weight: bold; text-align: left;">{{dataset.activity}}</div>
+                </div>
+                <div nz-row nz-row nzGutter="8" style="padding-top: 10px;">
+                    <div nz-col nzSpan="8" style=" text-align: right;">Dataset this Activity will report Under :</div>
+                    <div nz-col nzSpan="16" style="font-weight: bold; text-align: left;">{{dataset.dataset}}</div>
+                </div>
+                <div nz-row nz-row nzGutter="8" style="padding-top: 10px;">
+                    <div nz-col nzSpan="8" style="text-align: right;">Dataset this Activity will report Under :</div>
+                    <div nz-col nzSpan="16" style="font-weight: bold; text-align: left;">{{dataset.dataset}}</div>
+                </div>
+                <div nz-row nz-row nzGutter="8" style="padding-top: 10px;">
+                    <div nz-col nzSpan="8" style="text-align: right;">Dataset Group :</div>
+                    <div nz-col nzSpan="16" style="font-weight: bold;text-align: left;">{{dataset.datasetGroup}}</div>
+                </div>
+                <div nz-row nz-row nzGutter="8" style="padding-top: 10px;">
+                    <div nz-col nzSpan="8" style="text-align: right;">Activity Code (For Dataset Reporting Purpose) :</div>
+                    <div nz-col nzSpan="16" style="font-weight: bold; text-align: left;">{{dataset.haccType}}</div>
+                </div>
+                <div nz-row nz-row nzGutter="8" style="padding-top: 10px;">
+                    <div nz-col nzSpan="8" style="text-align: right;">Carer (For Dataset Reporting Purpose) :</div>
+                    <div nz-col nzSpan="16" style="font-weight: bold; text-align: left;">{{dataset.client}}</div>
+                </div>
+                <div nz-row nz-row nzGutter="8" style="padding-top: 25px;">
+                    <div nz-col nzSpan="8" style="text-align: right;">NDIA ID :</div>
+                    <div nz-col nzSpan="16" style="font-weight: bold; text-align: left;">{{dataset.ndiA_ID}}</div>
+                </div>
+        </div>
+    </div>
+    <div *nzModalFooter>
+        <button nz-button nzType="default" (click)="ViewDatasetModal=false" >OK</button>      
+        <button nz-button nzType="default" (click)="ViewDatasetModal=false">Cancel</button>
     </div>
 </nz-modal>
